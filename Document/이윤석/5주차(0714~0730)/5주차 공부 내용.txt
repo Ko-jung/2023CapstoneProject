@@ -1,0 +1,178 @@
+2023 07 24
+2023 07 25
+2023 07 26
+가족 행사 휴식
+
+2023 07 27
+1. GameMode를 통해 액터가 죽는 것에 대한 로직 처리
+Projectile의 ApplyDamage() -> HealthComponent의 DamageTaken() -> GameMode의 ActorDied() -> Pawn의 HandleDestruction()
+죽은 액터의 파괴 함수를 호출하는건 궁극적으로 게임모드에서
+프로젝트를 만들어볼땐, 그냥 액터 자체에서 피가 0이 되면 죽도록 설정했었는데, 게임모드에서 하면 죽는것에 대한 처리 신호를 보내니 조금 더 관리하기 편해지는건가?
+(메모) 플레이어가 죽는 상황일 때 오버워치같이 죽은 내 캐릭터가 남아있을 경우엔 그대로 둬도 되지만,
+플레이어는 사라지고 카메라만 남게 하고싶다면(게임오버 스테이트 느낌?) 
+SetActorHiddenInGame(bool), SetActorTickEnabled(bool) 이 있음 
+(메모) 한 변수에 대해서 이름을 모두 바꾸고 싶다면 VS 기준 편집 - 찾기 및 바꾸기 - 바꾸기에 새로운 변수명 적고 모두 바꾸기
+(메모) PlayerController->bShowMouseCursor = true/false
+(메모) UGameStatics::GetGameMode();
+
+2. PlayerController
+GetPawn()을 통해 해당 게임모드의 디폴트 폰의 정보를 받아올 수 있음. 
+APawn의 정보를 반환하는데, APawn::EnableInput(PlayerController) / APawn::DisableInput(PlayerController) 를 통해 입력을 허용/막기 가능
+bShowMouseCursor 값을 변경함으로써 마우스 커서 가시도 설정 가능.
+(메모) class Defaults의 Mouse Interface - Default Mouse Cursor를 통해 마우스의 모습을 변경할 수 있는데
+블루프린트의 Set Mouse Cursor Widget 과 같은 기능이 함수로도 있을 것 같아 찾아보니
+APlayerController::SetMouseCursorWidget() 가 있음을 확인
+
+3. TimerDelegate / FTimerHandle
+FTimerDelegate InputDelegate = FTimerDelegate::CreateUObject(UserObject, Callback, Inputs)
+GetWorldTimerManager().SetTimer(TimerHandle, TimerDelegate, PlayRate, Looping(bool))  
+만약 게임모드에서 시작 후 3초뒤에 AMyPlayerController::SetPlayerEnabledState(bool) 을 실행시키고 싶다면,
+FTimerHandle TimerHandle; 을 만들고
+FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(PlayerController, &AMyPlayerController::SetPlayerEnabledState, true)
+로 타이머 델리게이트에 콜백함수를 바인딩 해주고,
+월드 타이머 매니저에 해당 델리게이트를 연결을 해주는 방식인 것 같아보임.
+
+4. Blueprint Implementable Events
+블루프린트 구현가능 이벤트 - C++에서 호출하는 C++함수지만, 실제 기능은 블루프린트 쪽에서 구현
+게임모드에 StartGame()이라는 함수를 만들고, 이를 블루프린트의 Event StartGame으로 연동하는 느낌인듯함.
+함수를 선언할 때, UFUNCTION(BlueprintImplementableEvent)를 접두로하고,
+언리얼엔진은 이를 블루프린트에서 구현할 것으로 인식하여 C++ 함수 정의부분을 만들 필요가 없다고함
+하지만 C++에서 호출은 가능은 함.
+(블루프린트에서 custom event를 통해 이벤트를 새로 만들곤 했는데 이처럼 c++에서 이벤트를 만들어주는데 기능을 C++로 구현하는게 아닌 블루프린트로 구현 가능하게 해준다의 차이만 있는듯 함)
+
+5. UGameplayStatics::GetAllActorsOfClass(World, 클래스, Array&)
+해당 월드 내에 있는 특정 클래스에 대한 액터들의 배열을 제공해줌,
+블루프린트에도 있는 기능이고, 엄청 많이 썼던 기억이 난다.
+
+(메모)블루프린트 select 노드
+Index 값에 따라 false에 적힌 입력핀이나 true에 적힌 입력핀을 반환함, 굳이 if문을 쓸 필요없음
+
+6. UParticleSystem
+UPROPERTY(EditAnywhere, Category="Combat Effect")
+TObjectPtr<UParticleSystem> HitParticles
+을 통해 블루프린트 클래스에서 해당 파티클 시스템을 바인딩 할 수 있음.
+소환하는 방법은
+UGameplayStatics::SpawnEmitterAtLocation(world, U파티클시스템, Location,(디폴트 매개변수 목록들~)) 로 하고, 블루프린트 노드에서 많이 사용해봄.
+
+7. UParticleSystemComponent
+UParticleSystem은 순간적으로 나오는 이펙트들에 대해서 하면 되지만,
+투사체에 따라오는 연기같은 이펙트는 UParticleSystemComponent 컴퍼넌트를 사용해야함.
+컴퍼넌트를 생성자에서 생성하고, root component에 붙여 계속 따라올 수 있게 설정,
+UParticleSystemComponent에는 Template라는 변수가 있는데, 그곳에 이펙트를 바인딩 하면 자동으로 rootcomponent에 연결하여 그 위치에 이펙트가 생성,
+
+8. USoundBase
+UPROPERTY(EditAnywhere, Category = "Sound")
+TObjectPtr<USoundBase> DeathSound;
+를 통해 해당 클래스의 블루프린트에서 DeathSound에 해당하는 음악 에셋을 연결가능
+UGameplayStatics::PlaySoundAtLocation() 이 있음.
+
+9. 카메라 셰이크 기능
+언리얼엔진에는 카메라 셰이크를 위한 내장 클래스가 있음.
+(강의를 따라가는 내용에선 MatineeCameraShake 클래스를 부모클래스로 선택하는데, UE5.1 기준 LegacyCameraShake로 되어있음.
+현재에는 안쓰는 방식인것 같으니 알아만 두고 나중에 5.1~버전에서의 카메라 셰이크 클래스에 대해 알아보자.)
+크게 Oscillation Duration(진동 경과시간) / Oscillation Blend In Time (블렌드 인 시간) / Oscillation Blend Out Time (블렌드 아웃 시간)이 있고, 0.25/0.05/0.05의 값을 설정
+Rot Oscillation 은 셰이크 기능시 카메라에 회전 기능도 넣거나,
+Loc Oscillation 은 공간안에서 이동시키고,
+FOV Oscillation 은 줌인 줌아웃하면서 흔들리는 효과를 주나,
+회전과 FOV는 멀미를 유발할 수 도 있음
+UPROPERTY(EditAnywhere, Category = "Camera Shake")
+TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
+
+APlayerController::ClientStartCameraShake 함수가 있고,
+UWorld::GetFirstPlayerController를 통해 플레이어 컨트롤러를 가져올 수 있음,
+이전에 Projectile에 OwnActor 를 설정을 했었는데, 이 액터로부터 컨트롤러를 가져오면 되는거 아닌가? 했는데,
+적군 타워가 쏘는 총의 경우엔 컨트롤러가 플레이어의 컨트롤러가 아니므로 적합하지 않은 것 같다.
+저 함수를 쓰는게 맞는거같다.
+
+최종)
+GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+
+(메모) Spring Arm의 Camera Lag 기능을 통해 좀 더 집중도 가능하도록 설정하기
+
+섹션5 끝!
+
+
+2023 07 28
+(프로젝트 생성 및 에셋 다운, 캐릭터-폰 차이점 살피는 것 위주로 진행하여 작성할 내용X)
+1. 캐릭터 클래스엔 CharacterMovenemt Component가 있고, 이에
+AddMovementInput() / AddControllerPitchInput() / AddControllerYawInput() / Jump() 등의 기능을 제공
+(오류로 인한 비쥬얼 스튜디오 재설치)
+
+
+2023 07 29   여러가지 에러와 오류를 수정한 날
+(전날 비쥬얼 스튜디오 재설치 하였는데, 언리얼이 정상적으로 작동하지 않는 것으로 확인되어
+5.2.1버전으로 업그레이드 겸 언리얼엔진 재설치 및 VS&언리얼엔진 설정 재설정에 시간소요)
+
+(메모) 라이브코딩 단축키인 ctrl+alt+f11이 기존 마이크로소프트 입력기에서의 이상한 단축키로 인해 불편함이 많은데
+작업관리자를 통해 해당 프로그램을 찾아내고, 해당 파일 위치 열기를 통해 C:\Windows\System32\IME\SHARED 경로에 있음을 확인.
+IMEPADSV.EXE인데, 그냥 지우려 하니 TrustedInstaller 권한을 얻어야 지울 수 있다고 하여,
+https://ckghwn.tistory.com/684 를 참고하여 해당 파일을 지우고 라이브코딩 시 정상적으로 실행되는 것을 확인.
+
+(메모) https://velog.io/@cedongne/UE5-Problem-%EB%9D%BC%EC%9D%B4%EB%B8%8C-%EC%BD%94%EB%94%A9-%ED%95%9C%EA%B8%80-%EA%B9%A8%EC%A7%90-%EB%AC%B8%EC%A0%9C
+글자꺠짐현상
+중요한 세팅, 라이브코딩시 에러 표시에 대한 글자 깨짐 현상이나, 라이브 코딩 단축키와 다른 단축키가 겹쳐있는 현상에 대한 해결 방향을 적어둠.
+
+
+계속해서 Input System에 대한 에러가 발생하였고
+에러의 현상은 C++ 클래스에 대해서 만들자마자 컴파일을 하면 정상적으로 잘 컴파일이 되고 라이브 코딩도 되는데,
+이전 프로젝트에서 써본 UInputMappingContext* 라던가 UInputAction* 을 쓰는순간 라이브 코딩에서 에러가 나고,
+에러의 증상도 이와 관련잇는 것이 아닌 언리얼에서 제공하는 get.cpp 파일에서의 오류로 출력되어 증상을 검색해보아도 찾을 수 가 없었다.
+-----------------------(에러목록)-----------------------
+  C:\Users\Administrator\Desktop\Unreal\Udemy\Udemy_section06\SimpleShooter\Intermediate\Build\Win64\UnrealEditor\Inc\SimpleShooter\UHT\BP_MyCharacter.gen.cpp(13): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
+  C:\Users\Administrator\Desktop\Unreal\Udemy\Udemy_section06\SimpleShooter\Intermediate\Build\Win64\UnrealEditor\Inc\SimpleShooter\UHT\BP_MyCharacter.gen.cpp(13): error C2146: 구문 오류: ';'이(가) 'UClass' 식별자 앞에 없습니다.
+  C:\Users\Administrator\Desktop\Unreal\Udemy\Udemy_section06\SimpleShooter\Intermediate\Build\Win64\UnrealEditor\Inc\SimpleShooter\UHT\BP_MyCharacter.gen.cpp(57): error C2065: 'Z_Construct_UClass_UInputMappingContext_NoRegister': 선언되지 않은 식별자입니다.
+---------------------------------------------------------
+중점을 계속해서 get.cpp파일 혹은 프로젝트 쪽에만 두고 문제를 해결하려 하다보니 해결할 수 없었는데, 우연히 구글에서 
+https://www.reddit.com/r/unrealengine/comments/za43ip/there_is_no_file_named_inputactionvalueh/
+를 찾을 수 있었고,
+InputActionValue.h가 UE5의 입력 시스템에서 함수쪽으로 사용하는 것은 알았는데, 혹시나 해서 들어가서 보니 증상에 대한 문제점이
+build.cs 파일에서 EnhancedInput이라는 public 모듈이 추가가 안되어 그렇다는 것 같다.
+추가하여 라이브 코딩으로 확인하니 겪은 증상인 UInputMappingContext* 라던가 UInputAction* 에 대한 문제점도 해결되었다.
+
+모듈이 없어서 그렇다는 건 이해되지만, 왜 이번 프로젝트 생성할때에만 갑자기 이렇게 모듈이 없어진 것인가 했는데,
+생각해보니까 기존에 프로젝트를 만들 때에는 3인칭 시점 View에서 만들다 보니 캐릭터의 Input 시스템이 모두 만들어 진 채로 들어갈텐데, 이번 프로젝트는 Blank 프로젝트로 만들었고, Blank프로젝트기에 모듈이 다 들어있지 않았던 것 같다.
+
+증상에 대해서 해결하고 문제점도 파악했으나 이에 2일이 소요됐다는 점이 너무 아쉽다.
+추가로 필요한것만 파악해서 추가할 수 있는 Blank 프로젝트도 좋지만,
+이와 같은 사태가 발생할 것 같아 잘 알지 못할때에는, 그냥 3인칭 프로젝트로 시작하여 불필요한 에셋들만 지우는 과정으로 용량을 아끼고서 나중에 제대로 배우고선 blank 프로젝트로 시작하는게 어떤가 싶다.
+
+2023 07 30
+(메모) C++로 ThirdPerson 프로젝트를 만들면, C++ classes 쪽에 SimpleShooterCharacter 라는 C++ 클래스가 있고,
+해당 C++ 클래스에선 카메라, 스프링암에 대한 컴퍼넌트 생성 및 Character Movement 값 조정, 회전 설정 등에,
+IMC, IA 에 대한 기본 변수 설정과 Move(), Look() 이라는 인풋 바인딩 함수도 구현되어 있다.
+참고하면 아주 좋을 것 같았고, 기존 계획중 하나였던, 언리얼 프로젝트의 캐릭터와 애니메이션 등을 살펴보는걸 해두면 바람직한 코딩을 할 수 있을 것 같다.
+
+(메모) 효율성과 관련하여 https://koreanfoodie.me/1168 를 참고해도 좋은 것 같다.
+Cast<>()에 대한건데, IsA(Class타입) 에 대한 것도 있고, CastChecked<>() 라는 건 내부적으로 IsA를 생략한다고 하는 등 참고하면 좋을 것 같다.
+캐릭터 구현 부분에서 
+if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+을 보고 굳이 Cast와 차이가 뭐지 하고 찾게된 사이트이다.
+
+(메모) 추가로 아직 강의에서 PlayerController를 추가로 만들지 않고, 인풋 액션에 대해서 캐릭터 C++ 클래스에서 함수를 바인딩하여 구현하였는데,
+기존 게임엔진1 강의에선 BP_PlayerController를 만들고 여기에서 움직임을 GetPlayerCharacter() 로 하여 움직임을 구현하였는데 이 둘의 차이가 뭔지 살펴보고, 어떤게 좋은지, 전형적인 코딩 방식은 어떤지 살펴봐야겠다.
+
+(메모) 언리얼엔진 인풋 시스템에서 FVector2D 값에서 X 는 좌우(Y축방향), Y는 앞뒤(X축방향) 로 쓰이는거로 아는데,
+왜 굳이 반대로 설정을 한 건진 모르겠다.. 나중에 한번 찾아보자.
+직접 IA, IMC를 만들땐 X는 X로, Y는 Y로 만들었었는데 이유가 뭔지 찾아보자.
+
+1. 프로젝트 아예 새로 만들어서 ACharacter로부터 C++클래스를 생성하고,
+인풋 액션에 대한 처리를 진행(WASD로 이동, 마우스로 회전, 스페이스바로 점프)
+
+(메모) UE4엔 회전로직에서 프레임에 대한 계산이 안이루어져 AddControllerPitchInput(AxisValue * RotationRate) 와 같이 비율을 계산해 주어야 했다고 함, UE5에서는 입력시스템 자체가 바뀌어서 FVector2D의 값으로부터 그냥 값을 넘겨주면 됨.
+
+2. Spring Arm이 카메라와 스프링암 위치까지의 오브젝트가 있는지 파악하는 기능 등을 해줘서 연결해줘야함.
+SpringArm의 Use Pawn Control Rotation을 통해 해당 스프링암이 컨트롤러의 회전에 따르도록 조정
+
+3. https://docs.unrealengine.com/4.27/ko/ProgrammingAndScripting/GameplayArchitecture/Properties/
+UPROPERTY 지정자에 대한 설명
+카메라랑 스프링암에 대해서 추가를 했는데, 일부 변수에 접근하지 못하여서 지정자를 찾아보게됨.
+meta = (AllowPrivateAccess = "true") 를 붙여주니 해결됨
+
+4. (시간 많이 잡아먹었던 일) 캐릭터를 배치하고 시작하면 계속 이상한 위치에서 있고, 캐릭터는 움직이는데 보이지 않는 위치에 있었다.
+회전도 안먹고, 현재 위치에서 움직여지지도 않고 무엇인가 하며 Input Action에서 로그를 출력했는데 로그는 또 잘 출력하는걸 보아하니 코드는 정상적으로 진입하는 것이었다.
+하지만 에디터상 플레이되는 위치는 움직이지 않기에 무엇인가 고민하며 시간을 썼는데,
+스프링암을 만들고서 스프링암을 RootComponent에 부착하지 않았었다,
+혹여나 그 멈춰있던 위치가 원점인가? 하고서 큐브를 놓고 위치를 보니 정말로 0,0,0이었다....
+당연히 SpringArm이 원점에서 움직이지 않을것이고, 카메라도 그것에 붙어있으니 절대로 움직이지 않았을것이다.
+
+

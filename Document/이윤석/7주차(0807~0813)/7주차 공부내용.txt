@@ -1,0 +1,244 @@
+2023 08 07 월
+1. APlayerController::GameHasEnded() 가 있는데, 플레이어 컨트롤러에게 승/패를 제공하는 함수로 파악되며,
+TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(PawnKilled->GetController());
+if (PlayerController)
+{
+	PlayerController->GameHasEnded(nullptr, false);
+}
+로 호출 한 뒤,
+해당 플레이어 컨트롤러에서 APlayerController를 상속받아 GameHasEnded를 오버라이딩 하여 구현을 하는 듯 해보인다.
+
+
+2.
+레벨 재시작용 함수로 APlayerController::RestartLevel() 이 있음.
+
+5초 지연 후 재시작 하도록 하게 하려는데,
+
+**********타이머 사용방법*******
+1. FTimerManager::SetTimer(FTimerHandle& InOutHandle, UserClass* InObj, typename FTimerDelegate::TMethodPtr< UserClass > InTimerMethod, float InRate, bool InbLoop = false, float InFirstDelay = -1.f) 을 사용할 것.
+ex) GetWorldTimerManager().SetTimer(RestartTimer, this, &APlayerController::RestartLevel, RestartDelay);
+2. FTimerHandle 멤버변수(UPROPERTY일 필요는 없음)와 딜레이 초 멤버변수를 만든다 
+ex)
+UPROPERTY(EditAnywhere)
+float RestartDelay=5.0f;
+
+FTimerHandle RestartTimer;
++) 타이머를 실행했을 때 delay처럼 멈추는것이 아니라 계속해서 코드를 실행하고 해당 초 뒤에 함수를 동시에 실행하는 
+
+
+3. UI는 블루프린트로 만드는게 훨씬 쉬워서 블루프린트로 만들면 됨
+*또한 C++에서 위젯 블루프린트를 사용하기 위해 Build.cs에 "UMG"를 추가해야함
+위젯 블루프린트를 c++에서 스폰하는 방법을 알아보는데,
+1. 일단 위젯 블루프린트 에디터 창에서 위젯 블루프린트의 부모클래스가 User Widget임을 알 수 있음 -> UUserWidget
+UPROPERTY(EditAnywhere)
+TSubclassOf<UUserWidget> LoseWidget;
+로 생성하고,
+
+TObjectPtr<UUserWidget> LoseScreenWidget = CreateWidget(this, LoseWidget);
+if(LoseScreenWidget)
+{
+	LoseScreenWidget->AddToViewport();
+}
+의 방법으로 위젯 블루프린트를 화면에 연결한다.
+
+
+4. TActorRange<>();
+#include "EngineUtils.h"
+
+TActorRange<Acontroller>(GetWorld())
+-> 월드 내의 AController에 대한 리스트를 제공(TArray를?)
+
+for(AController* Controller : TActorRange<AController>(GetWorld()))
+{
+	
+}
+의 방식으로 활용.
+
+게임이 끝났을 때 모든 컨트롤러에게 알리기 위한 용도로
+for(AController* Controller : TActorRange<AController>(GetWorld()))
+{
+	bool bIsPlayerController = Controller->IsPlayerController();
+	if(bIsPlayerWinner)
+	{
+		Controller->GameHasEnded(nullptr, bIsPlayerController);
+	}
+	else
+	{
+		Controller->GameHasEnded(nullptr, !bIsPlayerController);
+	}
+}
+만약 플레이어가 이겼다면,
+	자신이 플레이어 컨트롤러라면
+		이겼다
+	아니라면
+		졌다
+플레이어가 졌다면
+	자신이 플레이어 컨트롤러라면
+		졌다
+	아니라면
+		이겼다
+
+를 나타내는 것이다.
+또한 저것을
+bool bIsWinner = Controller->IsPlayerController() == bIsPlayerWinner;
+Controller->GameHasEnded(nullptr, bIsWinner);
+로도 줄일 수 있다..
+가독성이 좋으며 더 적게 쓸 수 있는 방향으로 작성할 수 있게 노력해보자.
+
+****************************나중에 알아보기
+GameHasEnded의 nullptr을 넣는 부분이
+오버워치 같은 곳에서 플레이어가 죽으면 플레이어를 죽인 대상의 킬캠이라던가(-> 이는 좀 다른거일 수 도 있다.)
+로스트아크에서 플레이어가 죽으면 다른 유저를 관전하는 기능이 있는데, 이 경우라던가
+(강의에선) 포트나이트 시나리오의 경우 나를 죽인 사람으로 카메라가 따라가게 되는데
+ 이 때 nullptr부분에 죽이는 행위를 하는 주체를 넣어주면 된다고함.
+
+
+5.
+강의에선 승리방식을 판단하기 위해 모든 적군이 죽었는지 확인을 위해
+월드 내의 모든 AIController를 받아와서 AIController에게 적군이 죽었는지 물어보고 한명이라도 살아있으면 early return;
+아니라면 EndGame()을 통해 끝냈는데,
+
+게임엔진1 강의를 들으며 프로젝트를 만들어 볼 땐, GetAllActorsOfClass로 해당 적군 클래스의 수를 받아와서 그 수의 값이 0인지 파악하고 그런 과정을 통해 게임 종료를 판단했는데,
+만약 시체가 남아있어야 하는 경우(지금같이) 라던가 그런경우엔 강의에서 배운 대로 하는게 좋아보이고,
+바로 Destroy()를 하여 적군이 죽자마자 몇초뒤 해당 액터를 없애고 한다면 기존 배운방식이 더 깔끔한거같다.
+
+여러가지 참고해보자.
+
+
+2023 08 08 화
+1. 한 함수가 화면 칸을 넘어갈 정도라면, 분할하는게 좋음(->리팩토링)
+
+2. 예전엔 UGameplayStatics::PlaySoundAtLocation() 으로 했으나,
+UGameplayStatics::SPawnSoundAttached 임.
+UGameplayStatics::SpawnSoundAttached(MuzzleSound, GunMeshComponent, TEXT("MuzzleFlashSocket"));
+
+(메모) UAudioComponent* SpawnSoundAtLocation() 도 있음
+(메모) 사운드클래스는 USoundWave : public USoundBase 이고,
+PlaySoundAtLocation()은 USoundBase*를 받음
+
+3. Sound Cue
+사운드웨이브를 묶어주는 클래스
+예를들어 사운드1 사운드2 사운드3을 랜덤으로 Output 하는 기능 등
+Random 노드가 있는데, Random 노드의 Randomize Without Replacement 는 모든 랜덤 요소들이 한번씩 실행되기 전까지 중복으로 실행되지 않게하는 기능을 하게 해준다.
+
+여기서 나온 Output의 사운드를 Modulate 노드에 연결하면
+Modulate노드에선 Pitch Min/Max 와 Volume Min/Max를 구분해준다.
+
+******* 컨텐츠 브라우져에서 에셋들을 중복선택 한 뒤, 에디터 내에서 우클릭 하여 Random:Multiple WAVs를 누르면
+이 기능을 만들어준다......
+
+사용하는 방법은 기존 USoundBase* 변수에 그대로 연결해주면 된다
+
+(메모)
+Attenuation(감쇠) - 가까이 있는 사운드는 멀리 있는 사운드보다 크게 들린다.
+Spatialization(공간화) - 사운드가 좌측에 있으면 좌측 스피커에서 크게 들리는 (특정방향에서 사운드가 들린다는 느낌)
+*슈팅게임에서 중요하므로 잘 알아둬야함
+설정방법 -> Sound Cue에서 Attenuation>>Override Attenuation을 true로 바꾸고,
+Attenuation의 속성을 바꾸면 되는데,
+이 때, AudioLink Settings Override 에 연결하는 에셋에 따라 공유가 가능함
+(Create New Asset>>Sound Attenuation 로 생성하거나, 
+컨텐츠브라우져>>Audio>>Spatialization>>Sound Attenuation 을 통해 생성 가능하다.)
+속성 값으로는, 
+Attenuation(Volume) -> 감쇠
+	소리 곡선(선형,로그,..., + 커스텀으로 자신만의 정의 가능)
+	소리 범위(구형, 캡슐형, 박스, 콘)
+	소리 최대 거리(이 거리 안에 있으면 최대로 들림)
+	소리 감소 거리(이 거리 밖에 있으면 안들림)
+Attenuation(Spatialization) -> 좌우측
+	음향 옵션(패닝, 고급음향(플러그인필요))
+	반경..
+	..
+	3D스테레오 (떨어지게 들리는 효과?))
+
+(메모) ********* 게임 진행 중 해당 사운드만 듣고싶다면, 해당 사운드 큐에 가서 Solo 버튼을 누르면 그 사운드만 들림!!
+Mute키를 통해 해당 사운드 큐의 음소거도 가능함!
+
+4. UI - Slot>>Size To Content를 통해 크기 조절도 가능
+
+
+(메모) 포인터를 저장할 것이고, 가비지 컬렉션이 적용되게 할거라면 UPROPERTY()를 하는것이 좋음.
+
+5. UI를 제거할 때, 블루프린트에서는 UUSerWidget::RemoveFromParent()으로 했었는데,
+강의에선 UUserWidget::RemoveFromViewport()로 하여서 검색해보았으나, 차이를 바로 찾진 못했다,
+예상으론 Viewport 자체도 Parent 에 속하는 것이기에 Parent가 큰 폭에 속하는 느낌이었다.
+또한, https://community.gamedev.tv/t/removefromviewport-deprecated-in-unreal-5-1/221697 를 보니 
+Function still worked, but I replaced it with RemoveFromParent() as this is what unreal recommended.
+라는 말을 보아 RemoveFromParent()를 쓰는것이 좋아보인다.
+또한, https://stackoverflow.com/questions/33206645/remove-from-viewport-not-in-unreal-anymore 를 통해 더이상 RemoveFromViewport()는 사용하지 않는 것 같다.
+(Blueprint에선 안보이고 C++에선 보였던 이유가 기존 코드들의 수정을 피하기 위함이지 않을까 싶다)
+
+(메모) UI는 PlayerController 에서 조작하는게 가장 편한것 같다.
+
+
+6. Progress Bar
+블루프린트로 프로젝트를 진행할 때, Progress Bar의 퍼센트를 조절하는 방법으로
+1. 바인드를 하여 함수가 리턴하는(혹은 해당 블루프린트의 변수) 값이 바뀔 때 마다 UI를 업데이트 하는 방법
+2. Custom Event를 통해 해당 클래스에서 값이 변경될 때, 위젯 블루프린트의 프로그레스 바의 Percent를 바꾸는 방법
+이 두가지로 진행했었는데,
+1번 방법은 따로 호출해야한다는 불편함은 없지만 // 매 프레임마다 계산을 해야해서 연산이 늘어나며,
+2번 방법은 따로 호출 해야한다는 단점이 있지만 // 필요할 때에만 연산이 들어가므로 계산상에서 효율적이다
+라고 결론지었었다.
+현재 강의에선 1번 방법으로 진행중인데 2번방법을 직접 찾아봐야겠다.
+
+7. 애니메이션 - 에임오프셋 (카메라 시선에 따라 액터의 손등을 위로 올리거나 하는 것 / 총을 위로 하거나, 고개를 돌리는 등?)
+애니메이션 블루프린트에서 에셋브라우져에 파란색으로 되어있는 것이 에임오프셋, AO라는 약자를 사용
+
+에임 오프셋을 열어보면 BlendSpace와 거의 유사한데, 각도에 따라 몸이 회전하는 것을 볼 수 있음.
+이는 <<애디티브 애니메이션>>이라는 기존 애니메이션과 다른 것으로,
+Asset Details를 보면 Additive Settings 가 있음.
+
+보통 에임 오프셋은
+Pitch, Yaw의 정보를 필요로 하는데,
+이는 GetActorRotation 노드와 GetControlRotation 노드의 Delta(Rotator에서의 뺄셈)노드를 활용하여 구할 수 있다.
+
+하지만 AI는 이렇게 해서는 해결할 수 없는데, AI의 행동트리를 보면 디폴트 포커스를 위치에 설정하고 있기 때문임.
+이로 인해 Vector의 플레이어 위치로 이동하는 것이 아닌 플레이어 액터 자체를 받아오는 형태로 수정을 하는데,
+205번 강의를 토대로 다시 보면 좋을 것 같다.
+
+2023 08 09 수
+1. 스테이트 머신에 대한것.
+
+(메모) Automatic Rule Based on Sequence... 로 해당 애니메이션이 끝났을 때 다음 스테이트로 가도록 하는 설정에서
+Blend Settings >> Duration 을 통해 블렌딩 되는 전환 시간을 조절할 수 있음
+(메모) Blend에서 Blend Settings>>Mode 를 통해 두 애니메이션 사이의 비율을 정할 수 있음
+(메모) 애니메이션이 다양할 수록 표현되는 정도가 만항지는것, 애니메이션 잘 살펴보자.
+
+! 스테이트 머신 안에 스테이트 머신이 있을 수 있음(-> 더 정교한 표현이 가능하고 가독성도 좋아질 테니 한번 알아보자.
+
+2. Ambient Sound 액터를 통해 배경음악을 설정할 수 있음
+
+강의는 모두 다 봤다.
+
+3. https://docs.unrealengine.com/5.0/ko/setting-up-dedicated-servers-in-unreal-engine/
+를 통해 언리얼엔진에서 전용 서버 테스트 시도 하였으나 오류가 많이 발생하여 내일 재도전 예정
+
+
+2023 08 10 목
+1. 언리얼 소스 빌드를 잘못했어서, 최신 버전인 5.2.1 버전을 다시 빌드하였다.
+
+2. 이전에 오류가 발생 했던 것이 [프로젝트이름]Server.Target.cs 파일에서
+해당 클래스의 이름을 바꾸지 않았던 점에 의한 것이었다. 변경하니 잘 진행됨
+
+3. 일단 서버 빌드까진 다 끝냈으나, 
+ue5 corrupt data found please verify your installation
+라고 뜨면서 실행이 안될 뿐 더러, UE4의 가이드로 쫓아가기엔 UE4의 가이드와 UE5의 에디터 레이아웃이 일부 달라서 따라가기 애매했다.
+해당 오류를 검색하니 
+https://forums.unrealengine.com/t/corrupt-data-found-please-verify-your-installation-on-server-build-for-5-0-2/595120
+가 나와서 검증을 누르긴했으나, 오류 수정 진행중이다.
+
+4. 5.1 버전에 맞는 가이드 라인을 찾았다.
+https://docs.unrealengine.com/5.1/ko/setting-up-dedicated-servers-in-unreal-engine/
+이로인해 내일 다시 기존 프로젝트는 지우고 이 가이드에 맞게 따라가도록 진행 예정이다.
+
+2023 08 11 금
+1. 에픽게임즈 제공 'Lyra' 프로젝트를 통해 테스트 해보려 했으나, 프로젝트가 열리지 않는 현상이 발생
+The following modules are missing or built with a different engine version:
+~~~
+https://daekyoulibrary.tistory.com/entry/UE5-The-following-modules-are-missing-or-built-with-a-different-engine-version-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0
+를 참고하여 빌드를 통해 생성을 해줘야지만 들어갈 수 있는구나를 파악하고 빌드 진행 후 프로젝트 오픈
+
+2. 언리얼엔진 소스코드 빌드 -> 빌드 후 에디터 내에서 프로젝트 속성에 엔진 디폴트 맵 설정 -> Development Server빌드 -> Development Client 빌드
+
+3. 쿠킹 과정을 거쳐 클라이언트와 서버에서 에셋을 사용가능하게 작용(?)
+
+4. 서버 구동은 완료 실험도 했으나 이해도는 부족해서 이와 관련된 이해가 필요

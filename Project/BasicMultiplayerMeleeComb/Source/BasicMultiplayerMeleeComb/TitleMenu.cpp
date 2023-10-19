@@ -28,6 +28,12 @@ bool UTitleMenu::Initialize()
 void UTitleMenu::HostServer()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called Host Server"));
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	// Host
+	World->ServerTravel("/Game/2019180016/SingleTestMap?listen");
 }
 
 void UTitleMenu::JoinServer()

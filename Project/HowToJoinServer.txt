@@ -1,16 +1,16 @@
 Open as Server
 <UnrealEditor.exe의 경로> <실행할 프로젝트의 경로> -server (-log)
 
-"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "D:\23_Summer\Udemy\PuzzlePlatforms\PuzzlePlatforms.uproject" /Game/ThirdPerson/Maps/ThirdPersonMap?listen -server -log
-"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "D:\23_Summer\Udemy\PuzzlePlatforms\PuzzlePlatforms.uproject" /Game/MyBP/Lobby?listen -server -log
+"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Github\2023CapstoneProject\Project\BasicMultiplayerMeleeComb\BasicMultiplayerMeleeComb.uproject" /Game/ThirdPerson/Maps/ThirdPersonMap?listen -server -log
+"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Github\2023CapstoneProject\Project\BasicMultiplayerMeleeComb\BasicMultiplayerMeleeComb.uproject" /Game/MyBP/Lobby?listen -server -log
 
-"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "D:\23_Summer\Udemy\PuzzlePlatforms\PuzzlePlatforms.uproject" -server -log
+"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Github\2023CapstoneProject\Project\BasicMultiplayerMeleeComb\BasicMultiplayerMeleeComb.uproject" -server -log
 
 Open as Game
 <UnrealEditor.exe의 경로> <실행할 프로젝트의 경로> -game (-log)
-"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "D:\23_Summer\Udemy\PuzzlePlatforms\PuzzlePlatforms.uproject" (-MapPath or IP) -game (-log)
-"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "D:\23_Summer\Udemy\PuzzlePlatforms\PuzzlePlatforms.uproject" /Game/MyBP/Lobby?listen -game -log
+"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Github\2023CapstoneProject\Project\BasicMultiplayerMeleeComb\BasicMultiplayerMeleeComb.uproject" (-MapPath or IP) -game (-log)
+"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Github\2023CapstoneProject\Project\BasicMultiplayerMeleeComb\BasicMultiplayerMeleeComb.uproject" /Game/MyBP/Lobby?listen -game -log
 
 Login my Server
 <UnrealEditor.exe의 경로> <실행할 프로젝트의 경로> <접속할IP와 Port> -game (-log)
-"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "D:\23_Summer\Udemy\PuzzlePlatforms\PuzzlePlatforms.uproject" 192.168.45.183:7779 -game -log
+"C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Github\2023CapstoneProject\Project\BasicMultiplayerMeleeComb\BasicMultiplayerMeleeComb.uproject" 192.168.45.183:7779 -game -log

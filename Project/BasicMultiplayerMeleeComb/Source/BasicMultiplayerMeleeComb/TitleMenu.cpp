@@ -34,7 +34,7 @@ void UTitleMenu::HostServer()
 	if (!World) return;
 
 	// Host
-	World->ServerTravel("/Game/2019180016/SingleTestMap?listen");
+	World->ServerTravel("/Game/2019180016/SingleTestMap?listen?Port=7777");
 }
 
 void UTitleMenu::JoinServer()
@@ -63,7 +63,7 @@ void UTitleMenu::EnterServer()
 
 	FText Address = AddressInput->GetText();
 
-	Controller->ClientTravel(Address.ToString(), ETravelType::TRAVEL_Absolute);
+	Controller->ClientTravel(Address.ToString() + ":7777", ETravelType::TRAVEL_Absolute);
 }
 
 void UTitleMenu::Cencel()

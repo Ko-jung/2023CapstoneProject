@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Engine/GameInstance.h"
+#include "Components/EditableText.h"
 
 bool UTitleMenu::Initialize()
 {
@@ -47,8 +48,8 @@ void UTitleMenu::Quit()
 	//FGenericPlatformMisc::RequestExit(false);
 	
 
-	auto World = GetWorld();
-	auto Controller = World->GetFirstPlayerController();
+	UWorld* World = GetWorld();
+	APlayerController* Controller = World->GetFirstPlayerController();
 
 	Controller->ConsoleCommand("quit");
 }
@@ -56,6 +57,13 @@ void UTitleMenu::Quit()
 void UTitleMenu::EnterServer()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called Enter Server"));
+
+	UWorld* World = GetWorld();
+	APlayerController* Controller = World->GetFirstPlayerController();
+
+	FText Address = AddressInput->GetText();
+
+	Controller->ClientTravel(Address.ToString(), ETravelType::TRAVEL_Absolute);
 }
 
 void UTitleMenu::Cencel()

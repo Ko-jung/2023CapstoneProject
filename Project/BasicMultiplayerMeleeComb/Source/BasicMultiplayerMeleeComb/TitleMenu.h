@@ -6,6 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "TitleMenu.generated.h"
 
+class UButton;
+class UWidgetSwitcher;
+class UEditableText;
+
 /**
  * 
  */
@@ -19,22 +23,25 @@ protected:
 	
 private:
 	UPROPERTY(meta = (BindWidget))
-	class UButton* HostButton;
+	UButton* HostButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* JoinButton;
+	UButton* JoinButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* QuitButton;
+	UButton* QuitButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* CancelButton;
+	UButton* CancelButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* EnterButton;
+	UButton* EnterButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UWidgetSwitcher* Switcher;
+	UWidgetSwitcher* Switcher;
+
+	UPROPERTY(meta = (BindWidget))
+	UEditableText* AddressInput;
 
 	UFUNCTION()
 	void HostServer();

@@ -19,8 +19,8 @@ protected:
 	virtual bool Initialize() override;
 
 private:
-	UPROPERTY(meta = (BindWidget))
-	UButton* ResumeButton;
+	//UPROPERTY(meta = (BindWidget))
+	//UButton* ResumeButton;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* QuitButton;
@@ -29,8 +29,8 @@ private:
 	UButton* ExitButton;
 
 
-	UFUNCTION()
-	void Resume();
+	//UFUNCTION()
+	//void Resume();
 
 	UFUNCTION()
 	void Quit();

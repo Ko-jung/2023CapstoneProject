@@ -28,6 +28,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ExitButton;
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* WindowButton;
+
 
 	//UFUNCTION()
 	//void Resume();
@@ -37,5 +40,8 @@ private:
 
 	UFUNCTION()
 	void Exit();
+
+	UFUNCTION()
+	void Window();
 	
 };

@@ -1,0 +1,32 @@
+https://www.youtube.com/watch?v=iOueE9AXDQQ&ab_channel=%EC%96%84%ED%8C%8D%ED%95%9C%EC%BD%94%EB%94%A9%EC%82%AC%EC%A0%84
+REST API: 정보들이 주고받아지는 데 있어서 개발자들 사이에 널리 쓰이는 일종의 형식.
+그렇기에 어떤 언어, 프레임워크, 소프트웨어든 이 폼에 맞춰서 기능을 만들면 된다.
+
+각 요청이 어떤 동작이나 정보를 위한 것인지를 그 요청의 모습 자체로 추론이 가능해진다.
+
+자원을 구조와 함께 나타내는 형태의 구분자를 URI라고 한다.
+조회작업 뿐만 아니라 정보를 새로 넣거나 수정하는 작업들을 통틀어서
+Create, Read, Update, Delete. C.R.U.D라고 부른다.
+
+서버에 REST API로 요청을 보낼땐 HTTP 규약에 따라 전송한다.
+HTTP 규약 중 Get, Post, Delete, Put 4가지 또는 Patch까지 5가지를 사용한다.
+
+Get: 데이터를 Read, 조회하는데 사용
+Post: Create, 새로운 정보를 추가하는데 사용, 요청이 들어오면 Body에 새 정보를 실어보냄.
+Put, Patch: 데이터 정보를 변경하는데 사용, 역시 새 정보를 Body에 실어서 보냄.
+	- Put: 정보를 통째로 갈아끼울 때
+	- 정보 중 일부를 특정 방식으로 바꿀 때
+Delete: 삭제
+
+즉, REST API란 HTTP 요청을 보낼 때 어떤 URI에 어떤 메소드를 사용할지 (+기타) 개발자들 사이에 널리 지켜지는 약속. 
+restful api design guidelines 검색해서 참고해볼 것.
+
+https://www.youtube.com/watch?v=4DxHX95Lq2U&ab_channel=%EB%85%B8%EB%A7%88%EB%93%9C%EC%BD%94%EB%8D%94NomadCoders
+URL에는 동사를 사용하지 않는다.
+
+하지만 REST API는 1) Over Fetching, 2)Under Fetching이라는 단점을 가진다. (해결법 GraphQL)
+1) Over Fetching이란 요청자가 필요한 정보보다 더 많이 가져온 경우를 뜻한다.
+	필요없는 데이터까지 로딩을 하기에 데이터 낭비와 시간이 지체될 수 있다.
+2) Under Fetching이란 필요한 정보보다 적은 양의 데이터를 가져온 경우를 뜻한다.
+	정보를 다 받기위해 요청 디바이스느 각기 다른 여러개의 요청을 보내야한다.
+	2개의 URL을 접속해야하고 이는 로딩과 이어진다.

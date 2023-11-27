@@ -1,0 +1,13 @@
+https://www.youtube.com/watch?v=YSudWlx0o9I&ab_channel=%EA%B8%B0%EC%88%A0%EB%85%B8%ED%8A%B8with%EC%95%8C%EB%A0%89
+클라우드 서버의 인프라는 IaaS PaaS SaaS FaaS
+
+IaaS: VM(가상머신)을 이용하여 사용자(관리자)에게 OS를 제공, AWS(아마존)에서 먼저 사용
+	(Infra as a Service)
+
+PaaS(platform as a service): 한 VM에 같은 OS를 여러개 올려두니 자원 낭비가 심하다. 게스트 OS를 때어서 애플리케이션 (예를 들어 라이브러리나)만 올려서 실행하는 방식. 동적으로 늘어나거나 줄어드며, 자원을 적게 사용하고도 기존과 동일한 작업이 가능하다. 다른 머신에서 별도의 설정없이 이식 가능하다.
+
+SaaS: Software as a Service, 소프트웨어 자체를 서비스하는 방식.
+
+FaaS: Function as a Service(=Serverless, 서버까지 관리하지 않아도 된다.) 
+	서버를 따로 띄우지 않아도 되며, 개발자가 개발한 소스 파일만 올려 기능을 활성화 할 수 있다.
+	Serverless라는건, 서버의 용량을 모니터링하여 스케일업/다운 하는것이나 보안처리, 죽었는지 확인 하는 작업들이 필요 없어진다는 것이다.

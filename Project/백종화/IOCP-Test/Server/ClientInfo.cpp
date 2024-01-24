@@ -61,7 +61,7 @@ void ClientInfo::Send()
 	WSAOVERLAPPED a;
 	ZeroMemory(&a, sizeof(a));
 
-	int ret = WSASend(m_sClientSocket, &exp._wsa_buf, 1, 0, 0, &a, 0);
+	int ret = WSASend(m_sClientSocket, &exp._wsa_buf, 1, 0, 0, &exp._wsa_over, 0);
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)

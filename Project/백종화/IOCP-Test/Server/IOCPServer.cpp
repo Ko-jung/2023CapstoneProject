@@ -9,9 +9,9 @@
 
 IOCPServer::IOCPServer()
 {
-	m_IocpFunctionMap.insert({ COMP_OP::OP_ACCEPT, [this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
-	m_IocpFunctionMap.insert({ COMP_OP::OP_ACCEPT, [this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
-	m_IocpFunctionMap.insert({ COMP_OP::OP_ACCEPT, [this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
+	m_IocpFunctionMap.insert({ COMP_OP::OP_ACCEPT,	[this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
+	m_IocpFunctionMap.insert({ COMP_OP::OP_SEND,	[this](int id, int bytes, EXP_OVER* exp) {Send(id, bytes, exp); } });
+	m_IocpFunctionMap.insert({ COMP_OP::OP_RECV,	[this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
 
 	m_iClientId = 0;
 	m_iClientCount = 0;
@@ -128,6 +128,10 @@ void IOCPServer::Worker()
 
 		int client_id = static_cast<int>(iocp_key);
 		EXP_OVER* exp_over = reinterpret_cast<EXP_OVER*>(p_over);
+		// Send시 지정한 Enum이 적용이 안됨
+		// 현재 지정되지않은 쓰레기값이 들어옴
+		// 1. 단순히 이렇게 recast로 처리하는게 맞는가?
+		// 2. WSASend 호출할때 설정을 덜 했는가?
 		if (FALSE == ret)
 		{
 			int err_no = WSAGetLastError();
@@ -213,7 +217,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 {
-
+	m_Clients[id]->SendProcess();
 }
 
 void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)

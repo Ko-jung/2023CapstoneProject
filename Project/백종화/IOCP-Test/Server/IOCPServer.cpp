@@ -130,8 +130,12 @@ void IOCPServer::Worker()
 		EXP_OVER* exp_over = reinterpret_cast<EXP_OVER*>(p_over);
 		// Send시 지정한 Enum이 적용이 안됨
 		// 현재 지정되지않은 쓰레기값이 들어옴
-		// 1. 단순히 이렇게 recast로 처리하는게 맞는가?
-		// 2. WSASend 호출할때 설정을 덜 했는가?
+		// 1. 단순히 이렇게 recast로 처리하는게 맞는가?		<- O
+		// 2. WSASend 호출할때 설정을 덜 했는가?			<- O, 해결완료
+
+		//하지만 TempSend Thread는 작동되나 Worker 스레드에서
+		// GetQueuedCompletionStatus 이후로 넘어가지 못함
+
 		if (FALSE == ret)
 		{
 			int err_no = WSAGetLastError();

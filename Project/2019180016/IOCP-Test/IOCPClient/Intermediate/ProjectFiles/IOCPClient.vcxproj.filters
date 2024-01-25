@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\IOCPClient.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\IOCPClient.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\IOCPClientEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\IOCPClient">
+      <UniqueIdentifier>{506D3729-3EA0-3896-A518-F6968FECC3C7}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\IOCPClient\IOCPClient.Build.cs">
+      <Filter>Source\IOCPClient</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\IOCPClient\IOCPClient.cpp">
+      <Filter>Source\IOCPClient</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\IOCPClient\IOCPClient.h">
+      <Filter>Source\IOCPClient</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\IOCPClient\IOCPClientCharacter.cpp">
+      <Filter>Source\IOCPClient</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\IOCPClient\IOCPClientCharacter.h">
+      <Filter>Source\IOCPClient</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\IOCPClient\IOCPClientGameMode.cpp">
+      <Filter>Source\IOCPClient</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\IOCPClient\IOCPClientGameMode.h">
+      <Filter>Source\IOCPClient</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "IOCPClient",
+			"Path": "..\\Source\\IOCPClient.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "IOCPClientEditor",
+			"Path": "..\\Source\\IOCPClientEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

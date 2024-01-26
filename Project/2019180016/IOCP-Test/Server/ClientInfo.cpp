@@ -31,7 +31,7 @@ void ClientInfo::Recv()
 
 	if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		printf_s("[ERROR] WSARecv 실패 : ", WSAGetLastError());
+		printf_s("[ERROR] WSARecv 실패 : %d", WSAGetLastError());
 	}
 }
 
@@ -39,6 +39,9 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 {
 	int remaindata = bytes + m_iRemainDataLen;
 	char* packet = exp->_net_buf;
+	std::string str(exp->_wsa_buf.buf);
+
+	cout << m_iClientNum << "Num Recv Data: " << (str) << endl;
 
 	// 패킷 재조립
 	//while (remaindata > 0) {
@@ -51,9 +54,9 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 	//	}
 	//	else break;
 	//}
-	m_iRemainDataLen = remaindata;
-	if (remaindata > 0)
-		memmove(exp->_net_buf, packet, remaindata);
+	//m_iRemainDataLen = remaindata;
+	//if (remaindata > 0)
+	//	memmove(exp->_net_buf, packet, remaindata);
 	Recv();
 }
 

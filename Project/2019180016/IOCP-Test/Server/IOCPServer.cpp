@@ -188,6 +188,8 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
 
+		socket->Recv();
+
 		m_iClientId++;
 		m_iClientCount++;
 

@@ -30,8 +30,8 @@ public:
 	void SetRemainDataLen(int len) { m_iRemainDataLen = len; }
 	void SetClientNum(int num) { m_iClientNum = num; }
 
-private:
 	void Recv();
+private:
 
 	void Send();
 

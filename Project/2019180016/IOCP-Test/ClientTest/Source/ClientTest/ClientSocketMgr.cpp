@@ -71,7 +71,12 @@ void ClientSocketMgr::SendChat(const int& SessionId, const string& Chat)
 bool ClientSocketMgr::StartListen()
 {
 	// 스레드 시작
-	if (Thread != nullptr) return false;
+	if (Thread != nullptr)
+	{
+		Thread->Kill();
+		delete Thread;
+		Thread = nullptr;
+	}
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
 	return (Thread != nullptr);
 }
@@ -109,13 +114,14 @@ uint32 ClientSocketMgr::Run()
 
 		if (nRecvLen > 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d: Message Is: %s"), i, *PrintStr);
+			UE_LOG(LogTemp, Warning, TEXT("%d: Recv Message Is: %s"), i, *PrintStr);
 		}
 
 		FString SendStr("ASDASD");
 		int nSendLen = send(
-			m_ServerSocket, (CHAR*)&SendStr, SendStr.Len(), 0
+			m_ServerSocket, TCHAR_TO_ANSI(*SendStr), SendStr.Len(), 0
 		);
+		UE_LOG(LogTemp, Warning, TEXT("%d: Send Message Is: %s"), i, *TCHAR_TO_ANSI(*SendStr));
 
 		if (nSendLen == -1)
 		{

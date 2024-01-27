@@ -1,6 +1,9 @@
 #include "ClientInfo.h"
 #include "IOCPServer.h"
 
+#include <sstream>
+#include "PacketMgr.h"
+
 ClientInfo::ClientInfo(int ClientNum):
 	m_iRemainDataLen(0),
 	m_iClientNum(ClientNum)
@@ -41,7 +44,15 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 	char* packet = exp->_net_buf;
 	std::string str(exp->_wsa_buf.buf);
 
-	cout << m_iClientNum << "Num Recv Data: " << (str) << endl;
+	std::stringstream RecvDataStream;
+	RecvDataStream << exp->_wsa_buf.buf;
+
+	int OP;
+	RecvDataStream >> OP;
+
+	Packet* packet = GetPacket((COMP_OP)OP);
+
+	cout << m_iClientNum << "Num Recv Data: " << (RecvDataStream.str()) << endl;
 
 	// 패킷 재조립
 	//while (remaindata > 0) {

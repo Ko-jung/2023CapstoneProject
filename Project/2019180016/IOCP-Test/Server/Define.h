@@ -14,7 +14,7 @@
 // PPL 라이브러리
 #include <concurrent_unordered_map.h>
 
-#include "EnumDef.h"
+#include "../Packet/Packet.h"
 
 #pragma comment(lib, "MSWSock.lib")
 #pragma comment(lib, "ws2_32.lib")

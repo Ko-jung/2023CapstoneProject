@@ -4,6 +4,9 @@
 #include "ClientSocketMgr.h"
 #include <cstring>
 
+#include "../../Packet/EnumDef.h"
+#include "../../Packet/Packet.h"
+
 ClientSocketMgr::ClientSocketMgr() :
 	m_PlayerController(nullptr),
 	StopTaskCounter(0),
@@ -117,11 +120,12 @@ uint32 ClientSocketMgr::Run()
 			UE_LOG(LogTemp, Warning, TEXT("%d: Recv Message Is: %s"), i, *PrintStr);
 		}
 
+		Packet* packet = GetPacket((COMP_OP)OP);
+
 		FString SendStr("ASDASD");
 		int nSendLen = send(
 			m_ServerSocket, TCHAR_TO_ANSI(*SendStr), SendStr.Len(), 0
 		);
-		UE_LOG(LogTemp, Warning, TEXT("%d: Send Message Is: %s"), i, *TCHAR_TO_ANSI(*SendStr));
 
 		if (nSendLen == -1)
 		{

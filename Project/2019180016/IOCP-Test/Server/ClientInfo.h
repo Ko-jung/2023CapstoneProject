@@ -19,7 +19,7 @@ public:
 public:
 	void RecvProcess(const DWORD& bytes, EXP_OVER* exp);
 	
-	void SendProcess();
+	void SendProcess(int PacketSize, Packet* PacketData);
 
 public:
 	SOCKET& GetSocket() { return m_sClientSocket; }
@@ -31,9 +31,9 @@ public:
 	void SetClientNum(int num) { m_iClientNum = num; }
 
 	void Recv();
+	void Send();
 private:
 
-	void Send();
 
 protected:
 	SOCKET m_sClientSocket;

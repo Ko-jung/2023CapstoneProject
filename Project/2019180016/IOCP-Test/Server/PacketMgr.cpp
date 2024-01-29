@@ -16,3 +16,17 @@
 //		return nullptr;
 //	}
 //}
+
+Packet* GetPacket(COMP_OP op)
+{
+	switch (op)
+	{
+	case COMP_OP::OP_POSITION:
+		return new PPosition();
+	case COMP_OP::OP_OBJECTSPAWN:
+		return new PSpawnObject();
+	default:
+		cout << "GetPacket Cant Find COMP_OP!" << endl;
+		return nullptr;
+	}
+}

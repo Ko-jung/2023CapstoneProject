@@ -50,7 +50,7 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 	int OP;
 	RecvDataStream >> OP;
 
-	Packet* packet = GetPacket((COMP_OP)OP);
+	//Packet* packet = GetPacket((COMP_OP)OP);
 
 	cout << m_iClientNum << "Num Recv Data: " << (RecvDataStream.str()) << endl;
 
@@ -69,6 +69,24 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 	//if (remaindata > 0)
 	//	memmove(exp->_net_buf, packet, remaindata);
 	Recv();
+}
+
+void ClientInfo::SendProcess(int PacketSize, Packet* PacketData)
+{
+	if (m_sClientSocket == INVALID_SOCKET)
+	{
+		std::cout << "ClientInfo Socket is INVALID_SOCKET" << std::endl;
+		return;
+	}
+
+	EXP_OVER exp{ COMP_OP::OP_SEND, (char)(PacketSize), (void*)PacketData };
+
+	int ret = WSASend(m_sClientSocket, &exp._wsa_buf, 1, 0, 0, &exp._wsa_over, 0);
+	if (SOCKET_ERROR == ret) {
+		int error_num = WSAGetLastError();
+		if (ERROR_IO_PENDING != error_num)
+			IOCPServer::error_display(error_num);
+	}
 }
 
 void ClientInfo::Send()
@@ -99,9 +117,4 @@ void ClientInfo::Send()
 		if (ERROR_IO_PENDING != error_num)
 			IOCPServer::error_display(error_num);
 	}
-}
-
-void ClientInfo::SendProcess()
-{
-	Send();
 }

@@ -15,7 +15,7 @@ using namespace std;
 
 class AClientController;
 
-#define	MAX_BUFFER		10
+#define	MAX_BUFFER		512
 #define SERVER_PORT		8000
 #define SERVER_IP		"127.0.0.1"
 #define MAX_CLIENTS		100
@@ -227,6 +227,21 @@ public:
 	}
 };
 
+class ObjectInfo
+{
+public:
+	ObjectInfo() :
+		X(0.f),
+		Y(0.f),
+		Z(0.f)
+	{}
+
+
+	float	X;				// XÁÂÇ¥
+	float	Y;				// YÁÂÇ¥
+	float	Z;				// ZÁÂÇ¥
+};
+
 /**
  * 
  */
@@ -286,4 +301,6 @@ private:
 
 	UPROPERTY(BlueprintReadWrite)
 	AClientController* m_PlayerController;
+
+	ObjectInfo* TempCube;
 };

@@ -1,10 +1,17 @@
 #pragma once
 
+#include <iostream>
 #include "../Packet/EnumDef.h"
+
+using std::cout;
+using std::endl;
 
 struct Packet
 {
-	unsigned char SenderId;
+	int PacketType;
+
+	Packet() {}
+	Packet(COMP_OP op) : PacketType((int)op) {}
 };
 
 // TODO: 회전 값도 넣어줘야함
@@ -14,8 +21,8 @@ struct PPosition : Packet
 	float y;
 	float z;
 
-	PPosition() { x = y = z = 0.f; }
-	PPosition(float x, float y, float z)
+	PPosition() : Packet(COMP_OP::OP_POSITION){ x = y = z = 0.f; }
+	PPosition(float x, float y, float z) : Packet(COMP_OP::OP_POSITION)
 	{
 		this->x = x;
 		this->y = y;
@@ -31,8 +38,8 @@ struct PSpawnObject : Packet
 	float y;
 	float z;
 
-	PSpawnObject() { SpawnObject = EObject::BP_Cube; x = y = z = 0.f; }
-	PSpawnObject(EObject EO, float x, float y, float z)
+	PSpawnObject() : Packet(COMP_OP::OP_OBJECTSPAWN) { SpawnObject = EObject::BP_Cube; x = y = z = 0.f; }
+	PSpawnObject(EObject EO, float x, float y, float z) : Packet(COMP_OP::OP_OBJECTSPAWN)
 	{
 		this->SpawnObject	= EO;
 		this->x				= x	;
@@ -41,17 +48,3 @@ struct PSpawnObject : Packet
 	}
 };
 #pragma pack(pop)
-
-Packet* GetPacket(COMP_OP op)
-{
-	switch (op)
-	{
-	case COMP_OP::OP_POSITION:
-		return new PPosition();
-	case COMP_OP::OP_OBJECTSPAWN:
-		return new PSpawnObject();
-	default:
-		cout << "GetPacket Cant Find COMP_OP!" << endl;
-		return nullptr;
-	}
-}

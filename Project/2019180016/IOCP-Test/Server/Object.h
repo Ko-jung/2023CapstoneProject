@@ -3,6 +3,7 @@
 // 클라이언트에서 변화가 필요한 물체들을 관리할 최상위 클래스
 class Object
 {
+public:
 	Object() :
 		x(0.f), y(0.f), z(0.f),
 		Pitch(0.f), Yaw(0.f), Roll(0.f)
@@ -24,6 +25,9 @@ public:
 		y = Yaw;
 		x = Roll;
 	}
+
+public:
+	void MoveLocation(float x, float y, float z);
 
 protected:
 	float x;

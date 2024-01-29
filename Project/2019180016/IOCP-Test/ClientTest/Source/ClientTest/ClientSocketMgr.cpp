@@ -79,8 +79,12 @@ bool ClientSocketMgr::StartListen()
 		Thread->Kill();
 		delete Thread;
 		Thread = nullptr;
+
+		delete TempCube;
+		TempCube = nullptr;
 	}
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
+	TempCube = new ObjectInfo;
 	return (Thread != nullptr);
 }
 
@@ -110,17 +114,43 @@ uint32 ClientSocketMgr::Run()
 	for (int i = 0; i < 50; i++)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("adasd"));
-		stringstream RecvStream;
+		//stringstream RecvStream;
 		//int PacketType;
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer, MAX_BUFFER, 0);
 		FString PrintStr(m_sRecvBuffer);
-
 		if (nRecvLen > 0)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%d: Recv Message Is: %s"), i, *PrintStr);
 		}
 
-		Packet* packet = GetPacket((COMP_OP)OP);
+		std::stringstream RecvStream(m_sRecvBuffer);
+		int OP;
+		RecvStream >> OP;
+
+		memcpy(&OP, m_sRecvBuffer, sizeof(int));
+
+		switch (OP)
+		{
+		case (int)COMP_OP::OP_POSITION:
+		//TODO: Á¦°Å
+		{
+			PPosition TempPosition;
+			memcpy(&TempPosition, m_sRecvBuffer, sizeof(PPosition));
+			//float x, y, z;
+			//RecvStream >> x >> y >> z;
+
+			TempCube->X = TempPosition.x;
+			TempCube->Y = TempPosition.y;
+			TempCube->Z = TempPosition.z;
+
+			UE_LOG(LogTemp, Warning, TEXT("Cube Position is {%f, %f, %f}"), TempCube->X, TempCube->Y, TempCube->Z);
+		}
+			break;
+		default:
+
+			break;
+		}
+		//Packet* packet = GetPacket((COMP_OP)OP);
 
 		FString SendStr("ASDASD");
 		int nSendLen = send(

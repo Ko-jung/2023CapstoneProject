@@ -2,6 +2,8 @@
 
 #include "../Packet/EnumDef.h"
 
+Packet* GetPacket(COMP_OP op);
+
 class PacketMgr
 {
 public:

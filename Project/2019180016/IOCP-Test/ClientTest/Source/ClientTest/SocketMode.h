@@ -18,6 +18,9 @@ class CLIENTTEST_API ASocketMode : public AGameModeBase
 
 public:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* BlueprintTempCube;
 	
 private:
 	ClientSocketMgr* m_Socket;

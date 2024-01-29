@@ -2,6 +2,7 @@
 #include "Define.h"
 
 #include "ClientInfo.h"
+#include "Object.h"
 
 #include <chrono>
 
@@ -12,6 +13,8 @@ IOCPServer::IOCPServer()
 	m_IocpFunctionMap.insert({ COMP_OP::OP_ACCEPT,	[this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
 	m_IocpFunctionMap.insert({ COMP_OP::OP_SEND,	[this](int id, int bytes, EXP_OVER* exp) {Send(id, bytes, exp); } });
 	m_IocpFunctionMap.insert({ COMP_OP::OP_RECV,	[this](int id, int bytes, EXP_OVER* exp) {Recv(id, bytes, exp); } });
+		
+	//m_IocpFunctionMap.insert({ COMP_OP::OP_POSITION,[this](int id, int bytes, EXP_OVER* exp) {RecvNewPosition(id, bytes, exp); } });
 
 	m_iClientId = 0;
 	m_iClientCount = 0;
@@ -110,7 +113,7 @@ void IOCPServer::StartServer()
 		m_tWorkerThreads.emplace_back([this]() { Worker(); });
 	}
 
-	TempSendThread = std::thread(&IOCPServer::TestSend, this);
+	//TempSendThread = std::thread(&IOCPServer::TestSend, this);
 }
 
 void IOCPServer::Worker()
@@ -128,8 +131,6 @@ void IOCPServer::Worker()
 
 		int client_id = static_cast<int>(iocp_key);
 		EXP_OVER* exp_over = reinterpret_cast<EXP_OVER*>(p_over);
-		//하지만 TempSend Thread는 작동되나 Worker 스레드에서
-		// GetQueuedCompletionStatus 이후로 넘어가지 못함
 
 		if (FALSE == ret)
 		{
@@ -189,6 +190,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
 
 		socket->Recv();
+		socket->Send();
 
 		m_iClientId++;
 		m_iClientCount++;
@@ -218,21 +220,62 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 {
-	//m_Clients[id]->SendProcess();
+	static Object TempCube;
+	std::stringstream SendData;
+
+	float x, y, z;
+	TempCube.MoveLocation(0.01, 0.01, 0.01);
+	TempCube.GetLocation(x, y, z);
+
+	PPosition SendPosition(x, y, z);
+
+	SendData << (int)COMP_OP::OP_POSITION;
+	// TODO: 직렬화 수정해야함
+	SendData << x << y << z;
+
+	m_Clients[id]->SendProcess(sizeof(SendPosition), &SendPosition);
 }
 
 void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 {
+	std::stringstream RecvData;
+	int PacketType;
+	
+	RecvData << exp->_wsa_buf.buf;
+	RecvData >> PacketType;
+
+	switch (PacketType)
+	{
+	case (int)COMP_OP::OP_POSITION:
+
+		break;
+
+
+	default:
+		break;
+	}
+
 	m_Clients[id]->RecvProcess(bytes, exp);
+}
+
+void IOCPServer::RecvNewPosition(int id, int bytes, EXP_OVER* exp)
+{
+
 }
 
 void IOCPServer::TestSend()
 {
 	while (true)
 	{
-		//for (int i = 0; i < MAXCLIENT; i++)
+		for (int i = 0; i < MAXCLIENT; i++)
 		{
-			m_Clients[0]->SendProcess();
+			if (m_Clients[i]->GetClientNum() == -1)
+			{
+				return;
+			}
+
+			EXP_OVER temp;
+			Send(i, 0, &temp);
 
 			//const char* text = "asdasd";
 			//EXP_OVER exp{ COMP_OP::OP_SEND, (char)(sizeof(text)), (void*)text };

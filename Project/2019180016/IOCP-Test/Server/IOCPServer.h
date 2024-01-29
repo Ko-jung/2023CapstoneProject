@@ -26,6 +26,8 @@ public:
 	void Send(int id, int bytes, EXP_OVER* exp);
 	void Recv(int id, int bytes, EXP_OVER* exp);
 
+	void RecvNewPosition(int id, int bytes, EXP_OVER* exp);
+
 	void TestSend();
 	std::thread TempSendThread;
 

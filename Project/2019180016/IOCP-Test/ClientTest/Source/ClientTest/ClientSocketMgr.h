@@ -230,16 +230,12 @@ public:
 class ObjectInfo
 {
 public:
-	ObjectInfo() :
-		X(0.f),
-		Y(0.f),
-		Z(0.f)
-	{}
+	ObjectInfo() { Location = FVector(0.f, 0.f, 0.f); }
 
-
-	float	X;				// XÁÂÇ¥
-	float	Y;				// YÁÂÇ¥
-	float	Z;				// ZÁÂÇ¥
+	FVector Location;
+	// float	X;				// XÁÂÇ¥
+	// float	Y;				// YÁÂÇ¥
+	// float	Z;				// ZÁÂÇ¥
 };
 
 /**
@@ -295,6 +291,8 @@ public:
 		return &Instance;
 	}
 
+	ObjectInfo* TempCube;
+
 private:
 	SOCKET	m_ServerSocket;				// ¼­¹ö¿Í ¿¬°áÇÒ ¼ÒÄÏ
 	char 	m_sRecvBuffer[MAX_BUFFER];
@@ -302,5 +300,4 @@ private:
 	UPROPERTY(BlueprintReadWrite)
 	AClientController* m_PlayerController;
 
-	ObjectInfo* TempCube;
 };

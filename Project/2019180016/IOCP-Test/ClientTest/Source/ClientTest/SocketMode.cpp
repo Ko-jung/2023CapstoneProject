@@ -19,3 +19,10 @@ void ASocketMode::BeginPlay()
 		UE_LOG(LogClass, Warning, TEXT("IOCP Server connect FAIL!"));
 	}
 }
+
+void ASocketMode::Tick(float Deltatime)
+{
+	Super::Tick(Deltatime);
+
+	CubeVec = m_Socket->TempCube->Location;
+}

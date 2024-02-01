@@ -220,7 +220,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 {
-	static Object TempCube;
+	static Object TempCube(200.f, 200, 200, 0, 0, 0);
 	std::stringstream SendData;
 
 	float x, y, z;

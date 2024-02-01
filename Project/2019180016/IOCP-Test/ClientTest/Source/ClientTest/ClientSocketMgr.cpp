@@ -111,7 +111,7 @@ uint32 ClientSocketMgr::Run()
 	// recv while loop 시작
 	// StopTaskCounter 클래스 변수를 사용해 Thread Safety하게 해줌
 	// while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 50000; i++)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("adasd"));
 		//stringstream RecvStream;
@@ -139,15 +139,16 @@ uint32 ClientSocketMgr::Run()
 			//float x, y, z;
 			//RecvStream >> x >> y >> z;
 
-			TempCube->X = TempPosition.x;
-			TempCube->Y = TempPosition.y;
-			TempCube->Z = TempPosition.z;
+			TempCube->Location.X = TempPosition.x;
+			TempCube->Location.Y = TempPosition.y;
+			TempCube->Location.Z = TempPosition.z;
 
-			UE_LOG(LogTemp, Warning, TEXT("Cube Position is {%f, %f, %f}"), TempCube->X, TempCube->Y, TempCube->Z);
+			UE_LOG(LogTemp, Warning, TEXT("Cube Position is {%f, %f, %f}"),
+				TempCube->Location.X, TempCube->Location.Y, TempCube->Location.Z);
 		}
 			break;
 		default:
-
+			UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"))
 			break;
 		}
 		//Packet* packet = GetPacket((COMP_OP)OP);

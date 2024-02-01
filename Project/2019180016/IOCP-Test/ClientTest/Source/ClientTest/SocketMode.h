@@ -18,10 +18,13 @@ class CLIENTTEST_API ASocketMode : public AGameModeBase
 
 public:
 	virtual void BeginPlay() override;
+	virtual void Tick(float) override;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* BlueprintTempCube;
-	
+
+	UPROPERTY(EditAnywhere)
+	FVector CubeVec;	
 private:
 	ClientSocketMgr* m_Socket;
 	bool m_bIsConnected;

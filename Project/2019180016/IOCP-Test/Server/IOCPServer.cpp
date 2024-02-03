@@ -1,8 +1,12 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "IOCPServer.h"
 #include "Define.h"
 
 #include "ClientInfo.h"
 #include "Object.h"
+
+#include "TimerMgr.h"
+#include "TimerEvent.h"
 
 #include <chrono>
 
@@ -113,7 +117,9 @@ void IOCPServer::StartServer()
 		m_tWorkerThreads.emplace_back([this]() { Worker(); });
 	}
 
-	//TempSendThread = std::thread(&IOCPServer::TestSend, this);
+	m_tTimerThread = std::thread(&IOCPServer::Timer, this);
+
+	TempSendThread = std::thread(&IOCPServer::TestSend, this);
 }
 
 void IOCPServer::Worker()
@@ -162,7 +168,18 @@ void IOCPServer::ThreadJoin()
 	{
 		t.join();
 	}
-	TempSendThread.join();
+	m_tTimerThread.join();
+}
+
+void IOCPServer::Timer()
+{
+	while (true)
+	{
+		for (const auto& t : m_TimerMgrMap)
+		{
+			t.second->Pop();
+		}
+	}
 }
 
 ClientInfo* IOCPServer::GetEmptyClient()
@@ -265,32 +282,64 @@ void IOCPServer::RecvNewPosition(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::TestSend()
 {
+	m_TimerMgrMap.insert({0, new TimerMgr()});
+	int i{ 0 };
 	while (true)
-	{
-		for (int i = 0; i < MAXCLIENT; i++)
-		{
-			if (m_Clients[i]->GetClientNum() == -1)
+	{    
+		auto currentTime = std::chrono::system_clock::now();
+
+		// time_point을 time_t로 변환
+		std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
+
+		// time_t를 tm 구조체로 변환
+		std::tm* localTime = std::localtime(&tt);
+
+		// 시간을 출력
+		std::cout << "Timer Func Num:" << i << " Insert! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
+
+		//cout << i << "Num Timer Insert //" << std::chrono::system_clock::now() << endl;
+		m_TimerMgrMap[0]->Insert(new DefaultEvent(
+			std::chrono::seconds(4),													
+			[i]()
 			{
-				return;
-			}
+				auto currentTime = std::chrono::system_clock::now();
 
-			EXP_OVER temp;
-			Send(i, 0, &temp);
+				// time_point을 time_t로 변환
+				std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
 
-			//const char* text = "asdasd";
-			//EXP_OVER exp{ COMP_OP::OP_SEND, (char)(sizeof(text)), (void*)text };
-			//exp.room_id = 0;
-			//exp.target_id = 0;
-			//WSAOVERLAPPED a;
-			//ZeroMemory(&a, sizeof(a));
+				// time_t를 tm 구조체로 변환
+				std::tm* localTime = std::localtime(&tt);
 
-			//int ret = WSASend(m_ListenSocket, &exp._wsa_buf, 1, 0, 0, &a, 0);
-			//if (SOCKET_ERROR == ret) {
-			//	int error_num = WSAGetLastError();
-			//	if (ERROR_IO_PENDING != error_num)
-			//		IOCPServer::error_display(error_num);
-			//}
-		}
+				// 시간을 출력
+				std::cout << "Timer Func Num:" << i << " Activative! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
+			}));
+		i++;
+		//for (int i = 0; i < MAXCLIENT; i++)
+		//{
+		//	if (m_Clients[i]->GetClientNum() == -1)
+		//	{
+		//		return;
+		//	}
+
+		//	EXP_OVER temp;
+		//	Send(i, 0, &temp);
+
+		//	//const char* text = "asdasd";
+		//	//EXP_OVER exp{ COMP_OP::OP_SEND, (char)(sizeof(text)), (void*)text };
+		//	//exp.room_id = 0;
+		//	//exp.target_id = 0;
+		//	//WSAOVERLAPPED a;
+		//	//ZeroMemory(&a, sizeof(a));
+
+		//	//int ret = WSASend(m_ListenSocket, &exp._wsa_buf, 1, 0, 0, &a, 0);
+		//	//if (SOCKET_ERROR == ret) {
+		//	//	int error_num = WSAGetLastError();
+		//	//	if (ERROR_IO_PENDING != error_num)
+		//	//		IOCPServer::error_display(error_num);
+		//	//}
+		//}
+
 		std::this_thread::sleep_for(std::chrono::seconds(3));
 	}
+	delete m_TimerMgrMap[0];
 }

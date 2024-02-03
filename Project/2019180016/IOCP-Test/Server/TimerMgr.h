@@ -13,10 +13,10 @@ public:
 	virtual ~TimerMgr();
 
 public:
-	TimerEvent* Pop();
+	void Pop();
+	void Insert(TimerEvent* TE);
 
-protected:
-	// Pop해야하는 시간, Pop시 작동해야할 함수 pair를 담는 큐
 	Concurrency::concurrent_priority_queue<TimerEvent*>* m_TimerQueue;
+protected:
 };
 

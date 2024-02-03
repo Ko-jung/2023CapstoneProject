@@ -22,15 +22,32 @@ TimerMgr::~TimerMgr()
 	delete m_TimerQueue;
 }
 
-TimerEvent* TimerMgr::Pop()
+void TimerMgr::Pop()
 {
-	TimerEvent* evnet;
-	if (m_TimerQueue->try_pop(evnet))
+	TimerEvent* Event;
+	auto now = std::chrono::system_clock::now();
+	while (m_TimerQueue->try_pop(Event))
 	{
-		return evnet;
+		// 발동 시간을 넘겼는지
+		if (Event->GetActiveTime() <= std::chrono::system_clock::now())
+		{
+			Event->DoFuction()();
+			delete Event;
+		}
+		else
+		{
+			// 안 넘겼다면 다시 큐에 담기
+			m_TimerQueue->push(Event);
+			return;
+		}
 	}
-	else
-	{
-		return new NullEvent(std::chrono::system_clock::now(), NullEvent::NullFunction);
-	}
+	//else
+	//{
+	//	return new NullEvent([]() {/*std::cout << "Null Event has Called!" << std::endl;*/ });
+	//}
+}
+
+void TimerMgr::Insert(TimerEvent* TE)
+{
+	m_TimerQueue->push(TE);
 }

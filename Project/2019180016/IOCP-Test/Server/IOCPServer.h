@@ -18,6 +18,7 @@ public:
 	void StartServer();
 	void Worker();
 	void ThreadJoin();
+	void Timer();
 
 	ClientInfo* GetEmptyClient();
 
@@ -40,8 +41,11 @@ protected:
 	EXP_OVER m_AcceptExpOver;
 
 	std::vector<std::thread> m_tWorkerThreads;
+	std::thread m_tTimerThread;
 
 	std::unordered_map < COMP_OP, std::function<void(int, int, EXP_OVER*)>> m_IocpFunctionMap;
+
+	std::unordered_map <int, class TimerMgr*> m_TimerMgrMap;
 
 	std::array<ClientInfo*, MAXCLIENT> m_Clients;
 

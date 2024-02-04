@@ -6,33 +6,32 @@
 
 TimerMgr::TimerMgr()
 {
-	m_TimerQueue = new Concurrency::concurrent_priority_queue<TimerEvent*>();
+	m_TimerQueue = new Concurrency::concurrent_priority_queue<TimerEvent>();
 }
 
 TimerMgr::~TimerMgr()
 {
-	TimerEvent* temp = nullptr;
-	while (!m_TimerQueue->empty())
-	{
-		while (m_TimerQueue->try_pop(temp))
-		{
-			delete temp;
-		}
-	}
+	//TimerEvent* temp = nullptr;
+	//while (!m_TimerQueue->empty())
+	//{
+	//	while (m_TimerQueue->try_pop(temp))
+	//	{
+	//		delete temp;
+	//	}
+	//}
 	delete m_TimerQueue;
 }
 
 void TimerMgr::Pop()
 {
-	TimerEvent* Event;
+	TimerEvent Event;
 	auto now = std::chrono::system_clock::now();
 	while (m_TimerQueue->try_pop(Event))
 	{
 		// 발동 시간을 넘겼는지
-		if (Event->GetActiveTime() <= std::chrono::system_clock::now())
+		if (Event.GetActiveTime() <= std::chrono::system_clock::now())
 		{
-			Event->DoFuction()();
-			delete Event;
+			Event.DoFuction()();
 		}
 		else
 		{
@@ -41,13 +40,9 @@ void TimerMgr::Pop()
 			return;
 		}
 	}
-	//else
-	//{
-	//	return new NullEvent([]() {/*std::cout << "Null Event has Called!" << std::endl;*/ });
-	//}
 }
 
-void TimerMgr::Insert(TimerEvent* TE)
+void TimerMgr::Insert(TimerEvent TE)
 {
 	m_TimerQueue->push(TE);
 }

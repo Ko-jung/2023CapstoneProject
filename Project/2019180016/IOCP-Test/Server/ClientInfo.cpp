@@ -52,7 +52,7 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 
 	//Packet* packet = GetPacket((COMP_OP)OP);
 
-	cout << m_iClientNum << "Num Recv Data: " << (RecvDataStream.str()) << endl;
+	// cout << m_iClientNum << "Num Recv Data: " << (RecvDataStream.str()) << endl;
 
 	// 패킷 재조립
 	//while (remaindata > 0) {
@@ -79,9 +79,9 @@ void ClientInfo::SendProcess(int PacketSize, Packet* PacketData)
 		return;
 	}
 
-	EXP_OVER exp{ COMP_OP::OP_SEND, (char)(PacketSize), (void*)PacketData };
+	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (char)(PacketSize), (void*)PacketData };
 
-	int ret = WSASend(m_sClientSocket, &exp._wsa_buf, 1, 0, 0, &exp._wsa_over, 0);
+	int ret = WSASend(m_sClientSocket, &exp->_wsa_buf, 1, 0, 0, &exp->_wsa_over, 0);
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)
@@ -96,22 +96,11 @@ void ClientInfo::Send()
 		std::cout << "ClientInfo Socket is INVALID_SOCKET" << std::endl;
 		return;
 	}
-	//WSABUF temp;
 	const char* text = "asdasd";
-	//memcpy(temp.buf, text, sizeof(text));
-	//temp.len = strlen(text);
 
-	EXP_OVER exp {COMP_OP::OP_SEND, (char)(sizeof(text)), (void*)text};
-	//cout << sizeof(text) << endl;
-	//memcpy(exp._wsa_buf.buf, text, sizeof(text));
-	//exp._wsa_buf.len = strlen(text);
-	exp.room_id = 0;
-	exp.target_id = 0;
-	//exp._comp_op = COMP_OP::OP_SEND;
-	WSAOVERLAPPED a;
-	ZeroMemory(&a, sizeof(a));
+	EXP_OVER* exp = new EXP_OVER{COMP_OP::OP_SEND, (char)(sizeof(text)), (void*)text};
 
-	int ret = WSASend(m_sClientSocket, &exp._wsa_buf, 1, 0, 0, &exp._wsa_over, 0);
+	int ret = WSASend(m_sClientSocket, &exp->_wsa_buf, 1, 0, 0, &exp->_wsa_over, 0);
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)

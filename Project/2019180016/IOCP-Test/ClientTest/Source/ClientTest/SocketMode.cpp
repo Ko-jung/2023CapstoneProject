@@ -24,5 +24,6 @@ void ASocketMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 
-	CubeVec = m_Socket->TempCube->Location;
+	if(m_Socket && m_Socket->TempCube)
+		CubeVec = m_Socket->TempCube->Location;
 }

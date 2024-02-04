@@ -3,7 +3,7 @@
 #include <concurrent_priority_queue.h>
 #include <functional>
 
-class TimerEvent;
+#include "TimerEvent.h"
 
 // 타이머 매니저, 방 당 하나씩 보유할 예정
 class TimerMgr
@@ -14,9 +14,9 @@ public:
 
 public:
 	void Pop();
-	void Insert(TimerEvent* TE);
+	void Insert(TimerEvent TE);
 
-	Concurrency::concurrent_priority_queue<TimerEvent*>* m_TimerQueue;
+	Concurrency::concurrent_priority_queue<TimerEvent>* m_TimerQueue;
 protected:
 };
 

@@ -23,7 +23,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* BlueprintTempCube;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 	FVector CubeVec;	
 private:
 	ClientSocketMgr* m_Socket;

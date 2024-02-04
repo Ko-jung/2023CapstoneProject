@@ -119,7 +119,7 @@ void IOCPServer::StartServer()
 
 	m_tTimerThread = std::thread(&IOCPServer::Timer, this);
 
-	TempSendThread = std::thread(&IOCPServer::TestSend, this);
+	//TempSendThread = std::thread(&IOCPServer::TestSend, this);
 }
 
 void IOCPServer::Worker()
@@ -250,7 +250,10 @@ void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 	// TODO: 직렬화 수정해야함
 	SendData << x << y << z;
 
+	//cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
 	m_Clients[id]->SendProcess(sizeof(SendPosition), &SendPosition);
+
+	delete exp;
 }
 
 void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
@@ -266,8 +269,6 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	case (int)COMP_OP::OP_POSITION:
 
 		break;
-
-
 	default:
 		break;
 	}
@@ -298,8 +299,7 @@ void IOCPServer::TestSend()
 		std::cout << "Timer Func Num:" << i << " Insert! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
 
 		//cout << i << "Num Timer Insert //" << std::chrono::system_clock::now() << endl;
-		m_TimerMgrMap[0]->Insert(new DefaultEvent(
-			std::chrono::seconds(4),													
+		DefaultEvent Event(std::chrono::seconds(4),
 			[i]()
 			{
 				auto currentTime = std::chrono::system_clock::now();
@@ -312,7 +312,8 @@ void IOCPServer::TestSend()
 
 				// 시간을 출력
 				std::cout << "Timer Func Num:" << i << " Activative! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
-			}));
+			});
+		m_TimerMgrMap[0]->Insert(Event);
 		i++;
 		//for (int i = 0; i < MAXCLIENT; i++)
 		//{

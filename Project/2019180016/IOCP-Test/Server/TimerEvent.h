@@ -8,6 +8,8 @@
 class TimerEvent
 {
 public:
+	TimerEvent() {}
+
 	TimerEvent(std::chrono::seconds ExecutionTime,
 		std::function<void()> Func)
 		: m_Fuction(Func)
@@ -28,14 +30,10 @@ public:
 	std::chrono::system_clock::time_point GetActiveTime() { return m_fActiveTime; }
 	std::function<void()> DoFuction() { return m_Fuction; }
 
-	//std::strong_ordering operator<=> (const TimerEvent& other) {
-	//	return m_fActiveTime <=> other.m_fActiveTime;
-	//}
-
 	bool operator<(const TimerEvent& other) const
 	{
-		std::cout << "operator< Active" << std::endl;
-		return m_fActiveTime < other.m_fActiveTime;
+		// 역방향을 위해 화살표 방향이 반대다.
+		return m_fActiveTime > other.m_fActiveTime;
 	}
 
 protected:

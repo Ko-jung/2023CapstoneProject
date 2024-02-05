@@ -208,6 +208,8 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 		socket->Recv();
 		socket->Send();
+		
+		cout << m_iClientId << "번 Accept" << endl;
 
 		m_iClientId++;
 		m_iClientCount++;
@@ -250,7 +252,7 @@ void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 	// TODO: 직렬화 수정해야함
 	SendData << x << y << z;
 
-	//cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
+	cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
 	m_Clients[id]->SendProcess(sizeof(SendPosition), &SendPosition);
 
 	delete exp;

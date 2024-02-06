@@ -207,15 +207,20 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
 
 		socket->Recv();
-		socket->Send();
+		//socket->Send();
 		
 		cout << m_iClientId << "번 Accept" << endl;
 
 		m_iClientId++;
 		m_iClientCount++;
 
+		SOCKET c_socket = *(reinterpret_cast<SOCKET*>(exp->_net_buf));
+		ZeroMemory(&exp->_wsa_over, sizeof(exp->_wsa_over));
+		c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+
+		socket = GetEmptyClient();
 		int ret = AcceptEx(m_ListenSocket,						// 리슨용 소켓핸들
-			socket->GetSocket(),								// 들어오는 접속을 수용할 소켓
+			c_socket/*socket->GetSocket()*/,								// 들어오는 접속을 수용할 소켓
 			m_AcceptExpOver._net_buf,							// 로컬 주소와 리모트 주소를 담을 버퍼
 			0,													// 접속 후 전송되는 최초 데이터를 수신하기 위한 버퍼의 크기
 			sizeof(SOCKADDR_IN) + 16,							// 주소획득을 위한 버퍼의 크기를 알려주기 위한 로컬 주소의 길이
@@ -252,7 +257,7 @@ void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 	// TODO: 직렬화 수정해야함
 	SendData << x << y << z;
 
-	cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
+	//cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
 	m_Clients[id]->SendProcess(sizeof(SendPosition), &SendPosition);
 
 	delete exp;

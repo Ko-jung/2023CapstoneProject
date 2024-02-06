@@ -38,6 +38,8 @@ protected:
 
 	SOCKET m_ListenSocket;
 
+	SOCKET m_ClientSocket;
+
 	EXP_OVER m_AcceptExpOver;
 
 	std::vector<std::thread> m_tWorkerThreads;

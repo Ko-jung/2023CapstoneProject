@@ -157,7 +157,7 @@ uint32 ClientSocketMgr::Run()
 		int nSendLen = send(
 			m_ServerSocket, TCHAR_TO_ANSI(*SendStr), SendStr.Len(), 0
 		);
-
+		
 		if (nSendLen == -1)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("send Error"));

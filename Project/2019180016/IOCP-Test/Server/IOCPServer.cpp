@@ -217,12 +217,12 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		m_iClientCount++;
 
 		SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
-		char	accept_buf[sizeof(SOCKADDR_IN) * 2 + 32 + 100];
+		*(reinterpret_cast<SOCKET*>(&m_AcceptExpOver._net_buf)) = c_socket;
 		ZeroMemory(&m_AcceptExpOver._wsa_over, sizeof(m_AcceptExpOver._wsa_over));
 
 		int ret = AcceptEx(m_ListenSocket,						// 리슨용 소켓핸들
 			c_socket/*socket->GetSocket()*/,					// 들어오는 접속을 수용할 소켓
-			m_AcceptExpOver._net_buf,											// 로컬 주소와 리모트 주소를 담을 버퍼
+			m_AcceptExpOver._net_buf + 8,											// 로컬 주소와 리모트 주소를 담을 버퍼
 			0,													// 접속 후 전송되는 최초 데이터를 수신하기 위한 버퍼의 크기
 			sizeof(SOCKADDR_IN) + 16,							// 주소획득을 위한 버퍼의 크기를 알려주기 위한 로컬 주소의 길이
 			sizeof(SOCKADDR_IN) + 16,							// 주소획득을 위한 버퍼의 크기를 알려주기 위한 리모트 주소의 길이

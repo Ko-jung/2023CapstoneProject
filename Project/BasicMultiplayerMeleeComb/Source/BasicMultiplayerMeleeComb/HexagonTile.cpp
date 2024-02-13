@@ -18,10 +18,12 @@ AHexagonTile::AHexagonTile()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> TileAsset(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map_2/map_2_tile_00.map_2_tile_00'"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> TileMaterial(TEXT("/Script/Engine.Material'/Game/2019180031/Material/M_Test.M_Test'"));
 
-	for(int i=0; i<37; ++i)
+
+	if(!(TileAsset.Succeeded()&&TileMaterial.Succeeded())) return;
+
+	for (int i = 0; i < 37; ++i)
 		Tiles.AddDefaulted();
 
-	if(TileAsset.Succeeded() && TileMaterial.Succeeded())
 	{	//중앙 육각 타일 배치
 		Tiles[0] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MiddleTile"));
 		Tiles[0]->SetStaticMesh(TileAsset.Object);
@@ -29,10 +31,11 @@ AHexagonTile::AHexagonTile()
 		Tiles[0]->ComponentTags.Add(TEXT("Middle"));
 
 		CurrentMiddleTile = Tiles[0];
+		SetRootComponent(Tiles[0]);
 	}
 
-	int tilecount = 1;
 
+	int tilecount = 1;
 	for(int angle = 0; angle<6; ++angle)	// 각도 6부분 타일에 대해
 	{	
 		for (int distance = 1; distance < 4; ++distance)	// 중앙 타일로부터의 거리
@@ -43,6 +46,7 @@ AHexagonTile::AHexagonTile()
 				Tiles[tilecount] = CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
 				Tiles[tilecount]->SetStaticMesh(TileAsset.Object);
 				Tiles[tilecount]->SetMaterial(0, TileMaterial.Object);
+				Tiles[tilecount]->SetupAttachment(Tiles[0]);
 				Tiles[tilecount]->SetRelativeLocation(CalculateRelativeLocation(angle, distance));
 				Tiles[tilecount]->ComponentTags.Add(FName(tag));
 				++tilecount;
@@ -61,6 +65,7 @@ AHexagonTile::AHexagonTile()
 				Tiles[tilecount] = CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
 				Tiles[tilecount]->SetStaticMesh(TileAsset.Object);
 				Tiles[tilecount]->SetMaterial(0, TileMaterial.Object);
+				Tiles[tilecount]->SetupAttachment(Tiles[0]);
 				Tiles[tilecount]->SetRelativeLocation(RelatLoc);
 				Tiles[tilecount]->ComponentTags.Add(FName(tag));
 				++tilecount;

@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MapCollapseInterface.h"
 #include "GameFramework/Actor.h"
 #include "FloatingTile.generated.h"
 
 UCLASS()
-class BASICMULTIPLAYERMELEECOMB_API AFloatingTile : public AActor
+class BASICMULTIPLAYERMELEECOMB_API AFloatingTile : public AActor, public IMapCollapseInterface
 {
 	GENERATED_BODY()
 	
@@ -51,4 +52,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		FVector TargetLocation;
 
+	//임시 타이머 핸들
+	FTimerHandle TimerHandle;
+
+public:
+	/* IMapCollapseInterface */
+	virtual void DoCollapse() override;
 };

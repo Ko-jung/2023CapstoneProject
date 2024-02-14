@@ -7,10 +7,13 @@
 #include "../../Packet/EnumDef.h"
 #include "../../Packet/Packet.h"
 
+#include "Engine/World.h"
+
 ClientSocketMgr::ClientSocketMgr() :
 	m_PlayerController(nullptr),
 	StopTaskCounter(0),
-	Thread(nullptr)
+	Thread(nullptr),
+	SerialNum(-1)
 {
 }
 
@@ -147,21 +150,38 @@ uint32 ClientSocketMgr::Run()
 				TempCube->Location.X, TempCube->Location.Y, TempCube->Location.Z);
 		}
 			break;
+		case (int)COMP_OP::OP_PLAYERJOIN:
+		{
+			PPlayerJoin TempJoin(-1);
+			memcpy(&TempJoin, m_sRecvBuffer, sizeof(PPlayerJoin));
+
+			if (SerialNum == -1)
+			{
+				SerialNum = TempJoin.PlayerSerial;
+				UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
+			}
+			else
+			{
+				// PlayerSpawn
+				auto Gamemode = UWorld::GetWorld();
+			}
+		}
+			break;
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"))
 			break;
 		}
 		//Packet* packet = GetPacket((COMP_OP)OP);
 
-		FString SendStr("ASDASD");
-		int nSendLen = send(
-			m_ServerSocket, TCHAR_TO_ANSI(*SendStr), SendStr.Len(), 0
-		);
-		
-		if (nSendLen == -1)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("send Error"));
-		}
+		//FString SendStr("ASDASD");
+		//int nSendLen = send(
+		//	m_ServerSocket, TCHAR_TO_ANSI(*SendStr), SendStr.Len(), 0
+		//);
+		//
+		//if (nSendLen == -1)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("send Error"));
+		//}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
 	return 0;

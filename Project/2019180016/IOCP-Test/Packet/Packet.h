@@ -48,3 +48,10 @@ struct PSpawnObject : Packet
 	}
 };
 #pragma pack(pop)
+
+struct PPlayerJoin : Packet
+{
+	BYTE PlayerSerial;
+
+	PPlayerJoin(BYTE serial) : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = serial; }
+};

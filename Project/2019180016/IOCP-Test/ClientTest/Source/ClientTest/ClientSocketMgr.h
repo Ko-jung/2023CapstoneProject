@@ -300,4 +300,5 @@ private:
 	UPROPERTY(BlueprintReadWrite)
 	AClientController* m_PlayerController;
 
+	int SerialNum;
 };

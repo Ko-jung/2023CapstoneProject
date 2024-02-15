@@ -64,6 +64,19 @@ void AFloatingTile::Tick(float DeltaTime)
 		else TargetLocation = InitEndLocation;
 		MoveToEnd = !MoveToEnd;
 	}
+
+	static bool Check = false;
+	if(!Check)
+	{
+		if(GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::I))
+		{
+			IMapCollapseInterface* test = Cast<IMapCollapseInterface>(this);
+			if(test)
+			{
+				test->DoCollapse();
+			}
+		}
+	}
 }
 
 void AFloatingTile::DoCollapse()

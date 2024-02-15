@@ -7,7 +7,7 @@
 #include "../../Packet/EnumDef.h"
 #include "../../Packet/Packet.h"
 
-#include "Engine/World.h"
+#include "SocketMode.h"
 
 ClientSocketMgr::ClientSocketMgr() :
 	m_PlayerController(nullptr),
@@ -163,7 +163,7 @@ uint32 ClientSocketMgr::Run()
 			else
 			{
 				// PlayerSpawn
-				auto Gamemode = UWorld::GetWorld();
+				//Gamemode->
 			}
 		}
 			break;

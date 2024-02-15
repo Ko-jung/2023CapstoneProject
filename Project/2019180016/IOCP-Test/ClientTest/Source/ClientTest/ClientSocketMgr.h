@@ -247,6 +247,8 @@ public:
 	ClientSocketMgr();
 	~ClientSocketMgr();
 
+	void SetGamemode(class ASocketMode* gamemode) { Gamemode = gamemode; };
+
 // Socket Function
 public:
 	// 소켓 등록 및 설정
@@ -301,4 +303,6 @@ private:
 	AClientController* m_PlayerController;
 
 	int SerialNum;
+
+	ASocketMode* Gamemode;
 };

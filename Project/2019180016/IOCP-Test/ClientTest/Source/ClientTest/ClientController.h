@@ -15,9 +15,11 @@ class CLIENTTEST_API AClientController : public APlayerController
 {
 	GENERATED_BODY()
 
-//public:
-//	AClientController();
-//	~AClientController();
+public:
+	AClientController();
+	~AClientController();
+
+	void SetSerialNum(int serial) { SerialNum = serial; }
 //	
 //	/** MappingContext */
 //	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -34,4 +36,7 @@ class CLIENTTEST_API AClientController : public APlayerController
 //	/** Look Input Action */
 //	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 //	class UInputAction* LookAction;
+
+private:
+	int8 SerialNum;
 };

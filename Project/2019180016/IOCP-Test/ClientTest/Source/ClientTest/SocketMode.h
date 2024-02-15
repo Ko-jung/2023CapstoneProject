@@ -16,6 +16,13 @@ class CLIENTTEST_API ASocketMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+	// 송수신 처리용 함수
+public:
+	void JoinOtherPlayer(int serial);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnOtherPlayer();
+
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float) override;
@@ -24,8 +31,14 @@ public:
 	UStaticMesh* BlueprintTempCube;
 
 	UPROPERTY(BlueprintReadWrite)
-	FVector CubeVec;	
+	FVector CubeVec;
+
+	UPROPERTY(EditAnywhere)
+	ACharacter* SpawnPlayerCharacter;
+
 private:
 	ClientSocketMgr* m_Socket;
 	bool m_bIsConnected;
+
+	TMap<int, class AClientController*> ClientControllers;
 };

@@ -3,6 +3,19 @@
 
 #include "SocketMode.h"
 
+#include "ClientController.h"
+
+void ASocketMode::JoinOtherPlayer(int serial)
+{
+	ClientControllers.Add(serial, NewObject<AClientController>());
+	//ClientControllers[serial]->SetSerialNum(serial);
+}
+
+void ASocketMode::SpawnOtherPlayer()
+{
+
+}
+
 void ASocketMode::BeginPlay()
 {
 	m_Socket = ClientSocketMgr::Instance();
@@ -12,6 +25,7 @@ void ASocketMode::BeginPlay()
 	if (m_bIsConnected)
 	{
 		m_Socket->StartListen();
+		m_Socket->SetGamemode(this);
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 	}
 	else

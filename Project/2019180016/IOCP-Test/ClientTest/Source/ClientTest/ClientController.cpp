@@ -6,3 +6,10 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+AClientController::AClientController()
+{
+}
+
+AClientController::~AClientController()
+{
+}

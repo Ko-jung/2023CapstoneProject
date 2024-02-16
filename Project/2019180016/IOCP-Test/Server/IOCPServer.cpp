@@ -211,8 +211,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		socket->Recv();
 		//socket->Send();
 
-		PPlayerJoin JoinPacket(m_iClientId);
-		socket->SendProcess(sizeof(PPlayerJoin), &JoinPacket);
+		SendPlayerJoinPacket(m_iClientId);
 		
 		cout << m_iClientId << "번 Accept" << endl;
 
@@ -248,21 +247,21 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 {
-	static Object TempCube(200.f, 200, 200, 0, 0, 0);
-	std::stringstream SendData;
-
-	float x, y, z;
-	TempCube.MoveLocation(0.01, 0.01, 0.01);
-	TempCube.GetLocation(x, y, z);
-
-	PPosition SendPosition(x, y, z);
-	
-	//SendData << (int)COMP_OP::OP_POSITION;
-	//// TODO: 직렬화 수정해야함
-	//SendData << x << y << z;
-
-	cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
-	m_Clients[id]->SendProcess(sizeof(SendPosition), &SendPosition);
+	//static Object TempCube(200.f, 200, 200, 0, 0, 0);
+	//std::stringstream SendData;
+	//
+	//float x, y, z;
+	//TempCube.MoveLocation(0.01, 0.01, 0.01);
+	//TempCube.GetLocation(x, y, z);
+	//
+	//PPosition SendPosition(x, y, z);
+	//
+	////SendData << (int)COMP_OP::OP_POSITION;
+	////// TODO: 직렬화 수정해야함
+	////SendData << x << y << z;
+	//
+	////cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
+	//m_Clients[id]->SendProcess(sizeof(SendPosition), &SendPosition);
 
 	delete exp;
 }
@@ -290,6 +289,18 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 void IOCPServer::RecvNewPosition(int id, int bytes, EXP_OVER* exp)
 {
 
+}
+
+void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)
+{
+	PPlayerJoin JoinPacket(m_iClientId);
+	for (const auto& socket : m_Clients)
+	{
+		if (socket->GetClientNum() != -1)
+		{
+			socket->SendProcess(sizeof(PPlayerJoin), &JoinPacket);
+		}
+	}
 }
 
 void IOCPServer::TestSend()

@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnOtherPlayer();
 
+	UFUNCTION(BlueprintCallable)
+	void Disconnect();
+
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float) override;
@@ -40,5 +43,6 @@ private:
 	ClientSocketMgr* m_Socket;
 	bool m_bIsConnected;
 
-	TMap<int, class AClientController*> ClientControllers;
+	TArray<class AClientController*> ClientControllers;
+	//TMap<int, class AClientController*> ClientControllers;
 };

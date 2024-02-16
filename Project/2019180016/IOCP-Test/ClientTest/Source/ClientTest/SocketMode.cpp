@@ -7,13 +7,24 @@
 
 void ASocketMode::JoinOtherPlayer(int serial)
 {
-	ClientControllers.Add(serial, NewObject<AClientController>());
+	//ClientControllers.Add(serial, NewObject<AClientController>());
 	//ClientControllers[serial]->SetSerialNum(serial);
+
+	//AClientController* NewController = TSharedPtr<AClientController>().Get();
+
+	AClientController* NewController = NewObject< AClientController>();
+	NewController->SetSerialNum(serial);
+	ClientControllers.Add(NewController);
 }
 
 void ASocketMode::SpawnOtherPlayer()
 {
 
+}
+
+void ASocketMode::Disconnect()
+{
+	m_Socket->Stop();
 }
 
 void ASocketMode::BeginPlay()
@@ -26,6 +37,7 @@ void ASocketMode::BeginPlay()
 	{
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
+
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 	}
 	else

@@ -111,19 +111,17 @@ uint32 ClientSocketMgr::Run()
 {
 	// 초기 init 과정을 기다림
 	FPlatformProcess::Sleep(0.03);
+
 	// recv while loop 시작
 	// StopTaskCounter 클래스 변수를 사용해 Thread Safety하게 해줌
-	// while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
-	for (int i = 0; i < 50000; i++)
+	 while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
+	//for (int i = 0; i < 50000; i++)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("adasd"));
-		//stringstream RecvStream;
-		//int PacketType;
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer, MAX_BUFFER, 0);
 		FString PrintStr(m_sRecvBuffer);
 		if (nRecvLen > 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d: Recv Message Is: %s"), i, *PrintStr);
+			UE_LOG(LogTemp, Warning, TEXT("Recv Message Is: %s"), *PrintStr);
 		}
 
 		std::stringstream RecvStream(m_sRecvBuffer);
@@ -163,7 +161,9 @@ uint32 ClientSocketMgr::Run()
 			else
 			{
 				// PlayerSpawn
-				//Gamemode->
+				Gamemode->JoinOtherPlayer(TempJoin.PlayerSerial);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue,
+					FString::Printf(TEXT("%d Client Join!"), TempJoin.PlayerSerial));
 			}
 		}
 			break;

@@ -6,6 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "Building.generated.h"
 
+UENUM(BlueprintType)
+enum class BuildingComposition
+{
+	Floor,
+	Wall1,Wall2,Wall3,Wall4
+};
+
+
 UCLASS()
 class BASICMULTIPLAYERMELEECOMB_API ABuilding : public AActor
 {
@@ -14,6 +22,11 @@ class BASICMULTIPLAYERMELEECOMB_API ABuilding : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ABuilding();
+
+	// TODO: 테스트용 지우기,
+	 void Test();
+	 UPROPERTY(EditDefaultsOnly)
+		 TSubclassOf<AActor> Wall01_GC;
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,7 +45,7 @@ public:
 
 	/* 건물 붕괴 적용 함수 */
 	//UFUNCTION(BlueprintCallable)
-	//	void SwapStaticToGeometry(UStaticMeshComponent* Target, const UGeometryCollection* RestCollectionIn, FVector RelativeLocation);
+	void SwapStaticToGeometry(UStaticMeshComponent* Target, BuildingComposition Composition);
 
 	/* 루트 컴퍼넌트 */
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Default")

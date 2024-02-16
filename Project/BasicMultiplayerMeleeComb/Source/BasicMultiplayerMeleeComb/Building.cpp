@@ -3,6 +3,10 @@
 
 #include "Building.h"
 
+#include "GeometryCollection/GeometryCollectionComponent.h"
+#include "GeometryCollection/GeometryCollectionObject.h"
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 ABuilding::ABuilding()
 {
@@ -21,7 +25,6 @@ ABuilding::ABuilding()
 	SetRootComponent(DefaultSceneRoot);
 	for(int i=0; i<Floor; ++i)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%d"), i);
 		{ // 바닥
 			FString title = "floor" + FString::FromInt(i);
 			TObjectPtr<UStaticMeshComponent> FloorSMComp;
@@ -38,7 +41,6 @@ ABuilding::ABuilding()
 			
 			for(int j=0; j<4; ++j)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("%d %d"), i, j);
 				FString title = "wall" + FString::FromInt(i) + FString::FromInt(j);
 				TObjectPtr<UStaticMeshComponent> WallSMComp;
 
@@ -75,14 +77,31 @@ ABuilding::ABuilding()
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("%d층 생김"), Floor);
+	
+	
+}
+void ABuilding::Test()
+{
+	for (auto p = Building_Wall1.begin(); p != Building_Wall1.end(); ++p)
+	{
+		SwapStaticToGeometry(*p, BuildingComposition::Wall1);
+	}
 
+	
 }
 
 // Called when the game starts or when spawned
 void ABuilding::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CurrentFloor = Floor;
+
+	static FTimerHandle th;
+	
+	GetWorld()->GetTimerManager().SetTimer(th, this, &ThisClass::Test, 1.0f, false);
+	
+	
 	
 }
 
@@ -91,5 +110,90 @@ void ABuilding::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
+}
+
+void ABuilding::SwapStaticToGeometry(UStaticMeshComponent* Target, BuildingComposition Composition)
+{
+	// Geometry Collection 생성 위치
+	FVector GCPos = GetActorLocation();
+	GCPos.Z += Target->GetRelativeLocation().Z;
+
+	// 해당 SMComp 소멸
+	Target->DestroyComponent();
+
+	switch (Composition)
+	{
+	case BuildingComposition::Floor:
+		
+		break;
+	case BuildingComposition::Wall1:
+		UE_LOG(LogTemp, Warning, TEXT("제발제발제발"));
+		GetWorld()->SpawnActor<AActor>(Wall01_GC, GCPos, FRotator(0.0f, 0.0f, 0.0f));
+		break;
+	case BuildingComposition::Wall2:
+		break;
+	case BuildingComposition::Wall3:
+		break;
+	case BuildingComposition::Wall4:
+		break;
+	default:
+		break;
+	}
+	//// Geometry Comp 로드
+	//static FSoftObjectPath MyGCPath_Floor(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180031/Blueprints/Map/Building/GeometryComp/GeoComp_Floor.GeoComp_Floor'"));
+	//static UGeometryCollection* MyGC_Floor = Cast<UGeometryCollection>(MyGCPath_Floor.ResolveObject());
+	//if (!MyGC_Floor) MyGC_Floor = CastChecked<UGeometryCollection>(MyGCPath_Floor.TryLoad());
+
+	//static FSoftObjectPath MyGCPath_Wall01(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180031/Blueprints/Map/Building/GeometryComp/GeoComp_wall1.GeoComp_wall1'"));
+	//static UGeometryCollection* MyGC_Wall01 = Cast<UGeometryCollection>(MyGCPath_Wall01.ResolveObject());
+	//if (!MyGC_Wall01) MyGC_Wall01 = CastChecked<UGeometryCollection>(MyGCPath_Wall01.TryLoad());
+
+	//static FSoftObjectPath MyGCPath_Wall02(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180031/Blueprints/Map/Building/GeometryComp/GeoComp_wall2.GeoComp_wall2'"));
+	//static UGeometryCollection* MyGC_Wall02 = Cast<UGeometryCollection>(MyGCPath_Wall02.ResolveObject());
+	//if (!MyGC_Wall02) MyGC_Wall02 = CastChecked<UGeometryCollection>(MyGCPath_Wall02.TryLoad());
+
+	//static FSoftObjectPath MyGCPath_Wall03(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180031/Blueprints/Map/Building/GeometryComp/GeoComp_wall3.GeoComp_wall3'"));
+	//static UGeometryCollection* MyGC_Wall03 = Cast<UGeometryCollection>(MyGCPath_Wall03.ResolveObject());
+	//if (!MyGC_Wall03) MyGC_Wall03 = CastChecked<UGeometryCollection>(MyGCPath_Wall03.TryLoad());
+
+	//static FSoftObjectPath MyGCPath_Wall04(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180031/Blueprints/Map/Building/GeometryComp/GeoComp_wall4.GeoComp_wall4'"));
+	//static UGeometryCollection* MyGC_Wall04 = Cast<UGeometryCollection>(MyGCPath_Wall04.ResolveObject());
+	//if (!MyGC_Wall04) MyGC_Wall04 = CastChecked<UGeometryCollection>(MyGCPath_Wall04.TryLoad());
+	//
+	//
+	//static int testcount = 0;
+	//{ // 해당하는 Geometry Collection 생성
+	//	UGeometryCollectionComponent* TargetGCComp;
+	//	FString Testname = FString("GCtest") + FString::FromInt(testcount++);
+	//	FTransform Transform;
+	//	Transform.SetLocation(GCPos);
+	//	Transform.SetScale3D(FVector(1.0f, 1.0f, 1.0f));
+	//	TargetGCComp = Cast<UGeometryCollectionComponent>(AddComponentByClass(UGeometryCollectionComponent::StaticClass(), false, Transform, true));
+	//	
+
+	//	switch(Composition)
+	//	{
+	//	case BuildingComposition::Floor:
+	//		TargetGCComp->SetRestCollection(MyGC_Floor);
+	//		break;
+	//	case BuildingComposition::Wall1:
+	//		TargetGCComp->SetRestCollection(MyGC_Wall01);
+	//		break;
+	//	case BuildingComposition::Wall2:
+	//		TargetGCComp->SetRestCollection(MyGC_Wall02);
+	//		break;
+	//	case BuildingComposition::Wall3:
+	//		TargetGCComp->SetRestCollection(MyGC_Wall03);
+	//		break;
+	//	case BuildingComposition::Wall4:
+	//		TargetGCComp->SetRestCollection(MyGC_Wall04);
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//	TargetGCComp->EditRestCollection(GeometryCollection::EEditUpdate::RestPhysicsDynamic, false);
+	//	FinishAddComponent(TargetGCComp, false, Transform);
+	//}
 }
 

@@ -88,6 +88,7 @@ bool ClientSocketMgr::StartListen()
 	}
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
 	TempCube = new ObjectInfo;
+	StopTaskCounter.Reset();
 	return (Thread != nullptr);
 }
 
@@ -162,8 +163,8 @@ uint32 ClientSocketMgr::Run()
 			{
 				// PlayerSpawn
 				Gamemode->JoinOtherPlayer(TempJoin.PlayerSerial);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue,
-					FString::Printf(TEXT("%d Client Join!"), TempJoin.PlayerSerial));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue,
+				//	FString::Printf(TEXT("%d Client Join!"), TempJoin.PlayerSerial));
 			}
 		}
 			break;

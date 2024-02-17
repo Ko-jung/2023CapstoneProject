@@ -39,6 +39,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	ACharacter* SpawnPlayerCharacter;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SpawnPlayer();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AOtherPlayerCharacter> OtherPlayerCharacterClass;
+
 private:
 	ClientSocketMgr* m_Socket;
 	bool m_bIsConnected;

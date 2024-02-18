@@ -76,18 +76,6 @@ ABuilding::ABuilding()
 			
 		}
 	}
-
-	
-	
-}
-void ABuilding::Test()
-{
-	for (auto p = Building_Wall1.begin(); p != Building_Wall1.end(); ++p)
-	{
-		SwapStaticToGeometry(*p, BuildingComposition::Wall1);
-	}
-
-	
 }
 
 // Called when the game starts or when spawned
@@ -96,12 +84,6 @@ void ABuilding::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentFloor = Floor;
-
-	static FTimerHandle th;
-	
-	GetWorld()->GetTimerManager().SetTimer(th, this, &ThisClass::Test, 1.0f, false);
-	
-	
 	
 }
 
@@ -111,6 +93,19 @@ void ABuilding::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	
+}
+
+void ABuilding::CollapseBuilding(int32 CollapseStartFloor)
+{
+	for(int i= CollapseStartFloor; i<CurrentFloor; ++i)
+	{
+		SwapStaticToGeometry(Building_Floor[i], BuildingComposition::Floor);
+		SwapStaticToGeometry(Building_Wall1[i], BuildingComposition::Wall1);
+		SwapStaticToGeometry(Building_Wall2[i], BuildingComposition::Wall2);
+		SwapStaticToGeometry(Building_Wall3[i], BuildingComposition::Wall3);
+		SwapStaticToGeometry(Building_Wall4[i], BuildingComposition::Wall4);
+	}
+	CurrentFloor = CollapseStartFloor-1;
 }
 
 void ABuilding::SwapStaticToGeometry(UStaticMeshComponent* Target, BuildingComposition Composition)
@@ -125,17 +120,19 @@ void ABuilding::SwapStaticToGeometry(UStaticMeshComponent* Target, BuildingCompo
 	switch (Composition)
 	{
 	case BuildingComposition::Floor:
-		
+		GetWorld()->SpawnActor<AActor>(GC_Floor, GCPos, FRotator(0.0f, 0.0f, 0.0f));
 		break;
 	case BuildingComposition::Wall1:
-		UE_LOG(LogTemp, Warning, TEXT("제발제발제발"));
-		GetWorld()->SpawnActor<AActor>(Wall01_GC, GCPos, FRotator(0.0f, 0.0f, 0.0f));
+		GetWorld()->SpawnActor<AActor>(GC_Wall01, GCPos, FRotator(0.0f, 0.0f, 0.0f));
 		break;
 	case BuildingComposition::Wall2:
+		GetWorld()->SpawnActor<AActor>(GC_Wall02, GCPos, FRotator(0.0f, 0.0f, 0.0f));
 		break;
 	case BuildingComposition::Wall3:
+		GetWorld()->SpawnActor<AActor>(GC_Wall03, GCPos, FRotator(0.0f, 0.0f, 0.0f));
 		break;
 	case BuildingComposition::Wall4:
+		GetWorld()->SpawnActor<AActor>(GC_Wall04, GCPos, FRotator(0.0f, 0.0f, 0.0f));
 		break;
 	default:
 		break;
@@ -195,5 +192,10 @@ void ABuilding::SwapStaticToGeometry(UStaticMeshComponent* Target, BuildingCompo
 	//	TargetGCComp->EditRestCollection(GeometryCollection::EEditUpdate::RestPhysicsDynamic, false);
 	//	FinishAddComponent(TargetGCComp, false, Transform);
 	//}
+}
+
+void ABuilding::DoCollapse()
+{
+	CollapseBuilding(0);
 }
 

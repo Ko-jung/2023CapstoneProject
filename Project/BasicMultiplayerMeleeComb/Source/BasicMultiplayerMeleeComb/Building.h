@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MapCollapseInterface.h"
 #include "GameFramework/Actor.h"
 #include "Building.generated.h"
 
@@ -15,18 +16,13 @@ enum class BuildingComposition
 
 
 UCLASS()
-class BASICMULTIPLAYERMELEECOMB_API ABuilding : public AActor
+class BASICMULTIPLAYERMELEECOMB_API ABuilding : public AActor, public IMapCollapseInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	ABuilding();
-
-	// TODO: 테스트용 지우기,
-	 void Test();
-	 UPROPERTY(EditDefaultsOnly)
-		 TSubclassOf<AActor> Wall01_GC;
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,11 +33,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	
-	
 	/* 건물 붕괴 진행 시 호출 함수 */
-	//UFUNCTION(BlueprintCallable)
-	//	void CollapseBuilding(int32 CollapseStartFloor);
+	UFUNCTION(BlueprintCallable)
+		void CollapseBuilding(int32 CollapseStartFloor);
 
 	/* 건물 붕괴 적용 함수 */
 	//UFUNCTION(BlueprintCallable)
@@ -80,5 +74,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		int32 CurrentFloor;
 
+	/* 바닥/벽 에 대한 Geometry Actor */
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AActor> GC_Floor;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AActor> GC_Wall01;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AActor> GC_Wall02;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AActor> GC_Wall03;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AActor> GC_Wall04;
 
+public:
+	/* IMapCollapseInterface */
+	virtual void DoCollapse() override;
 };

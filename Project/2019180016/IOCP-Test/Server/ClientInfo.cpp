@@ -34,7 +34,7 @@ void ClientInfo::Recv()
 
 	if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		printf_s("[ERROR] WSARecv ½ÇÆÐ : %d", WSAGetLastError());
+		printf_s("[ERROR] WSARecv ï¿½ï¿½ï¿½ï¿½ : %d", WSAGetLastError());
 	}
 }
 
@@ -54,7 +54,7 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 
 	// cout << m_iClientNum << "Num Recv Data: " << (RecvDataStream.str()) << endl;
 
-	// ÆÐÅ¶ ÀçÁ¶¸³
+	// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//while (remaindata > 0) {
 	//	BASE_PACKET* p = reinterpret_cast<BASE_PACKET*>(packet);
 

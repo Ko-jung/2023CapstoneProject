@@ -76,9 +76,9 @@ bool IOCPServer::BindListen(const int PortNum)
 		return false;
 	}
 
-	// IOCP ÇÚµé »ý¼º
+	// IOCP ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
 	m_hIocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);
-	//Listen ¼ÒÄÏ IOCP ÇÚµé¿¡ ¿¬°á
+	//Listen ï¿½ï¿½ï¿½ï¿½ IOCP ï¿½Úµé¿¡ ï¿½ï¿½ï¿½ï¿½
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_ListenSocket), m_hIocp, 9999, 0);
 
 	//=====================================================
@@ -92,7 +92,7 @@ bool IOCPServer::BindListen(const int PortNum)
 	AcceptEx(m_ListenSocket, c_socket, accept_buf, 0, sizeof(SOCKADDR_IN) + 16,
 		sizeof(SOCKADDR_IN) + 16, NULL, &m_AcceptExpOver._wsa_over);
 	std::cout << "Aceept Called\n";
-	//========================ÀÌ°Å¹¹ÀÓ?======================
+	//========================ï¿½Ì°Å¹ï¿½ï¿½ï¿½?======================
 
     return true;
 }
@@ -126,11 +126,11 @@ void IOCPServer::Worker()
 {
 	while (true)
 	{
-		// I/OÀÛ¾÷¿¡¼­ Àü¼ÛµÈ ¹ÙÀÌÆ® ¼ö¸¦ ¼ö½ÅÇÏ´Â º¯¼ö
+		// I/Oï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
 		DWORD num_byte;
-		// I/OÀÛ¾÷ÀÌ ¿Ï·áµÈ ÆÄÀÏ ÇÚµé°ú ¿¬°áµÈ ¿Ï·á Å°, ¿©±â¼± Å¬¶óÀÌ¾ðÆ® °íÀ¯ ¹øÈ£
+		// I/Oï¿½Û¾ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ Å°, ï¿½ï¿½ï¿½â¼± Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
 		LONG64 iocp_key;
-		// I/O ÀÛ¾÷ÀÌ ½ÃÀÛµÉ ‹š ÁöÁ¤µÈ OVERLAAPED ±¸Á¶Ã¼ ÁÖ¼Ò
+		// I/O ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ OVERLAAPED ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½Ö¼ï¿½
 		WSAOVERLAPPED* p_over;
 
 		BOOL ret = GetQueuedCompletionStatus(m_hIocp, &num_byte, (PULONG_PTR)&iocp_key, &p_over, INFINITE);
@@ -197,10 +197,10 @@ ClientInfo* IOCPServer::GetEmptyClient()
 
 void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 {
-	// id´Â ¸®½¼¼ÒÄÏ ¹øÈ£ 9999°¡ µé¾î¿À´Â µí?
+	// idï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ 9999ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½?
 	if (m_iClientCount < MAXCLIENT)
 	{
-		// ¸ðµç Å¬¶óÀÇ ¼ÒÄÏ ¹øÈ£°¡ °°´Ù??
+		// ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½??
 
 		ClientInfo* socket = GetEmptyClient();
 		socket->SetClientNum(m_iClientId);
@@ -213,7 +213,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 		SendPlayerJoinPacket(m_iClientId);
 		
-		cout << m_iClientId << "¹ø Accept" << endl;
+		cout << m_iClientId << "ï¿½ï¿½ Accept" << endl;
 
 		m_iClientId++;
 		m_iClientCount++;
@@ -222,19 +222,19 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		*(reinterpret_cast<SOCKET*>(&m_AcceptExpOver._net_buf)) = c_socket;
 		ZeroMemory(&m_AcceptExpOver._wsa_over, sizeof(m_AcceptExpOver._wsa_over));
 
-		int ret = AcceptEx(m_ListenSocket,						// ¸®½¼¿ë ¼ÒÄÏÇÚµé
-			c_socket/*socket->GetSocket()*/,					// µé¾î¿À´Â Á¢¼ÓÀ» ¼ö¿ëÇÒ ¼ÒÄÏ
-			m_AcceptExpOver._net_buf + 8,											// ·ÎÄÃ ÁÖ¼Ò¿Í ¸®¸ðÆ® ÁÖ¼Ò¸¦ ´ãÀ» ¹öÆÛ
-			0,													// Á¢¼Ó ÈÄ Àü¼ÛµÇ´Â ÃÖÃÊ µ¥ÀÌÅÍ¸¦ ¼ö½ÅÇÏ±â À§ÇÑ ¹öÆÛÀÇ Å©±â
-			sizeof(SOCKADDR_IN) + 16,							// ÁÖ¼ÒÈ¹µæÀ» À§ÇÑ ¹öÆÛÀÇ Å©±â¸¦ ¾Ë·ÁÁÖ±â À§ÇÑ ·ÎÄÃ ÁÖ¼ÒÀÇ ±æÀÌ
-			sizeof(SOCKADDR_IN) + 16,							// ÁÖ¼ÒÈ¹µæÀ» À§ÇÑ ¹öÆÛÀÇ Å©±â¸¦ ¾Ë·ÁÁÖ±â À§ÇÑ ¸®¸ðÆ® ÁÖ¼ÒÀÇ ±æÀÌ
-			0,													// ÇÔ¼ö È£Ãâ ÈÄ ½ÇÁ¦·Î ¹ÞÀº µ¥ÀÌÅÍÀÇ Å©±â overlapped »ç¿ë½Ã ¹«½ÃµÊ
-			(LPWSAOVERLAPPED)&m_AcceptExpOver._wsa_over);		// Overlapped ±¸Á¶Ã¼ Æ÷ÀÎÅÍ
+		int ret = AcceptEx(m_ListenSocket,						// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½
+			c_socket/*socket->GetSocket()*/,					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			m_AcceptExpOver._net_buf + 8,											// ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			0,													// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ÛµÇ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
+			sizeof(SOCKADDR_IN) + 16,							// ï¿½Ö¼ï¿½È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â¸¦ ï¿½Ë·ï¿½ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			sizeof(SOCKADDR_IN) + 16,							// ï¿½Ö¼ï¿½È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â¸¦ ï¿½Ë·ï¿½ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			0,													// ï¿½Ô¼ï¿½ È£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ overlapped ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½
+			(LPWSAOVERLAPPED)&m_AcceptExpOver._wsa_over);		// Overlapped ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
 		if (0 != ret)
 		{
-			cout << "AcceptEx¿À·ù\n";
+			cout << "AcceptExï¿½ï¿½ï¿½ï¿½\n";
 			error_display(WSAGetLastError());
 			return;
 		}
@@ -257,7 +257,7 @@ void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 	//PPosition SendPosition(x, y, z);
 	//
 	////SendData << (int)COMP_OP::OP_POSITION;
-	////// TODO: Á÷·ÄÈ­ ¼öÁ¤ÇØ¾ßÇÔ
+	////// TODO: ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
 	////SendData << x << y << z;
 	//
 	////cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
@@ -311,13 +311,13 @@ void IOCPServer::TestSend()
 	{    
 		auto currentTime = std::chrono::system_clock::now();
 
-		// time_pointÀ» time_t·Î º¯È¯
+		// time_pointï¿½ï¿½ time_tï¿½ï¿½ ï¿½ï¿½È¯
 		std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
 
-		// time_t¸¦ tm ±¸Á¶Ã¼·Î º¯È¯
+		// time_tï¿½ï¿½ tm ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½È¯
 		std::tm* localTime = std::localtime(&tt);
 
-		// ½Ã°£À» Ãâ·Â
+		// ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		std::cout << "Timer Func Num:" << i << " Insert! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
 
 		//cout << i << "Num Timer Insert //" << std::chrono::system_clock::now() << endl;
@@ -326,13 +326,13 @@ void IOCPServer::TestSend()
 			{
 				auto currentTime = std::chrono::system_clock::now();
 
-				// time_pointÀ» time_t·Î º¯È¯
+				// time_pointï¿½ï¿½ time_tï¿½ï¿½ ï¿½ï¿½È¯
 				std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
 
-				// time_t¸¦ tm ±¸Á¶Ã¼·Î º¯È¯
+				// time_tï¿½ï¿½ tm ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½È¯
 				std::tm* localTime = std::localtime(&tt);
 
-				// ½Ã°£À» Ãâ·Â
+				// ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 				std::cout << "Timer Func Num:" << i << " Activative! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
 			});
 		m_TimerMgrMap[0]->Insert(Event);

@@ -6,45 +6,29 @@
 #include "ClientController.h"
 #include "OtherPlayerCharacter.h"
 
-#include "Engine/Blueprint.h"
-#include "Engine/World.h"
-
+#include "Kismet/GameplayStatics.h"
 
 void ASocketMode::JoinOtherPlayer(int serial)
 {
-	// ³ª¸¦ Á¦¿ÜÇÑ ´Ù¸¥ ÇÃ·¹ÀÌ¾î°¡ Á¢¼Ó
-	// ³»°¡ Á¢¼ÓÇÏ±â Àü¿¡ µé¾î¿ÍÀÖ´ø ÇÃ·¹ÀÌ¾î´Â?
-	SpawnPlayer();
-	
-	//ClientControllers.Add(serial, NewObject<AClientController>());
-	//ClientControllers[serial]->SetSerialNum(serial);
-
-	//AClientController* NewController = TSharedPtr<AClientController>().Get();
-
-	//C:/Github/2023CapstoneProject/Project/2019180016/IOCP-Test/ClientTest/Content/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.uasset
-	//'/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter'
-
-	//AClientController* NewController = NewObject< AClientController>();
-	//NewController->SetSerialNum(serial);
-	//ClientControllers.Add(NewController);
-
-	//static ConstructorHelpers::FObjectFinder<UBlueprint> NewPlayer(TEXT("Blueprint'/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter'"));
-
-		//auto PlayerBP = (UClass*)NewPlayer.Object->GeneratedClass;
-
-		//FActorSpawnParameters SpawnParams;
-		//FRotator Rotator;
-		//FVector  SpawnLocation = FVector(470.000000, 900.000000, 88.000000);
-		//GetWorld()->SpawnActor<AOtherPlayerCharacter>(OtherPlayerCharacterClass);
-
-	//AOtherPlayerCharacter* NewCharacter = GetWorld()->SpawnActor<AOtherPlayerCharacter>(
-	//	AOtherPlayerCharacter::StaticClass(), SpawnLocation, Rotator, SpawnParams);
-	//NewController->Possess(NewCharacter);
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½?
+	SpawnPlayer(serial);
 }
 
-void ASocketMode::SpawnOtherPlayer()
+void ASocketMode::SetOwnSerialNum(int serial)
 {
+	SerialNum = serial;
 
+	BPPossess(serial);
+}
+
+void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
+{
+	int32 Serial = PlayerPosition.PlayerSerial;
+	FVector Location{ PlayerPosition.x, PlayerPosition.y, PlayerPosition.z };
+	FRotator Rotate{ PlayerPosition.rx, PlayerPosition.ry, PlayerPosition.rz };
+
+	BPSetPlayerPosition(Serial, Location, Rotate);
 }
 
 void ASocketMode::Disconnect()
@@ -56,6 +40,9 @@ void ASocketMode::BeginPlay()
 {
 	m_Socket = ClientSocketMgr::Instance();
 	m_Socket->InitSocket();
+
+	TestPrintHelloUseNative();
+	BPGetAllActorsOfThirdPerson();
 
 	m_bIsConnected = m_Socket->Connect("127.0.0.1", 8000);
 	if (m_bIsConnected)
@@ -79,6 +66,19 @@ void ASocketMode::Tick(float Deltatime)
 		CubeVec = m_Socket->TempCube->Location;
 }
 
-void ASocketMode::SpawnPlayer_Implementation()
+void ASocketMode::SpawnPlayer_Implementation(int serial)
+{
+}
+void ASocketMode::TestPrintHelloUseNative_Implementation()
+{
+}
+void ASocketMode::BPGetAllActorsOfThirdPerson_Implementation()
+{
+}
+void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate)
+{
+}
+
+void ASocketMode::BPPossess_Implementation(int serial)
 {
 }

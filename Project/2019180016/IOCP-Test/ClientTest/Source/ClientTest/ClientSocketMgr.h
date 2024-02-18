@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "HAL/Runnable.h"
 
-// winsock2 »ç¿ëÀ» À§ÇØ ¾Æ·¡ ÄÚ¸àÆ® Ãß°¡
+// winsock2 ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½Ú¸ï¿½Æ® ï¿½ß°ï¿½
 #pragma comment(lib, "ws2_32.lib")
 #include <WinSock2.h>
 #include <iostream>
 #include <map>
+
+#include "../../Packet/Packet.h"
 
 using namespace std;
 
@@ -20,7 +22,7 @@ class AClientController;
 #define SERVER_IP		"127.0.0.1"
 #define MAX_CLIENTS		100
 
-// ¼ÒÄÏ Åë½Å ±¸Á¶Ã¼
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
 struct stSOCKETINFO
 {
 	WSAOVERLAPPED	overlapped;
@@ -31,7 +33,7 @@ struct stSOCKETINFO
 	int				sendBytes;
 };
 
-// ÆÐÅ¶ Á¤º¸
+// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
 enum EPacketType
 {
 	LOGIN,
@@ -50,27 +52,27 @@ enum EPacketType
 	DESTROY_MONSTER
 };
 
-// ÇÃ·¹ÀÌ¾î Á¤º¸
+// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 class cCharacter {
 public:
 	cCharacter() {};
 	~cCharacter() {};
 
-	// ¼¼¼Ç ¾ÆÀÌµð
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½
 	int SessionId;
-	// À§Ä¡
+	// ï¿½ï¿½Ä¡
 	float X;
 	float Y;
 	float Z;
-	// È¸Àü°ª
+	// È¸ï¿½ï¿½ï¿½ï¿½
 	float Yaw;
 	float Pitch;
 	float Roll;
-	// ¼Óµµ
+	// ï¿½Óµï¿½
 	float VX;
 	float VY;
 	float VZ;
-	// ¼Ó¼º
+	// ï¿½Ó¼ï¿½
 	bool	IsAlive;
 	float	HealthValue;
 	bool	IsAttacking;
@@ -114,7 +116,7 @@ public:
 	}
 };
 
-// ÇÃ·¹ÀÌ¾î Á÷·ÄÈ­/¿ªÁ÷·ÄÈ­ Å¬·¡½º
+// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½È­/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­ Å¬ï¿½ï¿½ï¿½ï¿½
 class cCharactersInfo
 {
 public:
@@ -154,16 +156,16 @@ public:
 	}
 };
 
-// ¸ó½ºÅÍ Á¤º¸
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 class Monster
 {
 public:
-	float	X;				// XÁÂÇ¥
-	float	Y;				// YÁÂÇ¥
-	float	Z;				// ZÁÂÇ¥
-	float	Health;			// Ã¼·Â
-	int		Id;				// °íÀ¯ id
-	bool	IsAttacking;		// Å¸°ÝÁßÀÎÁö
+	float	X;				// Xï¿½ï¿½Ç¥
+	float	Y;				// Yï¿½ï¿½Ç¥
+	float	Z;				// Zï¿½ï¿½Ç¥
+	float	Health;			// Ã¼ï¿½ï¿½
+	int		Id;				// ï¿½ï¿½ï¿½ï¿½ id
+	bool	IsAttacking;		// Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	friend ostream& operator<<(ostream& stream, Monster& info)
 	{
@@ -190,7 +192,7 @@ public:
 	}
 };
 
-// ¸ó½ºÅÍ Á÷·ÄÈ­/¿ªÁ÷·ÄÈ­ Å¬·¡½º
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­ Å¬ï¿½ï¿½ï¿½ï¿½
 class MonsterSet
 {
 public:
@@ -233,9 +235,9 @@ public:
 	ObjectInfo() { Location = FVector(0.f, 0.f, 0.f); }
 
 	FVector Location;
-	// float	X;				// XÁÂÇ¥
-	// float	Y;				// YÁÂÇ¥
-	// float	Z;				// ZÁÂÇ¥
+	// float	X;				// Xï¿½ï¿½Ç¥
+	// float	Y;				// Yï¿½ï¿½Ç¥
+	// float	Z;				// Zï¿½ï¿½Ç¥
 };
 
 /**
@@ -251,25 +253,25 @@ public:
 
 // Socket Function
 public:
-	// ¼ÒÄÏ µî·Ï ¹× ¼³Á¤
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	bool InitSocket();
-	// ¼­¹ö¿Í ¿¬°á
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	bool Connect(const char* pszIP, int nPort);
-	// È¸¿ø°¡ÀÔ
+	// È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//bool SignUp(const FText& Id, const FText& Pw);
-	// ¼­¹ö¿¡ ·Î±×ÀÎ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½
 	//bool Login(const FText& Id, const FText& Pw);
-	// ÃÊ±â Ä³¸¯ÅÍ µî·Ï
+	// ï¿½Ê±ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	//void EnrollPlayer(cCharacter& info);
-	// Ä³¸¯ÅÍ µ¿±âÈ­
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­
 	//void SendPlayer(cCharacter& info);
-	// Ä³¸¯ÅÍ ·Î±×¾Æ¿ô
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¾Æ¿ï¿½
 	//void LogoutPlayer(const int& SessionId);
-	// Ä³¸¯ÅÍ ÇÇ°Ý Ã³¸®
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ç°ï¿½ Ã³ï¿½ï¿½
 	//void HitPlayer(const int& SessionId);
-	// ¸ó½ºÅÍ ÇÇ°Ý Ã³¸®
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ç°ï¿½ Ã³ï¿½ï¿½
 	//void HitMonster(const int& MonsterId);
-	// Ã¤ÆÃ 
+	// Ã¤ï¿½ï¿½ 
 	void SendChat(const int& SessionId, const string& Chat);
 
 // FRunnable Function
@@ -277,7 +279,7 @@ public:
 	FRunnableThread* Thread;
 	FThreadSafeCounter StopTaskCounter;
 
-	// ½º·¹µå ½ÃÀÛ ¹× Á¾·á
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	bool StartListen();
 	void StopListen();
 
@@ -296,7 +298,7 @@ public:
 	ObjectInfo* TempCube;
 
 private:
-	SOCKET	m_ServerSocket;				// ¼­¹ö¿Í ¿¬°áÇÒ ¼ÒÄÏ
+	SOCKET	m_ServerSocket;				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	char 	m_sRecvBuffer[MAX_BUFFER];
 
 	UPROPERTY(BlueprintReadWrite)
@@ -305,4 +307,6 @@ private:
 	int SerialNum;
 
 	ASocketMode* Gamemode;
+
+	PPlayerJoin NewPlayerJoin;
 };

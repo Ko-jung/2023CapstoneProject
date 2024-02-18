@@ -29,7 +29,7 @@ ClientSocketMgr::~ClientSocketMgr()
 bool ClientSocketMgr::InitSocket()
 {
 	WSADATA wsaData;
-	// À©¼Ó ¹öÀüÀ» 2.2·Î ÃÊ±âÈ­
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2.2ï¿½ï¿½ ï¿½Ê±ï¿½È­
 	int nRet = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (nRet != 0)
 	{
@@ -37,7 +37,7 @@ bool ClientSocketMgr::InitSocket()
 		return false;
 	}
 
-	// TCP ¼ÒÄÏ »ý¼º	
+	// TCP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	
 	m_ServerSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (m_ServerSocket == INVALID_SOCKET)
 	{
@@ -51,11 +51,11 @@ bool ClientSocketMgr::InitSocket()
 
 bool ClientSocketMgr::Connect(const char* pszIP, int nPort)
 {
-	// Á¢¼ÓÇÒ ¼­¹ö Á¤º¸¸¦ ÀúÀåÇÒ ±¸Á¶Ã¼
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
 	SOCKADDR_IN stServerAddr;
 
 	stServerAddr.sin_family = AF_INET;
-	// Á¢¼ÓÇÒ ¼­¹ö Æ÷Æ® ¹× IP
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ IP
 	stServerAddr.sin_port = htons(nPort);
 	stServerAddr.sin_addr.s_addr = inet_addr(pszIP);
 
@@ -76,7 +76,7 @@ void ClientSocketMgr::SendChat(const int& SessionId, const string& Chat)
 
 bool ClientSocketMgr::StartListen()
 {
-	// ½º·¹µå ½ÃÀÛ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (Thread != nullptr)
 	{
 		Thread->Kill();
@@ -88,12 +88,13 @@ bool ClientSocketMgr::StartListen()
 	}
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
 	TempCube = new ObjectInfo;
+	StopTaskCounter.Reset();
 	return (Thread != nullptr);
 }
 
 void ClientSocketMgr::StopListen()
 {
-	// ½º·¹µå Á¾·á
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	Stop();
 	Thread->WaitForCompletion();
 	Thread->Kill();
@@ -109,21 +110,19 @@ bool ClientSocketMgr::Init()
 
 uint32 ClientSocketMgr::Run()
 {
-	// ÃÊ±â init °úÁ¤À» ±â´Ù¸²
+	// ï¿½Ê±ï¿½ init ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½
 	FPlatformProcess::Sleep(0.03);
-	// recv while loop ½ÃÀÛ
-	// StopTaskCounter Å¬·¡½º º¯¼ö¸¦ »ç¿ëÇØ Thread SafetyÇÏ°Ô ÇØÁÜ
-	// while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
-	for (int i = 0; i < 50000; i++)
+
+	// recv while loop ï¿½ï¿½ï¿½ï¿½
+	// StopTaskCounter Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Thread Safetyï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½
+	 while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
+	//for (int i = 0; i < 50000; i++)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("adasd"));
-		//stringstream RecvStream;
-		//int PacketType;
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer, MAX_BUFFER, 0);
 		FString PrintStr(m_sRecvBuffer);
 		if (nRecvLen > 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d: Recv Message Is: %s"), i, *PrintStr);
+			UE_LOG(LogTemp, Warning, TEXT("Recv Message Is: %s"), *PrintStr);
 		}
 
 		std::stringstream RecvStream(m_sRecvBuffer);
@@ -135,7 +134,7 @@ uint32 ClientSocketMgr::Run()
 		switch (OP)
 		{
 		case (int)COMP_OP::OP_POSITION:
-		//TODO: Á¦°Å
+		//TODO: ï¿½ï¿½ï¿½ï¿½
 		{
 			PPosition TempPosition;
 			memcpy(&TempPosition, m_sRecvBuffer, sizeof(PPosition));
@@ -152,19 +151,29 @@ uint32 ClientSocketMgr::Run()
 			break;
 		case (int)COMP_OP::OP_PLAYERJOIN:
 		{
-			PPlayerJoin TempJoin(-1);
-			memcpy(&TempJoin, m_sRecvBuffer, sizeof(PPlayerJoin));
+			memcpy(&NewPlayerJoin, m_sRecvBuffer, sizeof(PPlayerJoin));
 
 			if (SerialNum == -1)
 			{
-				SerialNum = TempJoin.PlayerSerial;
+				SerialNum = NewPlayerJoin.PlayerSerial;
+				Gamemode->SetOwnSerialNum(SerialNum);
 				UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
 			}
 			else
 			{
 				// PlayerSpawn
-				//Gamemode->
+				Gamemode->JoinOtherPlayer(NewPlayerJoin.PlayerSerial);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue,
+				//	FString::Printf(TEXT("%d Client Join!"), TempJoin.PlayerSerial));
 			}
+		}
+			break;
+		case (int)COMP_OP::OP_PLAYERPOSITION:
+		{
+			PPlayerPosition PlayerPosition;
+
+			memcpy(&PlayerPosition, m_sRecvBuffer, sizeof(PPlayerPosition));
+			Gamemode->SetPlayerPosition(PlayerPosition);
 		}
 			break;
 		default:
@@ -189,7 +198,7 @@ uint32 ClientSocketMgr::Run()
 
 void ClientSocketMgr::Stop()
 {
-	// thread safety º¯¼ö¸¦ Á¶ÀÛÇØ while loop °¡ µ¹Áö ¸øÇÏ°Ô ÇÔ
+	// thread safety ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ while loop ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½
 	StopTaskCounter.Increment();
 }
 

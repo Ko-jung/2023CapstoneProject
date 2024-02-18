@@ -29,6 +29,8 @@ public:
 
 	void RecvNewPosition(int id, int bytes, EXP_OVER* exp);
 
+	void SendPlayerJoinPacket(int JoinPlayerSerial);
+
 	void TestSend();
 	std::thread TempSendThread;
 

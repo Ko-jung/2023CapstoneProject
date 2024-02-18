@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "OtherPlayerCharacter.h"
+
 AClientController::AClientController()
 {
 }

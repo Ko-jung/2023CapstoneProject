@@ -4,6 +4,8 @@
 #include "HexagonTile.h"
 #include <Kismet/KismetMathLibrary.h>
 
+#include "Building.h"
+#include "Kismet/KismetArrayLibrary.h"
 
 
 // Sets default values
@@ -76,7 +78,16 @@ AHexagonTile::AHexagonTile()
 		
 	}
 	
-	
+	static ConstructorHelpers::FObjectFinder<UBlueprint> BuildingItem(TEXT("/Script/Engine.Blueprint'/Game/2019180031/Blueprints/Map/Building/CodeBuilding.CodeBuilding'"));
+	if(BuildingItem.Object)
+	{
+		BuildingBP = (UClass*)BuildingItem.Object->GeneratedClass;
+	}
+	static ConstructorHelpers::FObjectFinder<UBlueprint> FloatingTileItem(TEXT("/Script/Engine.Blueprint'/Game/2019180031/Blueprints/Map/FloatingTile/CodeFloatingTile.CodeFloatingTile'"));
+	if (FloatingTileItem.Object)
+	{
+		FloatingTileBP = (UClass*)FloatingTileItem.Object->GeneratedClass;
+	}
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -89,11 +100,61 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 	return FVector(TileDistance * sin, TileDistance * cos, 0.0f);
 }
 
+void AHexagonTile::InitialSettiongs()
+{
+	SpawnBuildingsAndFloatingTiles(8, FName("Section1"), 3, 4, FVector(0.0f, 0.0f, -3000.0f));
+}
+
+void AHexagonTile::SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTag, int32 GetFloor, int32 FloatingTileCount, FVector MovementOffset)
+{
+	/*
+	 SpawnCount - 설치될 건물의 갯수 / TileTag - 설치될 타일 섹션 (Section1~3) / Floor - 설치될 건물의 층 수 / FloatingTileCount - 설치될 부유타일의 갯수 / MovementOffset - 부유타일의 이동 오프셋
+	 */
+	TArray<UStaticMeshComponent*> UsedTile;	// 건물이 생성된 타일을 저장하는 배열
+	TArray<UStaticMeshComponent*> SectionTiles;	// 특정 섹션의 타일들이 저장되는 배열
+	TObjectPtr<UStaticMeshComponent> TargetTile; // 건물이 설치될 타일
+
+	{ // 섹션 타일 구하기
+		for (auto pTile = Tiles.begin(); pTile != Tiles.end(); ++pTile)
+		{
+			if(*pTile)
+			{
+				if((*pTile)->ComponentHasTag(TileTag))
+				{
+					SectionTiles.Add(*pTile);
+				}
+			}
+		}
+	}
+
+	{ // 건물 배치하기
+		while(UsedTile.Num()<SpawnCount)
+		{
+			int32 index = FMath::RandRange(0, Tiles.Num() - 1);
+			TargetTile = Tiles[index];
+
+			if(!UsedTile.Contains(TargetTile))
+			{
+				UsedTile.Add(TargetTile);
+				SectionTiles.Remove(TargetTile);
+				FTransform SpawnTransform;
+				SpawnTransform.SetLocation(TargetTile->GetRelativeLocation());
+				AActor* test = GetWorld()->SpawnActor<AActor>(BuildingBP, SpawnTransform);
+
+				Tile_Actor.Add(TargetTile, test);
+			}
+		}
+	}
+
+	//TODO: 부유타일 배치 진행 및 선행 건물의 Expose 설정
+}
+
 // Called when the game starts or when spawned
 void AHexagonTile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InitialSettiongs();
 }
 
 

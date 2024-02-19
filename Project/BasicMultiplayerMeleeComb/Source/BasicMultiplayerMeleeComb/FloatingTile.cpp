@@ -81,7 +81,6 @@ void AFloatingTile::Tick(float DeltaTime)
 
 void AFloatingTile::DoCollapse()
 {
-	UE_LOG(LogTemp, Warning, TEXT("실행됐음!!"));
 	// 1. 틱 업데이트 중단
 	SetActorTickEnabled(false);
 
@@ -107,7 +106,6 @@ void AFloatingTile::DoCollapse()
 		MyGCData = CastChecked<UGeometryCollection>(MyGCAsset.TryLoad());
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("여기까진 잘됨"));
 	// 4. Geometry Collection Component 추가
 	//UGeometryCollectionComponent* GeometryComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GCComp"));
 	// 위 방식이 안되므로 아래 방식으로 진행

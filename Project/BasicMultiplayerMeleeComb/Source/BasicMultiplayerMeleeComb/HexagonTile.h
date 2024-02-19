@@ -16,13 +16,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Construct")
 		FVector CalculateRelativeLocation(int32 AngleCount, int32 Distance);
 
-	///* BeginPlay시 진행할 로직 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Init")
-	//	void InitialSettiongs();
-	//
-	///* 건물 및 부유타일 생성 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Init")
-	//	void SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTag, int32 Floor, int32 FloatingTileCount, FVector MovementOffset, TArray<UStaticMeshComponent*> UsedTile, TArray<UStaticMeshComponent*> SectionTiles, UStaticMeshComponent* TargetTile);
+	/* BeginPlay시 진행할 로직 함수 */
+	UFUNCTION(BlueprintCallable, Category = "Init")
+		void InitialSettiongs();
+	
+	/* 건물 및 부유타일 생성 함수 */
+	UFUNCTION(BlueprintCallable, Category = "Init")
+		void SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTag, int32 Floor, int32 FloatingTileCount, FVector MovementOffset);
 
 	/* 붕괴 1단계/2단계 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
@@ -63,5 +63,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		TMap<UStaticMeshComponent*, AActor*> Tile_Actor;
 
-
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AActor> BuildingBP;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AActor> FloatingTileBP;
 };

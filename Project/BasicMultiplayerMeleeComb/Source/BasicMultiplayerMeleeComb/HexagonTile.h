@@ -31,8 +31,7 @@ public:
 	/* 붕괴 3단계 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
 	//	void CollapseLevel3(UStaticMeshComponent* TargetTile, int32 InvalidDataCount);
-
-
+	
 	// Sets default values for this actor's properties
 	AHexagonTile();
 

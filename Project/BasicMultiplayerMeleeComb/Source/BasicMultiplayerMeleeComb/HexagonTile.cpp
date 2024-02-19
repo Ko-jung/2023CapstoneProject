@@ -56,7 +56,6 @@ AHexagonTile::AHexagonTile()
 
 			for(int midCount = 2; midCount<distance+1; ++midCount)
 			{
-				
 				FVector firstLoc = CalculateRelativeLocation(angle, distance);
 				FVector SecondLoc = CalculateRelativeLocation(angle+1, distance);
 

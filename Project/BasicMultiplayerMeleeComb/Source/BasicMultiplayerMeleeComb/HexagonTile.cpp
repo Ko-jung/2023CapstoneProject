@@ -139,6 +139,7 @@ void AHexagonTile::SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTa
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(TargetTile->GetRelativeLocation());
 				AActor* test = GetWorld()->SpawnActor<AActor>(BuildingBP, SpawnTransform);
+				(Cast<ABuilding>(test))->SetFloorAndCreate(GetFloor);
 
 				Tile_Actor.Add(TargetTile, test);
 			}

@@ -24,6 +24,9 @@ public:
 	// Sets default values for this actor's properties
 	ABuilding();
 
+	/* 층수 설정 및 건물 생성 */
+	void SetFloorAndCreate(int32 GetFloor);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

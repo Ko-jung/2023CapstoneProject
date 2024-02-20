@@ -25,12 +25,14 @@ public:
 		void SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTag, int32 Floor, int32 FloatingTileCount, FVector MovementOffset);
 
 	/* 붕괴 1단계/2단계 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Collapse")
-	//	void CollapseLevel1And2(double CollapseValue, TArray<UStaticMeshComponent*> MiddleCandidate, FVector MiddleTileRelativeLocation, double FirstCollapseDistance, FVector SpawnLocation, UStaticMeshComponent* TargetDestroyTile, int32 InvalidDataCount);
+	UFUNCTION(BlueprintCallable, Category = "Collapse")
+		void CollapseLevel1And2(int CollapseLevel);
+
+	void SpawnGCComp(FVector SpawnLoc);
 
 	/* 붕괴 3단계 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Collapse")
-	//	void CollapseLevel3(UStaticMeshComponent* TargetTile, int32 InvalidDataCount);
+	UFUNCTION(BlueprintCallable, Category = "Collapse")
+		void CollapseLevel3(UStaticMeshComponent* TargetTile, int32 InvalidDataCount);
 	
 	// Sets default values for this actor's properties
 	AHexagonTile();
@@ -66,4 +68,6 @@ public:
 		TSubclassOf<class AActor> BuildingBP;
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AActor> FloatingTileBP;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AActor> GC_TileBP;
 };

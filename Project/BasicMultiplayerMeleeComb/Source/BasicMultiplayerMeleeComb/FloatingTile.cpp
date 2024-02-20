@@ -21,14 +21,12 @@ AFloatingTile::AFloatingTile()
 	StaticMesh->SetMaterial(0,TileMaterial.Object);
 
 
-	MovementOffset = FVector(0.0f, 0.0f, -3000.0f);
 
 }
 
-// Called when the game starts or when spawned
-void AFloatingTile::BeginPlay()
+void AFloatingTile::SetInitalSetting(FVector GetOffset)
 {
-	Super::BeginPlay();
+	MovementOffset = GetOffset;
 
 	Speed = UKismetMathLibrary::RandomFloatInRange(0.5, 0.7);
 	SetActorLocation(GetActorLocation() + FVector(0.0f, 0.0f, -200.0f));
@@ -36,10 +34,12 @@ void AFloatingTile::BeginPlay()
 	InitStartLocation = GetActorLocation();
 	TargetLocation = InitEndLocation = GetActorLocation() + MovementOffset;
 	MoveToEnd = true;
+}
 
-	UE_LOG(LogTemp, Warning, TEXT("시작함"));
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::DoCollapse, 5.0f, false);
-	
+// Called when the game starts or when spawned
+void AFloatingTile::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 // Called every frame
@@ -65,18 +65,7 @@ void AFloatingTile::Tick(float DeltaTime)
 		MoveToEnd = !MoveToEnd;
 	}
 
-	static bool Check = false;
-	if(!Check)
-	{
-		if(GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::I))
-		{
-			IMapCollapseInterface* test = Cast<IMapCollapseInterface>(this);
-			if(test)
-			{
-				test->DoCollapse();
-			}
-		}
-	}
+	
 }
 
 void AFloatingTile::DoCollapse()

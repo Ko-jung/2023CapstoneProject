@@ -2,9 +2,13 @@
 
 
 #include "HexagonTile.h"
-#include <Kismet/KismetMathLibrary.h>
 
+#include <functional>
+#include <Kismet/KismetMathLibrary.h>
 #include "Building.h"
+#include "FloatingTile.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
+#include "GeometryCollection/GeometryCollectionObject.h"
 #include "Kismet/KismetArrayLibrary.h"
 
 
@@ -30,7 +34,7 @@ AHexagonTile::AHexagonTile()
 		Tiles[0] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MiddleTile"));
 		Tiles[0]->SetStaticMesh(TileAsset.Object);
 		Tiles[0]->SetMaterial(0, TileMaterial.Object);
-		Tiles[0]->ComponentTags.Add(TEXT("Middle"));
+		Tiles[0]->ComponentTags.Add(TEXT("MiddleTile"));
 
 		CurrentMiddleTile = Tiles[0];
 		SetRootComponent(Tiles[0]);
@@ -42,8 +46,8 @@ AHexagonTile::AHexagonTile()
 	{	
 		for (int distance = 1; distance < 4; ++distance)	// 중앙 타일로부터의 거리
 		{
+			FString tag = "Section" + FString::FromInt((distance-2)*-1+2);
 			{//60도 방면 위치에 StaticMesh 추가
-				FString tag = "Section" + FString::FromInt(abs(distance - 2));
 				FString name = tag + "_" + FString::FromInt(tilecount);
 				Tiles[tilecount] = CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
 				Tiles[tilecount]->SetStaticMesh(TileAsset.Object);
@@ -61,7 +65,6 @@ AHexagonTile::AHexagonTile()
 
 				FVector RelatLoc = ((firstLoc - SecondLoc) / (float)distance) * (midCount - 1) + SecondLoc;
 				UE_LOG(LogTemp, Warning, TEXT("%f , %f, %f"),RelatLoc.X, RelatLoc.Y, RelatLoc.Z);
-				FString tag = "Section" + FString::FromInt(abs(distance-2));
 				FString name = tag + "_" + FString::FromInt(tilecount);
 				Tiles[tilecount] = CreateDefaultSubobject<UStaticMeshComponent>(FName(name));
 				Tiles[tilecount]->SetStaticMesh(TileAsset.Object);
@@ -87,6 +90,12 @@ AHexagonTile::AHexagonTile()
 	{
 		FloatingTileBP = (UClass*)FloatingTileItem.Object->GeneratedClass;
 	}
+	static ConstructorHelpers::FObjectFinder<UBlueprint> GCTileItem(TEXT("/Script/Engine.Blueprint'/Game/2019180031/Blueprints/Map/Tile/Tile_Geometry/GC_Tile.GC_Tile'"));
+	if (GCTileItem.Object)
+	{
+		GC_TileBP = (UClass*)GCTileItem.Object->GeneratedClass;
+	}
+
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -102,7 +111,11 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 void AHexagonTile::InitialSettiongs()
 {
 	SpawnBuildingsAndFloatingTiles(8, FName("Section1"), 3, 4, FVector(0.0f, 0.0f, -3000.0f));
+	SpawnBuildingsAndFloatingTiles(4, FName("Section2"), 7, 2, FVector(0.0f, 0.0f, -5000.0f));
+	SpawnBuildingsAndFloatingTiles(2, FName("Section3"), 11, 1, FVector(0.0f, 0.0f, -7000.0f));
+	SpawnBuildingsAndFloatingTiles(1, FName("MiddleTile"), 15, 0, FVector());
 }
+
 
 void AHexagonTile::SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTag, int32 GetFloor, int32 FloatingTileCount, FVector MovementOffset)
 {
@@ -129,8 +142,8 @@ void AHexagonTile::SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTa
 	{ // 건물 배치하기
 		while(UsedTile.Num()<SpawnCount)
 		{
-			int32 index = FMath::RandRange(0, Tiles.Num() - 1);
-			TargetTile = Tiles[index];
+			int32 index = FMath::RandRange(0, SectionTiles.Num() - 1);
+			TargetTile = SectionTiles[index];
 
 			if(!UsedTile.Contains(TargetTile))
 			{
@@ -138,15 +151,126 @@ void AHexagonTile::SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTa
 				SectionTiles.Remove(TargetTile);
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(TargetTile->GetRelativeLocation());
-				AActor* test = GetWorld()->SpawnActor<AActor>(BuildingBP, SpawnTransform);
-				(Cast<ABuilding>(test))->SetFloorAndCreate(GetFloor);
-
-				Tile_Actor.Add(TargetTile, test);
+				AActor* BuildingActor = GetWorld()->SpawnActor<AActor>(BuildingBP, SpawnTransform);
+				(Cast<ABuilding>(BuildingActor))->SetFloorAndCreate(GetFloor);
+				Tile_Actor.Add(TargetTile, BuildingActor);
 			}
 		}
 	}
 
-	//TODO: 부유타일 배치 진행 및 선행 건물의 Expose 설정
+	{ // 부유타일 배치하기
+		while (UsedTile.Num() < SpawnCount + FloatingTileCount)
+		{
+			int32 index = FMath::RandRange(0, SectionTiles.Num() - 1);
+			TargetTile = SectionTiles[index];
+
+			if (!UsedTile.Contains(TargetTile))
+			{
+				UsedTile.Add(TargetTile);
+				SectionTiles.Remove(TargetTile);
+				FTransform SpawnTransform;
+				SpawnTransform.SetLocation(TargetTile->GetRelativeLocation());
+				AActor* FloatingActor = GetWorld()->SpawnActor<AActor>(FloatingTileBP, SpawnTransform);
+				(Cast<AFloatingTile>(FloatingActor))->SetInitalSetting(MovementOffset);
+
+				Tile_Actor.Add(TargetTile, FloatingActor);
+			}
+		}
+	}
+}
+
+void AHexagonTile::CollapseLevel1And2(int CollapseLevel)
+{
+	double CollapseValue{};
+	if (CollapseLevel == 1) CollapseValue = 2.5f;
+	else CollapseValue = 1.5f;
+
+	{ // 중간 타일 설정
+		TArray<UStaticMeshComponent*> MiddleCandidate;
+
+		for(UStaticMeshComponent* tile : Tiles )
+		{
+			if(UKismetMathLibrary::InRange_FloatFloat(
+				(tile->GetRelativeLocation() - CurrentMiddleTile->GetRelativeLocation()).Length(),
+				offset * 0.5,
+				offset * 1.5))
+			{
+				MiddleCandidate.Add(tile);
+			}
+		}
+		int32 newIndex = UKismetMathLibrary::RandomIntegerInRange(0, MiddleCandidate.Num() - 1);
+		CurrentMiddleTile = MiddleCandidate[newIndex];
+	}
+
+	{ // 육각타일 파괴 및 해당 육각타일 아래 건물/부유타일 파괴
+		for(int32 i = 0; i<Tiles.Num(); ++i)
+		{
+			
+			FVector SpawnLoc = Tiles[i]->GetRelativeLocation();
+			if ((Tiles[i]->GetRelativeLocation() - CurrentMiddleTile->GetRelativeLocation()).Length() > offset * CollapseValue)
+			{
+				if(Tile_Actor.Contains(Tiles[i]))
+				{
+					AActor* targetActor = *(Tile_Actor.Find(Tiles[i]));
+					IMapCollapseInterface* Child_Actor = Cast<IMapCollapseInterface>(targetActor);
+					if(Child_Actor)
+					{
+						Child_Actor->DoCollapse();
+						targetActor->SetLifeSpan(10.0f);
+					}
+				}
+				Tile_Actor.Remove(Tiles[i]);
+				Tiles[i]->DestroyComponent();
+				Tiles[i] = nullptr;
+				AActor* BrokenTile = GetWorld()->SpawnActor<AActor>(GC_TileBP, SpawnLoc,FRotator());
+				BrokenTile->SetLifeSpan(10.0f);
+				//SpawnGCComp(SpawnLoc);
+			}
+		}
+		
+	}
+
+	{// 배열 Invalid 값 제거
+		TArray<UStaticMeshComponent*> tempArray;
+		for(int i=0; i<Tiles.Num(); ++i)
+		{
+			if(Tiles[i])
+			{
+				tempArray.Add(Tiles[i]);
+			}
+		}
+		Tiles.Empty();
+		for(int i = 0; i<tempArray.Num();++i)
+		{
+			Tiles.Add(tempArray[i]);
+		}
+		
+	}
+	
+}
+
+void AHexagonTile::SpawnGCComp(FVector SpawnLoc)
+{
+	static FSoftObjectPath MyGCAsset(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180031/Blueprints/Map/Tile/Tile_Geometry/Tile.Tile'"));
+	UGeometryCollection* MyGCData = Cast<UGeometryCollection>(MyGCAsset.ResolveObject());
+	if (MyGCData == nullptr)
+	{
+		MyGCData = CastChecked<UGeometryCollection>(MyGCAsset.TryLoad());
+	}
+	UGeometryCollectionComponent* TargetGCComp;
+	FTransform Transform;
+	Transform.SetLocation(SpawnLoc);
+	TargetGCComp = Cast<UGeometryCollectionComponent>(AddComponentByClass(UGeometryCollectionComponent::StaticClass(), false, Transform, true));
+	TargetGCComp->SetRestCollection(MyGCData);
+	FinishAddComponent(TargetGCComp, false, Transform);
+	TargetGCComp->SetRestCollection(MyGCData);
+	TargetGCComp->EditRestCollection(GeometryCollection::EEditUpdate::RestPhysicsDynamic, false);
+
+}
+
+void AHexagonTile::CollapseLevel3(UStaticMeshComponent* TargetTile, int32 InvalidDataCount)
+{
+	
 }
 
 // Called when the game starts or when spawned
@@ -163,5 +287,21 @@ void AHexagonTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	static bool Check = false;
+	
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::I))
+	{
+		if(!Check)
+		{
+			CollapseLevel1And2(1);
+			Check = true;
+		}else
+		{
+			CollapseLevel1And2(2);
+			Check = false;
+		}
+		
+	}
+	
 }
 

@@ -15,6 +15,8 @@ class BASICMULTIPLAYERMELEECOMB_API AFloatingTile : public AActor, public IMapCo
 public:	
 	// Sets default values for this actor's properties
 	AFloatingTile();
+	// /* Initial Setter */
+	void SetInitalSetting(FVector);
 
 protected:
 	// Called when the game starts or when spawned

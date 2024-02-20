@@ -249,28 +249,43 @@ void AHexagonTile::CollapseLevel1And2(int CollapseLevel)
 	
 }
 
-void AHexagonTile::SpawnGCComp(FVector SpawnLoc)
+void AHexagonTile::CollapseLevel3()
 {
-	static FSoftObjectPath MyGCAsset(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180031/Blueprints/Map/Tile/Tile_Geometry/Tile.Tile'"));
-	UGeometryCollection* MyGCData = Cast<UGeometryCollection>(MyGCAsset.ResolveObject());
-	if (MyGCData == nullptr)
+	int index = UKismetMathLibrary::RandomIntegerInRange(0, Tiles.Num() - 1);
+	FVector SpawnLoc = Tiles[index]->GetRelativeLocation();
+	if (Tile_Actor.Contains(Tiles[index]))
 	{
-		MyGCData = CastChecked<UGeometryCollection>(MyGCAsset.TryLoad());
+		AActor* targetActor = *(Tile_Actor.Find(Tiles[index]));
+		IMapCollapseInterface* Child_Actor = Cast<IMapCollapseInterface>(targetActor);
+		if (Child_Actor)
+		{
+			Child_Actor->DoCollapse();
+			targetActor->SetLifeSpan(7.0f);
+		}
 	}
-	UGeometryCollectionComponent* TargetGCComp;
-	FTransform Transform;
-	Transform.SetLocation(SpawnLoc);
-	TargetGCComp = Cast<UGeometryCollectionComponent>(AddComponentByClass(UGeometryCollectionComponent::StaticClass(), false, Transform, true));
-	TargetGCComp->SetRestCollection(MyGCData);
-	FinishAddComponent(TargetGCComp, false, Transform);
-	TargetGCComp->SetRestCollection(MyGCData);
-	TargetGCComp->EditRestCollection(GeometryCollection::EEditUpdate::RestPhysicsDynamic, false);
+	Tile_Actor.Remove(Tiles[index]);
+	Tiles[index]->DestroyComponent();
+	Tiles[index] = nullptr;
+	AActor* BrokenTile = GetWorld()->SpawnActor<AActor>(GC_TileBP, SpawnLoc, FRotator());
+	BrokenTile->SetLifeSpan(7.0f);
 
-}
 
-void AHexagonTile::CollapseLevel3(UStaticMeshComponent* TargetTile, int32 InvalidDataCount)
-{
-	
+	{// 배열 Invalid 값 제거
+		TArray<UStaticMeshComponent*> tempArray;
+		for (int i = 0; i < Tiles.Num(); ++i)
+		{
+			if (Tiles[i])
+			{
+				tempArray.Add(Tiles[i]);
+			}
+		}
+		Tiles.Empty();
+		for (int i = 0; i < tempArray.Num(); ++i)
+		{
+			Tiles.Add(tempArray[i]);
+		}
+
+	}
 }
 
 // Called when the game starts or when spawned
@@ -302,6 +317,11 @@ void AHexagonTile::Tick(float DeltaTime)
 		}
 		
 	}
-	
+
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::O))
+	{
+		CollapseLevel3();
+
+	}
 }
 

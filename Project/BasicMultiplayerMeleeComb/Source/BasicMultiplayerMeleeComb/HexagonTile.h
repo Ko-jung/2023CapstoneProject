@@ -27,12 +27,10 @@ public:
 	/* 붕괴 1단계/2단계 함수 */
 	UFUNCTION(BlueprintCallable, Category = "Collapse")
 		void CollapseLevel1And2(int CollapseLevel);
-
-	void SpawnGCComp(FVector SpawnLoc);
-
+	
 	/* 붕괴 3단계 함수 */
 	UFUNCTION(BlueprintCallable, Category = "Collapse")
-		void CollapseLevel3(UStaticMeshComponent* TargetTile, int32 InvalidDataCount);
+		void CollapseLevel3();
 	
 	// Sets default values for this actor's properties
 	AHexagonTile();

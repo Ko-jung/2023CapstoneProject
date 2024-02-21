@@ -8,7 +8,7 @@ public class BasicMultiplayerMeleeComb : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "GeometryCollectionEngine" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "GeometryCollectionEngine", "EnhancedInput", "MotionWarping" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

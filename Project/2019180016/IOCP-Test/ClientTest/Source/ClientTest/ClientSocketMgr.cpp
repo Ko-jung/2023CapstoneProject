@@ -156,7 +156,8 @@ uint32 ClientSocketMgr::Run()
 			if (SerialNum == -1)
 			{
 				SerialNum = NewPlayerJoin.PlayerSerial;
-				Gamemode->SetOwnSerialNum(SerialNum);
+				Gamemode->PushQueue(EFunction::EBPPOSSESS);
+				//Gamemode->SetOwnSerialNum(SerialNum);
 				UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
 			}
 			else

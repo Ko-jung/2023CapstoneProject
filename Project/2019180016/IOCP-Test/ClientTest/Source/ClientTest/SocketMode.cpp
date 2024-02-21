@@ -62,8 +62,33 @@ void ASocketMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 
+	ProcessFunc();
+
 	if(m_Socket && m_Socket->TempCube)
 		CubeVec = m_Socket->TempCube->Location;
+}
+
+void ASocketMode::PushQueue(EFunction e)
+{
+	FuncQueue.push(e);
+}
+
+void ASocketMode::ProcessFunc()
+{
+	while (!FuncQueue.empty())
+	{
+		auto EFunc = FuncQueue.front();
+		FuncQueue.pop();
+
+		switch (EFunc)
+		{
+		case EBPPOSSESS:
+			SetOwnSerialNum(0);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void ASocketMode::SpawnPlayer_Implementation(int serial)

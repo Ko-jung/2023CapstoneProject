@@ -6,7 +6,15 @@
 #include "GameFramework/GameModeBase.h"
 #include "ClientSocketMgr.h"
 
+#include <queue>
+enum EFunction
+{
+	EBPPOSSESS,
+
+};
+
 #include "SocketMode.generated.h"
+
 
 /**
  * 
@@ -29,6 +37,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float) override;
 
+	void PushQueue(EFunction e);
+	void ProcessFunc();
+
 	UPROPERTY(BlueprintReadWrite)
 	FVector CubeVec;
 
@@ -46,6 +57,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void BPPossess(int serial);
+	virtual void BPPossess_Implementation(int serial);
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AOtherPlayerCharacter> OtherPlayerCharacterClass;
@@ -59,4 +71,6 @@ private:
 
 	TArray<class AClientController*> ClientControllers;
 	//TMap<int, class AClientController*> ClientControllers;
+
+	std::queue<EFunction> FuncQueue;
 };

@@ -70,28 +70,6 @@ bool ClientSocketMgr::Connect(const char* pszIP, int nPort)
 	return true;
 }
 
-void ClientSocketMgr::SendPlayerInfo(FVector location, FRotator rotate)
-{
-	PPlayerPosition PlayerPosition;
-	PlayerPosition.PlayerSerial = SerialNum;
-
-	PlayerPosition.x = location.X;
-	PlayerPosition.y = location.Y;
-	PlayerPosition.z = location.Z;
-
-	PlayerPosition.rx = rotate.Pitch;
-	PlayerPosition.ry = rotate.Yaw;
-	PlayerPosition.rz = rotate.Roll;
-
-	memcpy(m_sSendBuffer, &PlayerPosition, sizeof(PPlayerPosition));
-
-	int nSendLen = send(m_ServerSocket, m_sSendBuffer, sizeof(PPlayerPosition), 0);	
-	if (nSendLen == -1)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("send Error"));
-	}
-}
-
 void ClientSocketMgr::SendChat(const int& SessionId, const string& Chat)
 {
 }

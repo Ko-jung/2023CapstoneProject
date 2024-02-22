@@ -182,7 +182,7 @@ public:
 	// �ʱ� ĳ���� ���
 	//void EnrollPlayer(cCharacter& info);
 	// ĳ���� ����ȭ
-	void SendPlayerInfo(FVector location, FRotator rotate);
+	void SendPlayer(cCharacter& info);
 	// ĳ���� �α׾ƿ�
 	//void LogoutPlayer(const int& SessionId);
 	// ĳ���� �ǰ� ó��
@@ -218,7 +218,6 @@ public:
 private:
 	SOCKET	m_ServerSocket;				// ������ ������ ����
 	char 	m_sRecvBuffer[MAX_BUFFER];
-	char 	m_sSendBuffer[MAX_BUFFER];
 
 	UPROPERTY(BlueprintReadWrite)
 	AClientController* m_PlayerController;

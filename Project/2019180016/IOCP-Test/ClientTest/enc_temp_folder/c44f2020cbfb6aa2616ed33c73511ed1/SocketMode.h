@@ -68,11 +68,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FVector> ClientsLocation;
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FRotator> ClientsRotate;
+	TArray<FRotator> ClientRotate;
 
 private:
 	ClientSocketMgr* m_Socket;
 	bool m_bIsConnected;
+
 
 	std::queue<EFunction> FuncQueue;
 };

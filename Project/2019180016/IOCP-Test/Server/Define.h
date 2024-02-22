@@ -25,14 +25,14 @@ using std::endl;
 class EXP_OVER
 {
 public:
-	WSAOVERLAPPED _wsa_over;				// IOCP ±¸Á¶Ã¼
-	COMP_OP		  _comp_op;					// ÀÌº¥Æ® ±¸ºÐ
-	WSABUF		  _wsa_buf;					// ¼Û¼ö½Å½Ã ½ÇÁ¦ µ¥ÀÌÅÍ°¡ ÀúÀåµÇ´Â °ø°£
-	int target_id;							// (³»°¡Ãß°¡)
-	int room_id;							// (³»°¡Ãß°¡)
+	WSAOVERLAPPED _wsa_over;				// IOCP ï¿½ï¿½ï¿½ï¿½Ã¼
+	COMP_OP		  _comp_op;					// ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+	WSABUF		  _wsa_buf;					// ï¿½Û¼ï¿½ï¿½Å½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½
+	int target_id;							// (ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½)
+	int room_id;							// (ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½)
 											//
-	// ¼Û¼ö½Å¿ë ¹öÆÛ						//
-	char _net_buf[BUFSIZE];					// Recv Àü ÆÐÅ¶ ÀçÁ¶¸³ÇÏ¿© ÀúÀåµÇ´Â À§Ä¡. ½ÇÁúÀû »ç¿ë ¹öÆÛ.
+	// ï¿½Û¼ï¿½ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½						//
+	char _net_buf[BUFSIZE];					// Recv ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½Ä¡. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 
 public:
 	EXP_OVER(COMP_OP comp_op, char num_bytes, void* mess) : _comp_op(comp_op)

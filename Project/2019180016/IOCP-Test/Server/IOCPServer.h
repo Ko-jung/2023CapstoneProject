@@ -31,11 +31,13 @@ public:
 
 	void SendPlayerJoinPacket(int JoinPlayerSerial);
 
+	void ProcessPlayerPosition(PPlayerPosition p);
+
 	void TestSend();
 	std::thread TempSendThread;
 
 protected:
-	// IOCP¿ë ÇÚµé
+	// IOCPï¿½ï¿½ ï¿½Úµï¿½
 	HANDLE m_hIocp;
 
 	SOCKET m_ListenSocket;

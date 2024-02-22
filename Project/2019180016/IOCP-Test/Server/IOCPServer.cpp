@@ -279,6 +279,9 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	case (int)COMP_OP::OP_POSITION:
 
 		break;
+	case (int)COMP_OP::OP_PLAYERPOSITION:
+		//ProcessPlayerPosition()
+		break;
 	default:
 		break;
 	}
@@ -301,6 +304,10 @@ void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)
 			socket->SendProcess(sizeof(PPlayerJoin), &JoinPacket);
 		}
 	}
+}
+
+void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
+{
 }
 
 void IOCPServer::TestSend()

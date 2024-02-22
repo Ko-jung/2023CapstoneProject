@@ -64,12 +64,6 @@ void ASocketMode::Tick(float Deltatime)
 
 	ProcessFunc();
 
-	for (int8 i = 0; i < 6; i++)
-	{
-		// Send 현재 위치
-		m_Socket->SendPlayerInfo(ClientsLocation[i], ClientsRotate[i]);
-	}
-
 	if(m_Socket && m_Socket->TempCube)
 		CubeVec = m_Socket->TempCube->Location;
 }

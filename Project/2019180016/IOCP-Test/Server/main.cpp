@@ -8,7 +8,7 @@ int main()
 
 	IOCPServer* IocpServer = new IOCPServer();
 
-	// ÇöÀç CPU ÄÚ¾î¸¸Å­ Worker thread »ý¼º
+	// ï¿½ï¿½ï¿½ï¿½ CPU ï¿½Ú¾î¸¸Å­ Worker thread ï¿½ï¿½ï¿½ï¿½
 	IocpServer->Init(std::thread::hardware_concurrency());
 	IocpServer->BindListen(8000);
 

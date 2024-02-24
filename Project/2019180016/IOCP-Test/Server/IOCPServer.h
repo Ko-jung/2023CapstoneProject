@@ -3,6 +3,7 @@
 #include "Define.h"
 
 class ClientInfo;
+class RoomMgr;
 
 class IOCPServer
 {
@@ -54,6 +55,7 @@ protected:
 	std::unordered_map <int, class TimerMgr*> m_TimerMgrMap;
 
 	std::array<ClientInfo*, MAXCLIENT> m_Clients;
+	std::array<RoomMgr*, MAXROOM> m_Rooms;
 
 	int m_iWorkerNum;
 

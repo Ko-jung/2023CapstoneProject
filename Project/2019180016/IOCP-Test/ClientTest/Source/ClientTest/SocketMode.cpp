@@ -38,11 +38,14 @@ void ASocketMode::Disconnect()
 
 void ASocketMode::BeginPlay()
 {
+	// Call Blueprint BeginPlay
+	Super::BeginPlay();
+
 	m_Socket = ClientSocketMgr::Instance();
 	m_Socket->InitSocket();
 
 	//TestPrintHelloUseNative();
-	BPGetAllActorsOfThirdPerson();
+	//BPGetAllActorsOfThirdPerson();
 
 	m_bIsConnected = m_Socket->Connect("127.0.0.1", 8000);
 	if (m_bIsConnected)
@@ -64,11 +67,11 @@ void ASocketMode::Tick(float Deltatime)
 
 	ProcessFunc();
 
-	for (int8 i = 0; i < 6; i++)
-	{
-		// Send 현재 위치
-		m_Socket->SendPlayerInfo(ClientsLocation[i], ClientsRotate[i]);
-	}
+	m_Socket->SendPlayerInfo(ClientsLocation[SerialNum], ClientsRotate[SerialNum]);
+	//for (int8 i = 0; i < 6; i++)
+	//{
+	//	// Send 현재 위치
+	//}
 
 	if(m_Socket && m_Socket->TempCube)
 		CubeVec = m_Socket->TempCube->Location;
@@ -81,15 +84,19 @@ void ASocketMode::PushQueue(EFunction e)
 
 void ASocketMode::ProcessFunc()
 {
-	while (!FuncQueue.empty())
+	EFunction EFunc;
+	while (FuncQueue.try_pop(EFunc))
 	{
-		auto EFunc = FuncQueue.front();
-		FuncQueue.pop();
+		//auto EFunc = FuncQueue.front();
+		//FuncQueue.pop();
 
 		switch (EFunc)
 		{
 		case EBPPOSSESS:
 			SetOwnSerialNum(0);
+			break;
+		case ESPAWNPLAYER:
+			JoinOtherPlayer(1);
 			break;
 		default:
 			break;

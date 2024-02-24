@@ -9,13 +9,13 @@ using std::endl;
 struct Packet
 {
 	int PacketType;
+	int RoomNum;
 
-	Packet() {}
-	Packet(COMP_OP op) : PacketType((int)op) {}
+	Packet():PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) {}
+	Packet(COMP_OP op) : PacketType((int)op), RoomNum(-1) {}
 };
 
-// TODO: ȸ�� ���� �־������
-struct PPosition : Packet
+struct PTransform
 {
 	float x;
 	float y;
@@ -25,64 +25,48 @@ struct PPosition : Packet
 	float ry;
 	float rz;
 
-	PPosition() : Packet(COMP_OP::OP_POSITION){ x = y = z = rx = ry = rz = 0.f; }
-	PPosition(float x, float y, float z) :Packet(COMP_OP::OP_POSITION)
-	{
-		this->x = x;
-		this->y = y;
-		this->z = z;
-		rx = ry = rz = 0.f;
-	}
-	PPosition(float x, float y, float z, float rx, float ry, float rz) : Packet(COMP_OP::OP_POSITION)
-	{
-		this->x = x;
-		this->y = y;
-		this->z = z;
-		this->rx = rx;
-		this->ry = ry;
-		this->rz = rz;
-	}
+	PTransform() { x = y = z = rx = ry = rz = 0.f; }
+	PTransform(float x, float y, float z) : x(x), y(y), z(z) {rx = ry = rz = 0.f;}
+	PTransform(float x, float y, float z, float rx, float ry, float rz)
+		: x(x), y(y), z(z), rx(rx), ry(ry), rz(rz)
+	{}
+};
+
+struct PPosition : Packet, PTransform
+{
+	EObject ObjectType;
+
+	PPosition() : Packet(COMP_OP::OP_POSITION), ObjectType(EObject::BP_Cube) { x = y = z = rx = ry = rz = 0.f; }
+	PPosition(float x, float y, float z) : Packet(COMP_OP::OP_POSITION), PTransform(x, y, z), ObjectType(EObject::BP_Cube) {}
+	PPosition(float x, float y, float z, float rx, float ry, float rz)
+		: Packet(COMP_OP::OP_POSITION), PTransform(x, y, z, rx, ry, rz), ObjectType(EObject::BP_Cube)
+	{}
 };
 
 #pragma pack(push, 1)
-struct PPlayerPosition : PPosition
+struct PPlayerPosition : Packet, PTransform
 {
 	int PlayerSerial;
 	EPlayerState PlayerState;
 
-	PPlayerPosition()
-		: PPosition(), PlayerState(EPlayerState::Stay)
-	{
-		PacketType = (int)COMP_OP::OP_PLAYERPOSITION;
-	}
-	PPlayerPosition(float x, float y, float z , EPlayerState state = EPlayerState::Stay)
-		: PPosition(x, y, z), PlayerState(state)
-	{
-		PacketType = (int)COMP_OP::OP_PLAYERPOSITION;
-	}
+	PPlayerPosition() : Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(), PlayerState(EPlayerState::Stay) { }
+	PPlayerPosition(float x, float y, float z, EPlayerState state = EPlayerState::Stay)
+		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z), PlayerState(state) { }
 	PPlayerPosition(float x, float y, float z, float rx, float ry, float rz, EPlayerState state = EPlayerState::Stay)
-		: PPosition(x, y, z, rx, ry, rz)
-	{
-		PacketType = (int)COMP_OP::OP_PLAYERPOSITION;
-	}
+		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z, rx, ry, rz)
+	{ }
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct PSpawnObject : Packet
+struct PSpawnObject : Packet, PTransform
 {
 	EObject SpawnObject;
-	float x;
-	float y;
-	float z;
 
-	PSpawnObject() : Packet(COMP_OP::OP_OBJECTSPAWN) { SpawnObject = EObject::BP_Cube; x = y = z = 0.f; }
-	PSpawnObject(EObject EO, float x, float y, float z) : Packet(COMP_OP::OP_OBJECTSPAWN)
+	PSpawnObject() : Packet(COMP_OP::OP_OBJECTSPAWN), PTransform() { SpawnObject = EObject::BP_Cube; x = y = z = 0.f; }
+	PSpawnObject(EObject EO, float x, float y, float z) : Packet(COMP_OP::OP_OBJECTSPAWN), PTransform(x, y, z)
 	{
 		this->SpawnObject	= EO;
-		this->x				= x	;
-		this->y				= y	;
-		this->z				= z	;
 	}
 };
 #pragma pack(pop)

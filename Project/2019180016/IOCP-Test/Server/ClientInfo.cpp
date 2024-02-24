@@ -6,7 +6,8 @@
 
 ClientInfo::ClientInfo(int ClientNum):
 	m_iRemainDataLen(0),
-	m_iClientNum(ClientNum)
+	m_iClientNum(ClientNum),
+	m_iRoomNum(-1)
 {
 	//m_sClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	//if (INVALID_SOCKET == m_sClientSocket)

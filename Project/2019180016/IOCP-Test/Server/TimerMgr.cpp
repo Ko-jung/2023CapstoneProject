@@ -1,7 +1,9 @@
 #include "TimerMgr.h"
 #include "TimerEvent.h"
 
-// PPL ¶óÀÌºê·¯¸®
+#include <thread>
+
+// PPL ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½
 //#include <concurrent_unordered_map.h>
 
 TimerMgr::TimerMgr()
@@ -28,15 +30,16 @@ void TimerMgr::Pop()
 	auto now = std::chrono::system_clock::now();
 	while (m_TimerQueue->try_pop(Event))
 	{
-		// ¹ßµ¿ ½Ã°£À» ³Ñ°å´ÂÁö
+		// ï¿½ßµï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½
 		if (Event.GetActiveTime() <= std::chrono::system_clock::now())
 		{
 			Event.DoFuction()();
 		}
 		else
 		{
-			// ¾È ³Ñ°å´Ù¸é ´Ù½Ã Å¥¿¡ ´ã±â
+			// ï¿½ï¿½ ï¿½Ñ°ï¿½Ù¸ï¿½ ï¿½Ù½ï¿½ Å¥ï¿½ï¿½ ï¿½ï¿½ï¿½
 			m_TimerQueue->push(Event);
+			std::this_thread::yield();
 			return;
 		}
 	}

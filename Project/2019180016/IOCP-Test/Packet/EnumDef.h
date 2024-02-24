@@ -15,6 +15,7 @@ enum class COMP_OP
 enum class EObject : unsigned char
 {
 	BP_Cube,
+	BP_Player,
 };
 
 enum class EPlayerState : unsigned char

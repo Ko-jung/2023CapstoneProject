@@ -72,6 +72,11 @@ bool ClientSocketMgr::Connect(const char* pszIP, int nPort)
 
 void ClientSocketMgr::SendPlayerInfo(FVector location, FRotator rotate)
 {
+	if (SerialNum == -1)
+	{
+		return;
+	}
+
 	PPlayerPosition PlayerPosition;
 	PlayerPosition.PlayerSerial = SerialNum;
 
@@ -185,7 +190,10 @@ uint32 ClientSocketMgr::Run()
 			else
 			{
 				// PlayerSpawn
-				Gamemode->JoinOtherPlayer(NewPlayerJoin.PlayerSerial);
+
+				Gamemode->PushQueue(EFunction::ESPAWNPLAYER);
+				//Gamemode->JoinOtherPlayer(NewPlayerJoin.PlayerSerial);
+				// 
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue,
 				//	FString::Printf(TEXT("%d Client Join!"), TempJoin.PlayerSerial));
 			}

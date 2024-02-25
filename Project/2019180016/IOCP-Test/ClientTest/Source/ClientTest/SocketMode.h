@@ -6,9 +6,11 @@
 #include "GameFramework/GameModeBase.h"
 #include "ClientSocketMgr.h"
 
+#include <concurrent_queue.h>
 #include <queue>
 enum EFunction
 {
+	ESPAWNPLAYER,
 	EBPPOSSESS,
 
 };
@@ -74,5 +76,5 @@ private:
 	ClientSocketMgr* m_Socket;
 	bool m_bIsConnected;
 
-	std::queue<EFunction> FuncQueue;
+	concurrency::concurrent_queue<EFunction> FuncQueue;
 };

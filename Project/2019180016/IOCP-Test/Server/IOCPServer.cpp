@@ -7,6 +7,7 @@
 
 #include "TimerMgr.h"
 #include "TimerEvent.h"
+#include "RoomMgr.h"
 
 #include <chrono>
 
@@ -212,8 +213,16 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		//socket->Send();
 
 		SendPlayerJoinPacket(m_iClientId);
-		
-		cout << m_iClientId << "�� Accept" << endl;
+
+		static bool first = true;
+		if (first)
+		{
+			m_Rooms[0] = new RoomMgr();
+		}
+		socket->SetRoomNum(0);
+		m_Rooms[0]->AddMember(socket);
+
+		cout << m_iClientId << "번 Accept" << endl;
 
 		m_iClientId++;
 		m_iClientCount++;
@@ -268,11 +277,12 @@ void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 {
-	std::stringstream RecvData;
-	int PacketType;
-	
-	RecvData << exp->_wsa_buf.buf;
-	RecvData >> PacketType;
+	//std::stringstream RecvData;
+	//int PacketType;	
+	//RecvData << exp->_wsa_buf.buf;
+	//RecvData >> PacketType;
+
+	const int PacketType = *(int*)exp->_wsa_buf.buf;
 
 	switch (PacketType)
 	{
@@ -280,7 +290,11 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 
 		break;
 	case (int)COMP_OP::OP_PLAYERPOSITION:
-		//ProcessPlayerPosition()
+	{
+		PPlayerPosition PPP;
+		memcpy(&PPP, exp->_wsa_buf.buf, sizeof(PPlayerPosition));
+		ProcessPlayerPosition(PPP);
+	}
 		break;
 	default:
 		break;
@@ -308,6 +322,20 @@ void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)
 
 void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
 {
+	int serial = p.PlayerSerial;
+	auto Client = m_Clients[serial];
+	int RoomNum = Client->GetRoomNum();
+
+	Client->SetPos(p.x, p.y, p.z);
+
+	for (const auto& c : m_Clients)
+	{
+		int CNum = c->GetClientNum();
+		if (CNum != -1 && CNum != serial)
+		{
+			c->SendProcess(sizeof(PPlayerPosition), &p);
+		}
+	}
 }
 
 void IOCPServer::TestSend()

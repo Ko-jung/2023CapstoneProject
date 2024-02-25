@@ -16,8 +16,10 @@
 #pragma comment(lib, "MSWSock.lib")
 #pragma comment(lib, "ws2_32.lib")
 
-#define BUFSIZE 2024
-#define MAXCLIENT 2000
+#define BUFSIZE 128
+#define MAXCLIENT 2100
+#define MAXROOM 350
+#define MAXPLAYER 6
 
 using std::cout;
 using std::endl;

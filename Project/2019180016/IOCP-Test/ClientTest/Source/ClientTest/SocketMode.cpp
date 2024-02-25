@@ -33,6 +33,7 @@ void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 
 void ASocketMode::Disconnect()
 {
+	m_Socket->Disconnect();
 	m_Socket->Stop();
 }
 
@@ -53,7 +54,7 @@ void ASocketMode::BeginPlay()
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
 
-		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
+		UE_LOG(LogClass, Warning, TEXT("IOCP Server connect success!"));
 	}
 	else
 	{
@@ -67,37 +68,56 @@ void ASocketMode::Tick(float Deltatime)
 
 	ProcessFunc();
 
-	m_Socket->SendPlayerInfo(ClientsLocation[SerialNum], ClientsRotate[SerialNum]);
+	m_Socket->SendPlayerInfo(ClientTransform[SerialNum]);
 	//for (int8 i = 0; i < 6; i++)
 	//{
 	//	// Send 현재 위치
 	//}
 
-	if(m_Socket && m_Socket->TempCube)
-		CubeVec = m_Socket->TempCube->Location;
+	//if(m_Socket && m_Socket->TempCube)
+	//	CubeVec = m_Socket->TempCube->Location;
 }
 
-void ASocketMode::PushQueue(EFunction e)
+void ASocketMode::PushQueue(EFunction e, Packet* etc)
 {
-	FuncQueue.push(e);
+	FuncQueue.push(std::pair(e, etc));
 }
 
 void ASocketMode::ProcessFunc()
 {
-	EFunction EFunc;
+	std::pair<EFunction, Packet*> EFunc;
 	while (FuncQueue.try_pop(EFunc))
 	{
 		//auto EFunc = FuncQueue.front();
 		//FuncQueue.pop();
+		EFunction func = EFunc.first;
+		Packet* argu = EFunc.second;
 
-		switch (EFunc)
+		switch (func)
 		{
 		case EBPPOSSESS:
-			SetOwnSerialNum(0);
+		{
+			PPlayerJoin PPJ;
+			memcpy(&PPJ, argu, sizeof(PPlayerJoin));
+			SetOwnSerialNum(PPJ.PlayerSerial);
+
 			break;
+		}
 		case ESPAWNPLAYER:
-			JoinOtherPlayer(1);
+		{
+			PPlayerJoin PPJ;
+			memcpy(&PPJ, argu, sizeof(PPlayerJoin));
+			JoinOtherPlayer(PPJ.PlayerSerial);
 			break;
+		}
+		case EPLAYERTRANSFORM:
+		{
+			PPlayerPosition* PPP = static_cast<PPlayerPosition*>(argu);
+			SetPlayerPosition(*PPP);
+
+			delete PPP;
+			break;
+		}
 		default:
 			break;
 		}

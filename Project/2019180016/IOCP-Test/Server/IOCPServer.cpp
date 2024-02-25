@@ -296,6 +296,13 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessPlayerPosition(PPP);
 	}
 		break;
+	case (int)COMP_OP::OP_DISCONNECT:
+	{
+		PDisconnect disconnect(-1);
+		memcpy(&disconnect, exp->_wsa_buf.buf, sizeof(PDisconnect));
+		ProcessDisconnectPlayer(disconnect);
+	}
+		break;
 	default:
 		break;
 	}
@@ -326,7 +333,7 @@ void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
 	auto Client = m_Clients[serial];
 	int RoomNum = Client->GetRoomNum();
 
-	Client->SetPos(p.x, p.y, p.z);
+	//Client->SetPos(p.x, p.y, p.z);
 
 	for (const auto& c : m_Clients)
 	{
@@ -336,6 +343,11 @@ void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
 			c->SendProcess(sizeof(PPlayerPosition), &p);
 		}
 	}
+}
+
+void IOCPServer::ProcessDisconnectPlayer(PDisconnect p)
+{
+	m_Clients[p.DisconnectPlayerSerial]->Init();
 }
 
 void IOCPServer::TestSend()

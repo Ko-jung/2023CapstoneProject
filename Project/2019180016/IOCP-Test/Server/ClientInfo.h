@@ -6,16 +6,11 @@ class ClientInfo
 {
 public:
 	ClientInfo(int ClientNum = -1);
-	ClientInfo(const SOCKET& s) :
-		m_sClientSocket(s),
-		m_iRemainDataLen(0),
-		m_iClientNum(-1),
-		m_iRoomNum(-1)
-	{
-		ZeroMemory(&m_Exp, sizeof(m_Exp));
-	}
+	ClientInfo(const SOCKET& s);
 
 	virtual ~ClientInfo() {}
+
+	void Init();
 
 public:
 	void RecvProcess(const DWORD& bytes, EXP_OVER* exp);

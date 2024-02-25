@@ -33,6 +33,7 @@ public:
 	void SendPlayerJoinPacket(int JoinPlayerSerial);
 
 	void ProcessPlayerPosition(PPlayerPosition p);
+	void ProcessDisconnectPlayer(PDisconnect p);
 
 	void TestSend();
 	std::thread TempSendThread;

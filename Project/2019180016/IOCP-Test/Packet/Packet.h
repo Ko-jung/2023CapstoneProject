@@ -78,3 +78,11 @@ struct PPlayerJoin : Packet
 	PPlayerJoin()			 : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = -1; }
 	PPlayerJoin(BYTE serial) : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = serial; }
 };
+
+struct PDisconnect : Packet
+{
+	WORD DisconnectPlayerSerial;
+
+	//PDisconnect() : Packet(COMP_OP::OP_DISCONNECT) { PlayerSerial = -1; }
+	PDisconnect(WORD serial) : Packet(COMP_OP::OP_DISCONNECT) { DisconnectPlayerSerial = serial; }
+};

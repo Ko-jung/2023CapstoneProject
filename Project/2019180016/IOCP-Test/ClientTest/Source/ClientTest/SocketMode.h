@@ -12,7 +12,7 @@ enum EFunction
 {
 	ESPAWNPLAYER,
 	EBPPOSSESS,
-
+	EPLAYERTRANSFORM,
 };
 
 #include "SocketMode.generated.h"
@@ -39,7 +39,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float) override;
 
-	void PushQueue(EFunction e);
+	void PushQueue(EFunction e, Packet* etc);
 	void ProcessFunc();
 
 	UPROPERTY(BlueprintReadWrite)
@@ -68,13 +68,11 @@ public:
 	int SerialNum;
 
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FVector> ClientsLocation;
-	UPROPERTY(BlueprintReadWrite)
-	TArray<FRotator> ClientsRotate;
+	TArray<FTransform> ClientTransform;
 
 private:
 	ClientSocketMgr* m_Socket;
 	bool m_bIsConnected;
 
-	concurrency::concurrent_queue<EFunction> FuncQueue;
+	concurrency::concurrent_queue<std::pair<EFunction, Packet*>> FuncQueue;
 };

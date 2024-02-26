@@ -171,10 +171,14 @@ public:
 
 // Socket Function
 public:
+	void Send(int packetsize, Packet* packet);
+
 	// ���� ��� �� ����
 	bool InitSocket();
 	// ������ ����
 	bool Connect(const char* pszIP, int nPort);
+
+	void Disconnect();
 	// ȸ������
 	//bool SignUp(const FText& Id, const FText& Pw);
 	// ������ �α���
@@ -182,7 +186,7 @@ public:
 	// �ʱ� ĳ���� ���
 	//void EnrollPlayer(cCharacter& info);
 	// ĳ���� ����ȭ
-	void SendPlayerInfo(FVector location, FRotator rotate);
+	void SendPlayerInfo(FTransform transform);
 	// ĳ���� �α׾ƿ�
 	//void LogoutPlayer(const int& SessionId);
 	// ĳ���� �ǰ� ó��

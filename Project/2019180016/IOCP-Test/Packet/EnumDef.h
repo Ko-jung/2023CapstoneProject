@@ -10,6 +10,7 @@ enum class COMP_OP
 	OP_PLAYERPOSITION,
 	OP_OBJECTSPAWN,
 	OP_PLAYERJOIN,
+	OP_DISCONNECT,
 };
 
 enum class EObject : unsigned char

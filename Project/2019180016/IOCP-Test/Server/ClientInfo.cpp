@@ -18,6 +18,21 @@ ClientInfo::ClientInfo(int ClientNum):
 	ZeroMemory(&m_Exp, sizeof(m_Exp));
 }
 
+ClientInfo::ClientInfo(const SOCKET& s) :
+	m_sClientSocket(s)
+{
+	Init();
+}
+
+void ClientInfo::Init()
+{
+	closesocket(m_sClientSocket);
+	m_iRemainDataLen = 0;
+	m_iClientNum = -1;
+	m_iRoomNum = -1;
+	ZeroMemory(&m_Exp, sizeof(m_Exp));
+}
+
 void ClientInfo::Recv()
 {
 	DWORD recv_flag = 0;

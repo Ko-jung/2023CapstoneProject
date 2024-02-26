@@ -26,6 +26,16 @@ ClientSocketMgr::~ClientSocketMgr()
 	WSACleanup();
 }
 
+void ClientSocketMgr::Send(int packetsize, Packet* packet)
+{
+	memcpy(m_sSendBuffer, packet, packetsize);
+	int nSendLen = send(m_ServerSocket, m_sSendBuffer, packetsize, 0);
+	if (nSendLen == -1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("send Error PacketType is %d"), packet->PacketType);
+	}
+}
+
 bool ClientSocketMgr::InitSocket()
 {
 	WSADATA wsaData;
@@ -70,12 +80,21 @@ bool ClientSocketMgr::Connect(const char* pszIP, int nPort)
 	return true;
 }
 
-void ClientSocketMgr::SendPlayerInfo(FVector location, FRotator rotate)
+void ClientSocketMgr::Disconnect()
+{
+	PDisconnect disconnect(SerialNum);
+	Send(sizeof(PDisconnect), &disconnect);
+}
+
+void ClientSocketMgr::SendPlayerInfo(FTransform transform)
 {
 	if (SerialNum == -1)
 	{
 		return;
 	}
+	FVector location = transform.GetLocation();
+	FRotator rotate = transform.GetRotation().Rotator();
+	//FRotator rotate = transform.GetRotation();
 
 	PPlayerPosition PlayerPosition;
 	PlayerPosition.PlayerSerial = SerialNum;
@@ -183,7 +202,7 @@ uint32 ClientSocketMgr::Run()
 			if (SerialNum == -1)
 			{
 				SerialNum = NewPlayerJoin.PlayerSerial;
-				Gamemode->PushQueue(EFunction::EBPPOSSESS);
+				Gamemode->PushQueue(EFunction::EBPPOSSESS, &NewPlayerJoin);
 				//Gamemode->SetOwnSerialNum(SerialNum);
 				UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
 			}
@@ -191,7 +210,7 @@ uint32 ClientSocketMgr::Run()
 			{
 				// PlayerSpawn
 
-				Gamemode->PushQueue(EFunction::ESPAWNPLAYER);
+				Gamemode->PushQueue(EFunction::ESPAWNPLAYER, &NewPlayerJoin);
 				//Gamemode->JoinOtherPlayer(NewPlayerJoin.PlayerSerial);
 				// 
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue,
@@ -201,10 +220,9 @@ uint32 ClientSocketMgr::Run()
 			break;
 		case (int)COMP_OP::OP_PLAYERPOSITION:
 		{
-			PPlayerPosition PlayerPosition;
-
-			memcpy(&PlayerPosition, m_sRecvBuffer, sizeof(PPlayerPosition));
-			Gamemode->SetPlayerPosition(PlayerPosition);
+			PPlayerPosition* PlayerPosition = new PPlayerPosition();
+			memcpy(PlayerPosition, m_sRecvBuffer, sizeof(PPlayerPosition));
+			Gamemode->PushQueue(EFunction::EPLAYERTRANSFORM, PlayerPosition);
 		}
 			break;
 		default:

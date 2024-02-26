@@ -15,6 +15,14 @@ enum EFunction
 	EPLAYERTRANSFORM,
 };
 
+UENUM(BlueprintType)
+enum class EnumPlayerState : uint8 {
+	EStay       UMETA(DisplayName = "Stay"),
+	EWalk       UMETA(DisplayName = "Walk"),
+	EJump		UMETA(DisplayName = "Jump"),
+	ERun		UMETA(DisplayName = "Run"),
+};
+
 #include "SocketMode.generated.h"
 
 
@@ -55,7 +63,7 @@ public:
 	void BPGetAllActorsOfThirdPerson();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void BPSetPlayerPosition(int serial, FVector location, FRotator rotate);
+	void BPSetPlayerPosition(int serial, FVector location, FRotator rotate, EnumPlayerState state);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void BPPossess(int serial);
@@ -69,6 +77,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FTransform> ClientTransform;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<EnumPlayerState> ClientState;
 
 private:
 	ClientSocketMgr* m_Socket;

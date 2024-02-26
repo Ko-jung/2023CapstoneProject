@@ -27,8 +27,28 @@ void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	int32 Serial = PlayerPosition.PlayerSerial;
 	FVector Location{ PlayerPosition.x, PlayerPosition.y, PlayerPosition.z };
 	FRotator Rotate{ PlayerPosition.rx, PlayerPosition.ry, PlayerPosition.rz };
+	EPlayerState state = PlayerPosition.PlayerState;
+	EnumPlayerState ArguState;
 
-	BPSetPlayerPosition(Serial, Location, Rotate);
+	switch (state)
+	{
+	case EPlayerState::Stay:
+		ArguState = EnumPlayerState::EStay;
+		break;
+	case EPlayerState::Walk:
+		ArguState = EnumPlayerState::EWalk;
+		break;
+	case EPlayerState::Run:
+		ArguState = EnumPlayerState::ERun;
+		break;
+	case EPlayerState::Jump:
+		ArguState = EnumPlayerState::EJump;
+		break;
+	default:
+		break;
+	}
+
+	BPSetPlayerPosition(Serial, Location, Rotate, ArguState);
 }
 
 void ASocketMode::Disconnect()
@@ -53,6 +73,8 @@ void ASocketMode::BeginPlay()
 	{
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
+
+		ClientState.Init(EnumPlayerState::EStay, 6);
 
 		UE_LOG(LogClass, Warning, TEXT("IOCP Server connect success!"));
 	}
@@ -133,7 +155,7 @@ void ASocketMode::TestPrintHelloUseNative_Implementation()
 void ASocketMode::BPGetAllActorsOfThirdPerson_Implementation()
 {
 }
-void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate)
+void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate, EnumPlayerState state)
 {
 }
 

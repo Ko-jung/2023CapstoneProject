@@ -67,7 +67,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void BPPossess(int serial);
-	virtual void BPPossess_Implementation(int serial);
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AOtherPlayerCharacter> OtherPlayerCharacterClass;

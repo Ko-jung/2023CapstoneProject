@@ -7,6 +7,7 @@
 #include "OtherPlayerCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "UObject/UnrealType.h"
 
 void ASocketMode::JoinOtherPlayer(int serial)
 {
@@ -29,6 +30,8 @@ void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	FRotator Rotate{ PlayerPosition.rx, PlayerPosition.ry, PlayerPosition.rz };
 	EPlayerState state = PlayerPosition.PlayerState;
 	EnumPlayerState ArguState;
+
+
 
 	switch (state)
 	{
@@ -90,6 +93,21 @@ void ASocketMode::Tick(float Deltatime)
 
 	ProcessFunc();
 
+
+	UClass* MyClass = GetClass();
+	for (FProperty* Property = MyClass->PropertyLink; Property; Property = Property->PropertyLinkNext)
+	{
+		FFloatProperty* FloatProperty = Cast<FFloatProperty>(Property);
+		if (FloatProperty && Property->GetFName() == TEXT("FindFPropertyTest"))
+		{
+			// Need more work for arrays
+			float MyFloatValue = FloatProperty->GetPropertyValue(Property->ContainerPtrToValuePtr<float>(this));
+
+			UE_LOG(LogTemp, Log, TEXT("Value is = %f"), MyFloatValue);
+			break;
+		}
+	}
+
 	m_Socket->SendPlayerInfo(ClientTransform[SerialNum]);
 	//for (int8 i = 0; i < 6; i++)
 	//{
@@ -146,19 +164,8 @@ void ASocketMode::ProcessFunc()
 	}
 }
 
-void ASocketMode::SpawnPlayer_Implementation(int serial)
-{
-}
-void ASocketMode::TestPrintHelloUseNative_Implementation()
-{
-}
-void ASocketMode::BPGetAllActorsOfThirdPerson_Implementation()
-{
-}
-void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate, EnumPlayerState state)
-{
-}
-
-void ASocketMode::BPPossess_Implementation(int serial)
-{
-}
+void ASocketMode::SpawnPlayer_Implementation(int serial){}
+void ASocketMode::TestPrintHelloUseNative_Implementation(){}
+void ASocketMode::BPGetAllActorsOfThirdPerson_Implementation(){}
+void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate, EnumPlayerState state){}
+void ASocketMode::BPPossess_Implementation(int serial){}

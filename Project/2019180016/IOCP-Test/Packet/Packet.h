@@ -47,13 +47,16 @@ struct PPosition : Packet, PTransform
 struct PPlayerPosition : Packet, PTransform
 {
 	int PlayerSerial;
+	float PlayerSpeed;
+
 	EPlayerState PlayerState;
 
 	PPlayerPosition() : Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(), PlayerState(EPlayerState::Stay) { }
-	PPlayerPosition(float x, float y, float z, EPlayerState state = EPlayerState::Stay)
-		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z), PlayerState(state) { }
-	PPlayerPosition(float x, float y, float z, float rx, float ry, float rz, EPlayerState state = EPlayerState::Stay)
-		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z, rx, ry, rz)
+	PPlayerPosition(float x, float y, float z, float speed, EPlayerState state = EPlayerState::Stay)
+		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z), PlayerState(state), PlayerSpeed(speed)
+	{ }
+	PPlayerPosition(float x, float y, float z, float rx, float ry, float rz, float speed, EPlayerState state = EPlayerState::Stay)
+		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z, rx, ry, rz), PlayerSpeed(speed)
 	{ }
 };
 #pragma pack(pop)

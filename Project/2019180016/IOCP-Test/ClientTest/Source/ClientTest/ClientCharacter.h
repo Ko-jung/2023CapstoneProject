@@ -14,4 +14,11 @@ class CLIENTTEST_API AClientCharacter : public AClientTestCharacter
 {
 	GENERATED_BODY()
 	
+public:
+	// To add mapping context
+	virtual void BeginPlay();
+
+public:
+	UPROPERTY(BlueprintReadWrite)
+	float Speed;
 };

@@ -8,3 +8,6 @@
 6. 여러 메쉬에 적용시키기
 
 2024.03.01 기준 6번 진행중
+2024.03.02)
+6번을 위한 선행 작업으로 런타임중 render target 2d를 만들고, 이를 target texture에 연결,
+이후 dynamic material instance를 만들고 그 머테리얼의 파라미터인 render target에 연결하여 적용시키는 방식을 사용,

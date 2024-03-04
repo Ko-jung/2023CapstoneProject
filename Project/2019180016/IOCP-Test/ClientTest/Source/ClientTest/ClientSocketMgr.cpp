@@ -86,7 +86,7 @@ void ClientSocketMgr::Disconnect()
 	Send(sizeof(PDisconnect), &disconnect);
 }
 
-void ClientSocketMgr::SendPlayerInfo(FTransform transform)
+void ClientSocketMgr::SendPlayerInfo(FTransform transform, float speed)
 {
 	if (SerialNum == -1)
 	{
@@ -106,6 +106,8 @@ void ClientSocketMgr::SendPlayerInfo(FTransform transform)
 	PlayerPosition.rx = rotate.Pitch;
 	PlayerPosition.ry = rotate.Yaw;
 	PlayerPosition.rz = rotate.Roll;
+
+	PlayerPosition.PlayerSpeed = speed;
 
 	memcpy(m_sSendBuffer, &PlayerPosition, sizeof(PPlayerPosition));
 

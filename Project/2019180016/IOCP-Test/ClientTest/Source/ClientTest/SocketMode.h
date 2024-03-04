@@ -63,7 +63,7 @@ public:
 	void BPGetAllActorsOfThirdPerson();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void BPSetPlayerPosition(int serial, FTransform transform);
+	void BPSetPlayerPosition(int serial, FTransform transform, float speed);
 	//void BPSetPlayerPosition(int serial, FVector location, FRotator rotate, EnumPlayerState state);
 
 	UFUNCTION(BlueprintNativeEvent)

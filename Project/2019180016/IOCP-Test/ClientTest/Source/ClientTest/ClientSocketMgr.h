@@ -186,7 +186,7 @@ public:
 	// �ʱ� ĳ���� ���
 	//void EnrollPlayer(cCharacter& info);
 	// ĳ���� ����ȭ
-	void SendPlayerInfo(FTransform transform);
+	void SendPlayerInfo(FTransform transform, float speed);
 	// ĳ���� �α׾ƿ�
 	//void LogoutPlayer(const int& SessionId);
 	// ĳ���� �ǰ� ó��

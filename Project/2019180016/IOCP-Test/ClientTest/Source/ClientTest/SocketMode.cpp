@@ -30,6 +30,8 @@ void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 
 	FTransform transform{ Rotate, Location, FVector(1.f,1.f,1.f) };
 
+	float speed = PlayerPosition.PlayerSpeed;
+
 	switch (state)
 	{
 	case EPlayerState::Stay:
@@ -48,7 +50,7 @@ void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 		break;
 	}
 
-	BPSetPlayerPosition(Serial, transform);
+	BPSetPlayerPosition(Serial, transform, speed);
 	//BPSetPlayerPosition(Serial, Location, Rotate, ArguState);
 }
 
@@ -89,7 +91,7 @@ void ASocketMode::Tick(float Deltatime)
 
 	ProcessFunc();
 
-	m_Socket->SendPlayerInfo(Clients[SerialNum]->GetActorTransform());
+	m_Socket->SendPlayerInfo(Clients[SerialNum]->GetActorTransform(), Clients[SerialNum]->Speed);
 	//for (int8 i = 0; i < 6; i++)
 	//{
 	//	// Send 현재 위치
@@ -148,6 +150,6 @@ void ASocketMode::ProcessFunc()
 void ASocketMode::SpawnPlayer_Implementation(int serial){}
 void ASocketMode::TestPrintHelloUseNative_Implementation(){}
 void ASocketMode::BPGetAllActorsOfThirdPerson_Implementation(){}
-void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FTransform transform){}
+void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FTransform transform, float speed){}
 //void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate, EnumPlayerState state){}
 void ASocketMode::BPPossess_Implementation(int serial){}

@@ -4,10 +4,7 @@
 #include "SocketMode.h"
 
 #include "ClientController.h"
-#include "OtherPlayerCharacter.h"
-
-#include "Kismet/GameplayStatics.h"
-#include "UObject/UnrealType.h"
+#include "ClientCharacter.h"
 
 void ASocketMode::JoinOtherPlayer(int serial)
 {
@@ -31,7 +28,9 @@ void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	EPlayerState state = PlayerPosition.PlayerState;
 	EnumPlayerState ArguState;
 
+	FTransform transform{ Rotate, Location, FVector(1.f,1.f,1.f) };
 
+	float speed = PlayerPosition.PlayerSpeed;
 
 	switch (state)
 	{
@@ -51,7 +50,8 @@ void ASocketMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 		break;
 	}
 
-	BPSetPlayerPosition(Serial, Location, Rotate, ArguState);
+	BPSetPlayerPosition(Serial, transform, speed);
+	//BPSetPlayerPosition(Serial, Location, Rotate, ArguState);
 }
 
 void ASocketMode::Disconnect()
@@ -77,8 +77,6 @@ void ASocketMode::BeginPlay()
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
 
-		ClientState.Init(EnumPlayerState::EStay, 6);
-
 		UE_LOG(LogClass, Warning, TEXT("IOCP Server connect success!"));
 	}
 	else
@@ -93,22 +91,7 @@ void ASocketMode::Tick(float Deltatime)
 
 	ProcessFunc();
 
-
-	UClass* MyClass = GetClass();
-	for (FProperty* Property = MyClass->PropertyLink; Property; Property = Property->PropertyLinkNext)
-	{
-		FFloatProperty* FloatProperty = Cast<FFloatProperty>(Property);
-		if (FloatProperty && Property->GetFName() == TEXT("FindFPropertyTest"))
-		{
-			// Need more work for arrays
-			float MyFloatValue = FloatProperty->GetPropertyValue(Property->ContainerPtrToValuePtr<float>(this));
-
-			UE_LOG(LogTemp, Log, TEXT("Value is = %f"), MyFloatValue);
-			break;
-		}
-	}
-
-	m_Socket->SendPlayerInfo(ClientTransform[SerialNum]);
+	m_Socket->SendPlayerInfo(Clients[SerialNum]->GetActorTransform(), Clients[SerialNum]->Speed);
 	//for (int8 i = 0; i < 6; i++)
 	//{
 	//	// Send 현재 위치
@@ -167,5 +150,6 @@ void ASocketMode::ProcessFunc()
 void ASocketMode::SpawnPlayer_Implementation(int serial){}
 void ASocketMode::TestPrintHelloUseNative_Implementation(){}
 void ASocketMode::BPGetAllActorsOfThirdPerson_Implementation(){}
-void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate, EnumPlayerState state){}
+void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FTransform transform, float speed){}
+//void ASocketMode::BPSetPlayerPosition_Implementation(int serial, FVector location, FRotator rotate, EnumPlayerState state){}
 void ASocketMode::BPPossess_Implementation(int serial){}

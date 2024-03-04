@@ -63,22 +63,23 @@ public:
 	void BPGetAllActorsOfThirdPerson();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void BPSetPlayerPosition(int serial, FVector location, FRotator rotate, EnumPlayerState state);
+	void BPSetPlayerPosition(int serial, FTransform transform, float speed);
+	//void BPSetPlayerPosition(int serial, FVector location, FRotator rotate, EnumPlayerState state);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void BPPossess(int serial);
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AOtherPlayerCharacter> OtherPlayerCharacterClass;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<class AClientCharacter*> Clients;
 
 	UPROPERTY(BlueprintReadWrite)
 	int SerialNum;
 
-	UPROPERTY(BlueprintReadWrite)
-	TArray<FTransform> ClientTransform;
+	//UPROPERTY(BlueprintReadWrite)
+	//TArray<FTransform> ClientTransform;
 
-	UPROPERTY(BlueprintReadWrite)
-	TArray<EnumPlayerState> ClientState;
+	//UPROPERTY(BlueprintReadWrite)
+	//TArray<EnumPlayerState> ClientState;
 
 private:
 	ClientSocketMgr* m_Socket;

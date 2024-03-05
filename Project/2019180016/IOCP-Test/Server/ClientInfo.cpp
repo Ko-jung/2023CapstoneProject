@@ -56,15 +56,15 @@ void ClientInfo::Recv()
 
 void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 {
-	int remaindata = bytes + m_iRemainDataLen;
-	char* packet = exp->_net_buf;
-	std::string str(exp->_wsa_buf.buf);
+	//int remaindata = bytes + m_iRemainDataLen;
+	//char* packet = exp->_net_buf;
+	//std::string str(exp->_wsa_buf.buf);
 
-	std::stringstream RecvDataStream;
-	RecvDataStream << exp->_wsa_buf.buf;
+	//std::stringstream RecvDataStream;
+	//RecvDataStream << exp->_wsa_buf.buf;
 
-	int OP;
-	RecvDataStream >> OP;
+	//int OP;
+	//RecvDataStream >> OP;
 
 	//Packet* packet = GetPacket((COMP_OP)OP);
 

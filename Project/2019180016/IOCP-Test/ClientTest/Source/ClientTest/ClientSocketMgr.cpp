@@ -231,17 +231,6 @@ uint32 ClientSocketMgr::Run()
 			UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"))
 			break;
 		}
-		//Packet* packet = GetPacket((COMP_OP)OP);
-
-		//FString SendStr("ASDASD");
-		//int nSendLen = send(
-		//	m_ServerSocket, TCHAR_TO_ANSI(*SendStr), SendStr.Len(), 0
-		//);
-		//
-		//if (nSendLen == -1)
-		//{
-		//	UE_LOG(LogTemp, Warning, TEXT("send Error"));
-		//}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
 	return 0;

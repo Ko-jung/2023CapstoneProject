@@ -103,6 +103,58 @@ void ASocketMode::Tick(float Deltatime)
 
 void ASocketMode::PushQueue(EFunction e, Packet* etc)
 {
+	FString DebugStr = "";
+	switch (e)
+	{
+	case ESPAWNPLAYER:
+		DebugStr += "ESPAWNPLAYER";
+		{
+			PPlayerJoin* PPJ = (PPlayerJoin*)(etc);
+			DebugStr += (std::to_string(PPJ->PacketType).c_str());
+			DebugStr += (std::to_string(PPJ->PlayerSerial).c_str());
+			DebugStr += (std::to_string(PPJ->RoomNum).c_str());
+		}
+		break;
+	case EBPPOSSESS:
+		DebugStr += "EBPPOSSESS";
+		{
+			PPlayerJoin* PPJ = (PPlayerJoin*)(etc);
+			DebugStr += (std::to_string(PPJ->PacketType).c_str());
+			DebugStr += "/";
+			DebugStr += (std::to_string(PPJ->PlayerSerial).c_str());
+			DebugStr += "/";
+			DebugStr += (std::to_string(PPJ->RoomNum).c_str());
+		}
+		break;
+	case EPLAYERTRANSFORM:
+		DebugStr += "EPLAYERTRANSFORM";
+		{
+			PPlayerPosition* PPP = (PPlayerPosition*)(etc);
+			DebugStr += (std::to_string(PPP->PacketType).c_str());
+			DebugStr += "/";
+			DebugStr += (std::to_string(PPP->PlayerSerial).c_str());
+			DebugStr += "/";
+			DebugStr += (std::to_string(PPP->RoomNum).c_str());
+			DebugStr += "/";
+
+			DebugStr += (std::to_string(PPP->rx).c_str());
+			DebugStr += ", ";
+			DebugStr += (std::to_string(PPP->ry).c_str());
+			DebugStr += ", ";
+			DebugStr += (std::to_string(PPP->rz).c_str());
+			DebugStr += ", ";
+			DebugStr += (std::to_string(PPP->x).c_str());
+			DebugStr += ", ";
+			DebugStr += (std::to_string(PPP->y).c_str());
+			DebugStr += ", ";
+			DebugStr += (std::to_string(PPP->z).c_str());
+		}
+		break;
+	default:
+		break;
+	}
+	UE_LOG(LogClass, Warning, TEXT("%s"), *DebugStr);
+
 	FuncQueue.push(std::pair(e, etc));
 }
 

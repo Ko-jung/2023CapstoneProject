@@ -4,8 +4,8 @@
 #include "ClientSocketMgr.h"
 #include <cstring>
 
-#include "../../Packet/EnumDef.h"
-#include "../../Packet/Packet.h"
+#include "../../../../Packet/EnumDef.h"
+#include "../../../../Packet/Packet.h"
 
 #include "SocketMode.h"
 
@@ -228,7 +228,7 @@ uint32 ClientSocketMgr::Run()
 		}
 			break;
 		default:
-			UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"))
+			UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"));
 			break;
 		}
 	}

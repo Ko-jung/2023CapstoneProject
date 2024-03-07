@@ -20,6 +20,14 @@ enum EFunction
 	EPLAYERTRANSFORM,
 };
 
+UENUM(BlueprintType)
+enum class EnumPlayerState : uint8 {
+	EStay       UMETA(DisplayName = "Stay"),
+	EWalk       UMETA(DisplayName = "Walk"),
+	EJump		UMETA(DisplayName = "Jump"),
+	ERun		UMETA(DisplayName = "Run"),
+};
+
 /**
  * 
  */
@@ -33,11 +41,23 @@ public:
 	void EndPlay(const EEndPlayReason::Type EndPlayReason);
 	virtual void Tick(float) override;
 
+	void JoinOtherPlayer(int serial);
+	void SetOwnSerialNum(int serial);
+	void SetPlayerPosition(PPlayerPosition PlayerPosition);
+
+	UFUNCTION(BlueprintCallable)
+	void Disconnect();
+
 	void PushQueue(EFunction e, Packet* etc);
 	void ProcessFunc();
 
+public:
+	UPROPERTY(BlueprintReadWrite)
+	int SerialNum;
+
 private:
 	class NetworkMgr* NetworkManager;
+	bool IsConnected;
 
 	concurrency::concurrent_queue<std::pair<EFunction, Packet*>> FuncQueue;
 };

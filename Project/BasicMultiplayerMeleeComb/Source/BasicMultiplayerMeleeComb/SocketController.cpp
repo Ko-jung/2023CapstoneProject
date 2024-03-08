@@ -3,15 +3,25 @@
 
 #include "SocketController.h"
 #include "NetworkMgr.h"
+#include "ClientCharacter.h"
+#include "EnhancedInputSubsystems.h"
 
 void ASocketController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetOwnSerialNum(0);
+
 	NetworkManager = NetworkMgr::Instance();
 	NetworkManager->InitSocket();
 
 	IsConnected = NetworkManager->Connect(SERVER_IP, SERVER_PORT);
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(IMC_Default, 0);
+	}
 
 	if (IsConnected)
 	{
@@ -57,7 +67,11 @@ void ASocketController::SetOwnSerialNum(int serial)
 
 	//BPPossess(serial);
 	
-	//Possess();
+	//ConstructorHelpers::FClassFinder<AActor> OwnCharacter(TEXT("/Script/Engine.Blueprint'/Game/2019180016/BP_ClientCharacter.BP_ClientCharacter'"));
+
+	FActorSpawnParameters SpawnParameter;
+	auto actor = GetWorld()->SpawnActor<AClientCharacter>(ClientCharacter, FVector(-380.f, 290.f, 88.0), FRotator(), SpawnParameter);
+	Possess(actor);
 }
 
 void ASocketController::SetPlayerPosition(PPlayerPosition PlayerPosition)
@@ -119,7 +133,7 @@ void ASocketController::ProcessFunc()
 		{
 			PPlayerJoin PPJ;
 			memcpy(&PPJ, argu, sizeof(PPlayerJoin));
-			//SetOwnSerialNum(PPJ.PlayerSerial);
+			SetOwnSerialNum(PPJ.PlayerSerial);
 
 			break;
 		}
@@ -127,13 +141,13 @@ void ASocketController::ProcessFunc()
 		{
 			PPlayerJoin PPJ;
 			memcpy(&PPJ, argu, sizeof(PPlayerJoin));
-			//JoinOtherPlayer(PPJ.PlayerSerial);
+			JoinOtherPlayer(PPJ.PlayerSerial);
 			break;
 		}
 		case EPLAYERTRANSFORM:
 		{
 			PPlayerPosition* PPP = static_cast<PPlayerPosition*>(argu);
-			//SetPlayerPosition(*PPP);
+			SetPlayerPosition(*PPP);
 
 			delete PPP;
 			break;
@@ -142,4 +156,25 @@ void ASocketController::ProcessFunc()
 			break;
 		}
 	}
+}
+
+void ASocketController::Move(const FInputActionValue& Value)
+{
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	const FRotator Rotation = GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+	const FVector ForwardDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector RightDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	
+	GetPawn()->AddMovementInput(ForwardDir, MovementVector.X);
+	GetPawn()->AddMovementInput(RightDir, MovementVector.Y);
+}
+
+void ASocketController::Look(const FInputActionValue& Value)
+{
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	AddYawInput(LookAxisVector.X);
+	AddPitchInput(LookAxisVector.Y);
 }

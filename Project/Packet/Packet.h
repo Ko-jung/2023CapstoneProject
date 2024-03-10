@@ -89,3 +89,18 @@ struct PDisconnect : Packet
 	//PDisconnect() : Packet(COMP_OP::OP_DISCONNECT) { PlayerSerial = -1; }
 	PDisconnect(WORD serial) : Packet(COMP_OP::OP_DISCONNECT) { DisconnectPlayerSerial = serial; }
 };
+
+struct PStartMatching : Packet
+{
+	PStartMatching():Packet(COMP_OP::OP_STARTMATCHING) {}
+};
+
+struct PStartGame : Packet
+{
+	PStartGame() :Packet(COMP_OP::OP_STARTGAME) {}
+};
+
+struct PTileDrop : Packet
+{
+	PTileDrop() :Packet(COMP_OP::OP_TILEDROP) {}
+};

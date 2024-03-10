@@ -11,6 +11,9 @@ enum class COMP_OP
 	OP_OBJECTSPAWN,
 	OP_PLAYERJOIN,
 	OP_DISCONNECT,
+	OP_STARTMATCHING,
+	OP_STARTGAME,
+	OP_TILEDROP,
 };
 
 enum class EObject : unsigned char

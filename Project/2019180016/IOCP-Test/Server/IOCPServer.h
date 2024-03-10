@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Define.h"
+#include <concurrent_priority_queue.h>
 
 class ClientInfo;
 class RoomMgr;
@@ -31,9 +32,12 @@ public:
 	void RecvNewPosition(int id, int bytes, EXP_OVER* exp);
 
 	void SendPlayerJoinPacket(int JoinPlayerSerial);
+	void SendTileDrop(int id/*, BYTE tileDropLevel*/);
 
 	void ProcessPlayerPosition(PPlayerPosition p);
 	void ProcessDisconnectPlayer(PDisconnect p);
+	void ProcessStartMatching(int id);
+	void CheckingMatchingQueue();
 
 	void TestSend();
 	std::thread TempSendThread;
@@ -53,10 +57,12 @@ protected:
 
 	std::unordered_map < COMP_OP, std::function<void(int, int, EXP_OVER*)>> m_IocpFunctionMap;
 
-	std::unordered_map <int, class TimerMgr*> m_TimerMgrMap;
+	//std::unordered_map <int, class TimerMgr*> m_TimerMgrMap;
+	std::shared_ptr<class TimerMgr> m_TimerMgr;
 
 	std::array<ClientInfo*, MAXCLIENT> m_Clients;
-	std::array<RoomMgr*, MAXROOM> m_Rooms;
+
+	Concurrency::concurrent_priority_queue<ClientInfo*> m_MatchingQueue;
 
 	int m_iWorkerNum;
 

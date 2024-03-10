@@ -28,22 +28,23 @@ public:
 	virtual ~TimerEvent() {}
 
 	std::chrono::system_clock::time_point GetActiveTime() { return m_fActiveTime; }
-	std::function<void()> DoFuction() { return m_Fuction; }
+	//std::function<void()> DoFuction() { return m_Fuction; }
+	void DoFuction() { m_Fuction(); }
 
 	bool operator<(const TimerEvent& other) const
 	{
-		// ¿ª¹æÇâÀ» À§ÇØ È­»ìÇ¥ ¹æÇâÀÌ ¹Ý´ë´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý´ï¿½ï¿½.
 		return m_fActiveTime > other.m_fActiveTime;
 	}
 
 protected:
-	// »ç¿ëµÇ¾î¾ßÇÒ ½Ã°£
+	// ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
 	std::chrono::system_clock::time_point m_fActiveTime;
 
 	std::function<void()> m_Fuction;
 };
 
-// ³Î ¿ÀºêÁ§Æ® ÆÐÅÏ
+// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 class NullEvent : public TimerEvent
 {
 public:

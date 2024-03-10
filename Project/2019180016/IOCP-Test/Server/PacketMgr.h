@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Packet/EnumDef.h"
+#include "../../../Packet/EnumDef.h"
 
 Packet* GetPacket(COMP_OP op);
 

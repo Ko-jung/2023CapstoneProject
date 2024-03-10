@@ -5,7 +5,7 @@
 
 #include "TimerEvent.h"
 
-// Å¸ÀÌ¸Ó ¸Å´ÏÀú, ¹æ ´ç ÇÏ³ª¾¿ º¸À¯ÇÒ ¿¹Á¤
+// Å¸ï¿½Ì¸ï¿½ ï¿½Å´ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 class TimerMgr
 {
 public:
@@ -16,7 +16,7 @@ public:
 	void Pop();
 	void Insert(TimerEvent TE);
 
-	Concurrency::concurrent_priority_queue<TimerEvent>* m_TimerQueue;
 protected:
+	Concurrency::concurrent_priority_queue<TimerEvent>* m_TimerQueue;
 };
 

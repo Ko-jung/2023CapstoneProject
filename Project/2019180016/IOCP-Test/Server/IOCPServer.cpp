@@ -24,6 +24,8 @@ IOCPServer::IOCPServer()
 	m_iClientId = 0;
 	m_iClientCount = 0;
 	m_iRoomId = 0;
+
+	m_TimerMgr = std::make_shared<TimerMgr>();
 }
 
 IOCPServer::~IOCPServer()
@@ -176,10 +178,11 @@ void IOCPServer::Timer()
 {
 	while (true)
 	{
-		for (const auto& t : m_TimerMgrMap)
-		{
-			t.second->Pop();
-		}
+		m_TimerMgr->Pop();
+		//for (const auto& t : m_TimerMgrMap)
+		//{
+		//	t.second->Pop();
+		//}
 	}
 }
 
@@ -213,14 +216,6 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		//socket->Send();
 
 		SendPlayerJoinPacket(m_iClientId);
-
-		static bool first = true;
-		if (first)
-		{
-			m_Rooms[0] = new RoomMgr();
-		}
-		socket->SetRoomNum(0);
-		m_Rooms[0]->AddMember(socket);
 
 		cout << m_iClientId << "번 Accept" << endl;
 
@@ -303,11 +298,14 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessDisconnectPlayer(disconnect);
 	}
 		break;
+	case (int)COMP_OP::OP_STARTMATCHING:
+		ProcessStartMatching(id);
+		break;
 	default:
 		break;
 	}
 
-	m_Clients[id]->RecvProcess(bytes, exp);
+	//m_Clients[id]->RecvProcess(bytes, exp);
 }
 
 void IOCPServer::RecvNewPosition(int id, int bytes, EXP_OVER* exp)
@@ -325,6 +323,12 @@ void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)
 			socket->SendProcess(sizeof(PPlayerJoin), &JoinPacket);
 		}
 	}
+}
+
+void IOCPServer::SendTileDrop(int id)
+{
+	PTileDrop PTD;
+	m_Clients[id]->SendProcess(sizeof(PTileDrop), &PTD);
 }
 
 void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
@@ -350,66 +354,67 @@ void IOCPServer::ProcessDisconnectPlayer(PDisconnect p)
 	m_Clients[p.DisconnectPlayerSerial]->Init();
 }
 
+void IOCPServer::ProcessStartMatching(int id)
+{
+	m_MatchingQueue.push(m_Clients[id]);
+	CheckingMatchingQueue();
+}
+
+void IOCPServer::CheckingMatchingQueue()
+{
+	if (m_MatchingQueue.size() >= MAXPLAYER)
+	{
+		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
+		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
+		for (int i = 0; i < MAXPLAYER; )
+		{
+			ClientInfo* client = nullptr;
+			PStartGame PSG;
+			if (m_MatchingQueue.try_pop(client))
+			{
+				client->SendProcess(sizeof(PStartGame), &PSG);
+				i++;
+			}
+		}
+	}
+}
+
 void IOCPServer::TestSend()
 {
-	m_TimerMgrMap.insert({0, new TimerMgr()});
-	int i{ 0 };
-	while (true)
-	{    
-		auto currentTime = std::chrono::system_clock::now();
+	//m_TimerMgrMap.insert({0, new TimerMgr()});
+	//int i{ 0 };
+	//while (true)
+	//{    
+	//	auto currentTime = std::chrono::system_clock::now();
 
-		// time_point�� time_t�� ��ȯ
-		std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
+	//	// time_point�� time_t�� ��ȯ
+	//	std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
 
-		// time_t�� tm ����ü�� ��ȯ
-		std::tm* localTime = std::localtime(&tt);
+	//	// time_t�� tm ����ü�� ��ȯ
+	//	std::tm* localTime = std::localtime(&tt);
 
-		// �ð��� ���
-		std::cout << "Timer Func Num:" << i << " Insert! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
+	//	// �ð��� ���
+	//	std::cout << "Timer Func Num:" << i << " Insert! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
 
-		//cout << i << "Num Timer Insert //" << std::chrono::system_clock::now() << endl;
-		DefaultEvent Event(std::chrono::seconds(4),
-			[i]()
-			{
-				auto currentTime = std::chrono::system_clock::now();
+	//	//cout << i << "Num Timer Insert //" << std::chrono::system_clock::now() << endl;
+	//	DefaultEvent Event(std::chrono::seconds(4),
+	//		[i]()
+	//		{
+	//			auto currentTime = std::chrono::system_clock::now();
 
-				// time_point�� time_t�� ��ȯ
-				std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
+	//			// time_point�� time_t�� ��ȯ
+	//			std::time_t tt = std::chrono::system_clock::to_time_t(currentTime);
 
-				// time_t�� tm ����ü�� ��ȯ
-				std::tm* localTime = std::localtime(&tt);
+	//			// time_t�� tm ����ü�� ��ȯ
+	//			std::tm* localTime = std::localtime(&tt);
 
-				// �ð��� ���
-				std::cout << "Timer Func Num:" << i << " Activative! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
-			});
-		m_TimerMgrMap[0]->Insert(Event);
-		i++;
-		//for (int i = 0; i < MAXCLIENT; i++)
-		//{
-		//	if (m_Clients[i]->GetClientNum() == -1)
-		//	{
-		//		return;
-		//	}
+	//			// �ð��� ���
+	//			std::cout << "Timer Func Num:" << i << " Activative! " << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
+	//		});
+	//	m_TimerMgrMap[0]->Insert(Event);
+	//	i++;
 
-		//	EXP_OVER temp;
-		//	Send(i, 0, &temp);
-
-		//	//const char* text = "asdasd";
-		//	//EXP_OVER exp{ COMP_OP::OP_SEND, (char)(sizeof(text)), (void*)text };
-		//	//exp.room_id = 0;
-		//	//exp.target_id = 0;
-		//	//WSAOVERLAPPED a;
-		//	//ZeroMemory(&a, sizeof(a));
-
-		//	//int ret = WSASend(m_ListenSocket, &exp._wsa_buf, 1, 0, 0, &a, 0);
-		//	//if (SOCKET_ERROR == ret) {
-		//	//	int error_num = WSAGetLastError();
-		//	//	if (ERROR_IO_PENDING != error_num)
-		//	//		IOCPServer::error_display(error_num);
-		//	//}
-		//}
-
-		std::this_thread::sleep_for(std::chrono::seconds(3));
-	}
-	delete m_TimerMgrMap[0];
+	//	std::this_thread::sleep_for(std::chrono::seconds(3));
+	//}
+	//delete m_TimerMgrMap[0];
 }

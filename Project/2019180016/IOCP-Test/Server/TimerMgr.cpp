@@ -33,7 +33,7 @@ void TimerMgr::Pop()
 		// �ߵ� �ð��� �Ѱ����
 		if (Event.GetActiveTime() <= std::chrono::system_clock::now())
 		{
-			Event.DoFuction()();
+			Event.DoFuction();
 		}
 		else
 		{

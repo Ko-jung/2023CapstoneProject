@@ -1,5 +1,6 @@
 #include "ClientInfo.h"
-#include "IOCPServer.h"
+//#include "IOCPServer.h"
+#include "../Common/LogUtil.h"
 
 #include <sstream>
 #include "PacketMgr.h"
@@ -45,7 +46,7 @@ void ClientInfo::Recv()
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)
-			IOCPServer::error_display(error_num);
+			LogUtil::error_display(error_num);
 	}
 
 	if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
@@ -101,7 +102,7 @@ void ClientInfo::SendProcess(int PacketSize, Packet* PacketData)
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)
-			IOCPServer::error_display(error_num);
+			LogUtil::error_display(error_num);
 	}
 }
 
@@ -120,6 +121,6 @@ void ClientInfo::Send()
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)
-			IOCPServer::error_display(error_num);
+			LogUtil::error_display(error_num);
 	}
 }

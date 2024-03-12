@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "../Packet/EnumDef.h"
+#include "EnumDef.h"
 
 using std::cout;
 using std::endl;
@@ -11,7 +11,7 @@ struct Packet
 	int PacketType;
 	int RoomNum;
 
-	Packet():PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) {}
+	Packet() :PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) {}
 	Packet(COMP_OP op) : PacketType((int)op), RoomNum(-1) {}
 };
 
@@ -26,7 +26,7 @@ struct PTransform
 	float rz;
 
 	PTransform() { x = y = z = rx = ry = rz = 0.f; }
-	PTransform(float x, float y, float z) : x(x), y(y), z(z) {rx = ry = rz = 0.f;}
+	PTransform(float x, float y, float z) : x(x), y(y), z(z) { rx = ry = rz = 0.f; }
 	PTransform(float x, float y, float z, float rx, float ry, float rz)
 		: x(x), y(y), z(z), rx(rx), ry(ry), rz(rz)
 	{}
@@ -69,7 +69,7 @@ struct PSpawnObject : Packet, PTransform
 	PSpawnObject() : Packet(COMP_OP::OP_OBJECTSPAWN), PTransform() { SpawnObject = EObject::BP_Cube; x = y = z = 0.f; }
 	PSpawnObject(EObject EO, float x, float y, float z) : Packet(COMP_OP::OP_OBJECTSPAWN), PTransform(x, y, z)
 	{
-		this->SpawnObject	= EO;
+		this->SpawnObject = EO;
 	}
 };
 #pragma pack(pop)
@@ -78,7 +78,7 @@ struct PPlayerJoin : Packet
 {
 	BYTE PlayerSerial;
 
-	PPlayerJoin()			 : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = -1; }
+	PPlayerJoin() : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = -1; }
 	PPlayerJoin(BYTE serial) : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = serial; }
 };
 
@@ -92,15 +92,27 @@ struct PDisconnect : Packet
 
 struct PStartMatching : Packet
 {
-	PStartMatching():Packet(COMP_OP::OP_STARTMATCHING) {}
+	PStartMatching() : Packet(COMP_OP::OP_STARTMATCHING) {}
+};
+
+struct PCancleMatching : Packet
+{
+	PCancleMatching() : Packet(COMP_OP::OP_CANCLEMATCHING) {}
 };
 
 struct PStartGame : Packet
 {
-	PStartGame() :Packet(COMP_OP::OP_STARTGAME) {}
+	PStartGame() : Packet(COMP_OP::OP_STARTGAME) {}
 };
 
 struct PTileDrop : Packet
 {
-	PTileDrop() :Packet(COMP_OP::OP_TILEDROP) {}
+	PTileDrop() : Packet(COMP_OP::OP_TILEDROP) {}
+};
+
+struct PSendPlayerSockets : Packet
+{
+	SOCKET sockets[6];
+
+	PSendPlayerSockets() : Packet(COMP_OP::OP_SS_SENDPLAYERSOCKETS) {}
 };

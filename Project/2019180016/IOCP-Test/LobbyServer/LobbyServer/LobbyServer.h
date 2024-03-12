@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Server/Define.h"
+#include "../../Common/Define.h"
 #include <concurrent_priority_queue.h>
 
 class ClientInfo;
@@ -8,7 +8,7 @@ class ClientInfo;
 class LobbyServer
 {
 public:
-	LobbyServer() {}
+	LobbyServer();
 	virtual ~LobbyServer() {}
 
 	bool Init(const int);
@@ -16,17 +16,30 @@ public:
 	static void error_display(int err_no);
 	void StartServer();
 	void ThreadJoin();
+	void Worker();
 
-	void AcceptNewSocket();
-	void RecvProcess();
+	ClientInfo* GetEmptyClient();
+
+	void CheckingMatchingQueue();
+
+	void Accept(int id, int bytes, EXP_OVER* exp);
+	void Send(int id, int bytes, EXP_OVER* exp);
+	void Recv(int id, int bytes, EXP_OVER* exp);
 
 private:
+	HANDLE m_hIocp;
 	SOCKET m_ListenSocket;
 
 	std::array<ClientInfo*, MAXCLIENT> m_Clients;
 	Concurrency::concurrent_priority_queue< ClientInfo*> m_MatchingQueue;
 
-	std::thread m_RecvThread;
-	char buf[1024];
+	std::vector<std::thread> m_tWorkerThreads;
+	int m_iWorkerNum;
+	int m_iClientCount;
+	int m_iClientId;
+
+	std::unordered_map < COMP_OP, std::function<void(int, int, EXP_OVER*)>> m_IocpFunctionMap;
+
+	EXP_OVER m_AcceptExpOver;
 };
 

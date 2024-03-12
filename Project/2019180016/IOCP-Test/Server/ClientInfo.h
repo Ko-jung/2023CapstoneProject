@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Define.h"
+#include "../Common/Define.h"
 
 class ClientInfo
 {

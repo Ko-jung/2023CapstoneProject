@@ -1,4 +1,4 @@
-#include "Define.h"
+#include "../Common/Define.h"
 #include "IOCPServer.h"
 
 int main()

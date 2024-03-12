@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Define.h"
+#include "../Common/Define.h"
 #include <concurrent_priority_queue.h>
 
 class ClientInfo;
@@ -29,15 +29,11 @@ public:
 	void Send(int id, int bytes, EXP_OVER* exp);
 	void Recv(int id, int bytes, EXP_OVER* exp);
 
-	void RecvNewPosition(int id, int bytes, EXP_OVER* exp);
-
 	void SendPlayerJoinPacket(int JoinPlayerSerial);
 	void SendTileDrop(int id/*, BYTE tileDropLevel*/);
 
 	void ProcessPlayerPosition(PPlayerPosition p);
 	void ProcessDisconnectPlayer(PDisconnect p);
-	void ProcessStartMatching(int id);
-	void CheckingMatchingQueue();
 
 	void TestSend();
 	std::thread TempSendThread;

@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "IOCPServer.h"
-#include "Define.h"
+#include "../Common/Define.h"
 
 #include "ClientInfo.h"
 #include "Object.h"
@@ -298,19 +298,11 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessDisconnectPlayer(disconnect);
 	}
 		break;
-	case (int)COMP_OP::OP_STARTMATCHING:
-		ProcessStartMatching(id);
-		break;
 	default:
 		break;
 	}
 
 	//m_Clients[id]->RecvProcess(bytes, exp);
-}
-
-void IOCPServer::RecvNewPosition(int id, int bytes, EXP_OVER* exp)
-{
-
 }
 
 void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)
@@ -352,31 +344,6 @@ void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
 void IOCPServer::ProcessDisconnectPlayer(PDisconnect p)
 {
 	m_Clients[p.DisconnectPlayerSerial]->Init();
-}
-
-void IOCPServer::ProcessStartMatching(int id)
-{
-	m_MatchingQueue.push(m_Clients[id]);
-	CheckingMatchingQueue();
-}
-
-void IOCPServer::CheckingMatchingQueue()
-{
-	if (m_MatchingQueue.size() >= MAXPLAYER)
-	{
-		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
-		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
-		for (int i = 0; i < MAXPLAYER; )
-		{
-			ClientInfo* client = nullptr;
-			PStartGame PSG;
-			if (m_MatchingQueue.try_pop(client))
-			{
-				client->SendProcess(sizeof(PStartGame), &PSG);
-				i++;
-			}
-		}
-	}
 }
 
 void IOCPServer::TestSend()

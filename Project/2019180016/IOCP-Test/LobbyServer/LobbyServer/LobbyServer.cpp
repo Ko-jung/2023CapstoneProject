@@ -1,7 +1,6 @@
 #include "LobbyServer.h"
 #include "../../Server/ClientInfo.h"
-
-#define SERVERPORT 9000
+#include "../../Common/LogUtil.h"
 
 LobbyServer::LobbyServer()
 {
@@ -88,6 +87,11 @@ void LobbyServer::error_display(int err_no)
 
 void LobbyServer::StartServer()
 {
+	if (!ConnectToGameServer())
+	{
+		exit(-1);
+	}
+
 	for (int i = 0; i < m_iWorkerNum; i++)
 	{
 		m_tWorkerThreads.emplace_back([this]() { Worker(); });
@@ -170,7 +174,28 @@ void LobbyServer::CheckingMatchingQueue()
 				i++;
 			}
 		}
+
+		m_GameServerOver = new EXP_OVER{ COMP_OP::OP_SEND, (char)sizeof(PSendPlayerSockets), (void*)&SPS};
+		int ret = WSASend(m_GameServerSocket, &m_GameServerOver->_wsa_buf, 1, 0, 0, &m_GameServerOver->_wsa_over, 0);
 	}
+}
+
+bool LobbyServer::ConnectToGameServer()
+{
+	//TODO: m_GameServerSocket 연결
+	struct sockaddr_in serveraddr;
+	memset(&serveraddr, 0, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	inet_pton(AF_INET, GAMESERVERIP, &serveraddr.sin_addr);
+	serveraddr.sin_port = htons(GAMESERVERPORT);
+	int retval = connect(m_GameServerSocket, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+	if (retval == SOCKET_ERROR)
+	{
+		LogUtil::error_display("LobbyServer::StartServer() GameServer connect FAILED");
+		return false;
+	}
+
+	return true;
 }
 
 void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)

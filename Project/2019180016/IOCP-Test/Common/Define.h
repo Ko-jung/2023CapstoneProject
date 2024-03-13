@@ -12,6 +12,7 @@
 #include <unordered_map>
 
 #include "../../../Packet/Packet.h"
+#include "../Common/LogUtil.h"
 
 #pragma comment(lib, "MSWSock.lib")
 #pragma comment(lib, "ws2_32.lib")
@@ -20,6 +21,13 @@
 #define MAXCLIENT 2100
 #define MAXROOM 350
 #define MAXPLAYER 6
+
+#define GAMESERVERIP "127.0.0.1"
+#define GAMESERVERPORT 9000
+
+#define LOBBYSERVERIP "127.0.0.1"
+#define LOBBYSERVERPORT 9001
+
 
 using std::cout;
 using std::endl;

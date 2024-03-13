@@ -26,6 +26,8 @@ IOCPServer::IOCPServer()
 	m_iRoomId = 0;
 
 	m_TimerMgr = std::make_shared<TimerMgr>();
+
+	IsLobbyServerConnect = false;
 }
 
 IOCPServer::~IOCPServer()
@@ -40,17 +42,18 @@ bool IOCPServer::Init(const int WorkerNum)
 
 	m_ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (INVALID_SOCKET == m_ListenSocket)
-	{
-		error_display(WSAGetLastError());
+	{		
+		LogUtil::error_display(WSAGetLastError());
 		return false;
 	}
+
+	m_LobbyServerSocket = new ClientInfo();
+
 	m_iWorkerNum = WorkerNum - 2;
 
 	for (int i = 0; i < MAXCLIENT; i++)
 	{
 		m_Clients[i] = new ClientInfo();
-
-		//CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_Clients[i]), m_hIocp, i, 0);
 	}
 
     return true;
@@ -68,14 +71,14 @@ bool IOCPServer::BindListen(const int PortNum)
 	int retval = bind(m_ListenSocket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
 	if (0 != retval)
 	{
-		error_display(WSAGetLastError());
+		LogUtil::error_display(WSAGetLastError());
 		return false;
 	}
 
 	retval = listen(m_ListenSocket, SOMAXCONN);
 	if (0 != retval)
 	{
-		error_display(WSAGetLastError());
+		LogUtil::error_display(WSAGetLastError());
 		return false;
 	}
 
@@ -98,19 +101,6 @@ bool IOCPServer::BindListen(const int PortNum)
 	//========================�̰Ź���?======================
 
     return true;
-}
-
-void IOCPServer::error_display(int err_no)
-{
-	WCHAR* lpMsgBuf;
-	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL, err_no,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR)&lpMsgBuf, 0, 0);
-	std::wcout << lpMsgBuf << std::endl;
-	//while (true);
-	LocalFree(lpMsgBuf);
 }
 
 void IOCPServer::StartServer()
@@ -145,7 +135,7 @@ void IOCPServer::Worker()
 		{
 			int err_no = WSAGetLastError();
 			cout << "GQCS Error : ";
-			error_display(err_no);
+			LogUtil::error_display(err_no);
 			cout << endl;
 			//Disconnect(client_id);
 			//if (exp_over->_comp_op == COMP_OP::OP_SEND)
@@ -179,10 +169,6 @@ void IOCPServer::Timer()
 	while (true)
 	{
 		m_TimerMgr->Pop();
-		//for (const auto& t : m_TimerMgrMap)
-		//{
-		//	t.second->Pop();
-		//}
 	}
 }
 
@@ -199,8 +185,46 @@ ClientInfo* IOCPServer::GetEmptyClient()
 	}
 }
 
+bool IOCPServer::ReadyToNextAccept()
+{
+	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+	*(reinterpret_cast<SOCKET*>(&m_AcceptExpOver._net_buf)) = c_socket;
+	ZeroMemory(&m_AcceptExpOver._wsa_over, sizeof(m_AcceptExpOver._wsa_over));
+
+	int ret = AcceptEx(m_ListenSocket,						// ������ �����ڵ�
+		c_socket/*socket->GetSocket()*/,					// ������ ������ ������ ����
+		m_AcceptExpOver._net_buf + 8,											// ���� �ּҿ� ����Ʈ �ּҸ� ���� ����
+		0,													// ���� �� ���۵Ǵ� ���� �����͸� �����ϱ� ���� ������ ũ��
+		sizeof(SOCKADDR_IN) + 16,							// �ּ�ȹ���� ���� ������ ũ�⸦ �˷��ֱ� ���� ���� �ּ��� ����
+		sizeof(SOCKADDR_IN) + 16,							// �ּ�ȹ���� ���� ������ ũ�⸦ �˷��ֱ� ���� ����Ʈ �ּ��� ����
+		0,													// �Լ� ȣ�� �� ������ ���� �������� ũ�� overlapped ���� ���õ�
+		(LPWSAOVERLAPPED)&m_AcceptExpOver._wsa_over);		// Overlapped ����ü ������
+
+
+	if (0 != ret)
+	{
+		cout << "AcceptEx Error\n";
+		LogUtil::error_display(WSAGetLastError());
+		return false;
+	}
+
+	return true;
+}
+
+void IOCPServer::AccpetLobbyServer()
+{
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_LobbyServerSocket->GetSocket()), m_hIocp, m_iClientId, 0);
+	m_LobbyServerSocket->Recv();
+	IsLobbyServerConnect = true;
+}
+
 void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 {
+	if (!IsLobbyServerConnect)
+	{
+		AccpetLobbyServer();
+	}
+
 	// id�� �������� ��ȣ 9999�� ������ ��?
 	if (m_iClientCount < MAXCLIENT)
 	{
@@ -213,7 +237,6 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
 
 		socket->Recv();
-		//socket->Send();
 
 		SendPlayerJoinPacket(m_iClientId);
 
@@ -222,24 +245,8 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		m_iClientId++;
 		m_iClientCount++;
 
-		SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
-		*(reinterpret_cast<SOCKET*>(&m_AcceptExpOver._net_buf)) = c_socket;
-		ZeroMemory(&m_AcceptExpOver._wsa_over, sizeof(m_AcceptExpOver._wsa_over));
-
-		int ret = AcceptEx(m_ListenSocket,						// ������ �����ڵ�
-			c_socket/*socket->GetSocket()*/,					// ������ ������ ������ ����
-			m_AcceptExpOver._net_buf + 8,											// ���� �ּҿ� ����Ʈ �ּҸ� ���� ����
-			0,													// ���� �� ���۵Ǵ� ���� �����͸� �����ϱ� ���� ������ ũ��
-			sizeof(SOCKADDR_IN) + 16,							// �ּ�ȹ���� ���� ������ ũ�⸦ �˷��ֱ� ���� ���� �ּ��� ����
-			sizeof(SOCKADDR_IN) + 16,							// �ּ�ȹ���� ���� ������ ũ�⸦ �˷��ֱ� ���� ����Ʈ �ּ��� ����
-			0,													// �Լ� ȣ�� �� ������ ���� �������� ũ�� overlapped ���� ���õ�
-			(LPWSAOVERLAPPED)&m_AcceptExpOver._wsa_over);		// Overlapped ����ü ������
-
-
-		if (0 != ret)
+		if (!ReadyToNextAccept())
 		{
-			cout << "AcceptEx����\n";
-			error_display(WSAGetLastError());
 			return;
 		}
 	}

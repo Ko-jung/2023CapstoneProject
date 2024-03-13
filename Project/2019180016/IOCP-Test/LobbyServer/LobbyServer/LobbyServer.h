@@ -21,6 +21,7 @@ public:
 	ClientInfo* GetEmptyClient();
 
 	void CheckingMatchingQueue();
+	bool ConnectToGameServer();
 
 	void Accept(int id, int bytes, EXP_OVER* exp);
 	void Send(int id, int bytes, EXP_OVER* exp);
@@ -28,7 +29,11 @@ public:
 
 private:
 	HANDLE m_hIocp;
+
 	SOCKET m_ListenSocket;
+
+	EXP_OVER* m_GameServerOver;
+	SOCKET m_GameServerSocket;
 
 	std::array<ClientInfo*, MAXCLIENT> m_Clients;
 	Concurrency::concurrent_priority_queue< ClientInfo*> m_MatchingQueue;

@@ -22,13 +22,13 @@ public:
 	int GetRemainDataLen()						{ return m_iRemainDataLen; }
 	int GetClientNum()							{ return m_iClientNum; }
 	int GetRoomNum()							{ return m_iRoomNum; }
-	void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
+	//void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
 
 	void SetSocket(const SOCKET& s)			{ m_sClientSocket = s; }
 	void SetRemainDataLen(int len)			{ m_iRemainDataLen = len; }
 	void SetClientNum(int num)				{ m_iClientNum = num; }
 	void SetRoomNum(int num)				{ m_iRoomNum = num; }
-	void SetPos(float x, float y, float z)	{ PosX = x; PosY = y; PosZ = z; }
+	//void SetPos(float x, float y, float z)	{ PosX = x; PosY = y; PosZ = z; }
 
 	void Recv();
 	void Send();
@@ -36,9 +36,9 @@ private:
 
 
 protected:
-	float PosX;
-	float PosY;
-	float PosZ;
+	//float PosX;
+	//float PosY;
+	//float PosZ;
 
 	SOCKET m_sClientSocket;
 

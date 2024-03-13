@@ -16,13 +16,14 @@ public:
 	bool BindListen(const int);
 
 public:
-	static void error_display(int err_no);
 	void StartServer();
 	void Worker();
 	void ThreadJoin();
 	void Timer();
 
 	ClientInfo* GetEmptyClient();
+	bool ReadyToNextAccept();
+	void AccpetLobbyServer();
 
 public:
 	void Accept(int id, int bytes, EXP_OVER* exp);
@@ -44,7 +45,8 @@ protected:
 
 	SOCKET m_ListenSocket;
 
-	SOCKET m_ClientSocket;
+	ClientInfo* m_LobbyServerSocket;
+	bool IsLobbyServerConnect;
 
 	EXP_OVER m_AcceptExpOver;
 

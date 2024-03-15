@@ -1,0 +1,5 @@
+한사이클 제작안
+1. 게임 시작 시 캐릭터 선택 및 무기 선택  => UI 제작 (2024.03.15~)
+
+외 회의 및 b제안서 토대로 진행 예정
+https://docs.google.com/document/d/1L2qV-DCMJJ0Yz4ZoUcQ0yV3adKehvdZUmtNvWdKKYP8/edit

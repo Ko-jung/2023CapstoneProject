@@ -92,6 +92,9 @@ void LobbyServer::StartServer()
 		exit(-1);
 	}
 
+	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (char)(1), (void*)"asvd"};
+	WSASend(m_GameServerSocket, &exp->_wsa_buf, 1, 0, 0, &exp->_wsa_over, 0);
+
 	for (int i = 0; i < m_iWorkerNum; i++)
 	{
 		m_tWorkerThreads.emplace_back([this]() { Worker(); });
@@ -183,15 +186,24 @@ void LobbyServer::CheckingMatchingQueue()
 bool LobbyServer::ConnectToGameServer()
 {
 	//TODO: m_GameServerSocket 연결
-	struct sockaddr_in serveraddr;
+
+	//SOCKADDR_IN stServerAddr;
+	//stServerAddr.sin_family = AF_INET;
+	//// ������ ���� ��Ʈ �� IP
+	//stServerAddr.sin_port = htons(GAMESERVERPORT);
+	//stServerAddr.sin_addr.s_addr = inet_addr(GAMESERVERIP);
+	//int retval = connect(m_GameServerSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
+
+	sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	inet_pton(AF_INET, GAMESERVERIP, &serveraddr.sin_addr);
+	int a = inet_pton(AF_INET, GAMESERVERIP, &serveraddr.sin_addr.s_addr);
 	serveraddr.sin_port = htons(GAMESERVERPORT);
-	int retval = connect(m_GameServerSocket, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+	int retval = connect(m_GameServerSocket, (sockaddr*)&serveraddr, sizeof(sockaddr));
+
 	if (retval == SOCKET_ERROR)
 	{
-		LogUtil::error_display("LobbyServer::StartServer() GameServer connect FAILED");
+		LogUtil::error_display("LobbyServer::ConnectToGameServer() GameServer connect FAILED");
 		return false;
 	}
 

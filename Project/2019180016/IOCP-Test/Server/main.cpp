@@ -10,7 +10,7 @@ int main()
 
 	// ���� CPU �ھŭ Worker thread ����
 	IocpServer->Init(std::thread::hardware_concurrency());
-	IocpServer->BindListen(8000);
+	IocpServer->BindListen(GAMESERVERPORT);
 
 	IocpServer->StartServer();
 

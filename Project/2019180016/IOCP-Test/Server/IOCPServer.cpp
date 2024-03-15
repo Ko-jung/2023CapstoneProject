@@ -213,7 +213,7 @@ bool IOCPServer::ReadyToNextAccept()
 
 void IOCPServer::AccpetLobbyServer()
 {
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_LobbyServerSocket->GetSocket()), m_hIocp, m_iClientId, 0);
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_LobbyServerSocket->GetSocket()), m_hIocp, 9998, 0);
 	m_LobbyServerSocket->Recv();
 	IsLobbyServerConnect = true;
 }
@@ -283,6 +283,11 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	//int PacketType;	
 	//RecvData << exp->_wsa_buf.buf;
 	//RecvData >> PacketType;
+
+	if (id == 9998)
+	{
+		LogUtil::PrintLog("Lobby Server Send");
+	}
 
 	const int PacketType = *(int*)exp->_wsa_buf.buf;
 

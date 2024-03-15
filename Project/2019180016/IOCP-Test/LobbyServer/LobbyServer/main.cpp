@@ -3,12 +3,13 @@
 
 int main()
 {
+	std::locale::global(std::locale("Korean"));
 	std::wcout.imbue(std::locale("korean"));
 
 	LobbyServer* server = new LobbyServer();
 
 	server->Init(std::thread::hardware_concurrency());
-	server->BindListen(8000);
+	server->BindListen(LOBBYSERVERPORT);
 	server->StartServer();
 	server->ThreadJoin();
 }

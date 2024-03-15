@@ -22,14 +22,15 @@ void LogUtil::error_display(int err_no)
 void LogUtil::error_display(const char* msg)
 {
     WCHAR* lpMsgBuf;
+    int ErrorNum = WSAGetLastError();
     FormatMessage(
         FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM,
-        NULL, WSAGetLastError(),
+        NULL, ErrorNum,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         (LPTSTR)&lpMsgBuf, 0, NULL);
-    std::cout << msg;
-    std::wcout << L" 에러 " << lpMsgBuf << std::endl;
+    std::cout << msg << std::endl;;
+    std::wcout << "[Error Num: " << ErrorNum << "]" << lpMsgBuf << std::endl;
     //while (true);
     // 디버깅 용
     LocalFree(lpMsgBuf);

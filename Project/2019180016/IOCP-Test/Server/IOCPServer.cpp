@@ -215,14 +215,15 @@ void IOCPServer::AccpetLobbyServer()
 {
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_LobbyServerSocket->GetSocket()), m_hIocp, 9998, 0);
 	m_LobbyServerSocket->Recv();
-	IsLobbyServerConnect = true;
 }
 
 void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 {
 	if (!IsLobbyServerConnect)
 	{
+		m_LobbyServerSocket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
 		AccpetLobbyServer();
+		IsLobbyServerConnect = true;
 	}
 
 	// id�� �������� ��ȣ 9999�� ������ ��?

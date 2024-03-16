@@ -51,7 +51,7 @@ void ClientInfo::Recv()
 
 	if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		printf_s("[ERROR] WSARecv ���� : %d", WSAGetLastError());
+		printf_s("[ERROR] WSARecv 에러, 코드 : %d", WSAGetLastError());
 	}
 }
 

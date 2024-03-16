@@ -18,6 +18,7 @@ bool LobbyServer::Init(const int WorkerNum)
 		return false;
 
 	m_ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+	m_GameServerSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (INVALID_SOCKET == m_ListenSocket)
 	{
 		error_display(WSAGetLastError());
@@ -92,9 +93,6 @@ void LobbyServer::StartServer()
 		exit(-1);
 	}
 
-	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (char)(1), (void*)"asvd"};
-	WSASend(m_GameServerSocket, &exp->_wsa_buf, 1, 0, 0, &exp->_wsa_over, 0);
-
 	for (int i = 0; i < m_iWorkerNum; i++)
 	{
 		m_tWorkerThreads.emplace_back([this]() { Worker(); });
@@ -161,14 +159,16 @@ ClientInfo* LobbyServer::GetEmptyClient()
 
 void LobbyServer::CheckingMatchingQueue()
 {
-	if (m_MatchingQueue.size() >= MAXPLAYER)
+	int TempPlayer = 1;
+	//if (m_MatchingQueue.size() >= MAXPLAYER)
+	if (m_MatchingQueue.size() >= TempPlayer)
 	{
 		PSendPlayerSockets SPS;
 		ClientInfo* client;
 
 		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
 		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
-		for (int i = 0; i < MAXPLAYER; )
+		for (int i = 0; i < TempPlayer; )
 		{
 			if(m_MatchingQueue.try_pop(client))
 			{
@@ -185,15 +185,6 @@ void LobbyServer::CheckingMatchingQueue()
 
 bool LobbyServer::ConnectToGameServer()
 {
-	//TODO: m_GameServerSocket 연결
-
-	//SOCKADDR_IN stServerAddr;
-	//stServerAddr.sin_family = AF_INET;
-	//// ������ ���� ��Ʈ �� IP
-	//stServerAddr.sin_port = htons(GAMESERVERPORT);
-	//stServerAddr.sin_addr.s_addr = inet_addr(GAMESERVERIP);
-	//int retval = connect(m_GameServerSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
-
 	sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;

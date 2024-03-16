@@ -71,7 +71,7 @@ void ASocketMode::BeginPlay()
 	//TestPrintHelloUseNative();
 	//BPGetAllActorsOfThirdPerson();
 
-	m_bIsConnected = m_Socket->Connect("127.0.0.1", 8000);
+	m_bIsConnected = m_Socket->Connect("127.0.0.1", 9000);
 	if (m_bIsConnected)
 	{
 		m_Socket->StartListen();

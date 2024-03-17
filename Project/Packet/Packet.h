@@ -110,9 +110,16 @@ struct PTileDrop : Packet
 	PTileDrop() : Packet(COMP_OP::OP_TILEDROP) {}
 };
 
-struct PSendPlayerSockets : Packet
+struct PConnectToGameserver : Packet
 {
-	SOCKET sockets[6];
+	//SOCKET sockets[6];
 
-	PSendPlayerSockets() : Packet(COMP_OP::OP_SS_SENDPLAYERSOCKETS) {}
+	PConnectToGameserver() : Packet(COMP_OP::OP_SS_CONNECTTOGAMESERVER) {}
 };
+
+//struct PSendPlayerSockets : Packet
+//{
+//	//SOCKET sockets[6];
+//
+//	PSendPlayerSockets() : Packet(COMP_OP::OP_SS_SENDPLAYERSOCKETS) {}
+//};

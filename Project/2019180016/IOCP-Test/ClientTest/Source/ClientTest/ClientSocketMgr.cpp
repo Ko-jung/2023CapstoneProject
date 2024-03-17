@@ -122,6 +122,14 @@ void ClientSocketMgr::SendChat(const int& SessionId, const string& Chat)
 {
 }
 
+void ClientSocketMgr::ConnetToGameServer()
+{
+	closesocket(m_ServerSocket);
+	m_ServerSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+
+	Connect("127.0.0.1", 9000);
+}
+
 bool ClientSocketMgr::StartListen()
 {
 	// ������ ����
@@ -226,6 +234,9 @@ uint32 ClientSocketMgr::Run()
 			memcpy(PlayerPosition, m_sRecvBuffer, sizeof(PPlayerPosition));
 			Gamemode->PushQueue(EFunction::EPLAYERTRANSFORM, PlayerPosition);
 		}
+			break;
+		case (int)COMP_OP::OP_SS_CONNECTTOGAMESERVER:
+			ConnetToGameServer();
 			break;
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"));

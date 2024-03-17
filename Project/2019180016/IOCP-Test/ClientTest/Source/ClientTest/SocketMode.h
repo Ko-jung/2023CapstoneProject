@@ -46,6 +46,7 @@ public:
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	void PushQueue(EFunction e, Packet* etc);
 	void ProcessFunc();
@@ -74,6 +75,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	int SerialNum;
+
+	UFUNCTION(Exec)
+	void Ready();
 
 	//UPROPERTY(BlueprintReadWrite)
 	//TArray<FTransform> ClientTransform;

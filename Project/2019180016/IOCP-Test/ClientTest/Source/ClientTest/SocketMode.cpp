@@ -71,7 +71,7 @@ void ASocketMode::BeginPlay()
 	//TestPrintHelloUseNative();
 	//BPGetAllActorsOfThirdPerson();
 
-	m_bIsConnected = m_Socket->Connect("127.0.0.1", 9000);
+	m_bIsConnected = m_Socket->Connect("127.0.0.1", 9001);
 	if (m_bIsConnected)
 	{
 		m_Socket->StartListen();
@@ -99,6 +99,12 @@ void ASocketMode::Tick(float Deltatime)
 
 	//if(m_Socket && m_Socket->TempCube)
 	//	CubeVec = m_Socket->TempCube->Location;
+}
+
+void ASocketMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	m_Socket->Disconnect();
+	m_Socket->Stop();
 }
 
 void ASocketMode::PushQueue(EFunction e, Packet* etc)
@@ -197,6 +203,12 @@ void ASocketMode::ProcessFunc()
 			break;
 		}
 	}
+}
+
+void ASocketMode::Ready()
+{
+	PStartMatching PSM;
+	m_Socket->Send(sizeof(PStartMatching), &PSM);
 }
 
 void ASocketMode::SpawnPlayer_Implementation(int serial){}

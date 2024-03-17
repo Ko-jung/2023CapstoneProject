@@ -224,27 +224,8 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		m_LobbyServerSocket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
 		AccpetLobbyServer();
 		IsLobbyServerConnect = true;
-	}
 
-	// id�� �������� ��ȣ 9999�� ������ ��?
-	if (m_iClientCount < MAXCLIENT)
-	{
-		// ��� Ŭ���� ���� ��ȣ�� ����??
-
-		ClientInfo* socket = GetEmptyClient();
-		socket->SetClientNum(m_iClientId);
-		socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
-
-		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
-
-		socket->Recv();
-
-		SendPlayerJoinPacket(m_iClientId);
-
-		cout << m_iClientId << "번 Accept" << endl;
-
-		m_iClientId++;
-		m_iClientCount++;
+		LogUtil::PrintLog("Connect Success to Lobby Server");
 
 		if (!ReadyToNextAccept())
 		{
@@ -253,7 +234,35 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 	}
 	else
 	{
-		std::cerr << "Client MAX!" << std::endl;
+		// id�� �������� ��ȣ 9999�� ������ ��?
+		if (m_iClientCount < MAXCLIENT)
+		{
+			// ��� Ŭ���� ���� ��ȣ�� ����??
+			ClientInfo* socket = GetEmptyClient();
+
+			socket->SetClientNum(m_iClientId);
+			socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
+
+			CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
+
+			socket->Recv();
+
+			SendPlayerJoinPacket(m_iClientId);
+
+			cout << m_iClientId << "번 Accept" << endl;
+
+			m_iClientId++;
+			m_iClientCount++;
+
+			if (!ReadyToNextAccept())
+			{
+				return;
+			}
+		}
+		else
+		{
+			std::cerr << "Client MAX!" << std::endl;
+		}
 	}
 }
 
@@ -285,12 +294,10 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	//RecvData << exp->_wsa_buf.buf;
 	//RecvData >> PacketType;
 
-	if (id == 9998)
-	{
-		LogUtil::PrintLog("Lobby Server Send");
-	}
-
 	const int PacketType = *(int*)exp->_wsa_buf.buf;
+
+	// 게임서버로 소켓을 옮겼을 때 클라에서 어디로 보내는지 알 수가 없다
+	// 딱 한 번 온다
 
 	switch (PacketType)
 	{
@@ -311,11 +318,18 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessDisconnectPlayer(disconnect);
 	}
 		break;
+	//case (int)COMP_OP::OP_SS_SENDPLAYERSOCKETS:
+	//{
+	//	PConnectToGameserver SPS;
+	//	memcpy(&SPS, exp->_wsa_buf.buf, sizeof(PConnectToGameserver));
+	//	ProcessNewPlayers(SPS);
+	//}
+	//	break;
 	default:
 		break;
 	}
 
-	//m_Clients[id]->RecvProcess(bytes, exp);
+	m_Clients[id]->RecvProcess(bytes, exp);
 }
 
 void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)
@@ -358,6 +372,23 @@ void IOCPServer::ProcessDisconnectPlayer(PDisconnect p)
 {
 	m_Clients[p.DisconnectPlayerSerial]->Init();
 }
+
+//void IOCPServer::ProcessNewPlayers(PSendPlayerSockets p)
+//{
+//	for (int i = 0; i < MAXPLAYER; i++)
+//	{
+//		ClientInfo* c = GetEmptyClient();
+//
+//		c->SetClientNum(m_iClientId);
+//		c->SetSocket(p.sockets[i]);
+//		CreateIoCompletionPort(reinterpret_cast<HANDLE>(c->GetSocket()), m_hIocp, m_iClientId, 0);
+//
+//		c->Recv();
+//		m_iClientId++;
+//
+//		SendPlayerJoinPacket(m_iClientId);
+//	}
+//}
 
 void IOCPServer::TestSend()
 {

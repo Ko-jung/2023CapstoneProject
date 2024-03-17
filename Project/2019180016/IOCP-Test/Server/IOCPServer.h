@@ -35,6 +35,7 @@ public:
 
 	void ProcessPlayerPosition(PPlayerPosition p);
 	void ProcessDisconnectPlayer(PDisconnect p);
+	//void ProcessNewPlayers(PSendPlayerSockets p);
 
 	void TestSend();
 	std::thread TempSendThread;

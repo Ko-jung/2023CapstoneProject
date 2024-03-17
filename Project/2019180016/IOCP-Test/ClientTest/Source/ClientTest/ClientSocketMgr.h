@@ -195,6 +195,7 @@ public:
 	//void HitMonster(const int& MonsterId);
 	// ä�� 
 	void SendChat(const int& SessionId, const string& Chat);
+	void ConnetToGameServer();
 
 // FRunnable Function
 public:

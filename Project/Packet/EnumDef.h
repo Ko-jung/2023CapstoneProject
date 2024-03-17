@@ -17,6 +17,7 @@ enum class COMP_OP
 	OP_TILEDROP,
 
 	OP_SS_SENDPLAYERSOCKETS,
+	OP_SS_CONNECTTOGAMESERVER,
 };
 
 enum class EObject : unsigned char

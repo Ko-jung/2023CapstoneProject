@@ -159,11 +159,11 @@ ClientInfo* LobbyServer::GetEmptyClient()
 
 void LobbyServer::CheckingMatchingQueue()
 {
-	int TempPlayer = 1;
+	int TempPlayer = 2;
 	//if (m_MatchingQueue.size() >= MAXPLAYER)
 	if (m_MatchingQueue.size() >= TempPlayer)
 	{
-		PSendPlayerSockets SPS;
+		PConnectToGameserver SPS;
 		ClientInfo* client;
 
 		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
@@ -172,14 +172,14 @@ void LobbyServer::CheckingMatchingQueue()
 		{
 			if(m_MatchingQueue.try_pop(client))
 			{
-				SPS.sockets[i] = client->GetSocket();
+				client->SendProcess(sizeof(PConnectToGameserver), &SPS);
 
 				i++;
 			}
 		}
 
-		m_GameServerOver = new EXP_OVER{ COMP_OP::OP_SEND, (char)sizeof(PSendPlayerSockets), (void*)&SPS};
-		int ret = WSASend(m_GameServerSocket, &m_GameServerOver->_wsa_buf, 1, 0, 0, &m_GameServerOver->_wsa_over, 0);
+		//m_GameServerOver = new EXP_OVER{ COMP_OP::OP_SEND, (char)sizeof(PSendPlayerSockets), (void*)&SPS};
+		//int ret = WSASend(m_GameServerSocket, &m_GameServerOver->_wsa_buf, 1, 0, 0, &m_GameServerOver->_wsa_over, 0);
 	}
 }
 
@@ -198,6 +198,7 @@ bool LobbyServer::ConnectToGameServer()
 		return false;
 	}
 
+	LogUtil::PrintLog("Connect Success to Game Server");
 	return true;
 }
 

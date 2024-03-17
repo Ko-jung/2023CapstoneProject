@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\Skyscraper.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Skyscraper.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\SkyscraperEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\Skyscraper">
+      <UniqueIdentifier>{BBFA3838-9B07-3439-9A28-37CAEB555E63}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Skyscraper\Skyscraper.Build.cs">
+      <Filter>Source\Skyscraper</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\Skyscraper\Skyscraper.cpp">
+      <Filter>Source\Skyscraper</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\Skyscraper.h">
+      <Filter>Source\Skyscraper</Filter>
+    </ClInclude>
+    <Filter Include="Source\Skyscraper\TP_ThirdPerson">
+      <UniqueIdentifier>{E3A9ADC5-FDD8-35E6-8786-D97A999FD2A6}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\Skyscraper\TP_ThirdPerson\TP_ThirdPerson.h">
+      <Filter>Source\Skyscraper\TP_ThirdPerson</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\TP_ThirdPerson\TP_ThirdPersonCharacter.cpp">
+      <Filter>Source\Skyscraper\TP_ThirdPerson</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\TP_ThirdPerson\TP_ThirdPersonCharacter.h">
+      <Filter>Source\Skyscraper\TP_ThirdPerson</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\TP_ThirdPerson\TP_ThirdPersonGameMode.cpp">
+      <Filter>Source\Skyscraper\TP_ThirdPerson</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\TP_ThirdPerson\TP_ThirdPersonGameMode.h">
+      <Filter>Source\Skyscraper\TP_ThirdPerson</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

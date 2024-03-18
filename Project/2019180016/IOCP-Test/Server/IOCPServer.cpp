@@ -296,9 +296,6 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 
 	const int PacketType = *(int*)exp->_wsa_buf.buf;
 
-	// 게임서버로 소켓을 옮겼을 때 클라에서 어디로 보내는지 알 수가 없다
-	// 딱 한 번 온다
-
 	switch (PacketType)
 	{
 	case (int)COMP_OP::OP_POSITION:
@@ -318,13 +315,14 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessDisconnectPlayer(disconnect);
 	}
 		break;
-	//case (int)COMP_OP::OP_SS_SENDPLAYERSOCKETS:
-	//{
-	//	PConnectToGameserver SPS;
-	//	memcpy(&SPS, exp->_wsa_buf.buf, sizeof(PConnectToGameserver));
-	//	ProcessNewPlayers(SPS);
-	//}
-	//	break;
+	case (int)COMP_OP::OP_PICKCHARACTER:
+	{
+		PPickCharacter PPC;
+		memcpy(&PPC, exp->_wsa_buf.buf, sizeof(PPC));
+
+		// Send To Other Player Pick State
+	}
+		break;
 	default:
 		break;
 	}

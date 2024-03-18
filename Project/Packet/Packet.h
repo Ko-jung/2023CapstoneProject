@@ -112,14 +112,12 @@ struct PTileDrop : Packet
 
 struct PConnectToGameserver : Packet
 {
-	//SOCKET sockets[6];
-
 	PConnectToGameserver() : Packet(COMP_OP::OP_SS_CONNECTTOGAMESERVER) {}
 };
 
-//struct PSendPlayerSockets : Packet
-//{
-//	//SOCKET sockets[6];
-//
-//	PSendPlayerSockets() : Packet(COMP_OP::OP_SS_SENDPLAYERSOCKETS) {}
-//};
+struct PPickCharacter : Packet
+{
+	ECharacter EPickedCharacter;
+	PPickCharacter(ECharacter c) : Packet(COMP_OP::OP_PICKCHARACTER), EPickedCharacter(c) {}
+	PPickCharacter() : Packet(COMP_OP::OP_PICKCHARACTER), EPickedCharacter(ECharacter::Assassin){}
+};

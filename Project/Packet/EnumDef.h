@@ -15,6 +15,7 @@ enum class COMP_OP
 	OP_CANCLEMATCHING,
 	OP_STARTGAME,
 	OP_TILEDROP,
+	OP_PICKCHARACTER,
 
 	OP_SS_SENDPLAYERSOCKETS,
 	OP_SS_CONNECTTOGAMESERVER,
@@ -32,4 +33,24 @@ enum class EPlayerState : unsigned char
 	Walk,
 	Run,
 	Jump,
+};
+
+enum class ECharacter : unsigned char
+{
+	Assassin,
+	Boomerang,
+	Detecter,
+	Elect,
+	Shield,
+	Wind,
+	NullCharacter,
+};
+
+enum class EWeapon
+{
+	// 근거리
+	Melee,
+
+	//원거리
+	Range,
 };

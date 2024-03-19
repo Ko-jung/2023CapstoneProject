@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"C:\\Users\\Administrator\\Desktop\\Skyscraper\\Source\\Skyscraper\\Skyscraper.Build.cs",
-		"C:\\Users\\Administrator\\Desktop\\Skyscraper\\Source\\Skyscraper.Target.cs",
-		"C:\\Users\\Administrator\\Desktop\\Skyscraper\\Source\\SkyscraperEditor.Target.cs"
+		"C:\\Users\\Administrator\\Desktop\\2023CapstoneProject\\Project\\Skyscraper\\Source\\Skyscraper\\Skyscraper.Build.cs",
+		"C:\\Users\\Administrator\\Desktop\\2023CapstoneProject\\Project\\Skyscraper\\Source\\Skyscraper.Target.cs",
+		"C:\\Users\\Administrator\\Desktop\\2023CapstoneProject\\Project\\Skyscraper\\Source\\SkyscraperEditor.Target.cs"
 	],
 	"EngineVersion": "5.3.2"
 }

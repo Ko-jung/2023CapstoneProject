@@ -11,6 +11,7 @@
     <None Include="..\..\Source\SkyscraperEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -52,6 +53,51 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\SkyscraperGameMode.h">
       <Filter>Source\Skyscraper</Filter>
+    </ClInclude>
+    <Filter Include="Source\Skyscraper\SelectCharacter">
+      <UniqueIdentifier>{D0D9FF6B-DF7D-376F-93AD-0C081B131936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Skyscraper\SelectCharacter\Core">
+      <UniqueIdentifier>{0FBB2CE0-5A68-3FFA-96CE-2E5DB689B246}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\Core\MyPlayerController.cpp">
+      <Filter>Source\Skyscraper\SelectCharacter\Core</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\Core\MyPlayerController.h">
+      <Filter>Source\Skyscraper\SelectCharacter\Core</Filter>
+    </ClInclude>
+    <Filter Include="Source\Skyscraper\SelectCharacter\UI">
+      <UniqueIdentifier>{33F07048-6077-3C3E-84BF-1ABE245F4B7E}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterDetail.cpp">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterDetail.h">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterPickState.cpp">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterPickState.h">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\MeleeWeaponDetail.cpp">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\MeleeWeaponDetail.h">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\RangeWeaponDetail.cpp">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\RangeWeaponDetail.h">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.cpp">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.h">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

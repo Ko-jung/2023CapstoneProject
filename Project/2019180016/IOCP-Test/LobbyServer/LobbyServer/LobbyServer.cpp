@@ -18,7 +18,6 @@ bool LobbyServer::Init(const int WorkerNum)
 		return false;
 
 	m_ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
-	m_GameServerSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (INVALID_SOCKET == m_ListenSocket)
 	{
 		error_display(WSAGetLastError());
@@ -26,6 +25,8 @@ bool LobbyServer::Init(const int WorkerNum)
 	}
 	m_iWorkerNum = WorkerNum - 2;
 
+	m_GameServerSocket = new ClientInfo();
+	m_GameServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));
 	for (int i = 0; i < MAXCLIENT; i++)
 	{
 		m_Clients[i] = new ClientInfo();
@@ -163,23 +164,8 @@ void LobbyServer::CheckingMatchingQueue()
 	//if (m_MatchingQueue.size() >= MAXPLAYER)
 	if (m_MatchingQueue.size() >= TempPlayer)
 	{
-		PConnectToGameserver SPS;
-		ClientInfo* client;
-
-		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
-		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
-		for (int i = 0; i < TempPlayer; )
-		{
-			if(m_MatchingQueue.try_pop(client))
-			{
-				client->SendProcess(sizeof(PConnectToGameserver), &SPS);
-
-				i++;
-			}
-		}
-
-		//m_GameServerOver = new EXP_OVER{ COMP_OP::OP_SEND, (char)sizeof(PSendPlayerSockets), (void*)&SPS};
-		//int ret = WSASend(m_GameServerSocket, &m_GameServerOver->_wsa_buf, 1, 0, 0, &m_GameServerOver->_wsa_over, 0);
+		PEmptyRoomNum PER;
+		m_GameServerSocket->SendProcess(sizeof(PER), &PER);
 	}
 }
 
@@ -190,7 +176,10 @@ bool LobbyServer::ConnectToGameServer()
 	serveraddr.sin_family = AF_INET;
 	int a = inet_pton(AF_INET, GAMESERVERIP, &serveraddr.sin_addr.s_addr);
 	serveraddr.sin_port = htons(GAMESERVERPORT);
-	int retval = connect(m_GameServerSocket, (sockaddr*)&serveraddr, sizeof(sockaddr));
+	int retval = connect(m_GameServerSocket->GetSocket(), (sockaddr*)&serveraddr, sizeof(sockaddr));
+
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_GameServerSocket->GetSocket()), m_hIocp, GAMESERVER, 0);
+	m_GameServerSocket->Recv();
 
 	if (retval == SOCKET_ERROR)
 	{
@@ -256,6 +245,11 @@ void LobbyServer::Send(int id, int bytes, EXP_OVER* exp)
 
 void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 {
+	if (id == GAMESERVER)
+	{
+		ProcessRecvFromGame(id, bytes, exp);
+		return;
+	}
 	const int PacketType = *(int*)exp->_wsa_buf.buf;
 
 	switch (PacketType)
@@ -263,6 +257,41 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 	case (int)COMP_OP::OP_STARTMATCHING:
 		m_MatchingQueue.push(m_Clients[id]);
 		CheckingMatchingQueue();
+		break;
+	default:
+		break;
+	}
+}
+
+void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
+{
+	const int PacketType = *(int*)exp->_wsa_buf.buf;
+	switch (PacketType)
+	{
+	case(int)COMP_OP::OP_SS_EMPTYROOMNUM:
+	{
+		// Get Room num from Gameserver
+		PEmptyRoomNum PER;
+		MEMCPYBUFTOPACKET(PER);
+
+		// Notify Room Num to Clients
+		PConnectToGameserver SPS;
+		SPS.RoomNum = PER.RoomNum;
+
+		ClientInfo* client;
+
+		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
+		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
+		for (int i = 0; i < 2; )
+		{
+			if (m_MatchingQueue.try_pop(client))
+			{
+				client->SendProcess(sizeof(PConnectToGameserver), &SPS);
+
+				i++;
+			}
+		}
+	}
 		break;
 	default:
 		break;

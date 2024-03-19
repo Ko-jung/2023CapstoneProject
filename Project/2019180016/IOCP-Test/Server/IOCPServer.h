@@ -3,6 +3,8 @@
 #include "../Common/Define.h"
 #include <concurrent_priority_queue.h>
 
+#define LOBBYSERVER 9998
+
 class ClientInfo;
 class RoomMgr;
 
@@ -22,6 +24,7 @@ public:
 	void Timer();
 
 	ClientInfo* GetEmptyClient();
+	//const int GetEmptyRoomNum();
 	bool ReadyToNextAccept();
 	void AccpetLobbyServer();
 
@@ -29,6 +32,8 @@ public:
 	void Accept(int id, int bytes, EXP_OVER* exp);
 	void Send(int id, int bytes, EXP_OVER* exp);
 	void Recv(int id, int bytes, EXP_OVER* exp);
+
+	void ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp);
 
 	void SendPlayerJoinPacket(int JoinPlayerSerial);
 	void SendTileDrop(int id/*, BYTE tileDropLevel*/);

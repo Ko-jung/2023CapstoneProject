@@ -235,7 +235,7 @@ uint32 ClientSocketMgr::Run()
 			Gamemode->PushQueue(EFunction::EPLAYERTRANSFORM, PlayerPosition);
 		}
 			break;
-		case (int)COMP_OP::OP_SS_CONNECTTOGAMESERVER:
+		case (int)COMP_OP::OP_CONNECTTOGAMESERVER:
 			ConnetToGameServer();
 			break;
 		default:

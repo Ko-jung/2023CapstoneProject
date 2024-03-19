@@ -3,6 +3,8 @@
 #include "../../Common/Define.h"
 #include <concurrent_priority_queue.h>
 
+#define GAMESERVER 9998
+
 class ClientInfo;
 
 class LobbyServer
@@ -26,6 +28,7 @@ public:
 	void Accept(int id, int bytes, EXP_OVER* exp);
 	void Send(int id, int bytes, EXP_OVER* exp);
 	void Recv(int id, int bytes, EXP_OVER* exp);
+	void ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp);
 
 private:
 	HANDLE m_hIocp;
@@ -33,7 +36,7 @@ private:
 	SOCKET m_ListenSocket;
 
 	EXP_OVER* m_GameServerOver;
-	SOCKET m_GameServerSocket;
+	ClientInfo* m_GameServerSocket;
 
 	std::array<ClientInfo*, MAXCLIENT> m_Clients;
 	Concurrency::concurrent_priority_queue< ClientInfo*> m_MatchingQueue;

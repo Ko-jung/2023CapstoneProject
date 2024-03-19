@@ -11,10 +11,6 @@ class UImage;
 class UButton;
 class UWidgetSwitcher;
 
-enum class Test
-{
-	a, b, c
-};
 UCLASS()
 class SKYSCRAPER_API USelectDetail : public UUserWidget
 {

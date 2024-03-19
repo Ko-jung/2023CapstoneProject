@@ -5,6 +5,8 @@
 #include "Components/Image.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Core/SelectCharacterController.h"
 
 void USelectDetail::NativeConstruct()
 {
@@ -53,5 +55,8 @@ void USelectDetail::OnClickRangeDetailButton()
 
 void USelectDetail::OnClickGoToLastButton()
 {
-	UE_LOG(LogTemp, Warning, TEXT("이전 화면으로 돌아가기 버튼 누름"));
+	if (ASelectCharacterController* Controller = Cast<ASelectCharacterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+	{
+		Controller->SetDetailWidgetVisibility(false);
+	}
 }

@@ -60,10 +60,10 @@
     <Filter Include="Source\Skyscraper\SelectCharacter\Core">
       <UniqueIdentifier>{0FBB2CE0-5A68-3FFA-96CE-2E5DB689B246}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\Core\MyPlayerController.cpp">
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\Core\SelectCharacterController.cpp">
       <Filter>Source\Skyscraper\SelectCharacter\Core</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\Core\MyPlayerController.h">
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\Core\SelectCharacterController.h">
       <Filter>Source\Skyscraper\SelectCharacter\Core</Filter>
     </ClInclude>
     <Filter Include="Source\Skyscraper\SelectCharacter\UI">
@@ -93,11 +93,18 @@
     <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\RangeWeaponDetail.h">
       <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectCharacter.cpp">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectCharacter.h">
+      <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.cpp">
       <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.h">
       <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
     </ClInclude>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

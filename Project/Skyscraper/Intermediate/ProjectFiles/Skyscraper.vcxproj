@@ -154,77 +154,85 @@
     <ClCompile_AdditionalOptions>$(AdditionalOptions) /Yu"C:\Users\Administrator\Desktop\Unreal\UnrealEngine\Engine\Intermediate\Build\Win64\x64\UnrealEditor\Development\UnrealEd\SharedPCH.UnrealEd.Cpp20.h"</ClCompile_AdditionalOptions>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\..\Skyscraper.uproject"/>
-    <None Include="..\..\Source\Skyscraper.Target.cs"/>
-    <None Include="..\..\Source\SkyscraperEditor.Target.cs"/>
-    <None Include="..\..\.vsconfig"/>
-    <None Include="..\..\Config\DefaultEditor.ini"/>
-    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini"/>
-    <None Include="..\..\Config\DefaultEngine.ini"/>
-    <None Include="..\..\Config\DefaultGame.ini"/>
-    <None Include="..\..\Config\DefaultInput.ini"/>
-    <None Include="..\..\Source\Skyscraper\Skyscraper.Build.cs"/>
+    <None Include="..\..\Skyscraper.uproject" />
+    <None Include="..\..\Source\Skyscraper.Target.cs" />
+    <None Include="..\..\Source\SkyscraperEditor.Target.cs" />
+    <None Include="..\..\.vsconfig" />
+    <None Include="..\..\Config\DefaultEditor.ini" />
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini" />
+    <None Include="..\..\Config\DefaultEngine.ini" />
+    <None Include="..\..\Config\DefaultGame.ini" />
+    <None Include="..\..\Config\DefaultInput.ini" />
+    <None Include="..\..\Source\Skyscraper\Skyscraper.Build.cs" />
     <ClCompile Include="..\..\Source\Skyscraper\Skyscraper.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\Skyscraper.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\Skyscraper.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SkyscraperCharacter.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SkyscraperCharacter.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\SkyscraperCharacter.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SkyscraperGameMode.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SkyscraperGameMode.h"/>
-    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\Core\MyPlayerController.cpp">
+    <ClInclude Include="..\..\Source\Skyscraper\SkyscraperGameMode.h" />
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\Core\SelectCharacterController.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\Core\MyPlayerController.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\Core\SelectCharacterController.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterDetail.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterDetail.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterDetail.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterPickState.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterPickState.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\CharacterPickState.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\MeleeWeaponDetail.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\MeleeWeaponDetail.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\MeleeWeaponDetail.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\RangeWeaponDetail.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\RangeWeaponDetail.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\RangeWeaponDetail.h" />
+    <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectCharacter.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectCharacter.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.h"/>
+    <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.h" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
     <CleanDependsOn> $(CleanDependsOn); </CleanDependsOn>
-    <CppCleanDependsOn></CppCleanDependsOn>
+    <CppCleanDependsOn>
+    </CppCleanDependsOn>
   </PropertyGroup>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

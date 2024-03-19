@@ -1,6 +1,8 @@
 #include "CharacterPickState.h"
 
 #include "Components/Button.h"
+#include "../Core/SelectCharacterController.h"
+#include "Kismet/GameplayStatics.h"
 // Fill out your copyright notice in the Description page of Project Settings.
 
 void UCharacterPickState::NativeConstruct()
@@ -17,12 +19,8 @@ void UCharacterPickState::NativeDestruct()
 
 void UCharacterPickState::GoToDetail()
 {
-	if(MyCharacterButton->GetVisibility()==ESlateVisibility::Hidden)
+	if(ASelectCharacterController* Controller = Cast<ASelectCharacterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))  )
 	{
-		MyCharacterButton->SetVisibility(ESlateVisibility::Visible);
-	}else
-	{
-		MyCharacterButton->SetVisibility(ESlateVisibility::Hidden);
+		Controller->SetDetailWidgetVisibility(true);
 	}
-	
 }

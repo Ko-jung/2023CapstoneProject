@@ -20,7 +20,7 @@ public:
 public:
 	SOCKET& GetSocket()							{ return m_sClientSocket; }
 	int GetRemainDataLen()						{ return m_iRemainDataLen; }
-	int GetClientNum()							{ return m_iClientNum; }
+	const int GetClientNum()							{ return m_iClientNum; }
 	int GetRoomNum()							{ return m_iRoomNum; }
 	//void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
 

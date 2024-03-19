@@ -51,9 +51,9 @@ bool IOCPServer::Init(const int WorkerNum)
 
 	m_iWorkerNum = WorkerNum - 2;
 
-	for (int i = 0; i < MAXCLIENT; i++)
+	for (auto& c : m_Clients)
 	{
-		m_Clients[i] = new ClientInfo();
+		c = new ClientInfo();
 	}
 
     return true;
@@ -185,6 +185,25 @@ ClientInfo* IOCPServer::GetEmptyClient()
 	}
 }
 
+//const int IOCPServer::GetEmptyRoomNum()
+//{
+//	//auto it = std::find_if(m_Clients.begin(), m_Clients.end(),
+//	//	[](const std::array<ClientInfo*, MAXPLAYER>& a)
+//	//	{
+//	//		return a[0]->GetClientNum() == -1;
+//	//	});
+//
+//	for (int i = 0; i < MAXROOM; i++)
+//	{
+//		if (m_Clients[i][0]->GetClientNum() == -1)
+//		{
+//			return i;
+//		}
+//	}
+//
+//	return -1;
+//}
+
 bool IOCPServer::ReadyToNextAccept()
 {
 	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
@@ -213,7 +232,7 @@ bool IOCPServer::ReadyToNextAccept()
 
 void IOCPServer::AccpetLobbyServer()
 {
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_LobbyServerSocket->GetSocket()), m_hIocp, 9998, 0);
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_LobbyServerSocket->GetSocket()), m_hIocp, LOBBYSERVER, 0);
 	m_LobbyServerSocket->Recv();
 }
 
@@ -289,10 +308,11 @@ void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 {
-	//std::stringstream RecvData;
-	//int PacketType;	
-	//RecvData << exp->_wsa_buf.buf;
-	//RecvData >> PacketType;
+	if (id == LOBBYSERVER)
+	{
+		ProcessRecvFromLobby(id, bytes, exp);
+		return;
+	}
 
 	const int PacketType = *(int*)exp->_wsa_buf.buf;
 
@@ -304,7 +324,8 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	case (int)COMP_OP::OP_PLAYERPOSITION:
 	{
 		PPlayerPosition PPP;
-		memcpy(&PPP, exp->_wsa_buf.buf, sizeof(PPlayerPosition));
+		//memcpy(&PPP, exp->_wsa_buf.buf, sizeof(PPlayerPosition));
+		MEMCPYBUFTOPACKET(PPP);
 		ProcessPlayerPosition(PPP);
 	}
 		break;
@@ -317,8 +338,8 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		break;
 	case (int)COMP_OP::OP_PICKCHARACTER:
 	{
-		PPickCharacter PPC;
-		memcpy(&PPC, exp->_wsa_buf.buf, sizeof(PPC));
+		PPlayerPickInfo PPC;
+		MEMCPYBUFTOPACKET(PPC);
 
 		// Send To Other Player Pick State
 	}
@@ -328,6 +349,23 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	}
 
 	m_Clients[id]->RecvProcess(bytes, exp);
+}
+
+void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)
+{
+	const int PacketType = *(int*)exp->_wsa_buf.buf;
+	switch (PacketType)
+	{
+	case(int)COMP_OP::OP_SS_EMPTYROOMNUM:
+	{
+		PEmptyRoomNum PER;
+		PER.RoomNum = 0;// GetEmptyRoomNum();
+		m_LobbyServerSocket->SendProcess(sizeof(PEmptyRoomNum), &PER);
+	}
+		break;
+	default:
+		break;
+	}
 }
 
 void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)

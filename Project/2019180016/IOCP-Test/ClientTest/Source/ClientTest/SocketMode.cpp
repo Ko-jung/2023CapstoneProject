@@ -209,6 +209,7 @@ void ASocketMode::Ready()
 {
 	PStartMatching PSM;
 	m_Socket->Send(sizeof(PStartMatching), &PSM);
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Send READY Message!"));
 }
 
 void ASocketMode::SpawnPlayer_Implementation(int serial){}

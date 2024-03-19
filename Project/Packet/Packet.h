@@ -110,14 +110,34 @@ struct PTileDrop : Packet
 	PTileDrop() : Packet(COMP_OP::OP_TILEDROP) {}
 };
 
+// contained room num in RoomNum
 struct PConnectToGameserver : Packet
 {
-	PConnectToGameserver() : Packet(COMP_OP::OP_SS_CONNECTTOGAMESERVER) {}
+	PConnectToGameserver() : Packet(COMP_OP::OP_CONNECTTOGAMESERVER) {}
 };
 
-struct PPickCharacter : Packet
+struct PPlayerPickInfo : Packet
 {
-	ECharacter EPickedCharacter;
-	PPickCharacter(ECharacter c) : Packet(COMP_OP::OP_PICKCHARACTER), EPickedCharacter(c) {}
-	PPickCharacter() : Packet(COMP_OP::OP_PICKCHARACTER), EPickedCharacter(ECharacter::Assassin){}
+	ECharacter PickedCharacter;
+	EMeleeWeapon PickedMeleeWeapon;
+	ERangeWeapon PickedRangeWeapon;
+
+	PPlayerPickInfo(ECharacter c, EMeleeWeapon meele, ERangeWeapon range) :
+		Packet(COMP_OP::OP_PICKCHARACTER),
+		PickedCharacter(c),
+		PickedMeleeWeapon(meele),
+		PickedRangeWeapon(range)
+	{}
+
+	PPlayerPickInfo() : Packet(COMP_OP::OP_PICKCHARACTER),
+		PickedCharacter(ECharacter::NullCharacter),
+		PickedMeleeWeapon(EMeleeWeapon::NullWeapon),
+		PickedRangeWeapon(ERangeWeapon::NullWeapon)
+	{}
+};
+
+// contained empty room num in RoomNum
+struct PEmptyRoomNum : Packet
+{
+	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
 };

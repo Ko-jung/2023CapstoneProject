@@ -19,14 +19,16 @@
 
 #define BUFSIZE 128
 #define MAXCLIENT 2100
-#define MAXROOM 350
 #define MAXPLAYER 6
+#define MAXROOM 350
 
 #define GAMESERVERIP "127.0.0.1"
 #define GAMESERVERPORT 9000
 
 #define LOBBYSERVERIP "127.0.0.1"
 #define LOBBYSERVERPORT 9001
+
+#define MEMCPYBUFTOPACKET(packet) memcpy(&packet, exp->_wsa_buf.buf, sizeof(packet))
 
 
 using std::cout;

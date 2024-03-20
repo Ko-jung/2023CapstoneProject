@@ -27,7 +27,7 @@ void USelectDetail::NativeDestruct()
 
 void USelectDetail::SetSwitcherValue(int32 Value) const
 {
-	// ÇöÀç ÄÑÁ®ÀÖ´Â ¹öÆ°ÀÏ °æ¿ì º¸ÀÌ±â ²ô±â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½
 	if(DetailSwitcher->GetActiveWidgetIndex() == Value && DetailSwitcher->GetVisibility()==ESlateVisibility::Visible)
 	{
 		DetailSwitcher->SetVisibility(ESlateVisibility::Hidden);

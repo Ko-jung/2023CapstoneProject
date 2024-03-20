@@ -7,9 +7,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
+#include "InputActionValue.h"
+#include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "InputActionValue.h"
+#include "Components/InputComponent.h"
+#include "Skyscraper/MainGame/Component/CombatSystemComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -52,6 +55,41 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	{ // == Set Mesh Charcter
+		// == Find and set USkeletalMesh from directory
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'"));
+		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
+		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
+		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
+		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/Characters/Mannequins/Animations/ABP_Manny.ABP_Manny_C'"));
+		GetMesh()->SetAnimClass(AnimBPAsset.Class);
+	}
+
+	{ // == Set Input Asset
+
+		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_DefaultAsset(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/GameTest/Core/Input/Default/IMC_Default.IMC_Default'"));
+		DefaultMappingContext = IMC_DefaultAsset.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_MoveAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/GameTest/Core/Input/Default/IA_GameDefaultMove.IA_GameDefaultMove'"));
+		MoveAction = IA_MoveAsset.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_JumpAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/GameTest/Core/Input/Default/IA_GameDefaultJump.IA_GameDefaultJump'"));
+		JumpAction = IA_JumpAsset.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_LookAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/GameTest/Core/Input/Default/IA_GameDefaultLook.IA_GameDefaultLook'"));
+		LookAction = IA_LookAsset.Object;
+	}
+
+	{ // == Set components
+		//static ConstructorHelpers::FObjectFinder<UCombatSystemComponent> CombatCompData(TEXT("/Script/CoreUObject.Class'/Script/Skyscraper.CombatSystemComponent'"));
+		CombatSystemComponent = CreateDefaultSubobject<UCombatSystemComponent>(TEXT("CombatSystemComponent"));
+		
+		//CombatSystemComponent = NewObject<UCombatSystemComponent>(this);
+		//CombatSystemComponent->RegisterComponent();
+	}
+
 }
 
 void ASkyscraperCharacter::BeginPlay()

@@ -54,6 +54,18 @@
     <ClInclude Include="..\..\Source\Skyscraper\SkyscraperGameMode.h">
       <Filter>Source\Skyscraper</Filter>
     </ClInclude>
+    <Filter Include="Source\Skyscraper\MainGame">
+      <UniqueIdentifier>{DC90325C-7130-32D6-85A6-1D91D79A6210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Skyscraper\MainGame\Component">
+      <UniqueIdentifier>{D35BFDC7-28D7-3C5C-B7A8-4C028738B4BE}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\CombatSystemComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\CombatSystemComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component</Filter>
+    </ClInclude>
     <Filter Include="Source\Skyscraper\SelectCharacter">
       <UniqueIdentifier>{D0D9FF6B-DF7D-376F-93AD-0C081B131936}</UniqueIdentifier>
     </Filter>
@@ -105,6 +117,5 @@
     <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.h">
       <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
     </ClInclude>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

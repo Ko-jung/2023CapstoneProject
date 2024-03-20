@@ -12,7 +12,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-
+class UCombatSystemComponent;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
@@ -44,6 +44,9 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(VisibleAnywhere, Category = Component)
+		UCombatSystemComponent* CombatSystemComponent;
+
 public:
 	ASkyscraperCharacter();
 	
@@ -56,7 +59,7 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 			
-
+	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

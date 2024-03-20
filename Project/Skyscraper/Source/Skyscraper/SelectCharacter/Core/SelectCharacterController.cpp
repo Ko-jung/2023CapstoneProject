@@ -10,7 +10,7 @@
 
 ASelectCharacterController::ASelectCharacterController()
 {
-    { // À§Á¬ ¿¡¼Â ºÒ·¯¿À±â
+    { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½
         static ConstructorHelpers::FClassFinder<USelectCharacter> SelectCharacterWidgetAsset(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/SelectCharacter/WidgetUI/WBP_SelectCharacter.WBP_SelectCharacter_C'"));
         UE_LOG(LogTemp, Warning, TEXT("why00"));
         if(SelectCharacterWidgetAsset.Succeeded())
@@ -36,7 +36,7 @@ void ASelectCharacterController::BeginPlay()
 
     UE_LOG(LogTemp, Warning, TEXT("input0"));
 
-    { // Ä³¸¯ÅÍ ÇÈÃ¢ À§Á¬ »ý¼º ¹× ºäÆ÷Æ® Ãß°¡
+    { // Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ß°ï¿½
         if (CharacterSelectionWidgetClass)
         {
             CharacterSelectionWidget = Cast<USelectCharacter>(CreateWidget(this, CharacterSelectionWidgetClass));
@@ -49,14 +49,14 @@ void ASelectCharacterController::BeginPlay()
         }
     }
 
-    { // µðÅ×ÀÏ Ã¢ À§Á¬ »ý¼º
+    { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¢ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	    if(SelectDetailWidgetClass)
 	    {
             SelectDetailWidget = Cast<USelectDetail>(CreateWidget(this, SelectDetailWidgetClass));
 	    }
     }
 
-    { // ÀÎÇ²¸ðµå ¼³Á¤ ¹× Ä¿¼­ °¡½Ã¼º ¼³Á¤
+    { // ï¿½ï¿½Ç²ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä¿ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¼ï¿½ ï¿½ï¿½ï¿½ï¿½
         SetInputMode(FInputModeGameAndUI());
         SetShowMouseCursor(true);
     }

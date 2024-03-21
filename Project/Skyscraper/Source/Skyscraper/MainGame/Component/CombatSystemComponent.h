@@ -28,6 +28,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	FORCEINLINE USkeletalMeshComponent* GetOwnerMeshComponent() { return OwnerCharacter->GetMesh(); }
-	FORCEINLINE APlayerController* GetOwnerPlayerController() { return Cast<APlayerController>(OwnerCharacter->GetController()); }
+	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
+
+
+
 };

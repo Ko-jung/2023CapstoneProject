@@ -13,6 +13,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "Skyscraper/MainGame/Component/CombatSystemComponent.h"
+#include <MotionWarpingComponent.h>
+
+#include "MainGame/Component/MainMeleeComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -63,7 +66,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
 		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
-		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/Characters/Mannequins/Animations/ABP_Manny.ABP_Manny_C'"));
+		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/Character/PrototypeAnimation/ABP_GameTestChar_Test.ABP_GameTestChar_Test_C'"));
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
@@ -83,11 +86,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	}
 
 	{ // == Set components
-		//static ConstructorHelpers::FObjectFinder<UCombatSystemComponent> CombatCompData(TEXT("/Script/CoreUObject.Class'/Script/Skyscraper.CombatSystemComponent'"));
 		CombatSystemComponent = CreateDefaultSubobject<UCombatSystemComponent>(TEXT("CombatSystemComponent"));
-		
-		//CombatSystemComponent = NewObject<UCombatSystemComponent>(this);
-		//CombatSystemComponent->RegisterComponent();
+		MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+		MainMeleeComponent = CreateDefaultSubobject<UMainMeleeComponent>(TEXT("MainMeleeComponent"));
 	}
 
 }

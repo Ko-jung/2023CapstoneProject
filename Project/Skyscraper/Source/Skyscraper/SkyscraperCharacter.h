@@ -13,6 +13,8 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UCombatSystemComponent;
+class UMotionWarpingComponent;
+class UMainMeleeComponent;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
@@ -44,12 +46,14 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
-	UPROPERTY(VisibleAnywhere, Category = Component)
-		UCombatSystemComponent* CombatSystemComponent;
-
 public:
 	ASkyscraperCharacter();
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UCombatSystemComponent* CombatSystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UMotionWarpingComponent* MotionWarpingComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UMainMeleeComponent* MainMeleeComponent;
 
 protected:
 
@@ -72,5 +76,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
+
 };
 

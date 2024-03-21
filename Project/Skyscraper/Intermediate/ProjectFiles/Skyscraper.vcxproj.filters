@@ -66,6 +66,12 @@
     <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\CombatSystemComponent.h">
       <Filter>Source\Skyscraper\MainGame\Component</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\MainMeleeComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\MainMeleeComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component</Filter>
+    </ClInclude>
     <Filter Include="Source\Skyscraper\SelectCharacter">
       <UniqueIdentifier>{D0D9FF6B-DF7D-376F-93AD-0C081B131936}</UniqueIdentifier>
     </Filter>

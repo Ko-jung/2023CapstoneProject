@@ -14,9 +14,11 @@ void EmptyLinkFunctionForGeneratedCodeSkyscraperCharacter() {}
 	ENGINE_API UClass* Z_Construct_UClass_USpringArmComponent_NoRegister();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputAction_NoRegister();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputMappingContext_NoRegister();
+	MOTIONWARPING_API UClass* Z_Construct_UClass_UMotionWarpingComponent_NoRegister();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_ASkyscraperCharacter();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_ASkyscraperCharacter_NoRegister();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_UCombatSystemComponent_NoRegister();
+	SKYSCRAPER_API UClass* Z_Construct_UClass_UMainMeleeComponent_NoRegister();
 	UPackage* Z_Construct_UPackage__Script_Skyscraper();
 // End Cross Module References
 	void ASkyscraperCharacter::StaticRegisterNativesASkyscraperCharacter()
@@ -61,6 +63,14 @@ void EmptyLinkFunctionForGeneratedCodeSkyscraperCharacter() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_CombatSystemComponent_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_CombatSystemComponent;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_MotionWarpingComponent_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_MotionWarpingComponent;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_MainMeleeComponent_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_MainMeleeComponent;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -170,7 +180,23 @@ void EmptyLinkFunctionForGeneratedCodeSkyscraperCharacter() {}
 		{ "ModuleRelativePath", "SkyscraperCharacter.h" },
 	};
 #endif
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CombatSystemComponent = { "CombatSystemComponent", nullptr, (EPropertyFlags)0x00400000000a0009, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASkyscraperCharacter, CombatSystemComponent), Z_Construct_UClass_UCombatSystemComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CombatSystemComponent_MetaData), Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CombatSystemComponent_MetaData) };
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CombatSystemComponent = { "CombatSystemComponent", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASkyscraperCharacter, CombatSystemComponent), Z_Construct_UClass_UCombatSystemComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CombatSystemComponent_MetaData), Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CombatSystemComponent_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MotionWarpingComponent_MetaData[] = {
+		{ "Category", "Component" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "SkyscraperCharacter.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MotionWarpingComponent = { "MotionWarpingComponent", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASkyscraperCharacter, MotionWarpingComponent), Z_Construct_UClass_UMotionWarpingComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MotionWarpingComponent_MetaData), Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MotionWarpingComponent_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MainMeleeComponent_MetaData[] = {
+		{ "Category", "Component" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "SkyscraperCharacter.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MainMeleeComponent = { "MainMeleeComponent", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASkyscraperCharacter, MainMeleeComponent), Z_Construct_UClass_UMainMeleeComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MainMeleeComponent_MetaData), Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MainMeleeComponent_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ASkyscraperCharacter_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CameraBoom,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_FollowCamera,
@@ -179,6 +205,8 @@ void EmptyLinkFunctionForGeneratedCodeSkyscraperCharacter() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MoveAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_LookAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_CombatSystemComponent,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MotionWarpingComponent,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASkyscraperCharacter_Statics::NewProp_MainMeleeComponent,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_ASkyscraperCharacter_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<ASkyscraperCharacter>::IsAbstract,
@@ -218,9 +246,9 @@ void EmptyLinkFunctionForGeneratedCodeSkyscraperCharacter() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperCharacter_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ASkyscraperCharacter, ASkyscraperCharacter::StaticClass, TEXT("ASkyscraperCharacter"), &Z_Registration_Info_UClass_ASkyscraperCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASkyscraperCharacter), 4205231894U) },
+		{ Z_Construct_UClass_ASkyscraperCharacter, ASkyscraperCharacter::StaticClass, TEXT("ASkyscraperCharacter"), &Z_Registration_Info_UClass_ASkyscraperCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASkyscraperCharacter), 2702812852U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperCharacter_h_852861086(TEXT("/Script/Skyscraper"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperCharacter_h_716200224(TEXT("/Script/Skyscraper"),
 		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperCharacter_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperCharacter_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

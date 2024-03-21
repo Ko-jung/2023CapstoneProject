@@ -61,12 +61,11 @@ protected:
 
 	std::unordered_map < COMP_OP, std::function<void(int, int, EXP_OVER*)>> m_IocpFunctionMap;
 
-	//std::unordered_map <int, class TimerMgr*> m_TimerMgrMap;
 	std::shared_ptr<class TimerMgr> m_TimerMgr;
 
 	std::array<ClientInfo*, MAXCLIENT> m_Clients;
 
-	Concurrency::concurrent_priority_queue<ClientInfo*> m_MatchingQueue;
+	//Concurrency::concurrent_priority_queue<ClientInfo*> m_ClientSocketPool;
 
 	int m_iWorkerNum;
 

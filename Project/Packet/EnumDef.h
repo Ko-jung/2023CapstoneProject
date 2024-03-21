@@ -63,8 +63,8 @@ enum class EMeleeWeapon : unsigned char
 //원거리
 enum class ERangeWeapon : unsigned char
 {
-	SubmachineGun,		// 기관단총
-	AssaultRifle,		// 돌격소총
+	SubmachineGun,			// 기관단총
+	AssaultRifle,			// 돌격소총
 	GrenadeLauncher,		// 유탄발사기
 	
 	// Express '?' on UI

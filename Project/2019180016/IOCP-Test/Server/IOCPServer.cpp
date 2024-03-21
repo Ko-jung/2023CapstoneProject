@@ -341,7 +341,17 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		PPlayerPickInfo PPC;
 		MEMCPYBUFTOPACKET(PPC);
 
+		int SendPlayerRoomNum = id / 6;
+
 		// Send To Other Player Pick State
+		for (int i = 0; i < MAXPLAYER; i++)
+		{
+			int ClientNum = SendPlayerRoomNum * 6 + i;
+			if (ClientNum != id)
+			{
+				m_Clients[SendPlayerRoomNum + i]->SendProcess(sizeof(PPC), &PPC);
+			}
+		}
 	}
 		break;
 	default:

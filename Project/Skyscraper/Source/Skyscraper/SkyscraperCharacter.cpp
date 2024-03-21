@@ -16,6 +16,7 @@
 #include <MotionWarpingComponent.h>
 
 #include "MainGame/Component/MainMeleeComponent.h"
+#include "MainGame/Component/MainRangeComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -89,6 +90,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		CombatSystemComponent = CreateDefaultSubobject<UCombatSystemComponent>(TEXT("CombatSystemComponent"));
 		MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 		MainMeleeComponent = CreateDefaultSubobject<UMainMeleeComponent>(TEXT("MainMeleeComponent"));
+		MainRangeComponent = CreateDefaultSubobject<UMainRangeComponent>(TEXT("MainRangeComponent"));
 	}
 
 }

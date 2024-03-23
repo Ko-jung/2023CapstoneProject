@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "Skyscraper/MainGame/Component/CombatSystemComponent.h"
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeCombatSystemComponent() {}
 // Cross Module References
@@ -46,13 +46,13 @@ void EmptyLinkFunctionForGeneratedCodeCombatSystemComponent() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UCombatSystemComponent_Statics::Class_MetaDataParams[] = {
 		{ "BlueprintSpawnableComponent", "" },
 		{ "ClassGroupNames", "Custom" },
-		{ "IncludePath", "MainGame/Component/CombatSystemComponent.h" },
-		{ "ModuleRelativePath", "MainGame/Component/CombatSystemComponent.h" },
+		{ "IncludePath", "MainGame/Component/Combat/CombatSystemComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/CombatSystemComponent.h" },
 	};
 #endif
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UCombatSystemComponent_Statics::NewProp_OwnerCharacter_MetaData[] = {
-		{ "ModuleRelativePath", "MainGame/Component/CombatSystemComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/CombatSystemComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UCombatSystemComponent_Statics::NewProp_OwnerCharacter = { "OwnerCharacter", nullptr, (EPropertyFlags)0x0020080000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UCombatSystemComponent, OwnerCharacter), Z_Construct_UClass_ASkyscraperCharacter_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UCombatSystemComponent_Statics::NewProp_OwnerCharacter_MetaData), Z_Construct_UClass_UCombatSystemComponent_Statics::NewProp_OwnerCharacter_MetaData) };
@@ -92,15 +92,15 @@ void EmptyLinkFunctionForGeneratedCodeCombatSystemComponent() {}
 	}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(UCombatSystemComponent);
 	UCombatSystemComponent::~UCombatSystemComponent() {}
-	struct Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_CombatSystemComponent_h_Statics
+	struct Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_CombatSystemComponent_h_Statics
 	{
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
-	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_CombatSystemComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UCombatSystemComponent, UCombatSystemComponent::StaticClass, TEXT("UCombatSystemComponent"), &Z_Registration_Info_UClass_UCombatSystemComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UCombatSystemComponent), 1133383711U) },
+	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_CombatSystemComponent_h_Statics::ClassInfo[] = {
+		{ Z_Construct_UClass_UCombatSystemComponent, UCombatSystemComponent::StaticClass, TEXT("UCombatSystemComponent"), &Z_Registration_Info_UClass_UCombatSystemComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UCombatSystemComponent), 3945459133U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_CombatSystemComponent_h_1555093840(TEXT("/Script/Skyscraper"),
-		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_CombatSystemComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_CombatSystemComponent_h_Statics::ClassInfo),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_CombatSystemComponent_h_3007120526(TEXT("/Script/Skyscraper"),
+		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_CombatSystemComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_CombatSystemComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

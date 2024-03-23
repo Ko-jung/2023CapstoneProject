@@ -60,24 +60,6 @@
     <Filter Include="Source\Skyscraper\MainGame\Component">
       <UniqueIdentifier>{D35BFDC7-28D7-3C5C-B7A8-4C028738B4BE}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\CombatSystemComponent.cpp">
-      <Filter>Source\Skyscraper\MainGame\Component</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\CombatSystemComponent.h">
-      <Filter>Source\Skyscraper\MainGame\Component</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\MainMeleeComponent.cpp">
-      <Filter>Source\Skyscraper\MainGame\Component</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\MainMeleeComponent.h">
-      <Filter>Source\Skyscraper\MainGame\Component</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\MainRangeComponent.cpp">
-      <Filter>Source\Skyscraper\MainGame\Component</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\MainRangeComponent.h">
-      <Filter>Source\Skyscraper\MainGame\Component</Filter>
-    </ClInclude>
     <Filter Include="Source\Skyscraper\SelectCharacter">
       <UniqueIdentifier>{D0D9FF6B-DF7D-376F-93AD-0C081B131936}</UniqueIdentifier>
     </Filter>
@@ -129,5 +111,38 @@
     <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.h">
       <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source\Skyscraper\MainGame\Component\Combat">
+      <UniqueIdentifier>{671315a5-b504-4fe4-89f2-feb0de78d52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Skyscraper\MainGame\Component\Combat\Melee">
+      <UniqueIdentifier>{7918b53b-bc07-4694-88fe-27d2c279c0eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Skyscraper\MainGame\Component\Combat\Range">
+      <UniqueIdentifier>{2820cdb7-ed57-4cef-b4d1-78f13cf581cc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\MainMeleeComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\MainRangeComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\MainMeleeComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\MainRangeComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

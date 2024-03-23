@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "Skyscraper/MainGame/Component/MainMeleeComponent.h"
+#include "Skyscraper/MainGame/Component/Combat/Melee/MainMeleeComponent.h"
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 // Cross Module References
@@ -67,7 +67,7 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if !UE_BUILD_SHIPPING
 		{ "Comment", "// == Do attack action by anim montage anim notify\n" },
 #endif
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 #if !UE_BUILD_SHIPPING
 		{ "ToolTip", "== Do attack action by anim montage anim notify" },
 #endif
@@ -122,7 +122,7 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if !UE_BUILD_SHIPPING
 		{ "Comment", "//TODO: Refactoring for team not damaged\n" },
 #endif
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 #if !UE_BUILD_SHIPPING
 		{ "ToolTip", "TODO: Refactoring for team not damaged" },
 #endif
@@ -171,7 +171,7 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if !UE_BUILD_SHIPPING
 		{ "Comment", "// == On Blend Out attack montage\n// To link delegate (OnMontageBlendingOut);\n" },
 #endif
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 #if !UE_BUILD_SHIPPING
 		{ "ToolTip", "== On Blend Out attack montage\nTo link delegate (OnMontageBlendingOut);" },
 #endif
@@ -247,17 +247,17 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::DependentSingletons) < 16);
 	const FClassFunctionLinkInfo Z_Construct_UClass_UMainMeleeComponent_Statics::FuncInfo[] = {
-		{ &Z_Construct_UFunction_UMainMeleeComponent_Attack, "Attack" }, // 3375881145
-		{ &Z_Construct_UFunction_UMainMeleeComponent_CreateAttackArea, "CreateAttackArea" }, // 3994937880
-		{ &Z_Construct_UFunction_UMainMeleeComponent_OnBlendOutMeleeAttack, "OnBlendOutMeleeAttack" }, // 1574295209
+		{ &Z_Construct_UFunction_UMainMeleeComponent_Attack, "Attack" }, // 2461975984
+		{ &Z_Construct_UFunction_UMainMeleeComponent_CreateAttackArea, "CreateAttackArea" }, // 588794357
+		{ &Z_Construct_UFunction_UMainMeleeComponent_OnBlendOutMeleeAttack, "OnBlendOutMeleeAttack" }, // 643422462
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::FuncInfo) < 2048);
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::Class_MetaDataParams[] = {
 		{ "BlueprintSpawnableComponent", "" },
 		{ "ClassGroupNames", "Custom" },
-		{ "IncludePath", "MainGame/Component/MainMeleeComponent.h" },
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "IncludePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_ValueProp = { "MeleeComboAnimMontage", nullptr, (EPropertyFlags)0x0000000000000001, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 1, Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(0, nullptr) };
@@ -265,7 +265,7 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_MetaData[] = {
 		{ "Category", "Components" },
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FMapPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage = { "MeleeComboAnimMontage", nullptr, (EPropertyFlags)0x0040000000000001, UECodeGen_Private::EPropertyGenFlags::Map, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, MeleeComboAnimMontage), EMapPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_MetaData) };
@@ -273,28 +273,28 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData[] = {
 		{ "Category", "AnimMontage" },
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime = { "AttackTime", nullptr, (EPropertyFlags)0x0040000000000001, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, AttackTime), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData[] = {
 		{ "Category", "MotionWarping" },
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance = { "AnimationMovementDistance", nullptr, (EPropertyFlags)0x0040000000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, AnimationMovementDistance), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData[] = {
 		{ "Category", "ComboSystem" },
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount = { "MeleeComboCount", nullptr, (EPropertyFlags)0x0040000000020001, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, MeleeComboCount), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_MetaData[] = {
 		{ "Category", "ComboSystem" },
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	void Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_SetBit(void* Obj)
@@ -305,19 +305,19 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData[] = {
 		{ "Category", "ComboSystem" },
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime = { "LastAttackClickTime", nullptr, (EPropertyFlags)0x0040000000020001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, LastAttackClickTime), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData[] = {
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance = { "OwnerAnimInstance", nullptr, (EPropertyFlags)0x0040000000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, OwnerAnimInstance), Z_Construct_UClass_UAnimInstance_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData[] = {
-		{ "ModuleRelativePath", "MainGame/Component/MainMeleeComponent.h" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter = { "OwnerCharacter", nullptr, (EPropertyFlags)0x0020080000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, OwnerCharacter), Z_Construct_UClass_ASkyscraperCharacter_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData) };
@@ -367,15 +367,15 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 	}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(UMainMeleeComponent);
 	UMainMeleeComponent::~UMainMeleeComponent() {}
-	struct Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_MainMeleeComponent_h_Statics
+	struct Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_Statics
 	{
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
-	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_MainMeleeComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UMainMeleeComponent, UMainMeleeComponent::StaticClass, TEXT("UMainMeleeComponent"), &Z_Registration_Info_UClass_UMainMeleeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainMeleeComponent), 2089258191U) },
+	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_Statics::ClassInfo[] = {
+		{ Z_Construct_UClass_UMainMeleeComponent, UMainMeleeComponent::StaticClass, TEXT("UMainMeleeComponent"), &Z_Registration_Info_UClass_UMainMeleeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainMeleeComponent), 2738432614U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_MainMeleeComponent_h_4130544270(TEXT("/Script/Skyscraper"),
-		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_MainMeleeComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_MainMeleeComponent_h_Statics::ClassInfo),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_473673556(TEXT("/Script/Skyscraper"),
+		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

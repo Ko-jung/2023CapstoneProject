@@ -12,11 +12,11 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
-#include "Skyscraper/MainGame/Component/CombatSystemComponent.h"
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include <MotionWarpingComponent.h>
 
-#include "MainGame/Component/MainMeleeComponent.h"
-#include "MainGame/Component/MainRangeComponent.h"
+#include "MainGame/Component/Combat/Melee/MainMeleeComponent.h"
+#include "MainGame/Component/Combat/Range/MainRangeComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -45,6 +45,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	bUseControllerRotationYaw = true;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

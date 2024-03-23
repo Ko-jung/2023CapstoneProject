@@ -7,7 +7,6 @@
 #include "Logging/LogMacros.h"
 #include "SkyscraperCharacter.generated.h"
 
-class UMainRangeComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -55,8 +54,6 @@ public:
 		UMotionWarpingComponent* MotionWarpingComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UMainMeleeComponent* MainMeleeComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UMainRangeComponent* MainRangeComponent;
 
 protected:
 

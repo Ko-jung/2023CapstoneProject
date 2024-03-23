@@ -71,7 +71,7 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			GetOwnerPlayerController()->GetControlRotation().Vector() * 10000.0f;
 		TArray<AActor*> IgnoreActors;
 		FHitResult OutHit;
-		static bool HitResult = UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1,
+		bool HitResult = UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1,
 			false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHit, true);
 		if (HitResult)
 		{

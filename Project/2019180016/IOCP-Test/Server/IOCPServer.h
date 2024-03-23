@@ -45,10 +45,6 @@ public:
 	void TestSend();
 	std::thread TempSendThread;
 
-public:
-	// Timer Function
-	void StartGame(int RoomNum, int ClientNum, void* etc);
-
 protected:
 	// IOCP�� �ڵ�
 	HANDLE m_hIocp;
@@ -73,8 +69,9 @@ protected:
 
 	int m_iWorkerNum;
 
-	std::atomic<int> m_iClientId;
-	std::atomic<int> m_iClientCount;
+	int m_iClientId;
+
+	int m_iClientCount;
 
 	int m_iRoomId;
 };

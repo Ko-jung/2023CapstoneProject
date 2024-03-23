@@ -6,17 +6,14 @@
 using std::cout;
 using std::endl;
 
-#pragma pack(push, 1)
 struct Packet
 {
-	BYTE PacketType;
-	//int PacketType;
+	int PacketType;
 	int RoomNum;
 
 	Packet() :PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) {}
 	Packet(COMP_OP op) : PacketType((int)op), RoomNum(-1) {}
 };
-#pragma pack(pop)
 
 struct PTransform
 {
@@ -126,28 +123,21 @@ struct PPlayerPickInfo : Packet
 	ERangeWeapon PickedRangeWeapon;
 
 	PPlayerPickInfo(ECharacter c, EMeleeWeapon meele, ERangeWeapon range) :
-		Packet(COMP_OP::OP_SELECTWEAPONINFO),
+		Packet(COMP_OP::OP_PICKCHARACTER),
 		PickedCharacter(c),
 		PickedMeleeWeapon(meele),
 		PickedRangeWeapon(range)
 	{}
 
-	PPlayerPickInfo() : Packet(COMP_OP::OP_SELECTWEAPONINFO),
+	PPlayerPickInfo() : Packet(COMP_OP::OP_PICKCHARACTER),
 		PickedCharacter(ECharacter::NullCharacter),
 		PickedMeleeWeapon(EMeleeWeapon::NullWeapon),
 		PickedRangeWeapon(ERangeWeapon::NullWeapon)
 	{}
-}; 
+};
 
 // contained empty room num in RoomNum
 struct PEmptyRoomNum : Packet
 {
 	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
-};
-
-// contained empty room num in RoomNum
-struct PSetTimer : Packet
-{
-	float TimeTo;
-	PSetTimer() :Packet(COMP_OP::OP_SETTIMER) {}
 };

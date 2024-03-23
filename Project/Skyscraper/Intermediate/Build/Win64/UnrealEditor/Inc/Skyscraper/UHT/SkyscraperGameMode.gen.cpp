@@ -9,7 +9,7 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeSkyscraperGameMode() {}
 // Cross Module References
-	SKYSCRAPER_API UClass* Z_Construct_UClass_ANetworkGameMode();
+	ENGINE_API UClass* Z_Construct_UClass_AGameModeBase();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_ASkyscraperGameMode();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_ASkyscraperGameMode_NoRegister();
 	UPackage* Z_Construct_UPackage__Script_Skyscraper();
@@ -32,7 +32,7 @@ void EmptyLinkFunctionForGeneratedCodeSkyscraperGameMode() {}
 		static const UECodeGen_Private::FClassParams ClassParams;
 	};
 	UObject* (*const Z_Construct_UClass_ASkyscraperGameMode_Statics::DependentSingletons[])() = {
-		(UObject* (*)())Z_Construct_UClass_ANetworkGameMode,
+		(UObject* (*)())Z_Construct_UClass_AGameModeBase,
 		(UObject* (*)())Z_Construct_UPackage__Script_Skyscraper,
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_ASkyscraperGameMode_Statics::DependentSingletons) < 16);
@@ -76,15 +76,15 @@ void EmptyLinkFunctionForGeneratedCodeSkyscraperGameMode() {}
 	}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(ASkyscraperGameMode);
 	ASkyscraperGameMode::~ASkyscraperGameMode() {}
-	struct Z_CompiledInDeferFile_FID_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics
+	struct Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics
 	{
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
-	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ASkyscraperGameMode, ASkyscraperGameMode::StaticClass, TEXT("ASkyscraperGameMode"), &Z_Registration_Info_UClass_ASkyscraperGameMode, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASkyscraperGameMode), 91214930U) },
+	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics::ClassInfo[] = {
+		{ Z_Construct_UClass_ASkyscraperGameMode, ASkyscraperGameMode::StaticClass, TEXT("ASkyscraperGameMode"), &Z_Registration_Info_UClass_ASkyscraperGameMode, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASkyscraperGameMode), 1805268391U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_2483138114(TEXT("/Script/Skyscraper"),
-		Z_CompiledInDeferFile_FID_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics::ClassInfo),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_2112293794(TEXT("/Script/Skyscraper"),
+		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SkyscraperGameMode_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

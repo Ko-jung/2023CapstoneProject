@@ -13,18 +13,3 @@ ASkyscraperGameMode::ASkyscraperGameMode()
 		//DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 }
-
-void ASkyscraperGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ASkyscraperGameMode::Tick(float Deltatime)
-{
-	Super::Tick(Deltatime);
-}
-
-void ASkyscraperGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-}

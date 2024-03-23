@@ -3,21 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NetworkGameMode.h"
+#include "GameFramework/GameModeBase.h"
 #include "SkyscraperGameMode.generated.h"
 
 UCLASS(minimalapi)
-class ASkyscraperGameMode : public ANetworkGameMode
+class ASkyscraperGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
 	ASkyscraperGameMode();
-
-
-	virtual void BeginPlay() override;
-	virtual void Tick(float) override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };
 
 

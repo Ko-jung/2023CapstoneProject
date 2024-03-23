@@ -259,29 +259,18 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 			// ��� Ŭ���� ���� ��ȣ�� ����??
 			ClientInfo* socket = GetEmptyClient();
 
-			int NowClientNum = m_iClientId++;
-
-			socket->SetClientNum(NowClientNum);
+			socket->SetClientNum(m_iClientId);
 			socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
 
-			CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, NowClientNum, 0);
+			CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
 
 			socket->Recv();
 
-			// Push Game Start Timer (Time to Select Weapon)
-			if (NowClientNum % MAXPLAYER == MAXPLAYER - 1)
-			{
-				TimerEvent TE(std::chrono::seconds(40),
-					std::bind(&IOCPServer::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
+			SendPlayerJoinPacket(m_iClientId);
 
-				m_TimerMgr->Insert(TE);
-			}
+			cout << m_iClientId << "번 Accept" << endl;
 
-			// SendPlayerJoinPacket(m_iClientId);
-
-			cout << NowClientNum << "번 Accept" << endl;
-
-			//m_iClientId++;
+			m_iClientId++;
 			m_iClientCount++;
 
 			if (!ReadyToNextAccept())
@@ -428,7 +417,6 @@ void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
 void IOCPServer::ProcessDisconnectPlayer(PDisconnect p)
 {
 	m_Clients[p.DisconnectPlayerSerial]->Init();
-	m_iClientCount--;
 }
 
 //void IOCPServer::ProcessNewPlayers(PSendPlayerSockets p)
@@ -486,9 +474,4 @@ void IOCPServer::TestSend()
 	//	std::this_thread::sleep_for(std::chrono::seconds(3));
 	//}
 	//delete m_TimerMgrMap[0];
-}
-
-void IOCPServer::StartGame(int RoomNum, int ClientNum, void* etc)
-{
-	LogUtil::PrintLog("StartGame Called");
 }

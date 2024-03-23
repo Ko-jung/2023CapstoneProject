@@ -99,12 +99,12 @@ void EmptyLinkFunctionForGeneratedCodeCharacterPickState() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UCharacterPickState_Statics::NewProp_MyCharacterButton_MetaData[] = {
 		{ "BindWidget", "" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "// \xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd Border \xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd\n" },
+		{ "Comment", "// == Border variable\n" },
 #endif
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "SelectCharacter/UI/CharacterPickState.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "\xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd Border \xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbd" },
+		{ "ToolTip", "== Border variable" },
 #endif
 	};
 #endif
@@ -169,9 +169,9 @@ void EmptyLinkFunctionForGeneratedCodeCharacterPickState() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SelectCharacter_UI_CharacterPickState_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UCharacterPickState, UCharacterPickState::StaticClass, TEXT("UCharacterPickState"), &Z_Registration_Info_UClass_UCharacterPickState, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UCharacterPickState), 1267357531U) },
+		{ Z_Construct_UClass_UCharacterPickState, UCharacterPickState::StaticClass, TEXT("UCharacterPickState"), &Z_Registration_Info_UClass_UCharacterPickState, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UCharacterPickState), 1809154862U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SelectCharacter_UI_CharacterPickState_h_3504407343(TEXT("/Script/Skyscraper"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SelectCharacter_UI_CharacterPickState_h_3274836635(TEXT("/Script/Skyscraper"),
 		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SelectCharacter_UI_CharacterPickState_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_SelectCharacter_UI_CharacterPickState_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

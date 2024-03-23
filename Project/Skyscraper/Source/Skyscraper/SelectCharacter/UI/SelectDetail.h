@@ -21,7 +21,7 @@ public:
 	virtual void NativeDestruct() override;
 
 private:
-	// ¼±ÅÃÁö ¹öÆ° º¯¼ö
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UButton* CharacterDetailButton;
 	UPROPERTY(meta = (BindWidget))
@@ -33,7 +33,7 @@ private:
 	UPROPERTY()
 		TArray<UButton*> Buttons;
 
-	// ¼±ÅÃÁö À§Á¬ ½ºÀ§ÃÄ º¯¼ö
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UWidgetSwitcher* DetailSwitcher;
 

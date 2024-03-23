@@ -15,8 +15,10 @@
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include <MotionWarpingComponent.h>
 
+#include "Engine/DamageEvents.h"
 #include "MainGame/Component/Combat/Melee/MainMeleeComponent.h"
 #include "MainGame/Component/Combat/Range/MainRangeComponent.h"
+#include "MainGame/Component/Health/HealthComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -92,6 +94,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 		MainMeleeComponent = CreateDefaultSubobject<UMainMeleeComponent>(TEXT("MainMeleeComponent"));
 		MainRangeComponent = CreateDefaultSubobject<UMainRangeComponent>(TEXT("MainRangeComponent"));
+		HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	}
 
 }
@@ -109,6 +112,17 @@ void ASkyscraperCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+}
+
+float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	// https://mingyu0403.tistory.com/258 PointDamage / RadialDamage ...
+
+	HealthComponent->GetDamaged(DamageAmount);
+	
+	return Damage;
 }
 
 //////////////////////////////////////////////////////////////////////////

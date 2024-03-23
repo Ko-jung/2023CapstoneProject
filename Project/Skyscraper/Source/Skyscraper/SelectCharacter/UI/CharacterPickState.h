@@ -16,7 +16,7 @@ public:
 	virtual void NativeDestruct() override;
 
 private:
-	// 선택 Border 변수
+	// == Border variable
 	UPROPERTY(meta = (BindWidget))
 		UButton* MyCharacterButton;
 	UPROPERTY(meta = (BindWidget))

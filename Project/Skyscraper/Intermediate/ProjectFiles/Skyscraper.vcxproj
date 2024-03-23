@@ -164,17 +164,11 @@
     <None Include="..\..\Config\DefaultGame.ini" />
     <None Include="..\..\Config\DefaultInput.ini" />
     <None Include="..\..\Source\Skyscraper\Skyscraper.Build.cs" />
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp" />
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\MainMeleeComponent.cpp" />
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\MainRangeComponent.cpp" />
     <ClCompile Include="..\..\Source\Skyscraper\Skyscraper.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.h" />
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\MainMeleeComponent.h" />
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\MainRangeComponent.h" />
     <ClInclude Include="..\..\Source\Skyscraper\Skyscraper.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SkyscraperCharacter.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -188,6 +182,36 @@
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\SkyscraperGameMode.h" />
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.h" />
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\MainMeleeComponent.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\MainMeleeComponent.h" />
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\MainRangeComponent.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\MainRangeComponent.h" />
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Health\HealthComponent.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Health\HealthComponent.h" />
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Widget\Health\HealthBar.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Widget\Health\HealthBar.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SelectCharacter\Core\SelectCharacterController.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>

@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "SkyscraperCharacter.generated.h"
 
+class UHealthComponent;
 class UMainRangeComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -46,7 +47,7 @@ class ASkyscraperCharacter : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
-
+	
 public:
 	ASkyscraperCharacter();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
@@ -57,7 +58,9 @@ public:
 		UMainMeleeComponent* MainMeleeComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UMainRangeComponent* MainRangeComponent;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UHealthComponent* HealthComponent;
+	
 protected:
 
 	/** Called for movement input */
@@ -66,7 +69,7 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 			
-	
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -74,12 +77,16 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
+	FORCEINLINE APlayerController* GetPlayerController() const { return Cast<APlayerController>(GetController()); }
 
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
 };
 

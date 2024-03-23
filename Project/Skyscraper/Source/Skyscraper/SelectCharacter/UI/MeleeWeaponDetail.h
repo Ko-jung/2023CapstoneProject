@@ -18,7 +18,7 @@ public:
 	virtual void NativeDestruct() override;
 
 private:
-	// ±ÙÁ¢ ¹«±â ÀÌ¹ÌÁö º¯¼ö
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UImage* DaggerImage;
 	UPROPERTY(meta = (BindWidget))
@@ -26,7 +26,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		UImage* GreatSwordImage;
 
-	// ±ÙÁ¢ ¹«±â ¼³¸í ¼±ÅÃ ¹öÆ° º¯¼ö
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UButton* DaggerSelectButton;
 	UPROPERTY(meta = (BindWidget))
@@ -34,7 +34,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		UButton* GreatSwordButton;
 
-	// ¼³¸í À§Á¬ ½ºÀ§ÃÄ º¯¼ö
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UWidgetSwitcher* MeleeSwitcher;
 

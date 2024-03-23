@@ -18,7 +18,7 @@ public:
 	virtual void NativeDestruct() override;
 
 private:
-	// Ä³¸¯ÅÍ ÀÌ¹ÌÁö º¯¼ö
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UImage* ShieldImage;
 	UPROPERTY(meta = (BindWidget))
@@ -32,7 +32,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		UImage* DetectionImage;
 
-	// Ä³¸¯ÅÍ ¼³¸í ¼±ÅÃ ¹öÆ° º¯¼ö
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UButton* SelectShieldButton;
 	UPROPERTY(meta = (BindWidget))
@@ -46,7 +46,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		UButton* SelectDetectionButton;
 
-	// Ä³¸¯ÅÍ ¼³¸í À§Á¬ ½ºÀ§ÃÄ º¯¼ö
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(meta = (BindWidget))
 		UWidgetSwitcher* CharacterDetailSwitcher;
 

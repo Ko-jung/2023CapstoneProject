@@ -73,16 +73,16 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	{ // == Set Input Asset
 
-		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_DefaultAsset(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/GameTest/Core/Input/Default/IMC_Default.IMC_Default'"));
+		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_DefaultAsset(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Default/IMC_Default.IMC_Default'"));
 		DefaultMappingContext = IMC_DefaultAsset.Object;
 
-		static ConstructorHelpers::FObjectFinder<UInputAction> IA_MoveAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/GameTest/Core/Input/Default/IA_GameDefaultMove.IA_GameDefaultMove'"));
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_MoveAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultMove.IA_GameDefaultMove'"));
 		MoveAction = IA_MoveAsset.Object;
 
-		static ConstructorHelpers::FObjectFinder<UInputAction> IA_JumpAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/GameTest/Core/Input/Default/IA_GameDefaultJump.IA_GameDefaultJump'"));
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_JumpAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultJump.IA_GameDefaultJump'"));
 		JumpAction = IA_JumpAsset.Object;
 
-		static ConstructorHelpers::FObjectFinder<UInputAction> IA_LookAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/GameTest/Core/Input/Default/IA_GameDefaultLook.IA_GameDefaultLook'"));
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_LookAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultLook.IA_GameDefaultLook'"));
 		LookAction = IA_LookAsset.Object;
 	}
 

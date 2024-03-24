@@ -10,7 +10,7 @@
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
-	MaxHealth = 100.0f;
+	MaxHealth = 1000.0f;
 	CurrentHealth = 0.0f;
 	OwnerCharacter = nullptr;
 	LivingState = EHealthState::EHS_LIVING;

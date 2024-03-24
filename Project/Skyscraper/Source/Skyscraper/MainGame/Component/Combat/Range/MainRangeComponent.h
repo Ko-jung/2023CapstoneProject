@@ -93,5 +93,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FORCEINLINE APlayerController* GetOwnerPlayerController()const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
+
+	FORCEINLINE void SetBulletMaxCount(int32 iNewBulletCount) { CurrentBulletCount = BulletMaxCount = iNewBulletCount;  }
+
 		
 };

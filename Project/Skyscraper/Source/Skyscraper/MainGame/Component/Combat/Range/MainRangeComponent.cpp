@@ -88,8 +88,9 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			GetOwnerPlayerController()->GetControlRotation().Vector() * 10000.0f;
 		TArray<AActor*> IgnoreActors;
 		FHitResult OutHit;
-		bool HitResult = UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1,
-			false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHit, true);
+		
+		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility);
+			//UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1,false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHit, true);
 		if (HitResult)
 		{
 			AActor* HitActor = OutHit.GetActor();
@@ -108,17 +109,23 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 	// == Fore enemy fire (doesn't have player controller actor)
 	{// == Line trace
 		FVector Start = OwnerCharacter->GetActorLocation();
-			FVector End = Start +
-				OwnerCharacter->GetActorForwardVector() * 10000.0f;
-			TArray<AActor*> IgnoreActors;
-			FHitResult OutHit;
-			bool HitResult = UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1,
-				false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHit, true);
-			if (HitResult)
-			{
-				AActor* HitActor = OutHit.GetActor();
-				UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
-			}
+		FVector End = Start +
+						OwnerCharacter->GetActorForwardVector() * 10000.0f;
+		TArray<AActor*> IgnoreActors;
+		FHitResult OutHit;
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(OwnerCharacter);
+		GetWorld()->DebugDrawTraceTag = TEXT("DebugTraceTag");
+		QueryParams.TraceTag = TEXT("DebugTraceTag");
+		
+		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn,QueryParams);
+		
+
+		if (HitResult)
+		{
+			AActor* HitActor = OutHit.GetActor();
+			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+		}
 	}
 }
 

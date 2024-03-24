@@ -33,6 +33,12 @@
     <Filter Include="Source\Skyscraper">
       <UniqueIdentifier>{BBFA3838-9B07-3439-9A28-37CAEB555E63}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\EnemyCharacter.cpp">
+      <Filter>Source\Skyscraper</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\EnemyCharacter.h">
+      <Filter>Source\Skyscraper</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\Skyscraper\NetworkGameMode.cpp">
       <Filter>Source\Skyscraper</Filter>
     </ClCompile>
@@ -78,9 +84,6 @@
     <Filter Include="Source\Skyscraper\MainGame\Component\Combat">
       <UniqueIdentifier>{13C262E8-3611-3E78-93DD-C0FF807EBFB7}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp">
-      <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
-    </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.h">
       <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
     </ClInclude>
@@ -176,13 +179,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Skyscraper\EnemyCharacter.h">
-      <Filter>Source\Skyscraper</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\Source\Skyscraper\EnemyCharacter.cpp">
-      <Filter>Source\Skyscraper</Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

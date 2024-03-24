@@ -10,4 +10,17 @@ UCLASS()
 class SKYSCRAPER_API AEnemyCharacter : public ASkyscraperCharacter
 {
 	GENERATED_BODY()
+
+
+
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	// == Timer Handle Variable And Function
+	FTimerHandle EnemyFireTimerHandle;
+
+	UFUNCTION()
+		void FirePer1Sec();
 };

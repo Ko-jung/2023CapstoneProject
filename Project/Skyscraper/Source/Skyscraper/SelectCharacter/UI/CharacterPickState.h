@@ -15,6 +15,10 @@ public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
+	virtual void Tick(FGeometry MyGeometry, float InDeltaTime);
+
+	void SelectInfoUpdate();
+
 private:
 	// == Border variable
 	UPROPERTY(meta = (BindWidget))
@@ -31,4 +35,8 @@ public:
 
 	UFUNCTION()
 	void GoToDetail();
+
+private:
+	class ASkyscraperGameMode* Gamemode;
+	bool IsInfoChanged;
 };

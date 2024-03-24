@@ -5,6 +5,9 @@
 
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "Skyscraper/SkyscraperGameMode.h"
 
 void UCharacterDetail::NativeConstruct()
 {
@@ -17,11 +20,22 @@ void UCharacterDetail::NativeConstruct()
 	SelectDetectionButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickSelectDetectionButton);
 
 	CharacterDetailSwitcher->SetVisibility(ESlateVisibility::Hidden);
+
+	auto gamemode = UGameplayStatics::GetGameMode(this);
+	Gamemode = static_cast<ASkyscraperGameMode*>(gamemode);
 }
 
 void UCharacterDetail::NativeDestruct()
 {
 	Super::NativeDestruct();
+}
+
+void UCharacterDetail::Tick(FGeometry MyGeometry, float InDeltaTime)
+{
+	Super::Tick(MyGeometry, InDeltaTime);
+
+
+	UE_LOG(LogClass, Warning, TEXT("@@@@@@@@@@@@@@@@@@@@@@@"));
 }
 
 
@@ -41,29 +55,41 @@ void UCharacterDetail::SetSwitcherValue(int32 Value) const
 void UCharacterDetail::OnClickSelectShieldButton()
 {
 	SetSwitcherValue(0);
+
+	Gamemode->UpdateSelectInfo(ECharacter::Shield);
 }
 
 void UCharacterDetail::OnClickSelectWindButton()
 {
 	SetSwitcherValue(1);
+
+	Gamemode->UpdateSelectInfo(ECharacter::Wind);
 }
 
 void UCharacterDetail::OnClickSelectElectricButton()
 {
 	SetSwitcherValue(2);
+
+	Gamemode->UpdateSelectInfo(ECharacter::Elect);
 }
 
 void UCharacterDetail::OnClickSelectThrowButton()
 {
 	SetSwitcherValue(3);
+
+	Gamemode->UpdateSelectInfo(ECharacter::Boomerang);
 }
 
 void UCharacterDetail::OnClickSelectAssassinButton()
 {
 	SetSwitcherValue(4);
+
+	Gamemode->UpdateSelectInfo(ECharacter::Assassin);
 }
 
 void UCharacterDetail::OnClickSelectDetectionButton()
 {
 	SetSwitcherValue(5);
+
+	Gamemode->UpdateSelectInfo(ECharacter::Detector);
 }

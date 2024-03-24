@@ -41,7 +41,7 @@ enum class ECharacter : unsigned char
 {
 	Assassin,
 	Boomerang,
-	Detecter,
+	Detector,
 	Elect,
 	Shield,
 	Wind,

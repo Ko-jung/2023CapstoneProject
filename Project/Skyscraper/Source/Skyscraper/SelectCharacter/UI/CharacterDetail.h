@@ -17,6 +17,8 @@ public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
+	virtual void Tick(FGeometry MyGeometry, float InDeltaTime);
+
 private:
 	// ĳ���� �̹��� ����
 	UPROPERTY(meta = (BindWidget))
@@ -80,4 +82,7 @@ public:
 		void OnClickSelectAssassinButton();
 	UFUNCTION()
 		void OnClickSelectDetectionButton();
+
+private:
+	class ASkyscraperGameMode* Gamemode;
 };

@@ -119,23 +119,26 @@ struct PConnectToGameserver : Packet
 	PConnectToGameserver() : Packet(COMP_OP::OP_CONNECTTOGAMESERVER) {}
 };
 
-struct PPlayerPickInfo : Packet
+struct PPlayerSelectInfo : Packet
 {
 	ECharacter PickedCharacter;
 	EMeleeWeapon PickedMeleeWeapon;
 	ERangeWeapon PickedRangeWeapon;
+	BYTE ClientNum;
 
-	PPlayerPickInfo(ECharacter c, EMeleeWeapon meele, ERangeWeapon range) :
+	PPlayerSelectInfo(ECharacter c, EMeleeWeapon meele, ERangeWeapon range, BYTE sendClientNum) :
 		Packet(COMP_OP::OP_SELECTWEAPONINFO),
 		PickedCharacter(c),
 		PickedMeleeWeapon(meele),
-		PickedRangeWeapon(range)
+		PickedRangeWeapon(range),
+		ClientNum(sendClientNum)
 	{}
 
-	PPlayerPickInfo() : Packet(COMP_OP::OP_SELECTWEAPONINFO),
+	PPlayerSelectInfo() : Packet(COMP_OP::OP_SELECTWEAPONINFO),
 		PickedCharacter(ECharacter::NullCharacter),
 		PickedMeleeWeapon(EMeleeWeapon::NullWeapon),
-		PickedRangeWeapon(ERangeWeapon::NullWeapon)
+		PickedRangeWeapon(ERangeWeapon::NullWeapon),
+		ClientNum(-1)
 	{}
 }; 
 

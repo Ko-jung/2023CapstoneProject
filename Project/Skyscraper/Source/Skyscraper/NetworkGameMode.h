@@ -38,9 +38,12 @@ public:
 	// Called by Gamemode thread
 	virtual void ProcessFunc() {};
 
+	void Send(const Packet* p, const int pSize);
+
 // Network Function
 public:
 	void SetOwnSerialNum(int serial);
+	int GetSerialNum() { return m_SerialNum; }
 
 protected:
 	concurrency::concurrent_queue<std::pair<EFunction, Packet>> FuncQueue;

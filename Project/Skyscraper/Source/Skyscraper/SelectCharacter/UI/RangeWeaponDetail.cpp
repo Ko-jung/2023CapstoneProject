@@ -6,6 +6,9 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Skyscraper/SkyscraperGameMode.h"
+
 void URangeWeaponDetail::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -14,6 +17,9 @@ void URangeWeaponDetail::NativeConstruct()
 	RPGSelectButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickRPGSelectButton);
 
 	RangeSwitcher->SetVisibility(ESlateVisibility::Hidden);
+
+	auto gamemode = UGameplayStatics::GetGameMode(this);
+	Gamemode = static_cast<ASkyscraperGameMode*>(gamemode);
 }
 
 void URangeWeaponDetail::NativeDestruct()
@@ -24,7 +30,7 @@ void URangeWeaponDetail::NativeDestruct()
 
 void URangeWeaponDetail::SetSwitcherValue(int32 Value) const
 {
-	// ÇöÀç ÄÑÁ®ÀÖ´Â ¹öÆ°ÀÏ °æ¿ì º¸ÀÌ±â ²ô±â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½
 	if (RangeSwitcher->GetActiveWidgetIndex() == Value && RangeSwitcher->GetVisibility() == ESlateVisibility::Visible)
 	{
 		RangeSwitcher->SetVisibility(ESlateVisibility::Hidden);
@@ -37,14 +43,20 @@ void URangeWeaponDetail::SetSwitcherValue(int32 Value) const
 void URangeWeaponDetail::OnClickSMGSelectButton() 
 {
 	SetSwitcherValue(0);
+
+	Gamemode->UpdateSelectInfo(ERangeWeapon::SubmachineGun);
 }
 
 void URangeWeaponDetail::OnClickRifleSelectButton() 
 {
 	SetSwitcherValue(1);
+
+	Gamemode->UpdateSelectInfo(ERangeWeapon::AssaultRifle);
 }
 
-void URangeWeaponDetail::OnClickRPGSelectButton() 
+void URangeWeaponDetail::OnClickRPGSelectButton()
 {
 	SetSwitcherValue(2);
+
+	Gamemode->UpdateSelectInfo(ERangeWeapon::GrenadeLauncher);
 }

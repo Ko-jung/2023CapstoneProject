@@ -33,6 +33,7 @@ public:
 	void Disconnect();
 
 	void ProcessRecv(int packetType);
+	void Send(const Packet* packet, int packetsize);
 
 // FRunnable Function
 public:

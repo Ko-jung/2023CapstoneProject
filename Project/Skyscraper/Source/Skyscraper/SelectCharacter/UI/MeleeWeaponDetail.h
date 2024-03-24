@@ -58,4 +58,6 @@ public:
 	UFUNCTION()
 		void OnClickGreatSwordButton();
 
+private:
+	class ASkyscraperGameMode* Gamemode;
 };

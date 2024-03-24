@@ -22,10 +22,13 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	void ProcessSelectInfo(Packet* argu);
+	void SendSelectInfo();
 
 	void UpdateSelectInfo(ECharacter	Character);
 	void UpdateSelectInfo(EMeleeWeapon	MeleeWeapon);
 	void UpdateSelectInfo(ERangeWeapon	RangeWeapon);
+
+	TArray<PPlayerSelectInfo*>& GetPlayerSelectInfo() { return PlayerSelectInfo; }
 
 private:
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;

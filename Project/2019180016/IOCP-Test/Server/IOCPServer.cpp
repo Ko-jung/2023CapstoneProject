@@ -325,7 +325,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		return;
 	}
 
-	const int PacketType = *(int*)exp->_wsa_buf.buf;
+	const BYTE PacketType = *(BYTE*)exp->_wsa_buf.buf;
 
 	switch (PacketType)
 	{
@@ -347,20 +347,20 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessDisconnectPlayer(disconnect);
 	}
 		break;
-	case (int)COMP_OP::OP_PICKCHARACTER:
+	case (int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
-		PPlayerPickInfo PPC;
-		MEMCPYBUFTOPACKET(PPC);
+		PPlayerSelectInfo PPS;
+		MEMCPYBUFTOPACKET(PPS);
 
 		int SendPlayerRoomNum = id / 6;
 
 		// Send To Other Player Pick State
-		for (int i = 0; i < MAXPLAYER; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			int ClientNum = SendPlayerRoomNum * 6 + i;
 			if (ClientNum != id)
 			{
-				m_Clients[SendPlayerRoomNum + i]->SendProcess(sizeof(PPC), &PPC);
+				m_Clients[SendPlayerRoomNum * 6 + i]->SendProcess(sizeof(PPS), &PPS);
 			}
 		}
 	}

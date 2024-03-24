@@ -58,4 +58,6 @@ public:
 	UFUNCTION()
 		void OnClickRPGSelectButton();
 
+private:
+	class ASkyscraperGameMode* Gamemode;
 };

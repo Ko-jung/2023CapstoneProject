@@ -111,6 +111,16 @@ void NetworkManager::ProcessRecv(int packetType)
 	}
 }
 
+void NetworkManager::Send(const Packet* packet, int packetsize)
+{
+	memcpy(m_sSendBuffer, packet, packetsize);
+	int nSendLen = send(m_ServerSocket, m_sSendBuffer, packetsize, 0);
+	if (nSendLen == -1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("send Error PacketType is %d"), packet->PacketType);
+	}
+}
+
 bool NetworkManager::StartListen()
 {
 	if (Thread != nullptr)

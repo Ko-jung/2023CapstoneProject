@@ -7,6 +7,9 @@
 #include "Components/WidgetSwitcher.h"
 #include "Widgets/Input/SButton.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Skyscraper/SkyscraperGameMode.h"
+
 void UMeleeWeaponDetail::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -15,6 +18,9 @@ void UMeleeWeaponDetail::NativeConstruct()
 	GreatSwordButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickGreatSwordButton);
 
 	MeleeSwitcher->SetVisibility(ESlateVisibility::Hidden);
+
+	auto gamemode = UGameplayStatics::GetGameMode(this);
+	Gamemode = static_cast<ASkyscraperGameMode*>(gamemode);
 }
 
 void UMeleeWeaponDetail::NativeDestruct()
@@ -38,15 +44,21 @@ void UMeleeWeaponDetail::SetSwitcherValue(int32 Value) const
 void UMeleeWeaponDetail::OnClickDaggerButton() 
 {
 	SetSwitcherValue(0);
+
+	Gamemode->UpdateSelectInfo(EMeleeWeapon::Dagger);
 }
 
 void UMeleeWeaponDetail::OnClickKatanaButton() 
 {
 	SetSwitcherValue(1);
+
+	Gamemode->UpdateSelectInfo(EMeleeWeapon::Katana);
 }
 
 void UMeleeWeaponDetail::OnClickGreatSwordButton() 
 {
 	SetSwitcherValue(2);
+
+	Gamemode->UpdateSelectInfo(EMeleeWeapon::Greatsword);
 }
 

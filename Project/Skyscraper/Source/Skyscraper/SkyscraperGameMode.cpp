@@ -13,11 +13,12 @@ ASkyscraperGameMode::ASkyscraperGameMode()
 	{
 		//DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
-	PlayerSelectInfo.Init(new PPlayerSelectInfo(), MAXPLAYER);
+	PlayerSelectInfo.Init(nullptr, MAXPLAYER);
 
 	int i = 0;
 	for (auto& P : PlayerSelectInfo)
 	{
+		P = new PPlayerSelectInfo();
 		P->ClientNum = i++;
 	}
 }
@@ -56,6 +57,7 @@ void ASkyscraperGameMode::BeginPlay()
 void ASkyscraperGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
+	ProcessFunc();
 }
 
 void ASkyscraperGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -82,17 +84,32 @@ void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 	PlayerSelectInfo[ClientNum]->PickedRangeWeapon	 = RangeWeapon;
 }
 
+void ASkyscraperGameMode::SendSelectInfo()
+{
+	PPlayerSelectInfo PPS;
+
+	PPS.ClientNum = m_SerialNum;
+	PPS.PickedCharacter = PlayerSelectInfo[m_SerialNum]->PickedCharacter;
+	PPS.PickedMeleeWeapon = PlayerSelectInfo[m_SerialNum]->PickedMeleeWeapon;
+	PPS.PickedRangeWeapon = PlayerSelectInfo[m_SerialNum]->PickedRangeWeapon;
+
+	Send(&PPS, sizeof(PPS));
+}
+
 void ASkyscraperGameMode::UpdateSelectInfo(ECharacter Character)
 {
 	PlayerSelectInfo[m_SerialNum]->PickedCharacter = Character;
+	SendSelectInfo();
 }
 
 void ASkyscraperGameMode::UpdateSelectInfo(EMeleeWeapon MeleeWeapon)
 {
 	PlayerSelectInfo[m_SerialNum]->PickedMeleeWeapon = MeleeWeapon;
+	SendSelectInfo();
 }
 
 void ASkyscraperGameMode::UpdateSelectInfo(ERangeWeapon RangeWeapon)
 {
 	PlayerSelectInfo[m_SerialNum]->PickedRangeWeapon = RangeWeapon;
+	SendSelectInfo();
 }

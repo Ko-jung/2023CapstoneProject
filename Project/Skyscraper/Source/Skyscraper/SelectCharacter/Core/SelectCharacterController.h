@@ -4,19 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Skyscraper/Enum/ECharacterSelect.h"
+#include "Skyscraper/Enum/EMeleeSelect.h"
+#include "Skyscraper/Enum/ERangeSelect.h"
 #include "SelectCharacterController.generated.h"
 
-enum class ECharacterSelect {
-	ECS_Null, ECS_ShieldCharacter, ECS_WindCharacter,
-	ECS_ElectricCharacter, ECS_ThrowCharacter,
-	ECS_AssassinCharacter, ECS_DetectionCharacter
-};
-enum class EMeleeSelect {
-	EMS_Dagger, EMS_Katana, EMS_GreatSword
-};
-enum class ERangeSelect {
-	ERS_SMG, ERS_Rifle, ERS_RPG
-};
+
 
 class USelectCharacter;
 class USelectDetail;

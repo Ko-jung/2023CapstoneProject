@@ -33,12 +33,6 @@
     <Filter Include="Source\Skyscraper">
       <UniqueIdentifier>{BBFA3838-9B07-3439-9A28-37CAEB555E63}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\Skyscraper\EnemyCharacter.cpp">
-      <Filter>Source\Skyscraper</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\EnemyCharacter.h">
-      <Filter>Source\Skyscraper</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\Source\Skyscraper\NetworkGameMode.cpp">
       <Filter>Source\Skyscraper</Filter>
     </ClCompile>
@@ -58,12 +52,6 @@
       <Filter>Source\Skyscraper</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\Skyscraper.h">
-      <Filter>Source\Skyscraper</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\Skyscraper\SkyscraperCharacter.cpp">
-      <Filter>Source\Skyscraper</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SkyscraperCharacter.h">
       <Filter>Source\Skyscraper</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\Skyscraper\SkyscraperGameMode.cpp">
@@ -188,6 +176,13 @@
     <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.cpp">
       <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
     </ClCompile>
+    <ClCompile Include="ECharacterSelect.cpp" />
+    <ClCompile Include="EMeleeSelect.h">
+      <Filter>Source\Skyscraper\Enum</Filter>
+    </ClCompile>
+    <ClCompile Include="ERangeSelect.h">
+      <Filter>Source\Skyscraper\Enum</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source\Skyscraper\MainGame\Actor">
@@ -196,6 +191,9 @@
     <Filter Include="Source\Skyscraper\MainGame\Actor\Character">
       <UniqueIdentifier>{3f45080c-58c5-46b4-b933-b389eb14eda0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Skyscraper\Enum">
+      <UniqueIdentifier>{e40a2f58-181c-4d39-80e9-d221958f8be1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.h">
@@ -203,6 +201,10 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.h">
       <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="ECharacterSelect.h" />
+    <ClInclude Include="..\..\Source\Skyscraper\Enum\ECharacterSelect.h">
+      <Filter>Source\Skyscraper\Enum</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

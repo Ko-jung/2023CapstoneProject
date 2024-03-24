@@ -154,6 +154,11 @@
     <ClCompile_AdditionalOptions>$(AdditionalOptions) /Yu"C:\Users\Administrator\Desktop\Unreal\UnrealEngine\Engine\Intermediate\Build\Win64\x64\UnrealEditor\Development\UnrealEd\SharedPCH.UnrealEd.Cpp20.h"</ClCompile_AdditionalOptions>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="ECharacterSelect.cpp" />
+    <ClCompile Include="EMeleeSelect.h" />
+    <ClCompile Include="ERangeSelect.h" />
+    <ClInclude Include="..\..\Source\Skyscraper\Enum\ECharacterSelect.h" />
+    <ClInclude Include="ECharacterSelect.h" />
     <None Include="..\..\Skyscraper.uproject" />
     <None Include="..\..\Source\Skyscraper.Target.cs" />
     <None Include="..\..\Source\SkyscraperEditor.Target.cs" />
@@ -163,12 +168,6 @@
     <None Include="..\..\Config\DefaultEngine.ini" />
     <None Include="..\..\Config\DefaultGame.ini" />
     <None Include="..\..\Config\DefaultInput.ini" />
-    <ClCompile Include="..\..\Source\Skyscraper\EnemyCharacter.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\EnemyCharacter.h" />
     <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.cpp" />
     <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.cpp" />
     <ClCompile Include="..\..\Source\Skyscraper\NetworkGameMode.cpp">
@@ -192,12 +191,6 @@
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\Skyscraper.h" />
-    <ClCompile Include="..\..\Source\Skyscraper\SkyscraperCharacter.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Skyscraper\SkyscraperCharacter.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SkyscraperGameMode.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>

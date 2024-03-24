@@ -18,6 +18,13 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 	SKYSCRAPER_API UClass* Z_Construct_UClass_UMainRangeComponent_NoRegister();
 	UPackage* Z_Construct_UPackage__Script_Skyscraper();
 // End Cross Module References
+	DEFINE_FUNCTION(UMainRangeComponent::execCanFire)
+	{
+		P_FINISH;
+		P_NATIVE_BEGIN;
+		*(bool*)Z_Param__Result=P_THIS->CanFire();
+		P_NATIVE_END;
+	}
 	DEFINE_FUNCTION(UMainRangeComponent::execPlayReloadAnim)
 	{
 		P_GET_PROPERTY(FFloatProperty,Z_Param_fReloadingTime);
@@ -31,6 +38,14 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		P_FINISH;
 		P_NATIVE_BEGIN;
 		P_THIS->BulletReloading();
+		P_NATIVE_END;
+	}
+	DEFINE_FUNCTION(UMainRangeComponent::execEnemyFire)
+	{
+		P_GET_PROPERTY(FFloatProperty,Z_Param_fBaseDamage);
+		P_FINISH;
+		P_NATIVE_BEGIN;
+		P_THIS->EnemyFire(Z_Param_fBaseDamage);
 		P_NATIVE_END;
 	}
 	DEFINE_FUNCTION(UMainRangeComponent::execFire)
@@ -53,6 +68,8 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		UClass* Class = UMainRangeComponent::StaticClass();
 		static const FNameNativePtrPair Funcs[] = {
 			{ "BulletReloading", &UMainRangeComponent::execBulletReloading },
+			{ "CanFire", &UMainRangeComponent::execCanFire },
+			{ "EnemyFire", &UMainRangeComponent::execEnemyFire },
 			{ "Fire", &UMainRangeComponent::execFire },
 			{ "PlayFireAnim", &UMainRangeComponent::execPlayFireAnim },
 			{ "PlayReloadAnim", &UMainRangeComponent::execPlayReloadAnim },
@@ -78,6 +95,79 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		if (!ReturnFunction)
 		{
 			UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UMainRangeComponent_BulletReloading_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
+	struct Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics
+	{
+		struct MainRangeComponent_eventCanFire_Parms
+		{
+			bool ReturnValue;
+		};
+		static void NewProp_ReturnValue_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UECodeGen_Private::FFunctionParams FuncParams;
+	};
+	void Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+	{
+		((MainRangeComponent_eventCanFire_Parms*)Obj)->ReturnValue = 1;
+	}
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(MainRangeComponent_eventCanFire_Parms), &Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::PropPointers[] = {
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::NewProp_ReturnValue,
+	};
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::Function_MetaDataParams[] = {
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_UMainRangeComponent, nullptr, "CanFire", nullptr, nullptr, Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::PropPointers), sizeof(Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::MainRangeComponent_eventCanFire_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::Function_MetaDataParams), Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::Function_MetaDataParams) };
+	static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::PropPointers) < 2048);
+	static_assert(sizeof(Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::MainRangeComponent_eventCanFire_Parms) < MAX_uint16);
+	UFunction* Z_Construct_UFunction_UMainRangeComponent_CanFire()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UMainRangeComponent_CanFire_Statics::FuncParams);
+		}
+		return ReturnFunction;
+	}
+	struct Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics
+	{
+		struct MainRangeComponent_eventEnemyFire_Parms
+		{
+			float fBaseDamage;
+		};
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_fBaseDamage;
+		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UECodeGen_Private::FFunctionParams FuncParams;
+	};
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::NewProp_fBaseDamage = { "fBaseDamage", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(MainRangeComponent_eventEnemyFire_Parms, fBaseDamage), METADATA_PARAMS(0, nullptr) };
+	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::PropPointers[] = {
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::NewProp_fBaseDamage,
+	};
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::Function_MetaDataParams[] = {
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_UMainRangeComponent, nullptr, "EnemyFire", nullptr, nullptr, Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::PropPointers), sizeof(Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::MainRangeComponent_eventEnemyFire_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::Function_MetaDataParams), Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::Function_MetaDataParams) };
+	static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::PropPointers) < 2048);
+	static_assert(sizeof(Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::MainRangeComponent_eventEnemyFire_Parms) < MAX_uint16);
+	UFunction* Z_Construct_UFunction_UMainRangeComponent_EnemyFire()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UMainRangeComponent_EnemyFire_Statics::FuncParams);
 		}
 		return ReturnFunction;
 	}
@@ -254,6 +344,8 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::DependentSingletons) < 16);
 	const FClassFunctionLinkInfo Z_Construct_UClass_UMainRangeComponent_Statics::FuncInfo[] = {
 		{ &Z_Construct_UFunction_UMainRangeComponent_BulletReloading, "BulletReloading" }, // 1943298676
+		{ &Z_Construct_UFunction_UMainRangeComponent_CanFire, "CanFire" }, // 77920913
+		{ &Z_Construct_UFunction_UMainRangeComponent_EnemyFire, "EnemyFire" }, // 1365291990
 		{ &Z_Construct_UFunction_UMainRangeComponent_Fire, "Fire" }, // 907041525
 		{ &Z_Construct_UFunction_UMainRangeComponent_PlayFireAnim, "PlayFireAnim" }, // 3339285894
 		{ &Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim, "PlayReloadAnim" }, // 2874564895
@@ -441,9 +533,9 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UMainRangeComponent, UMainRangeComponent::StaticClass, TEXT("UMainRangeComponent"), &Z_Registration_Info_UClass_UMainRangeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainRangeComponent), 2834727135U) },
+		{ Z_Construct_UClass_UMainRangeComponent, UMainRangeComponent::StaticClass, TEXT("UMainRangeComponent"), &Z_Registration_Info_UClass_UMainRangeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainRangeComponent), 1805880478U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_1971975845(TEXT("/Script/Skyscraper"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_216134838(TEXT("/Script/Skyscraper"),
 		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

@@ -160,4 +160,14 @@
       <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\Skyscraper\EnemyCharacter.h">
+      <Filter>Source\Skyscraper</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\Skyscraper\EnemyCharacter.cpp">
+      <Filter>Source\Skyscraper</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>

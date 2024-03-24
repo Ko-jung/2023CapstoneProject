@@ -164,11 +164,13 @@
     <None Include="..\..\Config\DefaultGame.ini" />
     <None Include="..\..\Config\DefaultInput.ini" />
     <None Include="..\..\Source\Skyscraper\Skyscraper.Build.cs" />
+    <ClCompile Include="..\..\Source\Skyscraper\EnemyCharacter.cpp" />
     <ClCompile Include="..\..\Source\Skyscraper\Skyscraper.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\EnemyCharacter.h" />
     <ClInclude Include="..\..\Source\Skyscraper\Skyscraper.h" />
     <ClCompile Include="..\..\Source\Skyscraper\SkyscraperCharacter.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

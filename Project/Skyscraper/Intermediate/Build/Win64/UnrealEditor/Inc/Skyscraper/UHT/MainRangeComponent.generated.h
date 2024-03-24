@@ -19,8 +19,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #define FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_14_EDITOR_ONLY_SPARSE_DATA_PROPERTY_ACCESSORS
 #define FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_14_RPC_WRAPPERS_NO_PURE_DECLS \
  \
+	DECLARE_FUNCTION(execCanFire); \
 	DECLARE_FUNCTION(execPlayReloadAnim); \
 	DECLARE_FUNCTION(execBulletReloading); \
+	DECLARE_FUNCTION(execEnemyFire); \
 	DECLARE_FUNCTION(execFire); \
 	DECLARE_FUNCTION(execPlayFireAnim);
 

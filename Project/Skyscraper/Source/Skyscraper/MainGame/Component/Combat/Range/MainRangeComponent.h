@@ -22,16 +22,19 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Fire(float fBaseDamage);
+	UFUNCTION(BlueprintCallable)
+		void EnemyFire(float fBaseDamage);
 
 	UFUNCTION(BlueprintCallable)
 		void BulletReloading();
 	UFUNCTION(BlueprintCallable)
 		void PlayReloadAnim(float fReloadingTime);
-
-protected:
+	UFUNCTION(BlueprintCallable)
+		FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
+	protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	
 	// == Owner Character Variable
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
@@ -77,7 +80,7 @@ protected:
 
 
 protected:
-	FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
+	//FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
 	FORCEINLINE bool CanReload() const { return CurrentReloadCoolTime <= 0.0f; }
 	void UseBullet();
 	void Recoil();

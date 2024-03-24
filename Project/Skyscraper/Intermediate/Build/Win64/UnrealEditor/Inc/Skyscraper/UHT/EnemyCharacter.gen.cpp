@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "Skyscraper/EnemyCharacter.h"
+#include "Skyscraper/MainGame/Actor/Character/EnemyCharacter.h"
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeEnemyCharacter() {}
 // Cross Module References
@@ -38,7 +38,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyCharacter() {}
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AEnemyCharacter_FirePer1Sec_Statics::Function_MetaDataParams[] = {
-		{ "ModuleRelativePath", "EnemyCharacter.h" },
+		{ "ModuleRelativePath", "MainGame/Actor/Character/EnemyCharacter.h" },
 	};
 #endif
 	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_AEnemyCharacter_FirePer1Sec_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AEnemyCharacter, nullptr, "FirePer1Sec", nullptr, nullptr, nullptr, 0, 0, RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00040401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_AEnemyCharacter_FirePer1Sec_Statics::Function_MetaDataParams), Z_Construct_UFunction_AEnemyCharacter_FirePer1Sec_Statics::Function_MetaDataParams) };
@@ -72,14 +72,14 @@ void EmptyLinkFunctionForGeneratedCodeEnemyCharacter() {}
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyCharacter_Statics::DependentSingletons) < 16);
 	const FClassFunctionLinkInfo Z_Construct_UClass_AEnemyCharacter_Statics::FuncInfo[] = {
-		{ &Z_Construct_UFunction_AEnemyCharacter_FirePer1Sec, "FirePer1Sec" }, // 926347567
+		{ &Z_Construct_UFunction_AEnemyCharacter_FirePer1Sec, "FirePer1Sec" }, // 1968820927
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AEnemyCharacter_Statics::FuncInfo) < 2048);
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AEnemyCharacter_Statics::Class_MetaDataParams[] = {
 		{ "HideCategories", "Navigation" },
-		{ "IncludePath", "EnemyCharacter.h" },
-		{ "ModuleRelativePath", "EnemyCharacter.h" },
+		{ "IncludePath", "MainGame/Actor/Character/EnemyCharacter.h" },
+		{ "ModuleRelativePath", "MainGame/Actor/Character/EnemyCharacter.h" },
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_AEnemyCharacter_Statics::StaticCppClassTypeInfo = {
@@ -115,15 +115,15 @@ void EmptyLinkFunctionForGeneratedCodeEnemyCharacter() {}
 	AEnemyCharacter::AEnemyCharacter() {}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AEnemyCharacter);
 	AEnemyCharacter::~AEnemyCharacter() {}
-	struct Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_EnemyCharacter_h_Statics
+	struct Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Actor_Character_EnemyCharacter_h_Statics
 	{
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
-	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_EnemyCharacter_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AEnemyCharacter, AEnemyCharacter::StaticClass, TEXT("AEnemyCharacter"), &Z_Registration_Info_UClass_AEnemyCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AEnemyCharacter), 2879239372U) },
+	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Actor_Character_EnemyCharacter_h_Statics::ClassInfo[] = {
+		{ Z_Construct_UClass_AEnemyCharacter, AEnemyCharacter::StaticClass, TEXT("AEnemyCharacter"), &Z_Registration_Info_UClass_AEnemyCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AEnemyCharacter), 1574423033U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_EnemyCharacter_h_3798617861(TEXT("/Script/Skyscraper"),
-		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_EnemyCharacter_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_EnemyCharacter_h_Statics::ClassInfo),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Actor_Character_EnemyCharacter_h_2808821576(TEXT("/Script/Skyscraper"),
+		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Actor_Character_EnemyCharacter_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Actor_Character_EnemyCharacter_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

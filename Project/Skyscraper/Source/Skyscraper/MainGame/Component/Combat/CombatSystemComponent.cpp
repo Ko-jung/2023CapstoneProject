@@ -2,7 +2,7 @@
 
 
 #include "CombatSystemComponent.h"
-#include "Skyscraper/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 
 // Sets default values for this component's properties
 UCombatSystemComponent::UCombatSystemComponent()

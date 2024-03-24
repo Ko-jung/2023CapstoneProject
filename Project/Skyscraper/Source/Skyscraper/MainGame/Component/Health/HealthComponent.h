@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Skyscraper/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "HealthComponent.generated.h"
 
 class UProgressBar;
@@ -54,6 +54,9 @@ public:
 	FORCEINLINE EHealthState GetLivingState() const { return LivingState; }
 
 	void GetDamaged(float fBaseDamage);
+
+	UFUNCTION(BlueprintCallable)
+		float GetHealthPercent() const;
 
 private:
 	void SetPlayerDie();

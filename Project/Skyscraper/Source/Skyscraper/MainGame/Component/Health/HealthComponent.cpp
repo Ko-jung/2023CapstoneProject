@@ -84,6 +84,17 @@ void UHealthComponent::GetDamaged(float fBaseDamage)
 	
 }
 
+float UHealthComponent::GetHealthPercent() const
+{
+	if(HealthProgressBar)
+	{
+		return HealthProgressBar->GetHealthBar()->GetPercent();
+	}
+	
+	return 1.0f;
+	
+}
+
 void UHealthComponent::SetPlayerDie()
 {
 	LivingState = EHealthState::EHS_DEAD;

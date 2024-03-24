@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Skyscraper/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "CombatSystemComponent.generated.h"
 
-class ASkyscraperCharacter;
+
 UCLASS
 ( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SKYSCRAPER_API UCombatSystemComponent : public UActorComponent
@@ -24,6 +24,7 @@ protected:
 
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

@@ -1,7 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SkyscraperGameMode.h"
-#include "SkyscraperCharacter.h"
+#include "MainGame/Actor/Character/SkyscraperCharacter.h"
+
 #include "UObject/ConstructorHelpers.h"
 
 ASkyscraperGameMode::ASkyscraperGameMode()

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Skyscraper/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "MainMeleeComponent.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )

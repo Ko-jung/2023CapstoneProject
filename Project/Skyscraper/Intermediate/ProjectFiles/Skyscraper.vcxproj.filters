@@ -182,5 +182,27 @@
     <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp">
       <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.cpp">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.cpp">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source\Skyscraper\MainGame\Actor">
+      <UniqueIdentifier>{5662ddec-4075-4b90-93d8-c783c5e7026a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Skyscraper\MainGame\Actor\Character">
+      <UniqueIdentifier>{3f45080c-58c5-46b4-b933-b389eb14eda0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.h">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.h">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

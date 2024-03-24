@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Skyscraper/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 
 // Sets default values for this component's properties
 UMainRangeComponent::UMainRangeComponent()
@@ -87,10 +87,13 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		FVector End = Start +
 			GetOwnerPlayerController()->GetControlRotation().Vector() * 10000.0f;
 		TArray<AActor*> IgnoreActors;
+
 		FHitResult OutHit;
-		
-		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility);
-			//UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, ETraceTypeQuery::TraceTypeQuery1,false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHit, true);
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(OwnerCharacter);
+		GetWorld()->DebugDrawTraceTag = TEXT("DebugTraceTag");
+		QueryParams.TraceTag = TEXT("DebugTraceTag");
+		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
 		if (HitResult)
 		{
 			AActor* HitActor = OutHit.GetActor();

@@ -6,14 +6,17 @@
 using std::cout;
 using std::endl;
 
+#pragma pack(push, 1)
 struct Packet
 {
-	int PacketType;
+	BYTE PacketType;
+	//int PacketType;
 	int RoomNum;
 
 	Packet() :PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) {}
 	Packet(COMP_OP op) : PacketType((int)op), RoomNum(-1) {}
 };
+#pragma pack(pop)
 
 struct PTransform
 {
@@ -116,28 +119,38 @@ struct PConnectToGameserver : Packet
 	PConnectToGameserver() : Packet(COMP_OP::OP_CONNECTTOGAMESERVER) {}
 };
 
-struct PPlayerPickInfo : Packet
+struct PPlayerSelectInfo : Packet
 {
 	ECharacter PickedCharacter;
 	EMeleeWeapon PickedMeleeWeapon;
 	ERangeWeapon PickedRangeWeapon;
+	BYTE ClientNum;
 
-	PPlayerPickInfo(ECharacter c, EMeleeWeapon meele, ERangeWeapon range) :
-		Packet(COMP_OP::OP_PICKCHARACTER),
+	PPlayerSelectInfo(ECharacter c, EMeleeWeapon meele, ERangeWeapon range, BYTE sendClientNum) :
+		Packet(COMP_OP::OP_SELECTWEAPONINFO),
 		PickedCharacter(c),
 		PickedMeleeWeapon(meele),
-		PickedRangeWeapon(range)
+		PickedRangeWeapon(range),
+		ClientNum(sendClientNum)
 	{}
 
-	PPlayerPickInfo() : Packet(COMP_OP::OP_PICKCHARACTER),
+	PPlayerSelectInfo() : Packet(COMP_OP::OP_SELECTWEAPONINFO),
 		PickedCharacter(ECharacter::NullCharacter),
 		PickedMeleeWeapon(EMeleeWeapon::NullWeapon),
-		PickedRangeWeapon(ERangeWeapon::NullWeapon)
+		PickedRangeWeapon(ERangeWeapon::NullWeapon),
+		ClientNum(-1)
 	{}
-};
+}; 
 
 // contained empty room num in RoomNum
 struct PEmptyRoomNum : Packet
 {
 	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
+};
+
+// contained empty room num in RoomNum
+struct PSetTimer : Packet
+{
+	float TimeTo;
+	PSetTimer() :Packet(COMP_OP::OP_SETTIMER) {}
 };

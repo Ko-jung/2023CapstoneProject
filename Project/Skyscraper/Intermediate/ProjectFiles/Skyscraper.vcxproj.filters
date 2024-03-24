@@ -33,6 +33,18 @@
     <Filter Include="Source\Skyscraper">
       <UniqueIdentifier>{BBFA3838-9B07-3439-9A28-37CAEB555E63}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\NetworkGameMode.cpp">
+      <Filter>Source\Skyscraper</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\NetworkGameMode.h">
+      <Filter>Source\Skyscraper</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\NetworkManager.cpp">
+      <Filter>Source\Skyscraper</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\NetworkManager.h">
+      <Filter>Source\Skyscraper</Filter>
+    </ClInclude>
     <None Include="..\..\Source\Skyscraper\Skyscraper.Build.cs">
       <Filter>Source\Skyscraper</Filter>
     </None>
@@ -54,6 +66,9 @@
     <ClInclude Include="..\..\Source\Skyscraper\SkyscraperGameMode.h">
       <Filter>Source\Skyscraper</Filter>
     </ClInclude>
+    <None Include="..\..\Source\Skyscraper\Unreal Engine.lnk">
+      <Filter>Source\Skyscraper</Filter>
+    </None>
     <Filter Include="Source\Skyscraper\MainGame">
       <UniqueIdentifier>{DC90325C-7130-32D6-85A6-1D91D79A6210}</UniqueIdentifier>
     </Filter>

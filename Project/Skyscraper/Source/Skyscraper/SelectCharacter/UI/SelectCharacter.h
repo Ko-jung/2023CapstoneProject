@@ -13,5 +13,4 @@ UCLASS()
 class SKYSCRAPER_API USelectCharacter : public UUserWidget
 {
 	GENERATED_BODY()
-	
 };

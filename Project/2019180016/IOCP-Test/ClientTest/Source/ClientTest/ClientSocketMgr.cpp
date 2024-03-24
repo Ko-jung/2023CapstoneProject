@@ -182,10 +182,10 @@ uint32 ClientSocketMgr::Run()
 		}
 
 		std::stringstream RecvStream(m_sRecvBuffer);
-		int OP;
+		BYTE OP;
 		RecvStream >> OP;
 
-		memcpy(&OP, m_sRecvBuffer, sizeof(int));
+		memcpy(&OP, m_sRecvBuffer, sizeof(BYTE));
 
 		switch (OP)
 		{

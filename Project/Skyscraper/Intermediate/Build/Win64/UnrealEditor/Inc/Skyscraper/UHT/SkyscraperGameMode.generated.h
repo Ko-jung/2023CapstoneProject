@@ -24,7 +24,7 @@ private: \
 	static void StaticRegisterNativesASkyscraperGameMode(); \
 	friend struct Z_Construct_UClass_ASkyscraperGameMode_Statics; \
 public: \
-	DECLARE_CLASS(ASkyscraperGameMode, AGameModeBase, COMPILED_IN_FLAGS(0 | CLASS_Transient | CLASS_Config), CASTCLASS_None, TEXT("/Script/Skyscraper"), SKYSCRAPER_API) \
+	DECLARE_CLASS(ASkyscraperGameMode, ANetworkGameMode, COMPILED_IN_FLAGS(0 | CLASS_Transient | CLASS_Config), CASTCLASS_None, TEXT("/Script/Skyscraper"), SKYSCRAPER_API) \
 	DECLARE_SERIALIZER(ASkyscraperGameMode)
 
 

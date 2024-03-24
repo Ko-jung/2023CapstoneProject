@@ -3,6 +3,12 @@
 
 #include "MainRangeComponent.h"
 
+#include "InputActionValue.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "Components/InputComponent.h"
+
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -17,20 +23,39 @@ UMainRangeComponent::UMainRangeComponent()
 	OwnerCharacter = nullptr;
 	CurrentFireCoolTime = -1.0f;
 	FireMaxCoolTime = 0.5f;
+
 	CurrentReloadCoolTime = -1.0f;
 	ReloadMaxCoolTime = 5.0f;
+	ReloadSpeedTime = 1.0f;
+
 	BulletMaxCount = 20;
 	CurrentBulletCount = BulletMaxCount;
+
 	RecoilAboveAmount = 1.0f;
 	RecoilBesideAmount = 1.0f;
 	RecoilTime = 0.1f;
 	RecoilSpeed = 10.0f;
+
 	OwnerAnimInstance = nullptr;
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_FireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
-	AM_Fire = AM_FireRef.Object;
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_ReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
-	AM_Reload = AM_ReloadRef.Object;
-	
+	//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_FireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
+	//AM_Fire = AM_FireRef.Object;
+	//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_ReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
+	//AM_Reload = AM_ReloadRef.Object;
+	AM_Fire = nullptr;
+	AM_Reload = nullptr;
+
+
+
+	{ // == Set Input Asset
+		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_RangeInputRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Combat/Range/IMC_RangeInput.IMC_RangeInput'"));
+		IMC_RangeInput = IMC_RangeInputRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_FireRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Combat/Range/IA_Fire.IA_Fire'"));
+		IA_Fire = IA_FireRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ReloadRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Combat/Range/IA_Reload.IA_Reload'"));
+		IA_Reload = IA_ReloadRef.Object;
+	}
 }
 
 
@@ -46,15 +71,44 @@ void UMainRangeComponent::BeginPlay()
 	// == TODO: UI BulletCount set
 
 
-	// ...
+
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = GetOwnerPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(IMC_RangeInput, 0);
+
+			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+			{
+				EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Started, this, &ThisClass::PlayFireAnim);
+				EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &ThisClass::PlayReloadAnim);
+			}
+		}
+	}
+
+	// == TODO: Create Melee Widget
 	
+}
+
+void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	//Unbind Input Mapping Context
+	if (APlayerController* PlayerController = GetOwnerPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(IMC_RangeInput);
+			
+		}
+	}
 }
 
 
 void UMainRangeComponent::PlayFireAnim()
 {
 	if (!CanFire()) return;
-	
+	UE_LOG(LogTemp, Warning, TEXT("총 발사"));
 	UseBullet();
 	CurrentFireCoolTime = FireMaxCoolTime;
 
@@ -148,11 +202,11 @@ void UMainRangeComponent::BulletReloading()
 
 }
 
-void UMainRangeComponent::PlayReloadAnim(float fReloadingTime)
+void UMainRangeComponent::PlayReloadAnim()
 {
 	if (!CanReload()) return;
 
-	float PlayRate = AM_Reload->GetPlayLength() / fReloadingTime;
+	float PlayRate = AM_Reload->GetPlayLength() / ReloadSpeedTime;
 	OwnerCharacter->PlayAnimMontage(AM_Reload, PlayRate);
 
 

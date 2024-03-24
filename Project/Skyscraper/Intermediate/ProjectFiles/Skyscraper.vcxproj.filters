@@ -63,21 +63,72 @@
     <None Include="..\..\Source\Skyscraper\Unreal Engine.lnk">
       <Filter>Source\Skyscraper</Filter>
     </None>
+    <Filter Include="Source\Skyscraper\Enum">
+      <UniqueIdentifier>{2FAFB605-348B-3677-BC16-5A4945C61234}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\Skyscraper\Enum\ECharacterSelect.h">
+      <Filter>Source\Skyscraper\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Skyscraper\Enum\EMeleeSelect.h">
+      <Filter>Source\Skyscraper\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Skyscraper\Enum\ERangeSelect.h">
+      <Filter>Source\Skyscraper\Enum</Filter>
+    </ClInclude>
     <Filter Include="Source\Skyscraper\MainGame">
       <UniqueIdentifier>{DC90325C-7130-32D6-85A6-1D91D79A6210}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Skyscraper\MainGame\Actor">
+      <UniqueIdentifier>{2AD4F766-7005-378A-8371-347F7E384C9C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Skyscraper\MainGame\Actor\Character">
+      <UniqueIdentifier>{88832FE9-CA84-3A92-87A7-E64F2A3F53F0}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.cpp">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.h">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.cpp">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.h">
+      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
+    </ClInclude>
     <Filter Include="Source\Skyscraper\MainGame\Component">
       <UniqueIdentifier>{D35BFDC7-28D7-3C5C-B7A8-4C028738B4BE}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Skyscraper\MainGame\Component\Combat">
       <UniqueIdentifier>{13C262E8-3611-3E78-93DD-C0FF807EBFB7}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.h">
       <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
     </ClInclude>
     <Filter Include="Source\Skyscraper\MainGame\Component\Combat\Melee">
       <UniqueIdentifier>{9CDEAB69-DDED-33AF-9569-4C12044FA086}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\DaggerComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\DaggerComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\GreatSwordComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\GreatSwordComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\KatanaComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\KatanaComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Melee\MainMeleeComponent.cpp">
       <Filter>Source\Skyscraper\MainGame\Component\Combat\Melee</Filter>
     </ClCompile>
@@ -91,6 +142,24 @@
       <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\MainRangeComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\RifleComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\RifleComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\RPGComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\RPGComponent.h">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\SMGComponent.cpp">
+      <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Component\Combat\Range\SMGComponent.h">
       <Filter>Source\Skyscraper\MainGame\Component\Combat\Range</Filter>
     </ClInclude>
     <Filter Include="Source\Skyscraper\MainGame\Component\Health">
@@ -164,47 +233,6 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\Skyscraper\SelectCharacter\UI\SelectDetail.h">
       <Filter>Source\Skyscraper\SelectCharacter\UI</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Component\Combat\CombatSystemComponent.cpp">
-      <Filter>Source\Skyscraper\MainGame\Component\Combat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.cpp">
-      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.cpp">
-      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="ECharacterSelect.cpp" />
-    <ClCompile Include="EMeleeSelect.h">
-      <Filter>Source\Skyscraper\Enum</Filter>
-    </ClCompile>
-    <ClCompile Include="ERangeSelect.h">
-      <Filter>Source\Skyscraper\Enum</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Source\Skyscraper\MainGame\Actor">
-      <UniqueIdentifier>{5662ddec-4075-4b90-93d8-c783c5e7026a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Skyscraper\MainGame\Actor\Character">
-      <UniqueIdentifier>{3f45080c-58c5-46b4-b933-b389eb14eda0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Skyscraper\Enum">
-      <UniqueIdentifier>{e40a2f58-181c-4d39-80e9-d221958f8be1}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\EnemyCharacter.h">
-      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Skyscraper\MainGame\Actor\Character\SkyscraperCharacter.h">
-      <Filter>Source\Skyscraper\MainGame\Actor\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="ECharacterSelect.h" />
-    <ClInclude Include="..\..\Source\Skyscraper\Enum\ECharacterSelect.h">
-      <Filter>Source\Skyscraper\Enum</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

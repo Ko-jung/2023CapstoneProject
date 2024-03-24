@@ -2,27 +2,41 @@
 
 
 #include "EnemyCharacter.h"
+#include "Skyscraper/MainGame/Component/Combat/Range/RifleComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/MainRangeComponent.h"
+
+AEnemyCharacter::AEnemyCharacter()
+{
+	RangeComponent = CreateDefaultSubobject<URifleComponent>(TEXT("Range"));
+	
+}
 
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MainRangeComponent->SetBulletMaxCount(5);
+	RangeComponent->SetBulletMaxCount(5);
 
 	GetWorld()->GetTimerManager().SetTimer(EnemyFireTimerHandle, this, &ThisClass::FirePer1Sec, 1.0f, false,2.0f);
 }
 
 void AEnemyCharacter::FirePer1Sec()
 {
-	if(MainRangeComponent->CanFire())
+	if(RangeComponent)
 	{
-		MainRangeComponent->PlayFireAnim();
-		GetWorld()->GetTimerManager().SetTimer(EnemyFireTimerHandle, this, &ThisClass::FirePer1Sec, 1.0f, false, 1.1f);
-	}
-	else
+		if (RangeComponent->CanFire())
+		{
+			RangeComponent->PlayFireAnim();
+			GetWorld()->GetTimerManager().SetTimer(EnemyFireTimerHandle, this, &ThisClass::FirePer1Sec, 1.0f, false, 1.1f);
+		}
+		else
+		{
+			RangeComponent->PlayReloadAnim();
+			GetWorld()->GetTimerManager().SetTimer(EnemyFireTimerHandle, this, &ThisClass::FirePer1Sec, 1.0f, false, 3.0f);
+		}
+	}else
 	{
-		MainRangeComponent->PlayReloadAnim(1.0f);
-		GetWorld()->GetTimerManager().SetTimer(EnemyFireTimerHandle, this, &ThisClass::FirePer1Sec, 1.0f, false, 2.0f);
+		UE_LOG(LogTemp, Warning, TEXT("진짜 모르겠다.."));
 	}
+	
 }

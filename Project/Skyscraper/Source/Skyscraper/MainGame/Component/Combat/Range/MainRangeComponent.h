@@ -8,7 +8,7 @@
 #include "MainRangeComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
 class SKYSCRAPER_API UMainRangeComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -28,12 +28,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void BulletReloading();
 	UFUNCTION(BlueprintCallable)
-		void PlayReloadAnim(float fReloadingTime);
+		void PlayReloadAnim();
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
 	protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	// == Owner Character Variable
 	UPROPERTY()
@@ -48,6 +49,8 @@ public:
 		float CurrentReloadCoolTime;
 	UPROPERTY(EditAnywhere, Category = Reload)
 		float ReloadMaxCoolTime;
+	UPROPERTY(EditAnywhere, Category = Reload)
+		float ReloadSpeedTime;
 	UPROPERTY(VisibleAnywhere, Category = Bullet)
 		int32 CurrentBulletCount;
 	UPROPERTY(EditAnywhere, Category = Bullet)
@@ -96,5 +99,14 @@ public:
 
 	FORCEINLINE void SetBulletMaxCount(int32 iNewBulletCount) { CurrentBulletCount = BulletMaxCount = iNewBulletCount;  }
 
-		
+private:
+	// == Input Action And Input Mapping Context
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputMappingContext* IMC_RangeInput;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_Fire;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_Reload;
+
 };

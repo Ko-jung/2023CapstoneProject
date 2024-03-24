@@ -6,12 +6,16 @@
 #include "SkyscraperCharacter.h"
 #include "EnemyCharacter.generated.h"
 
+class URifleComponent;
+
 UCLASS()
 class SKYSCRAPER_API AEnemyCharacter : public ASkyscraperCharacter
 {
 	GENERATED_BODY()
 
-
+public:
+	AEnemyCharacter();
+	
 
 
 protected:
@@ -23,4 +27,8 @@ private:
 
 	UFUNCTION()
 		void FirePer1Sec();
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UMainRangeComponent* RangeComponent;
 };

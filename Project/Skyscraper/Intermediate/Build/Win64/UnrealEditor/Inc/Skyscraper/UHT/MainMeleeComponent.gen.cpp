@@ -13,6 +13,8 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 	ENGINE_API UClass* Z_Construct_UClass_UActorComponent();
 	ENGINE_API UClass* Z_Construct_UClass_UAnimInstance_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_UAnimMontage_NoRegister();
+	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputAction_NoRegister();
+	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputMappingContext_NoRegister();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_ASkyscraperCharacter_NoRegister();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_UMainMeleeComponent();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_UMainMeleeComponent_NoRegister();
@@ -201,6 +203,10 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_OwnerCharacter_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_OwnerCharacter;
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_MeleeComboAnimMontage_ValueProp;
 		static const UECodeGen_Private::FIntPropertyParams NewProp_MeleeComboAnimMontage_Key_KeyProp;
 #if WITH_METADATA
@@ -234,9 +240,13 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_OwnerAnimInstance;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_OwnerCharacter_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_IMC_MeleeInput_MetaData[];
 #endif
-		static const UECodeGen_Private::FObjectPropertyParams NewProp_OwnerCharacter;
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_IMC_MeleeInput;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_IA_Attack_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_IA_Attack;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -255,11 +265,19 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::Class_MetaDataParams[] = {
 		{ "BlueprintSpawnableComponent", "" },
+		{ "BlueprintType", "true" },
 		{ "ClassGroupNames", "Custom" },
 		{ "IncludePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
+		{ "IsBlueprintBase", "true" },
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData[] = {
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter = { "OwnerCharacter", nullptr, (EPropertyFlags)0x0020080000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, OwnerCharacter), Z_Construct_UClass_ASkyscraperCharacter_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData) };
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_ValueProp = { "MeleeComboAnimMontage", nullptr, (EPropertyFlags)0x0000000000000001, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 1, Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(0, nullptr) };
 	const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_Key_KeyProp = { "MeleeComboAnimMontage_Key", nullptr, (EPropertyFlags)0x0000000000000001, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, METADATA_PARAMS(0, nullptr) };
 #if WITH_METADATA
@@ -268,7 +286,7 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FMapPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage = { "MeleeComboAnimMontage", nullptr, (EPropertyFlags)0x0040000000000001, UECodeGen_Private::EPropertyGenFlags::Map, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, MeleeComboAnimMontage), EMapPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_MetaData) };
+	const UECodeGen_Private::FMapPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage = { "MeleeComboAnimMontage", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Map, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, MeleeComboAnimMontage), EMapPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_MetaData) };
 	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_Inner = { "AttackTime", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, METADATA_PARAMS(0, nullptr) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData[] = {
@@ -276,21 +294,21 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime = { "AttackTime", nullptr, (EPropertyFlags)0x0040000000000001, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, AttackTime), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData) };
+	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime = { "AttackTime", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, AttackTime), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AttackTime_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData[] = {
 		{ "Category", "MotionWarping" },
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance = { "AnimationMovementDistance", nullptr, (EPropertyFlags)0x0040000000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, AnimationMovementDistance), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData) };
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance = { "AnimationMovementDistance", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, AnimationMovementDistance), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_AnimationMovementDistance_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData[] = {
 		{ "Category", "ComboSystem" },
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount = { "MeleeComboCount", nullptr, (EPropertyFlags)0x0040000000020001, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, MeleeComboCount), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData) };
+	const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount = { "MeleeComboCount", nullptr, (EPropertyFlags)0x0020080000020001, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, MeleeComboCount), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboCount_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_MetaData[] = {
 		{ "Category", "ComboSystem" },
@@ -301,27 +319,44 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 	{
 		((UMainMeleeComponent*)Obj)->CanAttack = 1;
 	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack = { "CanAttack", nullptr, (EPropertyFlags)0x0040000000020001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UMainMeleeComponent), &Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_MetaData) };
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack = { "CanAttack", nullptr, (EPropertyFlags)0x0020080000020001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UMainMeleeComponent), &Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData[] = {
 		{ "Category", "ComboSystem" },
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime = { "LastAttackClickTime", nullptr, (EPropertyFlags)0x0040000000020001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, LastAttackClickTime), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData) };
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime = { "LastAttackClickTime", nullptr, (EPropertyFlags)0x0020080000020001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, LastAttackClickTime), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData[] = {
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance = { "OwnerAnimInstance", nullptr, (EPropertyFlags)0x0040000000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, OwnerAnimInstance), Z_Construct_UClass_UAnimInstance_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData) };
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance = { "OwnerAnimInstance", nullptr, (EPropertyFlags)0x0020080000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, OwnerAnimInstance), Z_Construct_UClass_UAnimInstance_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance_MetaData) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IMC_MeleeInput_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Input" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// == Input Action And Input Mapping Context\n" },
+#endif
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "== Input Action And Input Mapping Context" },
+#endif
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IMC_MeleeInput = { "IMC_MeleeInput", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, IMC_MeleeInput), Z_Construct_UClass_UInputMappingContext_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IMC_MeleeInput_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IMC_MeleeInput_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IA_Attack_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Input" },
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Melee/MainMeleeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter = { "OwnerCharacter", nullptr, (EPropertyFlags)0x0020080000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, OwnerCharacter), Z_Construct_UClass_ASkyscraperCharacter_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter_MetaData) };
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IA_Attack = { "IA_Attack", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainMeleeComponent, IA_Attack), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IA_Attack_MetaData), Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IA_Attack_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UMainMeleeComponent_Statics::PropPointers[] = {
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_ValueProp,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage_Key_KeyProp,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_MeleeComboAnimMontage,
@@ -332,7 +367,8 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_CanAttack,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_LastAttackClickTime,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerAnimInstance,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_OwnerCharacter,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IMC_MeleeInput,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainMeleeComponent_Statics::NewProp_IA_Attack,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UMainMeleeComponent_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<UMainMeleeComponent>::IsAbstract,
@@ -372,9 +408,9 @@ void EmptyLinkFunctionForGeneratedCodeMainMeleeComponent() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UMainMeleeComponent, UMainMeleeComponent::StaticClass, TEXT("UMainMeleeComponent"), &Z_Registration_Info_UClass_UMainMeleeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainMeleeComponent), 2738432614U) },
+		{ Z_Construct_UClass_UMainMeleeComponent, UMainMeleeComponent::StaticClass, TEXT("UMainMeleeComponent"), &Z_Registration_Info_UClass_UMainMeleeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainMeleeComponent), 356716119U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_473673556(TEXT("/Script/Skyscraper"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_3468591276(TEXT("/Script/Skyscraper"),
 		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Melee_MainMeleeComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

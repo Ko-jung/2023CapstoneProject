@@ -54,6 +54,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 125.0f));
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -92,8 +93,6 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	{ // == Set components
 		CombatSystemComponent = CreateDefaultSubobject<UCombatSystemComponent>(TEXT("CombatSystemComponent"));
 		MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
-		MainMeleeComponent = CreateDefaultSubobject<UMainMeleeComponent>(TEXT("MainMeleeComponent"));
-		MainRangeComponent = CreateDefaultSubobject<UMainRangeComponent>(TEXT("MainRangeComponent"));
 		HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	}
 

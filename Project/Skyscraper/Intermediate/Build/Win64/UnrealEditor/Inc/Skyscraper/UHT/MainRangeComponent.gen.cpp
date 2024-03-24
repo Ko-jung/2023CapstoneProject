@@ -13,6 +13,8 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 	ENGINE_API UClass* Z_Construct_UClass_UActorComponent();
 	ENGINE_API UClass* Z_Construct_UClass_UAnimInstance_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_UAnimMontage_NoRegister();
+	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputAction_NoRegister();
+	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputMappingContext_NoRegister();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_ASkyscraperCharacter_NoRegister();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_UMainRangeComponent();
 	SKYSCRAPER_API UClass* Z_Construct_UClass_UMainRangeComponent_NoRegister();
@@ -27,10 +29,9 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 	}
 	DEFINE_FUNCTION(UMainRangeComponent::execPlayReloadAnim)
 	{
-		P_GET_PROPERTY(FFloatProperty,Z_Param_fReloadingTime);
 		P_FINISH;
 		P_NATIVE_BEGIN;
-		P_THIS->PlayReloadAnim(Z_Param_fReloadingTime);
+		P_THIS->PlayReloadAnim();
 		P_NATIVE_END;
 	}
 	DEFINE_FUNCTION(UMainRangeComponent::execBulletReloading)
@@ -229,29 +230,17 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 	}
 	struct Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics
 	{
-		struct MainRangeComponent_eventPlayReloadAnim_Parms
-		{
-			float fReloadingTime;
-		};
-		static const UECodeGen_Private::FFloatPropertyParams NewProp_fReloadingTime;
-		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
 #endif
 		static const UECodeGen_Private::FFunctionParams FuncParams;
-	};
-	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::NewProp_fReloadingTime = { "fReloadingTime", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(MainRangeComponent_eventPlayReloadAnim_Parms, fReloadingTime), METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::PropPointers[] = {
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::NewProp_fReloadingTime,
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::Function_MetaDataParams[] = {
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_UMainRangeComponent, nullptr, "PlayReloadAnim", nullptr, nullptr, Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::PropPointers), sizeof(Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::MainRangeComponent_eventPlayReloadAnim_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::Function_MetaDataParams), Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::Function_MetaDataParams) };
-	static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::PropPointers) < 2048);
-	static_assert(sizeof(Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::MainRangeComponent_eventPlayReloadAnim_Parms) < MAX_uint16);
+	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_UMainRangeComponent, nullptr, "PlayReloadAnim", nullptr, nullptr, nullptr, 0, 0, RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::Function_MetaDataParams), Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim_Statics::Function_MetaDataParams) };
 	UFunction* Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim()
 	{
 		static UFunction* ReturnFunction = nullptr;
@@ -294,6 +283,10 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 #endif
 		static const UECodeGen_Private::FFloatPropertyParams NewProp_ReloadMaxCoolTime;
 #if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ReloadSpeedTime_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_ReloadSpeedTime;
+#if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_CurrentBulletCount_MetaData[];
 #endif
 		static const UECodeGen_Private::FIntPropertyParams NewProp_CurrentBulletCount;
@@ -333,6 +326,18 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_AM_Reload_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_AM_Reload;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_IMC_RangeInput_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_IMC_RangeInput;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_IA_Fire_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_IA_Fire;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_IA_Reload_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_IA_Reload;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -348,14 +353,16 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		{ &Z_Construct_UFunction_UMainRangeComponent_EnemyFire, "EnemyFire" }, // 1365291990
 		{ &Z_Construct_UFunction_UMainRangeComponent_Fire, "Fire" }, // 907041525
 		{ &Z_Construct_UFunction_UMainRangeComponent_PlayFireAnim, "PlayFireAnim" }, // 3339285894
-		{ &Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim, "PlayReloadAnim" }, // 2874564895
+		{ &Z_Construct_UFunction_UMainRangeComponent_PlayReloadAnim, "PlayReloadAnim" }, // 1194829875
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::FuncInfo) < 2048);
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainRangeComponent_Statics::Class_MetaDataParams[] = {
 		{ "BlueprintSpawnableComponent", "" },
+		{ "BlueprintType", "true" },
 		{ "ClassGroupNames", "Custom" },
 		{ "IncludePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
+		{ "IsBlueprintBase", "true" },
 		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
 	};
 #endif
@@ -405,6 +412,13 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 	};
 #endif
 	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadMaxCoolTime = { "ReloadMaxCoolTime", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainRangeComponent, ReloadMaxCoolTime), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadMaxCoolTime_MetaData), Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadMaxCoolTime_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadSpeedTime_MetaData[] = {
+		{ "Category", "Reload" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadSpeedTime = { "ReloadSpeedTime", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainRangeComponent, ReloadSpeedTime), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadSpeedTime_MetaData), Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadSpeedTime_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_CurrentBulletCount_MetaData[] = {
 		{ "Category", "Bullet" },
@@ -478,12 +492,43 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_AM_Reload = { "AM_Reload", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainRangeComponent, AM_Reload), Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_AM_Reload_MetaData), Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_AM_Reload_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IMC_RangeInput_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Input" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// == Input Action And Input Mapping Context\n" },
+#endif
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "== Input Action And Input Mapping Context" },
+#endif
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IMC_RangeInput = { "IMC_RangeInput", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainRangeComponent, IMC_RangeInput), Z_Construct_UClass_UInputMappingContext_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IMC_RangeInput_MetaData), Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IMC_RangeInput_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Fire_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Input" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Fire = { "IA_Fire", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainRangeComponent, IA_Fire), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Fire_MetaData), Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Fire_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Reload_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Input" },
+		{ "ModuleRelativePath", "MainGame/Component/Combat/Range/MainRangeComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Reload = { "IA_Reload", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UMainRangeComponent, IA_Reload), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Reload_MetaData), Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Reload_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UMainRangeComponent_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_OwnerCharacter,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_CurrentFireCoolTime,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_FireMaxCoolTime,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_CurrentReloadCoolTime,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadMaxCoolTime,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_ReloadSpeedTime,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_CurrentBulletCount,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_BulletMaxCount,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_RecoilAboveAmount,
@@ -494,6 +539,9 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_OwnerAnimInstance,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_AM_Fire,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_AM_Reload,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IMC_RangeInput,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Fire,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UMainRangeComponent_Statics::NewProp_IA_Reload,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UMainRangeComponent_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<UMainRangeComponent>::IsAbstract,
@@ -533,9 +581,9 @@ void EmptyLinkFunctionForGeneratedCodeMainRangeComponent() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UMainRangeComponent, UMainRangeComponent::StaticClass, TEXT("UMainRangeComponent"), &Z_Registration_Info_UClass_UMainRangeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainRangeComponent), 1805880478U) },
+		{ Z_Construct_UClass_UMainRangeComponent, UMainRangeComponent::StaticClass, TEXT("UMainRangeComponent"), &Z_Registration_Info_UClass_UMainRangeComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMainRangeComponent), 3682072647U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_216134838(TEXT("/Script/Skyscraper"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_2768402129(TEXT("/Script/Skyscraper"),
 		Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_2023CapstoneProject_Project_Skyscraper_Source_Skyscraper_MainGame_Component_Combat_Range_MainRangeComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

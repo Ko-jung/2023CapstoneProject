@@ -56,10 +56,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UMotionWarpingComponent* MotionWarpingComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UMainMeleeComponent* MainMeleeComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UMainRangeComponent* MainRangeComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UHealthComponent* HealthComponent;
 	
 protected:

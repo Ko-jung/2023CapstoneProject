@@ -3,7 +3,14 @@
 
 #include "MainMeleeComponent.h"
 
+#include "InputActionValue.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "Components/InputComponent.h"
+
 #include "MotionWarpingComponent.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
@@ -15,9 +22,20 @@ UMainMeleeComponent::UMainMeleeComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
+	MeleeComboCount = 0;
+	LastAttackClickTime = 0;
+	OwnerAnimInstance = nullptr;
+	OwnerCharacter = nullptr;
 	AnimationMovementDistance = 100.0f;
 	CanAttack = true;
-	// ...
+
+	{ // == Set Input Asset
+		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_MeleeInputRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Combat/Melee/IMC_MainMeleeInput.IMC_MainMeleeInput'"));
+		IMC_MeleeInput = IMC_MeleeInputRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_AttackRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Combat/Melee/IA_Attack.IA_Attack'"));
+		IA_Attack = IA_AttackRef.Object;
+	}
 }
 
 
@@ -30,12 +48,41 @@ void UMainMeleeComponent::BeginPlay()
 
 	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
-	// ...
-	
+
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = GetOwnerPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(IMC_MeleeInput, 0);
+
+			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+			{
+				EnhancedInputComponent->BindAction(IA_Attack, ETriggerEvent::Started, this, &ThisClass::Attack);
+			}
+		}
+	}
+
+	// == TODO: Create Melee Widget
+}
+
+void UMainMeleeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	//UnBind Input Mapping Context
+	if (APlayerController* PlayerController = GetOwnerPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(IMC_MeleeInput);
+		}
+	}
+
+	// == TOOD: Unbind Melee Widget
 }
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
 {
+
 	CanAttack = false;
 
 	int AnimationMovementAxis = 1;
@@ -72,6 +119,8 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 		MeleeComboCount = (MeleeComboCount + 1) % MeleeComboAnimMontage.Num();
 		UE_LOG(LogTemp, Warning, TEXT("콤보후: %d"), MeleeComboCount);
 	}
+
+	
 }
 
 void UMainMeleeComponent::OnBlendOutMeleeAttack(UAnimMontage* Montage, bool bInterrupted)
@@ -87,7 +136,6 @@ void UMainMeleeComponent::Attack()
 		// == if attack in 0.5s after last attack, play combo attack // else play 0 attack
 		if (!(UGameplayStatics::GetTimeSeconds(GetWorld()) - LastAttackClickTime < 0.5f))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("이거가 문제같은데 %f"), UGameplayStatics::GetTimeSeconds(GetWorld()) - LastAttackClickTime);
 			MeleeComboCount = 0;
 		}
 		PlayAttackAnimMontage();

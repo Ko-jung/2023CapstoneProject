@@ -15,7 +15,13 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "MotionWarpingComponent.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
 UCombatSystemComponent::UCombatSystemComponent()
@@ -27,7 +33,11 @@ UCombatSystemComponent::UCombatSystemComponent()
 	MeleeSelect = EMeleeSelect::EMS_Dagger;
 	RangeSelect = ERangeSelect::ERS_Rifle;
 	OwnerCharacter = nullptr;
+	OwnerAnimInstance = nullptr;
 	MainWeaponComponent = nullptr;
+	LockOnStartTime = 0.0f;
+	LockOnActor = nullptr;
+	CloseTargetDistance = InitTargetDistance = 10000.0f;
 
 	{ // == Set Input Asset
 		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_CombatSystemRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Combat/IMC_CombatSystem.IMC_CombatSystem'"));
@@ -52,7 +62,15 @@ UCombatSystemComponent::UCombatSystemComponent()
 		RangeClass.Add(URifleComponent::StaticClass());
 		RangeClass.Add(URPGComponent::StaticClass());
 	}
-	// ...
+
+	{ // load Anim Montage
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DamagedRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_GetDamaged.AM_GetDamaged'"));
+		AM_Damaged = AM_DamagedRef.Object;
+
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_KnockedDown.AM_KnockedDown'"));
+		AM_Down = AM_DownRef.Object;
+	
+	}
 }
 
 void UCombatSystemComponent::SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeSelect eRangeSelect)
@@ -66,7 +84,14 @@ void UCombatSystemComponent::SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeS
 void UCombatSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+
+	{ // == Get Owner Character And Anim Instance
+		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+		OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnOutDownMontage);
+		OwnerAnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnOutDownMontage);
+	}
+	
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = GetOwnerPlayerController())
@@ -79,8 +104,9 @@ void UCombatSystemComponent::BeginPlay()
 			{
 				EnhancedInputComponent->BindAction(IA_MeleeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToMeleeWeapon);
 				EnhancedInputComponent->BindAction(IA_RangeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToRangeWeapon);
-				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Started, this, &ThisClass::LockOn);
-				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Completed, this, &ThisClass::LockOn);
+				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Started, this, &ThisClass::LockOnKeyFunc);
+				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Triggered, this, &ThisClass::LockOn);
+				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Completed, this, &ThisClass::LockOnKeyFunc);
 			}
 		}
 	}
@@ -124,17 +150,130 @@ void UCombatSystemComponent::SwapToRangeWeapon(const FInputActionValue& Value)
 	UE_LOG(LogTemp, Warning, TEXT("%s 무기 교체"), *Name);
 }
 
-void UCombatSystemComponent::LockOn(const FInputActionValue& Value)
+void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 {
-	bool what = Value.Get<bool>();
-	if(what)
+	bool bKeyDown = Value.Get<bool>();
+	if(bKeyDown)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("눌림"));
+		LockOnStartTime = GetWorld()->GetTimeSeconds();
+
 	}else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("뗌"));
+		LockOnActor = nullptr;
+		CloseTargetDistance = InitTargetDistance;
 	}
 	
 }
+
+void UCombatSystemComponent::LockOn()
+{
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASkyscraperCharacter::StaticClass(), OutActors);
+	int32 LockOnActorCount = 0;
+
+	// == find nearest TargetActor in LockOnRange
+	for(AActor* TargetActor : OutActors)
+	{
+		// == If not self character,
+		if(TargetActor != OwnerCharacter)
+		{
+			// == Get TargetActor Screen Location
+			FVector2D ScreenLocation(0.0f, 0.0f);;
+			UGameplayStatics::ProjectWorldToScreen(OwnerCharacter->GetPlayerController(), TargetActor->GetActorLocation(),ScreenLocation);
+
+			// == Get Player Viewport size
+			FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(GetWorld());
+
+			// == Get distance from TargetActor's ScreenLocation and Viewport center
+			float Distance = UKismetMathLibrary::Distance2D(ScreenLocation, ViewportSize / 2);
+
+			// == if TargetActor's screenlocation is far from center point, find next
+			// == ViewportSize.X / 10.0f is LockOnRange => can make to variable
+			if (!(Distance < ViewportSize.X / 10.0f)) continue;
+
+			LockOnActorCount += 1;
+
+			// == find nearest TargetActor
+			if (Distance < CloseTargetDistance) 
+			{
+				LockOnActor = TargetActor;
+				CloseTargetDistance = Distance;
+			}
+		}
+	}
+
+	if(LockOnActorCount == 0)
+	{
+		CloseTargetDistance = InitTargetDistance;
+		LockOnActor = nullptr;
+	}
+
+	if(LockOnActor)
+	{
+		float LockOnSpeed{};
+		// == In first 0.5 sec, fast else slow
+		if((GetWorld()->GetTimeSeconds() - LockOnStartTime)< 0.5f)
+		{
+			LockOnSpeed = 20.0f;
+		}else
+		{
+			LockOnSpeed = 2.0f;
+		}
+
+
+		FRotator CurrentRotator = OwnerCharacter->GetPlayerController()->GetControlRotation();
+		FRotator TargetRotator = 
+			(LockOnActor->GetActorLocation() - OwnerCharacter->GetFollowCamera()->GetComponentLocation()).ToOrientationRotator();
+		FRotator NewRotator = UKismetMathLibrary::RInterpTo(CurrentRotator, TargetRotator, GetWorld()->GetDeltaSeconds(), LockOnSpeed);
+
+		OwnerCharacter->GetPlayerController()->SetControlRotation(NewRotator);
+	}
+
+
+}
+
+void UCombatSystemComponent::Stiffness(float StiffnessTime)
+{
+	if (StiffnessTime <= FLT_EPSILON) return;
+
+	const float DamagedAnimPlayRate = AM_Damaged->GetPlayLength() / StiffnessTime;
+	OwnerAnimInstance->Montage_Play(AM_Damaged, DamagedAnimPlayRate);
+}
+
+void UCombatSystemComponent::Down(FVector DownDirection)
+{
+	{ // == Play Down Montage
+		OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		OwnerAnimInstance->Montage_Play(AM_Down);
+	}
+
+	
+	{ // == Set motion warp target
+		UMotionWarpingComponent* MotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
+
+		{ // == Set "FloatingPosition"
+			// == for floating, add FVector(0.0f, 0.0f, 100.0f);
+			// == DownDirection * DownDistance(120) <- can make to variable
+			FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 120 + FVector(0.0f, 0.0f, 100.0f);
+
+			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("FloatingPosition"), TargetLocation);
+		}
+
+		{ // == Set "LandingPosition"
+			// == for grounding, add FVector(0.0f, 0.0f, -100.0f);
+			// == DownDirection * DownDistance(240) <- can make to variable
+			FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 240 + FVector(0.0f, 0.0f, -100.0f);
+
+			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("LandingPosition"), TargetLocation);
+		}
+	}
+	
+}
+
+void UCombatSystemComponent::OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted)
+{
+	OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+}
+
 
 

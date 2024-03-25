@@ -23,6 +23,12 @@ public:
 	// == Call right after construct
 	void SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeSelect eRangeSelect);
 
+	// == Do Stiffness / Down Function
+	UFUNCTION(BlueprintCallable)
+		void Stiffness(float StiffnessTime);
+	UFUNCTION(BlueprintCallable)
+		void Down(FVector DownDirection);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -33,6 +39,13 @@ protected:
 	// == Owner Character
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
+	UPROPERTY()
+		UAnimInstance* OwnerAnimInstance;
+
+	UPROPERTY(EditAnywhere, Category=MotionWarping)
+		UAnimMontage* AM_Damaged;
+	UPROPERTY(EditAnywhere,Category = MotionWarping)
+		UAnimMontage* AM_Down;
 
 	// == Weapon Component Variable
 	UPROPERTY()
@@ -44,6 +57,15 @@ protected:
 	EMeleeSelect MeleeSelect;
 	ERangeSelect RangeSelect;
 
+	// == LockOn variable
+	UPROPERTY()
+	float LockOnStartTime;
+	UPROPERTY()
+	AActor* LockOnActor;
+	UPROPERTY()
+	float CloseTargetDistance;
+	UPROPERTY(EditAnywhere,Category = LockOn)
+	float InitTargetDistance;
 
 	// == Input action function
 	UFUNCTION()
@@ -51,7 +73,15 @@ protected:
 	UFUNCTION()
 		void SwapToRangeWeapon(const FInputActionValue& Value);
 	UFUNCTION()
-		void LockOn(const FInputActionValue& Value);
+		void LockOnKeyFunc(const FInputActionValue& Value);
+
+
+	// == Action Function
+	void LockOn();
+
+
+	UFUNCTION()
+	void OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted);
 public:	
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 

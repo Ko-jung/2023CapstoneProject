@@ -84,6 +84,8 @@ public:
 	FORCEINLINE APlayerController* GetPlayerController() const { return Cast<APlayerController>(GetController()); }
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	
+
+	void DoStiffness(const float StiffnessTime) const;
+	void DoDown(const FVector& DownDirection) const;
 };
 

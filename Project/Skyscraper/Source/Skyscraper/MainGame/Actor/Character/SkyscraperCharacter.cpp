@@ -124,6 +124,16 @@ float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 	return Damage;
 }
 
+void ASkyscraperCharacter::DoStiffness(const float StiffnessTime) const
+{
+	CombatSystemComponent->Stiffness(StiffnessTime);
+}
+
+void ASkyscraperCharacter::DoDown(const FVector& DownDirection) const
+{
+	CombatSystemComponent->Down(DownDirection);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

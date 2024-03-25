@@ -150,17 +150,24 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 	FVector End = Start + OwnerCharacter->GetActorForwardVector() * 150;
 
 	TArray<AActor*> IgnoreActors;
+	IgnoreActors.Add(OwnerCharacter);
 	TArray<FHitResult> OutHits;
 
 	// == TODO: Delete Debug Later
-	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation(), ETraceTypeQuery::TraceTypeQuery1, false, IgnoreActors,EDrawDebugTrace::ForDuration,OutHits,true);
+	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation(), UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors,EDrawDebugTrace::ForDuration,OutHits,true);
 
 	for(FHitResult HitResult : OutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
 		// == TODO: Stiffness And Down Later
-		//HitResult.GetActor()
-
+		if(bDoDown)
+		{
+			Cast<ASkyscraperCharacter>(HitActor)->DoDown(OwnerCharacter->GetActorForwardVector());
+		}else
+		{
+			Cast<ASkyscraperCharacter>(HitActor)->DoStiffness(fStiffnessTime);
+		}
+		
 		// == "This function will only execute on the server" <<= now, just client level
 		UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
 	}

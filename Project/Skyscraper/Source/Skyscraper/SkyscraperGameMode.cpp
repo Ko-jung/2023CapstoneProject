@@ -25,23 +25,24 @@ ASkyscraperGameMode::ASkyscraperGameMode()
 
 void ASkyscraperGameMode::ProcessFunc()
 {
-	std::pair<EFunction, Packet> EFunc;
+	std::pair<EFunction, Packet*> EFunc;
 	while (FuncQueue.try_pop(EFunc))
 	{
 		EFunction func = EFunc.first;
-		Packet argu = EFunc.second;
+		Packet* argu = EFunc.second;
 
 		switch (func)
 		{
 		case EBPPOSSESS:
 		{
 			PPlayerJoin PPJ;
-			memcpy(&PPJ, &argu, sizeof(PPlayerJoin));
-			SetOwnSerialNum(PPJ.PlayerSerial);
+			memcpy(&PPJ, argu, sizeof(PPlayerJoin));
+			Super::SetOwnSerialNum(PPJ.PlayerSerial);
+			UE_LOG(LogClass, Warning, TEXT("PPJ.PlayerSerial is %d"), PPJ.PlayerSerial);
 		}
 			break;
 		case EPLAYERSELECTINFO:
-			ProcessSelectInfo(&argu);
+			ProcessSelectInfo(argu);
 			break;
 		default:
 			break;
@@ -67,14 +68,15 @@ void ASkyscraperGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 {
-	PPlayerSelectInfo* PPP = static_cast<PPlayerSelectInfo*>(argu);
+	volatile PPlayerSelectInfo* PPP = static_cast<PPlayerSelectInfo*>(argu);
 
-	int ClientNum = PPP->ClientNum;
+	volatile int ClientNum = PPP->ClientNum;
 	if (ClientNum == -1)
 	{
 		UE_LOG(LogClass, Warning, TEXT("PPlayerPickInfo Packet ClientNum == -1!"));
 	}
 
+	// Why 127?
 	ECharacter   Character   = PPP->PickedCharacter;
 	EMeleeWeapon MeleeWeapon = PPP->PickedMeleeWeapon;
 	ERangeWeapon RangeWeapon = PPP->PickedRangeWeapon;

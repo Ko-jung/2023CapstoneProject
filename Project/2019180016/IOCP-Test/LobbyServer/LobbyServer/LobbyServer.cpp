@@ -160,9 +160,8 @@ ClientInfo* LobbyServer::GetEmptyClient()
 
 void LobbyServer::CheckingMatchingQueue()
 {
-	int TempPlayer = 2;
 	//if (m_MatchingQueue.size() >= MAXPLAYER)
-	if (m_MatchingQueue.size() >= TempPlayer)
+	if (m_MatchingQueue.size() >= MAXPLAYER)
 	{
 		PEmptyRoomNum PER;
 		m_GameServerSocket->SendProcess(sizeof(PER), &PER);
@@ -282,7 +281,7 @@ void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 
 		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
 		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
-		for (int i = 0; i < 2; )
+		for (int i = 0; i < MAXPLAYER; )
 		{
 			if (m_MatchingQueue.try_pop(client))
 			{

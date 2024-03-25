@@ -6,7 +6,8 @@
 
 NetworkManager::NetworkManager() : 
 	Gamemode(nullptr),
-	bIsConnected(false)
+	bIsConnected(false),
+	SerialNum(0)
 {
 }
 
@@ -62,6 +63,8 @@ bool NetworkManager::Connect(const char* pszIP, int nPort)
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Socket Connect Success"));
+
+	SerialNum = -1;
 	bIsConnected = true;
 	return true;
 }
@@ -82,8 +85,8 @@ void NetworkManager::ProcessRecv(int packetType)
 		break;
 	case(int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
-		PPlayerSelectInfo PPP;
-		memcpy(&PPP, m_sRecvBuffer, sizeof(PPlayerSelectInfo));
+		PPlayerSelectInfo* PPP = new PPlayerSelectInfo();
+		memcpy(PPP, m_sRecvBuffer, sizeof(PPlayerSelectInfo));
 		Gamemode->PushQueue(EFunction::EPLAYERSELECTINFO, PPP);
 	}
 		break;
@@ -95,13 +98,13 @@ void NetworkManager::ProcessRecv(int packetType)
 		if (SerialNum == -1)
 		{
 			SerialNum = PPJ.PlayerSerial;
-			Gamemode->PushQueue(EFunction::EBPPOSSESS, PPJ);
+			Gamemode->PushQueue(EFunction::EBPPOSSESS, &PPJ);
 			UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
 		}
 		else
 		{
 			// Join New Other Player
-			Gamemode->PushQueue(EFunction::ESPAWNPLAYER, PPJ);
+			Gamemode->PushQueue(EFunction::ESPAWNPLAYER, &PPJ);
 		}
 	}
 	break;
@@ -147,7 +150,7 @@ void NetworkManager::StopListen()
 
 bool NetworkManager::Init()
 {
-	return false;
+	return true;
 }
 
 uint32 NetworkManager::Run()

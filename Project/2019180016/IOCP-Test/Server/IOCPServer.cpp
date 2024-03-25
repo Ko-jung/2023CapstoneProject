@@ -268,13 +268,16 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 			socket->Recv();
 
-			// Push Game Start Timer (Time to Select Weapon)
-			if (NowClientNum % MAXPLAYER == MAXPLAYER - 1)
-			{
-				TimerEvent TE(std::chrono::seconds(40),
-					std::bind(&IOCPServer::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
+			PPlayerJoin PPJ(NowClientNum);
+			socket->SendProcess(sizeof(PPJ), &PPJ);
 
-				m_TimerMgr->Insert(TE);
+			// Push Game Start Timer (Time to Select Weapon)
+			if (NowClientNum % MAXPLAYER == MAXPLAYER  - 1)
+			{
+				//TimerEvent TE(std::chrono::seconds(40),
+				//	std::bind(&IOCPServer::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
+				//
+				//m_TimerMgr->Insert(TE);
 			}
 
 			// SendPlayerJoinPacket(m_iClientId);
@@ -355,7 +358,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		int SendPlayerRoomNum = id / 6;
 
 		// Send To Other Player Pick State
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < MAXPLAYER; i++)
 		{
 			int ClientNum = SendPlayerRoomNum * 6 + i;
 			if (ClientNum != id)

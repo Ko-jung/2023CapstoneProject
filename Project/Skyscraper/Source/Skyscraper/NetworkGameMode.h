@@ -33,7 +33,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	// Called by NetworkManager thread
-	virtual void PushQueue(EFunction e, Packet etc);
+	virtual void PushQueue(EFunction e, Packet* etc);
 
 	// Called by Gamemode thread
 	virtual void ProcessFunc() {};
@@ -46,7 +46,7 @@ public:
 	int GetSerialNum() { return m_SerialNum; }
 
 protected:
-	concurrency::concurrent_queue<std::pair<EFunction, Packet>> FuncQueue;
+	concurrency::concurrent_queue<std::pair<EFunction, Packet*>> FuncQueue;
 	class NetworkManager* m_Socket;
 
 	bool m_bIsConnected;

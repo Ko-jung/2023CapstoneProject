@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HAL/Runnable.h"
 
 // winsock2 ����� ���� �Ʒ� �ڸ�Ʈ �߰�
 #pragma comment(lib, "ws2_32.lib")
@@ -50,6 +51,7 @@ public:
 
 public:
 	void SetGamemode(ANetworkGameMode* gamemode) { Gamemode = gamemode; };
+	const int& GetSerialNum() { return SerialNum; }
 
 public:
 	// Singleton
@@ -67,6 +69,9 @@ private:
 	ANetworkGameMode* Gamemode;
 	bool bIsConnected;
 
-	// [0, 5]
+	/// <summary>
+	/// [0, 5]
+	/// bIsConnected ? -1 : 0
+	/// </summary>
 	int SerialNum;
 };

@@ -65,5 +65,4 @@ void ANetworkGameMode::Send(const Packet* p, const int pSize)
 void ANetworkGameMode::SetOwnSerialNum(int serial)
 {
 	m_SerialNum = serial;
-	UE_LOG(LogClass, Warning, TEXT("m_SerialNum is %d"), m_SerialNum);
 }

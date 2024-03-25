@@ -57,7 +57,7 @@ void UCharacterPickState::SelectInfoUpdate()
 	bool IsRight = Gamemode->GetSerialNum() > MAXPLAYER / 2;
 	for (int i = 0; i < PlayerSelectInfos.Num() / 2; i++)
 	{
-		volatile int num = i + IsRight * MAXPLAYER / 2;
+		int num = i + IsRight * MAXPLAYER / 2;
 		auto CharacterNum = PlayerSelectInfos[num]->PickedCharacter;
 		auto MeleeWeaponNum = PlayerSelectInfos[num]->PickedMeleeWeapon;
 		auto RangeWeaponNum = PlayerSelectInfos[num]->PickedRangeWeapon;

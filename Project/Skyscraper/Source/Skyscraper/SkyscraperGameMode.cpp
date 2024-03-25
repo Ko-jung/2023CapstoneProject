@@ -38,7 +38,6 @@ void ASkyscraperGameMode::ProcessFunc()
 			PPlayerJoin PPJ;
 			memcpy(&PPJ, argu, sizeof(PPlayerJoin));
 			Super::SetOwnSerialNum(PPJ.PlayerSerial);
-			UE_LOG(LogClass, Warning, TEXT("PPJ.PlayerSerial is %d"), PPJ.PlayerSerial);
 		}
 			break;
 		case EPLAYERSELECTINFO:
@@ -68,9 +67,9 @@ void ASkyscraperGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 {
-	volatile PPlayerSelectInfo* PPP = static_cast<PPlayerSelectInfo*>(argu);
+	PPlayerSelectInfo* PPP = static_cast<PPlayerSelectInfo*>(argu);
 
-	volatile int ClientNum = PPP->ClientNum;
+	int ClientNum = PPP->ClientNum;
 	if (ClientNum == -1)
 	{
 		UE_LOG(LogClass, Warning, TEXT("PPlayerPickInfo Packet ClientNum == -1!"));

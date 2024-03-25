@@ -40,6 +40,7 @@ public:
 public:
 	FRunnableThread* Thread;
 	FThreadSafeCounter StopTaskCounter;
+	bool bStopSwich;
 
 	bool StartListen();
 	void StopListen();

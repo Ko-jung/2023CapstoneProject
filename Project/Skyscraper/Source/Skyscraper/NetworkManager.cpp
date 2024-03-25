@@ -104,7 +104,8 @@ void NetworkManager::ProcessRecv(int packetType)
 		else
 		{
 			// Join New Other Player
-			Gamemode->PushQueue(EFunction::ESPAWNPLAYER, &PPJ);
+			//Gamemode->PushQueue(EFunction::ESPAWNPLAYER, &PPJ);
+			//UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
 		}
 	}
 	break;
@@ -134,7 +135,8 @@ bool NetworkManager::StartListen()
 	}
 
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
-	StopTaskCounter.Reset();
+	//StopTaskCounter.Reset();
+	bStopSwich = true;
 	return (Thread != nullptr);
 }
 
@@ -157,7 +159,8 @@ uint32 NetworkManager::Run()
 {
 	FPlatformProcess::Sleep(0.03);
 
-	while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
+	//while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
+	while (bStopSwich)
 	{
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer, MAX_BUFFER, 0);
 
@@ -166,6 +169,7 @@ uint32 NetworkManager::Run()
 			UE_LOG(LogTemp, Warning, TEXT("Recv 0 Btye. break while"));
 			break;
 		}
+
 
 		BYTE OP;
 		memcpy(&OP, m_sRecvBuffer, sizeof(BYTE));
@@ -178,7 +182,8 @@ uint32 NetworkManager::Run()
 
 void NetworkManager::Stop()
 {
-	StopTaskCounter.Increment();
+	//StopTaskCounter.Increment();
+	bStopSwich = false;
 }
 
 void NetworkManager::Exit()

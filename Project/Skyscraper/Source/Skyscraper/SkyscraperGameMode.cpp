@@ -42,6 +42,7 @@ void ASkyscraperGameMode::ProcessFunc()
 			break;
 		case EPLAYERSELECTINFO:
 			ProcessSelectInfo(argu);
+			delete argu;
 			break;
 		default:
 			break;

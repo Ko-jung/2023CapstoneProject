@@ -2,20 +2,16 @@
 
 
 #include "DaggerComponent.h"
+#include "Skyscraper/Enum/ECharacterAnimMontage.h"
 
 UDaggerComponent::UDaggerComponent()
 {
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger1Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger1.AM_Dagger1'"));
-	MeleeComboAnimMontage.Add(MeleeComboAnimMontage.Num(),AM_Dagger1Ref.Object);
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger2Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger2.AM_Dagger2'"));
-	MeleeComboAnimMontage.Add(MeleeComboAnimMontage.Num(), AM_Dagger2Ref.Object);
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger3Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger3.AM_Dagger3'"));
-	MeleeComboAnimMontage.Add(MeleeComboAnimMontage.Num(), AM_Dagger3Ref.Object);
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger4Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger4.AM_Dagger4'"));
-	MeleeComboAnimMontage.Add(MeleeComboAnimMontage.Num(), AM_Dagger4Ref.Object);
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger5Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger5.AM_Dagger5'"));
-	MeleeComboAnimMontage.Add(MeleeComboAnimMontage.Num(), AM_Dagger5Ref.Object);
-	
+	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack1);
+	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack2);
+	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack3);
+	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack4);
+	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack5);
+
 	AttackTime.Add(0.6f);
 	AttackTime.Add(0.6f);
 	AttackTime.Add(0.6f);

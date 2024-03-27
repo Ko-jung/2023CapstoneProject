@@ -42,10 +42,14 @@ protected:
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
 
-	UPROPERTY(EditAnywhere, Category=MotionWarping)
-		UAnimMontage* AM_Damaged;
+	//UPROPERTY(EditAnywhere, Category=MotionWarping)
+	//	UAnimMontage* AM_Damaged;
+	//UPROPERTY(EditAnywhere,Category = MotionWarping)
+	//	UAnimMontage* AM_Down;
+	UPROPERTY(EditAnywhere, Category = MotionWarping)
+		ECharacterAnimMontage StiffnessAnimMontageKey;
 	UPROPERTY(EditAnywhere,Category = MotionWarping)
-		UAnimMontage* AM_Down;
+		ECharacterAnimMontage DownAnimMontageKey;
 
 	// == Weapon Component Variable
 	UPROPERTY()

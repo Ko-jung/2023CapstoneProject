@@ -108,15 +108,18 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 	}
 		
 	{ // == Play Montage
-		UAnimMontage** PlayMontage = MeleeComboAnimMontage.Find(MeleeComboCount);
+		//UAnimMontage** PlayMontage = MeleeComboAnimMontage.Find(MeleeComboCount);
+		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKeys[MeleeComboCount]);
+			//MeleeComboAnimMontage.Find(MeleeComboCount);
 		UE_LOG(LogTemp, Warning, TEXT("콤보: %d"), MeleeComboCount);
-		float AttackAnimPlayRate = (*PlayMontage)->GetPlayLength() / AttackTime[MeleeComboCount];
+		float AttackAnimPlayRate = PlayMontage->GetPlayLength() / AttackTime[MeleeComboCount];
 
-		OwnerAnimInstance->Montage_Play(*PlayMontage, AttackAnimPlayRate);
+		OwnerAnimInstance->Montage_Play(PlayMontage, AttackAnimPlayRate);
 	}
 
 	{ // == Add MeleeComboCount 
-		MeleeComboCount = (MeleeComboCount + 1) % MeleeComboAnimMontage.Num();
+		//MeleeComboCount = (MeleeComboCount + 1) % MeleeComboAnimMontage.Num();
+		MeleeComboCount = (MeleeComboCount + 1) % AnimMontageKeys.Num();
 		UE_LOG(LogTemp, Warning, TEXT("콤보후: %d"), MeleeComboCount);
 	}
 

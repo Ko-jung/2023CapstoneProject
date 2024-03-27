@@ -139,15 +139,13 @@ void UCombatSystemComponent::SwapWeapon(UClass* WeaponClass)
 void UCombatSystemComponent::SwapToMeleeWeapon(const FInputActionValue& Value)
 {
 	SwapWeapon(MeleeClass[(uint8)MeleeSelect]);
-	FString Name = MeleeClass[(uint8)MeleeSelect]->GetDisplayNameText().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s 무기 교체"), *Name);
+	
+	
 }
 
 void UCombatSystemComponent::SwapToRangeWeapon(const FInputActionValue& Value)
 {
 	SwapWeapon(RangeClass[(uint8)RangeSelect]);
-	FString Name = RangeClass[(uint8)RangeSelect]->GetDisplayNameText().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s 무기 교체"), *Name);
 }
 
 void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)

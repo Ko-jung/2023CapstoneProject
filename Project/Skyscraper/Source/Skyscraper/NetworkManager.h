@@ -9,6 +9,7 @@
 #pragma comment(lib, "ws2_32.lib")
 #include <WinSock2.h>
 #include <map>
+#include <queue>
 
 #include "../../Packet/Packet.h"
 
@@ -75,4 +76,9 @@ private:
 	/// bIsConnected ? -1 : 0
 	/// </summary>
 	int SerialNum;
+
+	// // pool Variable 고민해보기
+	// std::queue<PSetTimer*> PSetTimerQueue;
+	// std::queue<PPlayerSelectInfo*> PSetTimerQueue;
+	// std::queue<PSetTimer*> PSetTimerQueue;
 };

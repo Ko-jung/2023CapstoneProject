@@ -2,6 +2,7 @@
 
 #include "SkyscraperGameMode.h"
 #include "MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "NetworkManager.h"
 
 #include "UObject/ConstructorHelpers.h"
 
@@ -42,11 +43,20 @@ void ASkyscraperGameMode::ProcessFunc()
 			break;
 		case EPLAYERSELECTINFO:
 			ProcessSelectInfo(argu);
-			delete argu;
+			break;
+		case ESETTIMER:
+		{
+			PSetTimer PST;
+			memcpy(&PST, argu, sizeof(PST));
+			SelectTimer = PST.SecondsUntilActivation;
+			UE_LOG(LogTemp, Warning, TEXT("New Timer Set! Time is %d Sec"), SelectTimer);
+		}
 			break;
 		default:
 			break;
 		}
+
+		delete argu;
 	}
 }
 
@@ -58,6 +68,12 @@ void ASkyscraperGameMode::BeginPlay()
 void ASkyscraperGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
+
+	if (SelectTimer > 0.001f)
+	{
+		SelectTimer -= Deltatime;
+	}
+
 	ProcessFunc();
 }
 

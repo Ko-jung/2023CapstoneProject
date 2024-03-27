@@ -38,21 +38,13 @@ void ANetworkGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	m_Socket->Disconnect();
 	m_Socket->Stop();
+	m_Socket->StopListen();
+
+	FuncQueue.clear();
 }
 
 void ANetworkGameMode::PushQueue(EFunction e, Packet* etc)
 {
-	//switch (e)
-	//{
-	//case ESPAWNPLAYER:
-	//	break;
-	//case EBPPOSSESS:
-	//	break;
-	//case EPLAYERTRANSFORM:
-	//	break;
-	//default:
-	//	break;
-	//}
 	FuncQueue.push(std::pair(e, etc));
 }
 

@@ -89,13 +89,13 @@ void NetworkManager::ProcessRecv(int packetType)
 		break;
 	case (int)COMP_OP::OP_PLAYERJOIN:
 	{
-		PPlayerJoin PPJ;
-		memcpy(&PPJ, m_sRecvBuffer, sizeof(PPlayerJoin));
+		PPlayerJoin* PPJ = new PPlayerJoin();
+		memcpy(PPJ, m_sRecvBuffer, sizeof(*PPJ));
 
 		if (SerialNum == -1)
 		{
-			SerialNum = PPJ.PlayerSerial;
-			Gamemode->PushQueue(EFunction::EBPPOSSESS, &PPJ);
+			SerialNum = PPJ->PlayerSerial;
+			Gamemode->PushQueue(EFunction::EBPPOSSESS, PPJ);
 			UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
 		}
 		else
@@ -108,15 +108,11 @@ void NetworkManager::ProcessRecv(int packetType)
 	break;
 	case (int)COMP_OP::OP_SETTIMER:
 	{
-		PSetTimer PST;
-		memcpy(&PST, m_sRecvBuffer, sizeof(PST));
+		PSetTimer* PST = new PSetTimer();
+		memcpy(PST, m_sRecvBuffer, sizeof(*PST));
 
-		std::shared_ptr<PSetTimer> pPST;
-		PST.TimerType = pPST->TimerType;
-		PST.SecondsUntilActivation = pPST->SecondsUntilActivation;
-
-		Gamemode->PushQueue(EFunction::ESETTIMER, pPST.get());
-		UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
+		Gamemode->PushQueue(EFunction::ESETTIMER, PST);
+		UE_LOG(LogTemp, Warning, TEXT("New Timer Push"));
 	}
 		break;
 	default:
@@ -177,6 +173,12 @@ uint32 NetworkManager::Run()
 		if (nRecvLen == 0)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Recv 0 Btye. break while"));
+			break;
+		}
+		else if (nRecvLen == -1)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Recv -1 Btye. Server Close"));
+			StopListen();
 			break;
 		}
 

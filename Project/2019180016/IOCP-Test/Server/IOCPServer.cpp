@@ -271,20 +271,17 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 			PPlayerJoin PPJ(NowClientNum % 6);
 			socket->SendProcess(sizeof(PPJ), &PPJ);
 
-			// Test
-			PSetTimer PST(ETimer::SelectTimer, 40.f);
-			SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
-
 			// Push Game Start Timer (Time to Select Weapon)
 			if (NowClientNum % MAXPLAYER == MAXPLAYER  - 1)
 			{
-				PSetTimer PST(ETimer::SelectTimer, 40.f);
-				SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
+				// 너무 빨리 보내면 못 받는다
+				TimerEvent TE1(std::chrono::seconds(1),
+					std::bind(&IOCPServer::SendSelectTime, this, NowClientNum, 40.f));
+				m_TimerMgr->Insert(TE1);
 
-				TimerEvent TE(std::chrono::seconds(40),
+				TimerEvent TE2(std::chrono::seconds(40),
 					std::bind(&IOCPServer::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
-				
-				m_TimerMgr->Insert(TE);
+				m_TimerMgr->Insert(TE2);
 			}
 
 			// SendPlayerJoinPacket(m_iClientId);
@@ -308,22 +305,6 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::Send(int id, int bytes, EXP_OVER* exp)
 {
-	//static Object TempCube(200.f, 200, 200, 0, 0, 0);
-	//std::stringstream SendData;
-	//
-	//float x, y, z;
-	//TempCube.MoveLocation(0.01, 0.01, 0.01);
-	//TempCube.GetLocation(x, y, z);
-	//
-	//PPosition SendPosition(x, y, z);
-	//
-	////SendData << (int)COMP_OP::OP_POSITION;
-	////// TODO: ����ȭ �����ؾ���
-	////SendData << x << y << z;
-	//
-	////cout << "Send Cube Pos: " << x << ", " << y << ", " << z << endl;
-	//m_Clients[id]->SendProcess(sizeof(SendPosition), &SendPosition);
-
 	delete exp;
 }
 
@@ -410,11 +391,22 @@ void IOCPServer::SendTileDrop(int id)
 	m_Clients[id]->SendProcess(sizeof(PTileDrop), &PTD);
 }
 
+void IOCPServer::SendSelectTime(int NowClientNum, float time)
+{
+	PSetTimer PST = PSetTimer(ETimer::SelectTimer, time);
+	SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
+}
+
 void IOCPServer::SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize)
 {
 	for (int i = 0; i < MAXPLAYER; i++)
 	{
-		m_Clients[roomId * 6 + i]->SendProcess(packetSize, p);
+		SOCKET s = m_Clients[roomId * 6 + i]->GetSocket();
+
+		if (s != INVALID_SOCKET)
+		{
+			m_Clients[roomId * 6 + i]->SendProcess(packetSize, p);
+		}
 	}
 }
 

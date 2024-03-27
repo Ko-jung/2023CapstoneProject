@@ -30,6 +30,8 @@ public:
 
 	TArray<PPlayerSelectInfo*>& GetPlayerSelectInfo() { return PlayerSelectInfo; }
 
+	UPROPERTY(BlueprintReadOnly)
+	double SelectTimer;
 private:
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
 };

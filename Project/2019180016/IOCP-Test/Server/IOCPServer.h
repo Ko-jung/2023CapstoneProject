@@ -37,7 +37,9 @@ public:
 
 	void SendPlayerJoinPacket(int JoinPlayerSerial);
 	void SendTileDrop(int id/*, BYTE tileDropLevel*/);
+	void SendSelectTime(int NowClientNum, float time);
 	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
+	//void SendPacketToAllSocketsInRoomAfterTimer(int roomId, COMP_OP packetType);
 
 	void ProcessPlayerPosition(PPlayerPosition p);
 	void ProcessDisconnectPlayer(PDisconnect p);

@@ -5,11 +5,9 @@
 
 USMGComponent::USMGComponent()
 {
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_FireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
-	AM_Fire = AM_FireRef.Object;
-	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_ReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
-	AM_Reload = AM_ReloadRef.Object;
-
+	FireAnimMontageKey = ECharacterAnimMontage::ECAM_SMGFire;
+	ReloadAnimMontageKey = ECharacterAnimMontage::ECAM_SMGReload;
+	
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 50;
 	FireMaxCoolTime = 0.1f;

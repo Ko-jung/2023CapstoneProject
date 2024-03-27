@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Skyscraper/Enum/ECharacterAnimMontage.h"
 #include "SkyscraperCharacter.generated.h"
 
 class UHealthComponent;
@@ -48,7 +49,8 @@ class ASkyscraperCharacter : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
-	
+
+
 public:
 	ASkyscraperCharacter();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
@@ -59,15 +61,17 @@ public:
 		UHealthComponent* HealthComponent;
 	
 protected:
+	UPROPERTY()
+	TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
+			
 
+protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
 
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -76,16 +80,20 @@ protected:
 
 	
 public:
-	/** Returns CameraBoom subobject **/
+	// == Get component
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 	FORCEINLINE APlayerController* GetPlayerController() const { return Cast<APlayerController>(GetController()); }
 
+	// == Take Damage
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	// == Stiffness / Down
 	void DoStiffness(const float StiffnessTime) const;
 	void DoDown(const FVector& DownDirection) const;
+
+	// == Get Anim Montage
+	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
 };
 

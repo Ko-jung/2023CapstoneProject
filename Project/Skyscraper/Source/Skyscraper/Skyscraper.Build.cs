@@ -8,7 +8,9 @@ public class Skyscraper : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "GeometryCollectionEngine", "EnhancedInput", "MotionWarping" });
+        bEnableExceptions = true;
+
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "GeometryCollectionEngine", "EnhancedInput", "MotionWarping" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
     }
 }

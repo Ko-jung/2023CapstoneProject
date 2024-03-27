@@ -47,5 +47,6 @@ void TimerMgr::Pop()
 
 void TimerMgr::Insert(TimerEvent TE)
 {
+	//TODO: TimerEvent 포인터가 아니기 때문에 매우 위험함 (현재 DefaultEvent까지는 괜찮음)
 	m_TimerQueue->push(TE);
 }

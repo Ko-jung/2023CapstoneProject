@@ -268,16 +268,23 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 			socket->Recv();
 
-			PPlayerJoin PPJ(NowClientNum);
+			PPlayerJoin PPJ(NowClientNum % 6);
 			socket->SendProcess(sizeof(PPJ), &PPJ);
+
+			// Test
+			PSetTimer PST(ETimer::SelectTimer, 40.f);
+			SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
 
 			// Push Game Start Timer (Time to Select Weapon)
 			if (NowClientNum % MAXPLAYER == MAXPLAYER  - 1)
 			{
-				//TimerEvent TE(std::chrono::seconds(40),
-				//	std::bind(&IOCPServer::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
-				//
-				//m_TimerMgr->Insert(TE);
+				PSetTimer PST(ETimer::SelectTimer, 40.f);
+				SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
+
+				TimerEvent TE(std::chrono::seconds(40),
+					std::bind(&IOCPServer::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
+				
+				m_TimerMgr->Insert(TE);
 			}
 
 			// SendPlayerJoinPacket(m_iClientId);
@@ -358,14 +365,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		int SendPlayerRoomNum = id / 6;
 
 		// Send To Other Player Pick State
-		for (int i = 0; i < MAXPLAYER; i++)
-		{
-			int ClientNum = SendPlayerRoomNum * 6 + i;
-			if (ClientNum != id)
-			{
-				m_Clients[SendPlayerRoomNum * 6 + i]->SendProcess(sizeof(PPS), &PPS);
-			}
-		}
+		SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
 	}
 		break;
 	default:
@@ -408,6 +408,14 @@ void IOCPServer::SendTileDrop(int id)
 {
 	PTileDrop PTD;
 	m_Clients[id]->SendProcess(sizeof(PTileDrop), &PTD);
+}
+
+void IOCPServer::SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize)
+{
+	for (int i = 0; i < MAXPLAYER; i++)
+	{
+		m_Clients[roomId * 6 + i]->SendProcess(packetSize, p);
+	}
 }
 
 void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)

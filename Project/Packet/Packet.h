@@ -148,9 +148,13 @@ struct PEmptyRoomNum : Packet
 	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
 };
 
-// contained empty room num in RoomNum
+#pragma pack(push, 1)
+// 
 struct PSetTimer : Packet
 {
-	float TimeTo;
-	PSetTimer() :Packet(COMP_OP::OP_SETTIMER) {}
+	ETimer TimerType;
+	float SecondsUntilActivation;	// ex) 캐릭터 선택 창의 제한시간 (40s)
+	PSetTimer() :Packet(COMP_OP::OP_SETTIMER), SecondsUntilActivation(0.f), TimerType(ETimer::DefaultTimer) {}
+	PSetTimer(ETimer type, float secondTime) : Packet(COMP_OP::OP_SETTIMER), SecondsUntilActivation(secondTime), TimerType(type) {}
 };
+#pragma pack(pop)

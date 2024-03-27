@@ -71,3 +71,10 @@ enum class ERangeWeapon : unsigned char
 	// Express '?' on UI
 	NullWeapon,
 };
+
+// 타이머 이벤트 종류 정의
+enum class ETimer : BYTE
+{
+	DefaultTimer,
+	SelectTimer,
+};

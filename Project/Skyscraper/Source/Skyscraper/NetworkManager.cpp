@@ -80,9 +80,6 @@ void NetworkManager::ProcessRecv(int packetType)
 {
 	switch (packetType)
 	{
-	case(int)COMP_OP::OP_SETTIMER:
-
-		break;
 	case(int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
 		PPlayerSelectInfo* PPP = new PPlayerSelectInfo();
@@ -109,6 +106,19 @@ void NetworkManager::ProcessRecv(int packetType)
 		}
 	}
 	break;
+	case (int)COMP_OP::OP_SETTIMER:
+	{
+		PSetTimer PST;
+		memcpy(&PST, m_sRecvBuffer, sizeof(PST));
+
+		std::shared_ptr<PSetTimer> pPST;
+		PST.TimerType = pPST->TimerType;
+		PST.SecondsUntilActivation = pPST->SecondsUntilActivation;
+
+		Gamemode->PushQueue(EFunction::ESETTIMER, pPST.get());
+		UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
+	}
+		break;
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"));
 		break;

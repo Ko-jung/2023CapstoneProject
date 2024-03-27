@@ -16,6 +16,7 @@ enum EFunction
 	EBPPOSSESS,
 	EPLAYERTRANSFORM,
 	EPLAYERSELECTINFO,
+	ESETTIMER,
 };
 
 #include "NetworkGameMode.generated.h"

@@ -12,7 +12,7 @@ void ANetworkGameMode::BeginPlay()
 	m_Socket = NetworkManager::Instance();
 	m_Socket->InitSocket();
 
-	m_bIsConnected = m_Socket->Connect("127.0.0.1", 9001);
+	m_bIsConnected = m_Socket->Connect("127.0.0.1", 9000);
 	if (m_bIsConnected)
 	{
 		m_Socket->StartListen();

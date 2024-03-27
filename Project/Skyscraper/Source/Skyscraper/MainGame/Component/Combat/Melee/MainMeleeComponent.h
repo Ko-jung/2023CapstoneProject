@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Skyscraper/Enum/ECharacterAnimMontage.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "MainMeleeComponent.generated.h"
 
@@ -29,12 +30,18 @@ public:
 	void CreateAttackArea(FVector vHitSize, float fStiffnessTime, float fBaseDamage, bool bDoDown);
 
 protected:
+	// == OwnerCharacter variable
+	UPROPERTY()
+		ASkyscraperCharacter* OwnerCharacter;
+
+	// == OwnerCharacter's CharacterAnimMontages - key variable
+	TArray<ECharacterAnimMontage> AnimMontageKeys;
+	
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	UPROPERTY()
-		ASkyscraperCharacter* OwnerCharacter;
 
 	// == Play melee attack montage for attack
 	void PlayAttackAnimMontage();
@@ -43,8 +50,6 @@ protected:
 	UFUNCTION()		// To link delegate (OnMontageBlendingOut);
 	void OnBlendOutMeleeAttack(UAnimMontage* Montage, bool bInterrupted);
 
-	UPROPERTY(EditAnywhere, Category = Components)
-		TMap<int32, UAnimMontage*> MeleeComboAnimMontage;
 	UPROPERTY(EditAnywhere, Category = AnimMontage)
 		TArray<float> AttackTime;
 	UPROPERTY(EditAnywhere, Category = MotionWarping)

@@ -64,12 +64,8 @@ UCombatSystemComponent::UCombatSystemComponent()
 	}
 
 	{ // load Anim Montage
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DamagedRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_GetDamaged.AM_GetDamaged'"));
-		AM_Damaged = AM_DamagedRef.Object;
-
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_KnockedDown.AM_KnockedDown'"));
-		AM_Down = AM_DownRef.Object;
-	
+		StiffnessAnimMontageKey = ECharacterAnimMontage::ECAM_Stiffness;
+		DownAnimMontageKey = ECharacterAnimMontage::ECAM_Down;
 	}
 }
 
@@ -139,15 +135,11 @@ void UCombatSystemComponent::SwapWeapon(UClass* WeaponClass)
 void UCombatSystemComponent::SwapToMeleeWeapon(const FInputActionValue& Value)
 {
 	SwapWeapon(MeleeClass[(uint8)MeleeSelect]);
-	FString Name = MeleeClass[(uint8)MeleeSelect]->GetDisplayNameText().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s 무기 교체"), *Name);
 }
 
 void UCombatSystemComponent::SwapToRangeWeapon(const FInputActionValue& Value)
 {
 	SwapWeapon(RangeClass[(uint8)RangeSelect]);
-	FString Name = RangeClass[(uint8)RangeSelect]->GetDisplayNameText().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s 무기 교체"), *Name);
 }
 
 void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
@@ -235,16 +227,16 @@ void UCombatSystemComponent::LockOn()
 void UCombatSystemComponent::Stiffness(float StiffnessTime)
 {
 	if (StiffnessTime <= FLT_EPSILON) return;
-
-	const float DamagedAnimPlayRate = AM_Damaged->GetPlayLength() / StiffnessTime;
-	OwnerAnimInstance->Montage_Play(AM_Damaged, DamagedAnimPlayRate);
+	
+	const float DamagedAnimPlayRate = OwnerCharacter->GetAnimMontage(StiffnessAnimMontageKey)->GetPlayLength() / StiffnessTime;
+	OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(StiffnessAnimMontageKey), DamagedAnimPlayRate);
 }
 
 void UCombatSystemComponent::Down(FVector DownDirection)
 {
 	{ // == Play Down Montage
 		OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
-		OwnerAnimInstance->Montage_Play(AM_Down);
+		OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(DownAnimMontageKey));
 	}
 
 	

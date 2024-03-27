@@ -72,10 +72,12 @@ public:
 	// == Anim Variable
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
-	UPROPERTY(EditAnywhere, Category = AnimMontage)
-		UAnimMontage* AM_Fire;
-	UPROPERTY(EditAnywhere, Category = AnimMontage)
-		UAnimMontage* AM_Reload;
+	//UPROPERTY(EditAnywhere, Category = AnimMontage)
+	//	UAnimMontage* AM_Fire;
+	//UPROPERTY(EditAnywhere, Category = AnimMontage)
+	//	UAnimMontage* AM_Reload;
+	ECharacterAnimMontage FireAnimMontageKey;
+	ECharacterAnimMontage ReloadAnimMontageKey;
 
 	// == Timer Handle Variable And Function
 	FTimerHandle FireCoolTimerHandle;

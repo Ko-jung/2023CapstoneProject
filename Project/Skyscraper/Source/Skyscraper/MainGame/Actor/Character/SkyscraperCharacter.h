@@ -61,8 +61,8 @@ public:
 		UHealthComponent* HealthComponent;
 	
 protected:
-
-	TMap<echaracteranim>
+	UPROPERTY()
+	TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
 			
 
 protected:
@@ -80,16 +80,20 @@ protected:
 
 	
 public:
-	/** Returns CameraBoom subobject **/
+	// == Get component
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 	FORCEINLINE APlayerController* GetPlayerController() const { return Cast<APlayerController>(GetController()); }
 
+	// == Take Damage
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	// == Stiffness / Down
 	void DoStiffness(const float StiffnessTime) const;
 	void DoDown(const FVector& DownDirection) const;
+
+	// == Get Anim Montage
+	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
 };
 

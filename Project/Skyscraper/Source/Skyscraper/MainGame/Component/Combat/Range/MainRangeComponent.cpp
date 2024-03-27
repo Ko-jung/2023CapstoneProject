@@ -41,8 +41,8 @@ UMainRangeComponent::UMainRangeComponent()
 	//AM_Fire = AM_FireRef.Object;
 	//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_ReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
 	//AM_Reload = AM_ReloadRef.Object;
-	AM_Fire = nullptr;
-	AM_Reload = nullptr;
+	FireAnimMontageKey = ECharacterAnimMontage::ECAM_Default;
+	ReloadAnimMontageKey = ECharacterAnimMontage::ECAM_Default;
 
 
 
@@ -112,7 +112,7 @@ void UMainRangeComponent::PlayFireAnim()
 	UseBullet();
 	CurrentFireCoolTime = FireMaxCoolTime;
 
-	OwnerCharacter->PlayAnimMontage(AM_Fire);
+	OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
 
 	if(!FireCoolTimerHandle.IsValid())
 	{
@@ -206,8 +206,8 @@ void UMainRangeComponent::PlayReloadAnim()
 {
 	if (!CanReload()) return;
 
-	float PlayRate = AM_Reload->GetPlayLength() / ReloadSpeedTime;
-	OwnerCharacter->PlayAnimMontage(AM_Reload, PlayRate);
+	float PlayRate = OwnerCharacter->GetAnimMontage(ReloadAnimMontageKey)->GetPlayLength() / ReloadSpeedTime;
+	OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(ReloadAnimMontageKey), PlayRate);
 
 
 }

@@ -493,5 +493,6 @@ void IOCPServer::TestSend()
 
 void IOCPServer::StartGame(int RoomNum, int ClientNum, void* etc)
 {
-	LogUtil::PrintLog("StartGame Called");
+	PStartGame PSG;
+	SendPacketToAllSocketsInRoom(RoomNum, &PSG, sizeof(PSG));
 }

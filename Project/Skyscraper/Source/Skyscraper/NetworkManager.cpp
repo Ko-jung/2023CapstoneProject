@@ -115,6 +115,12 @@ void NetworkManager::ProcessRecv(int packetType)
 		UE_LOG(LogTemp, Warning, TEXT("New Timer Push"));
 	}
 		break;
+	case(int)COMP_OP::OP_STARTGAME:
+	{
+		PStartGame* PSG = new PStartGame();
+		Gamemode->PushQueue(EFunction::ESTARTGAME, PSG);
+	}
+		break;
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"));
 		break;
@@ -148,6 +154,9 @@ bool NetworkManager::StartListen()
 
 void NetworkManager::StopListen()
 {
+	if (not bIsConnected)
+		return;
+
 	Stop();
 	Thread->WaitForCompletion();
 	Thread->Kill();

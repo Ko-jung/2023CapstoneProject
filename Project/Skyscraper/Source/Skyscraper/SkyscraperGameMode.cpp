@@ -2,7 +2,10 @@
 
 #include "SkyscraperGameMode.h"
 #include "MainGame/Actor/Character/SkyscraperCharacter.h"
+
 #include "NetworkManager.h"
+#include "SocketGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "UObject/ConstructorHelpers.h"
 
@@ -50,6 +53,14 @@ void ASkyscraperGameMode::ProcessFunc()
 			memcpy(&PST, argu, sizeof(PST));
 			SelectTimer = PST.SecondsUntilActivation;
 			UE_LOG(LogTemp, Warning, TEXT("New Timer Set! Time is %d Sec"), SelectTimer);
+		}
+			break;
+		case ESTARTGAME:
+		{
+			USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
+			instance->SetSelectInfo(PlayerSelectInfo);
+			instance->SetSocket(m_Socket);
+			UGameplayStatics::OpenLevel(this, FName("MainGameLevel"));
 		}
 			break;
 		default:

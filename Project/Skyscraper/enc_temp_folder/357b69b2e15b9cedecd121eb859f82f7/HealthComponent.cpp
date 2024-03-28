@@ -109,7 +109,7 @@ void UHealthComponent::SetPlayerDie()
 	}else
 	{
 		// == For enemy(no player)
-		//OwnerCharacter->Destroy();
+		OwnerCharacter->Destroy();
 	}
 }
 

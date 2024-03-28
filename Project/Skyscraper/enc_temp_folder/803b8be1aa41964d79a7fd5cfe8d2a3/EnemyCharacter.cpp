@@ -4,7 +4,6 @@
 #include "EnemyCharacter.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/RifleComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/MainRangeComponent.h"
-#include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -23,7 +22,6 @@ void AEnemyCharacter::BeginPlay()
 
 void AEnemyCharacter::FirePer1Sec()
 {
-	if (HealthComponent && HealthComponent->GetHealthPercent() <= 0.0f) return;
 	if(RangeComponent)
 	{
 		if (RangeComponent->CanFire())
@@ -36,6 +34,9 @@ void AEnemyCharacter::FirePer1Sec()
 			RangeComponent->PlayReloadAnim();
 			GetWorld()->GetTimerManager().SetTimer(EnemyFireTimerHandle, this, &ThisClass::FirePer1Sec, 1.0f, false, 3.0f);
 		}
+	}else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("진짜 모르겠다.."));
 	}
 	
 }

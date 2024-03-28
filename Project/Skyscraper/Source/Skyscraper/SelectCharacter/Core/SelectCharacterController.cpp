@@ -12,11 +12,8 @@ ASelectCharacterController::ASelectCharacterController()
 {
     { // ���� ���� �ҷ�����
         static ConstructorHelpers::FClassFinder<USelectCharacter> SelectCharacterWidgetAsset(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/SelectCharacter/WidgetUI/WBP_SelectCharacter.WBP_SelectCharacter_C'"));
-        UE_LOG(LogTemp, Warning, TEXT("why00"));
         if(SelectCharacterWidgetAsset.Succeeded())
         {
-
-            UE_LOG(LogTemp, Warning, TEXT("why01"));
             CharacterSelectionWidgetClass = SelectCharacterWidgetAsset.Class;
         }
 
@@ -24,7 +21,6 @@ ASelectCharacterController::ASelectCharacterController()
         static ConstructorHelpers::FClassFinder<USelectDetail> SelectDetailWidgetAsset(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/SelectCharacter/WidgetUI/WBP_SelectDetail.WBP_SelectDetail_C'"));
         if (SelectDetailWidgetAsset.Succeeded())
         {
-            UE_LOG(LogTemp, Warning, TEXT("why02"));
             SelectDetailWidgetClass = SelectDetailWidgetAsset.Class;
         }
     }

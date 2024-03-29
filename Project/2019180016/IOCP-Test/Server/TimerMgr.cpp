@@ -30,14 +30,14 @@ void TimerMgr::Pop()
 	auto now = std::chrono::system_clock::now();
 	while (m_TimerQueue->try_pop(Event))
 	{
-		// �ߵ� �ð��� �Ѱ����
+		// Do Bind Func
 		if (Event.GetActiveTime() <= std::chrono::system_clock::now())
 		{
 			Event.DoFuction(0, 0, nullptr);
 		}
 		else
 		{
-			// �� �Ѱ�ٸ� �ٽ� ť�� ���
+			// Re Push
 			m_TimerQueue->push(Event);
 			std::this_thread::yield();
 			return;

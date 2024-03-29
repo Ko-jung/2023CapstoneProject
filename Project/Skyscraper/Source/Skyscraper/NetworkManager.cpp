@@ -112,7 +112,7 @@ void NetworkManager::ProcessRecv(int packetType)
 		memcpy(PST, m_sRecvBuffer, sizeof(*PST));
 
 		Gamemode->PushQueue(EFunction::ESETTIMER, PST);
-		UE_LOG(LogTemp, Warning, TEXT("New Timer Push"));
+		UE_LOG(LogTemp, Warning, TEXT("New Timer Push, Time is %f s"), PST->SecondsUntilActivation);
 	}
 		break;
 	case(int)COMP_OP::OP_STARTGAME:

@@ -20,13 +20,16 @@ public:
 	virtual void Init();
 	
 public:
-	void SetSelectInfo(TArray<PPlayerSelectInfo*> s) { SelectInfo = s; }
+	void SetSelectInfo(TArray<PPlayerSelectInfo*> s);
 	void SetSocket(NetworkManager* s) { Socket = s; }
+	void SetIsConnect(bool b) { bIsConnected = b; }
 
 	TArray<PPlayerSelectInfo*> GetSelectInfo() { return SelectInfo; }
 	NetworkManager* GetSocket() { return Socket; }
+	bool GetIsConnect() { return bIsConnected; }
 
 private:
 	TArray<PPlayerSelectInfo*>	SelectInfo;
 	NetworkManager*				Socket;
+	bool						bIsConnected;
 };

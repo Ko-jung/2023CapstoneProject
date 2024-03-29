@@ -6,20 +6,26 @@
 
 void ANetworkGameMode::BeginPlay()
 {
+	if (bIsConnected)
+	{
+		UE_LOG(LogClass, Warning, TEXT("Server already CONEECT!"));
+		return;
+	}
+
 	// Call Blueprint BeginPlay
 	Super::BeginPlay();
 
 	m_Socket = NetworkManager::Instance();
 	m_Socket->InitSocket();
 
-	m_bIsConnected = m_Socket->Connect("127.0.0.1", 9000);
-	if (m_bIsConnected)
+	bIsConnected = m_Socket->Connect("127.0.0.1", 9000);
+	if (bIsConnected)
 	{
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
 		m_SerialNum = m_Socket->GetSerialNum();
 
-		UE_LOG(LogClass, Warning, TEXT("IOCP Server connect success!"));
+		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 	}
 	else
 	{
@@ -50,7 +56,7 @@ void ANetworkGameMode::PushQueue(EFunction e, Packet* etc)
 
 void ANetworkGameMode::Send(const Packet* p, const int pSize)
 {
-	if(m_bIsConnected)
+	if(bIsConnected)
 		m_Socket->Send(p, pSize);
 }
 

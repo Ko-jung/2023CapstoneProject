@@ -53,6 +53,6 @@ protected:
 	concurrency::concurrent_queue<std::pair<EFunction, Packet*>> FuncQueue;
 	class NetworkManager* m_Socket;
 
-	bool m_bIsConnected;
+	bool bIsConnected;
 	int m_SerialNum;
 };

@@ -51,6 +51,10 @@ void ASkyscraperGameMode::ProcessFunc()
 		{
 			PSetTimer PST;
 			memcpy(&PST, argu, sizeof(PST));
+
+			PSetTimer* PST2 = static_cast<PSetTimer*>(argu);
+			memcpy(PST2, argu, sizeof(*PST2));
+
 			SelectTimer = PST.SecondsUntilActivation;
 			UE_LOG(LogTemp, Warning, TEXT("New Timer Set! Time is %d Sec"), SelectTimer);
 		}
@@ -60,6 +64,7 @@ void ASkyscraperGameMode::ProcessFunc()
 			USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 			instance->SetSelectInfo(PlayerSelectInfo);
 			instance->SetSocket(m_Socket);
+			instance->SetIsConnect(bIsConnected);
 			UGameplayStatics::OpenLevel(this, FName("MainGameLevel"));
 		}
 			break;

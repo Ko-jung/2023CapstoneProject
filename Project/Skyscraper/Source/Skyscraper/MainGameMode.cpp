@@ -9,11 +9,12 @@
 
 void AMainGameMode::BeginPlay()
 {
-	Super::BeginPlay();
-
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo = instance->GetSelectInfo();
 	m_Socket = instance->GetSocket();
+	bIsConnected = instance->GetIsConnect();
+
+	Super::BeginPlay();
 
 	// Spawn Characters
 	FActorSpawnParameters spawnParams;
@@ -26,27 +27,27 @@ void AMainGameMode::BeginPlay()
 		switch (p->PickedCharacter)
 		{
 
-			case ECharacter::Assassin:
-				Characters[i] = GetWorld()->SpawnActor<ASkyscraperCharacter>(AssassinCharacter, spawnLocation, rotator, spawnParams);
-				break;
-			case ECharacter::Boomerang:
-				Characters[i] = GetWorld()->SpawnActor<ASkyscraperCharacter>(BoomerangCharacter, spawnLocation, rotator, spawnParams);
-				break;
-			case ECharacter::Detector:
-				Characters[i] = GetWorld()->SpawnActor<ASkyscraperCharacter>(DetectionCharacter, spawnLocation, rotator, spawnParams);
-				break;
-			case ECharacter::Elect:
-				Characters[i] = GetWorld()->SpawnActor<ASkyscraperCharacter>(ElectricCharacter, spawnLocation, rotator, spawnParams);
-				break;
-			case ECharacter::Shield:
-				Characters[i] = GetWorld()->SpawnActor<ASkyscraperCharacter>(ShieldCharacter, spawnLocation, rotator, spawnParams);
-				break;
-			case ECharacter::Wind:
-				Characters[i] = GetWorld()->SpawnActor<ASkyscraperCharacter>(WindCharacter, spawnLocation, rotator, spawnParams);
-				break;
-			case ECharacter::NullCharacter:
-				UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), i);
-				break;
+		case ECharacter::Assassin:
+			Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(AssassinCharacter, spawnLocation, rotator, spawnParams));
+			break;
+		case ECharacter::Boomerang:
+			Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(BoomerangCharacter, spawnLocation, rotator, spawnParams));
+			break;
+		case ECharacter::Detector:
+			Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(DetectionCharacter, spawnLocation, rotator, spawnParams));
+			break;
+		case ECharacter::Elect:
+			Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(ElectricCharacter, spawnLocation, rotator, spawnParams));
+			break;
+		case ECharacter::Shield:
+			Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(ShieldCharacter, spawnLocation, rotator, spawnParams));
+			break;
+		case ECharacter::Wind:
+			Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(WindCharacter, spawnLocation, rotator, spawnParams));
+			break;
+		case ECharacter::NullCharacter:
+			UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), i);
+			break;
 		default:
 			break;
 		}

@@ -95,5 +95,12 @@ public:
 
 	// == Get Anim Montage
 	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
+
+	void SyncTransformAndAnim(FTransform t, float s);
+
+	void SetSpeed(float s) { Speed = s; }
+	int  GetSpeed() { return Speed; }
+protected:
+	float Speed;
 };
 

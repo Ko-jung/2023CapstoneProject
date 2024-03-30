@@ -78,8 +78,15 @@ void NetworkManager::Disconnect()
 
 void NetworkManager::ProcessRecv(int packetType)
 {
+	if (not IsValid(Gamemode))
+	{
+		return;
+	}
+
+
 	switch (packetType)
 	{
+	// Select Game Mode
 	case(int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
 		PPlayerSelectInfo* PPP = new PPlayerSelectInfo();
@@ -121,6 +128,15 @@ void NetworkManager::ProcessRecv(int packetType)
 		Gamemode->PushQueue(EFunction::ESTARTGAME, PSG);
 	}
 		break;
+
+	// Main Game Mode
+	case (int)COMP_OP::OP_PLAYERPOSITION:
+	{
+		PPlayerPosition* PlayerPosition = new PPlayerPosition();
+		memcpy(PlayerPosition, m_sRecvBuffer, sizeof(PPlayerPosition));
+		Gamemode->PushQueue(EFunction::EPLAYERTRANSFORM, PlayerPosition);
+	}
+	break;
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"));
 		break;

@@ -19,6 +19,10 @@ public:
 	virtual void Tick(float) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	virtual void ProcessFunc() override;
+	void SetPlayerPosition(PPlayerPosition PlayerPosition);
+	void SendPlayerLocation();
+
 	//UFUNCTION(BlueprintNativeEvent)
 	//void SpawnCharactersUsingSelectInfo(TSubclassOf<class ASkyscraperCharacter> Class, FVector location);
 

@@ -36,8 +36,6 @@ void ANetworkGameMode::BeginPlay()
 void ANetworkGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
-
-	ProcessFunc();
 }
 
 void ANetworkGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)

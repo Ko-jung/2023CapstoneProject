@@ -192,6 +192,12 @@ UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharac
 	return *CharacterAnimMontages.Find(eCharacterAnimMontage);
 }
 
+void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s)
+{
+	SetActorTransform(t);
+	SetSpeed(s);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

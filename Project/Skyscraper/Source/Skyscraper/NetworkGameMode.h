@@ -47,12 +47,12 @@ public:
 // Network Function
 public:
 	void SetOwnSerialNum(int serial);
-	int GetSerialNum() { return m_SerialNum; }
+	int GetSerialNum() { return SerialNum; }
 
 protected:
 	concurrency::concurrent_queue<std::pair<EFunction, Packet*>> FuncQueue;
 	class NetworkManager* m_Socket;
 
 	bool bIsConnected;
-	int m_SerialNum;
+	int SerialNum;
 };

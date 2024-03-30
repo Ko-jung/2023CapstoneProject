@@ -14,6 +14,7 @@ void USocketGameInstance::Init()
 	//		SelectInfo.Add(new PPlayerSelectInfo());
 	//	}
 	//}
+	SerialNum = 0;
 	if (SelectInfo.IsEmpty())
 	{
 		PPlayerSelectInfo* PPS1 = new PPlayerSelectInfo{ ECharacter::Assassin, EMeleeWeapon::Dagger, ERangeWeapon::AssaultRifle, 0 };

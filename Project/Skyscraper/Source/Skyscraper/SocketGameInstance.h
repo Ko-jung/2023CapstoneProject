@@ -23,13 +23,16 @@ public:
 	void SetSelectInfo(TArray<PPlayerSelectInfo*> s);
 	void SetSocket(NetworkManager* s) { Socket = s; }
 	void SetIsConnect(bool b) { bIsConnected = b; }
+	void SetSerialNum(int num) { SerialNum = num; }
 
 	TArray<PPlayerSelectInfo*> GetSelectInfo() { return SelectInfo; }
 	NetworkManager* GetSocket() { return Socket; }
 	bool GetIsConnect() { return bIsConnected; }
+	int GetSerialNum() { return SerialNum; }
 
 private:
 	TArray<PPlayerSelectInfo*>	SelectInfo;
 	NetworkManager*				Socket;
 	bool						bIsConnected;
+	int							SerialNum;
 };

@@ -19,6 +19,9 @@ public:
 	virtual void Tick(float) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	//UFUNCTION(BlueprintNativeEvent)
+	//void SpawnCharactersUsingSelectInfo(TSubclassOf<class ASkyscraperCharacter> Class, FVector location);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
 	TSubclassOf<class ASkyscraperCharacter> AssassinCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")

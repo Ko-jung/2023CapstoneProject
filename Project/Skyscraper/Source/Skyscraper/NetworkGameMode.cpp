@@ -23,7 +23,7 @@ void ANetworkGameMode::BeginPlay()
 	{
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
-		m_SerialNum = m_Socket->GetSerialNum();
+		SerialNum = m_Socket->GetSerialNum();
 
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 	}
@@ -62,5 +62,5 @@ void ANetworkGameMode::Send(const Packet* p, const int pSize)
 
 void ANetworkGameMode::SetOwnSerialNum(int serial)
 {
-	m_SerialNum = serial;
+	SerialNum = serial;
 }

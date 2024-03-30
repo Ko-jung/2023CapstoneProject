@@ -65,6 +65,7 @@ void ASkyscraperGameMode::ProcessFunc()
 			instance->SetSelectInfo(PlayerSelectInfo);
 			instance->SetSocket(m_Socket);
 			instance->SetIsConnect(bIsConnected);
+			instance->SetSerialNum(SerialNum);
 			UGameplayStatics::OpenLevel(this, FName("MainGameLevel"));
 		}
 			break;
@@ -122,28 +123,28 @@ void ASkyscraperGameMode::SendSelectInfo()
 {
 	PPlayerSelectInfo PPS;
 
-	PPS.ClientNum = m_SerialNum;
-	PPS.PickedCharacter = PlayerSelectInfo[m_SerialNum]->PickedCharacter;
-	PPS.PickedMeleeWeapon = PlayerSelectInfo[m_SerialNum]->PickedMeleeWeapon;
-	PPS.PickedRangeWeapon = PlayerSelectInfo[m_SerialNum]->PickedRangeWeapon;
+	PPS.ClientNum = SerialNum;
+	PPS.PickedCharacter = PlayerSelectInfo[SerialNum]->PickedCharacter;
+	PPS.PickedMeleeWeapon = PlayerSelectInfo[SerialNum]->PickedMeleeWeapon;
+	PPS.PickedRangeWeapon = PlayerSelectInfo[SerialNum]->PickedRangeWeapon;
 
 	Send(&PPS, sizeof(PPS));
 }
 
 void ASkyscraperGameMode::UpdateSelectInfo(ECharacter Character)
 {
-	PlayerSelectInfo[m_SerialNum]->PickedCharacter = Character;
+	PlayerSelectInfo[SerialNum]->PickedCharacter = Character;
 	SendSelectInfo();
 }
 
 void ASkyscraperGameMode::UpdateSelectInfo(EMeleeWeapon MeleeWeapon)
 {
-	PlayerSelectInfo[m_SerialNum]->PickedMeleeWeapon = MeleeWeapon;
+	PlayerSelectInfo[SerialNum]->PickedMeleeWeapon = MeleeWeapon;
 	SendSelectInfo();
 }
 
 void ASkyscraperGameMode::UpdateSelectInfo(ERangeWeapon RangeWeapon)
 {
-	PlayerSelectInfo[m_SerialNum]->PickedRangeWeapon = RangeWeapon;
+	PlayerSelectInfo[SerialNum]->PickedRangeWeapon = RangeWeapon;
 	SendSelectInfo();
 }

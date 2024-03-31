@@ -40,11 +40,24 @@ void ANetworkGameMode::Tick(float Deltatime)
 
 void ANetworkGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	m_Socket->Disconnect();
-	m_Socket->Stop();
-	m_Socket->StopListen();
-
-	FuncQueue.clear();
+	//m_Socket->Disconnect();
+	//m_Socket->Stop();
+	switch (EndPlayReason)
+	{
+	case EEndPlayReason::Type::LevelTransition:
+		UE_LOG(LogTemp, Warning, TEXT("Level Transition"));
+		break;
+	case EEndPlayReason::Type::Destroyed:
+	case EEndPlayReason::Type::EndPlayInEditor:
+	case EEndPlayReason::Type::RemovedFromWorld:
+	case EEndPlayReason::Type::Quit:
+		UE_LOG(LogTemp, Warning, TEXT("Level non Transition"));
+		m_Socket->StopListen();
+		FuncQueue.clear();
+		break;
+	default:
+		break;
+	}
 }
 
 void ANetworkGameMode::PushQueue(EFunction e, Packet* etc)
@@ -54,7 +67,7 @@ void ANetworkGameMode::PushQueue(EFunction e, Packet* etc)
 
 void ANetworkGameMode::Send(const Packet* p, const int pSize)
 {
-	if(bIsConnected)
+	if (bIsConnected)
 		m_Socket->Send(p, pSize);
 }
 

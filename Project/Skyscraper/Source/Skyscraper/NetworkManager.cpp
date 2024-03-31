@@ -157,9 +157,10 @@ bool NetworkManager::StartListen()
 {
 	if (Thread != nullptr)
 	{
-		Thread->Kill();
-		delete Thread;
-		Thread = nullptr;
+		// Thread->Kill();
+		// delete Thread;
+		// Thread = nullptr;
+		return true;
 	}
 
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
@@ -171,10 +172,14 @@ bool NetworkManager::StartListen()
 void NetworkManager::StopListen()
 {
 	if (not bIsConnected)
+	{
 		return;
+	}
+
+	bIsConnected = false;
 
 	Stop();
-	Thread->WaitForCompletion();
+	//Thread->WaitForCompletion();
 	Thread->Kill();
 	delete Thread;
 	Thread = nullptr;

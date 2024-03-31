@@ -64,6 +64,27 @@ struct PPlayerPosition : Packet, PTransform
 };
 #pragma pack(pop)
 
+struct PDamagedPlayer : Packet
+{
+	int ChangedPlayerSerial;
+	bool IsMelee;
+	char WeaponEnum;
+
+	PDamagedPlayer() : Packet(COMP_OP::OP_DAMAGEDPLAYER), ChangedPlayerSerial(-1), IsMelee(true), WeaponEnum(-1){ }
+	PDamagedPlayer(int serial, bool isMelee, char weaponEnum) : Packet(COMP_OP::OP_CHANGEDPLAYERHP),
+		ChangedPlayerSerial(serial), IsMelee(isMelee), WeaponEnum(weaponEnum) { }
+};
+
+struct PChangedPlayerHP : Packet
+{
+	int ChangedPlayerSerial;
+	float AfterHP;
+
+	PChangedPlayerHP() : Packet(COMP_OP::OP_DAMAGEDPLAYER), ChangedPlayerSerial(-1), AfterHP(-1.f) {}
+	PChangedPlayerHP(int changedPlayerSerial, float afterHP) : Packet(COMP_OP::OP_DAMAGEDPLAYER),
+		ChangedPlayerSerial(changedPlayerSerial), AfterHP(afterHP) {}
+};
+
 #pragma pack(push, 1)
 struct PSpawnObject : Packet, PTransform
 {

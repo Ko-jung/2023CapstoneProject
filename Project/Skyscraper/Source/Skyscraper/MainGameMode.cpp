@@ -96,6 +96,13 @@ void AMainGameMode::ProcessFunc()
 			SetPlayerPosition(*PPP);
 			break;
 		}
+		case ECHANGEDPLAYERHP:
+		{
+			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(argu);
+
+			// Set Player HP
+			break;
+		}
 		default:
 			break;
 		}

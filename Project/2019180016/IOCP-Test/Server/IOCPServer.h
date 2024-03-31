@@ -28,6 +28,8 @@ public:
 	bool ReadyToNextAccept();
 	void AccpetLobbyServer();
 
+	int GetWeaponDamage(bool isMelee, int weaponEnum);
+
 public:
 	void Accept(int id, int bytes, EXP_OVER* exp);
 	void Send(int id, int bytes, EXP_OVER* exp);

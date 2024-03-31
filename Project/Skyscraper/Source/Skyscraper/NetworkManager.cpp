@@ -137,6 +137,13 @@ void NetworkManager::ProcessRecv(int packetType)
 		Gamemode->PushQueue(EFunction::EPLAYERTRANSFORM, PlayerPosition);
 	}
 	break;
+	case (int)COMP_OP::OP_CHANGEDPLAYERHP:
+	{
+		PChangedPlayerHP* PCPHP = new PChangedPlayerHP();
+		memcpy(PCPHP, m_sRecvBuffer, sizeof(*PCPHP));
+		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERHP, PCPHP);
+	}
+		break;
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"));
 		break;

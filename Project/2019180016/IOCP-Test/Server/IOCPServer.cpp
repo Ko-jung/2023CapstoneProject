@@ -18,7 +18,7 @@ IOCPServer::IOCPServer()
 	m_IocpFunctionMap.insert({ COMP_OP::OP_ACCEPT,	[this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
 	m_IocpFunctionMap.insert({ COMP_OP::OP_SEND,	[this](int id, int bytes, EXP_OVER* exp) {Send(id, bytes, exp); } });
 	m_IocpFunctionMap.insert({ COMP_OP::OP_RECV,	[this](int id, int bytes, EXP_OVER* exp) {Recv(id, bytes, exp); } });
-		
+
 	//m_IocpFunctionMap.insert({ COMP_OP::OP_POSITION,[this](int id, int bytes, EXP_OVER* exp) {RecvNewPosition(id, bytes, exp); } });
 
 	m_iClientId = 0;
@@ -42,7 +42,7 @@ bool IOCPServer::Init(const int WorkerNum)
 
 	m_ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (INVALID_SOCKET == m_ListenSocket)
-	{		
+	{
 		LogUtil::error_display(WSAGetLastError());
 		return false;
 	}
@@ -56,7 +56,7 @@ bool IOCPServer::Init(const int WorkerNum)
 		c = new ClientInfo();
 	}
 
-    return true;
+	return true;
 }
 
 bool IOCPServer::BindListen(const int PortNum)
@@ -90,17 +90,17 @@ bool IOCPServer::BindListen(const int PortNum)
 	//=====================================================
 	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	char	accept_buf[sizeof(SOCKADDR_IN) * 2 + 32 + 100];
-	
+
 	*(reinterpret_cast<SOCKET*>(&m_AcceptExpOver._net_buf)) = c_socket;
 	ZeroMemory(&m_AcceptExpOver._wsa_over, sizeof(m_AcceptExpOver._wsa_over));
 	m_AcceptExpOver._comp_op = COMP_OP::OP_ACCEPT;
-	
+
 	AcceptEx(m_ListenSocket, c_socket, accept_buf, 0, sizeof(SOCKADDR_IN) + 16,
 		sizeof(SOCKADDR_IN) + 16, NULL, &m_AcceptExpOver._wsa_over);
 	std::cout << "Aceept Called\n";
 	//========================�̰Ź���?======================
 
-    return true;
+	return true;
 }
 
 void IOCPServer::StartServer()
@@ -236,6 +236,38 @@ void IOCPServer::AccpetLobbyServer()
 	m_LobbyServerSocket->Recv();
 }
 
+int IOCPServer::GetWeaponDamage(bool isMelee, int weaponEnum)
+{
+	if (isMelee)
+	{
+		switch (weaponEnum)
+		{
+		case (int)EMeleeWeapon::Dagger:
+			return 120;
+		case (int)EMeleeWeapon::Greatsword:
+			return 200;
+		case (int)EMeleeWeapon::Katana:
+			return 150;
+		default:
+			return 0;
+		}
+	}
+	else
+	{
+		switch (weaponEnum)
+		{
+		case (int)ERangeWeapon::AssaultRifle:
+			return 100;
+		case (int)ERangeWeapon::GrenadeLauncher:
+			return 300;
+		case (int)ERangeWeapon::SubmachineGun:
+			return 50;
+		default:
+			return 0;
+		}
+	}
+}
+
 void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 {
 	if (!IsLobbyServerConnect)
@@ -272,7 +304,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 			socket->SendProcess(sizeof(PPJ), &PPJ);
 
 			// Push Game Start Timer (Time to Select Weapon)
-			if (NowClientNum % MAXPLAYER == MAXPLAYER  - 1)
+			if (NowClientNum % MAXPLAYER == MAXPLAYER - 1)
 			{
 				// 너무 빨리 보내면 못 받는다
 				TimerEvent TE1(std::chrono::seconds(1),
@@ -330,14 +362,14 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		MEMCPYBUFTOPACKET(PPP);
 		ProcessPlayerPosition(PPP);
 	}
-		break;
+	break;
 	case (int)COMP_OP::OP_DISCONNECT:
 	{
 		PDisconnect disconnect(-1);
 		memcpy(&disconnect, exp->_wsa_buf.buf, sizeof(PDisconnect));
 		ProcessDisconnectPlayer(disconnect);
 	}
-		break;
+	break;
 	case (int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
 		PPlayerSelectInfo PPS;
@@ -348,7 +380,19 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		// Send To Other Player Pick State
 		SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
 	}
-		break;
+	break;
+	case (int)COMP_OP::OP_CHANGEDPLAYERHP:
+	{
+		PDamagedPlayer PDP;
+		MEMCPYBUFTOPACKET(PDP);
+		int TargetPlayerHp = PDP.ChangedPlayerSerial;
+		int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
+
+		PChangedPlayerHP PCPHP(TargetPlayerHp, m_Clients[TargetPlayerHp]->ChangeHp(Damage));
+		int SendPlayerRoomNum = id / 6;
+		SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
+	}
+	break;
 	default:
 		break;
 	}
@@ -367,7 +411,7 @@ void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)
 		PER.RoomNum = 0;// GetEmptyRoomNum();
 		m_LobbyServerSocket->SendProcess(sizeof(PEmptyRoomNum), &PER);
 	}
-		break;
+	break;
 	default:
 		break;
 	}

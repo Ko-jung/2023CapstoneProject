@@ -16,8 +16,12 @@ public:
 	void RecvProcess(const DWORD& bytes, EXP_OVER* exp);
 	
 	void SendProcess(int PacketSize, Packet* PacketData);
+	void Recv();
 
 public:
+	float ChangeHp(float damage) { return (HP -= damage); }
+
+
 	SOCKET& GetSocket()							{ return m_sClientSocket; }
 	int GetRemainDataLen()						{ return m_iRemainDataLen; }
 	const int GetClientNum()							{ return m_iClientNum; }
@@ -30,16 +34,10 @@ public:
 	void SetRoomNum(int num)				{ m_iRoomNum = num; }
 	//void SetPos(float x, float y, float z)	{ PosX = x; PosY = y; PosZ = z; }
 
-	void Recv();
-	void Send();
 private:
-
+	void Send();
 
 protected:
-	//float PosX;
-	//float PosY;
-	//float PosZ;
-
 	SOCKET m_sClientSocket;
 
 	int m_iRemainDataLen;
@@ -48,5 +46,8 @@ protected:
 	int m_iRoomNum;
 
 	EXP_OVER m_Exp;
+
+	// Gaming data, later separated
+	std::atomic<float> HP;
 };
 

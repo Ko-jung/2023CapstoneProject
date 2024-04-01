@@ -18,7 +18,7 @@ void ANetworkGameMode::BeginPlay()
 	m_Socket = NetworkManager::Instance();
 	m_Socket->InitSocket();
 
-	bIsConnected = m_Socket->Connect("127.0.0.1", 9000);
+	bIsConnected = m_Socket->Connect(SERVER_IP, GAME_SERVER_PORT);
 	if (bIsConnected)
 	{
 		m_Socket->StartListen();

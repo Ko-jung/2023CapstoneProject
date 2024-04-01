@@ -15,7 +15,7 @@
 
 #define	MAX_BUFFER		256
 #define SERVER_PORT		8000
-#define SERVER_IP		"127.0.0.1"
+#define SERVER_IP		"1.242.205.234"
 
 class ANetworkGameMode;
 

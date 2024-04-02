@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{71B2D520-4EB0-4638-3032-D989D890BC2A}",
+	"EngineAssociation": "{E802B930-451A-7AD4-E526-1E9139A1D54D}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -24,6 +24,18 @@
 		},
 		{
 			"Name": "MotionWarping",
+			"Enabled": true
+		},
+		{
+			"Name": "ChaosClothAsset",
+			"Enabled": true
+		},
+		{
+			"Name": "ChaosClothAssetEditor",
+			"Enabled": true
+		},
+		{
+			"Name": "ChaosClothGenerator",
 			"Enabled": true
 		}
 	]

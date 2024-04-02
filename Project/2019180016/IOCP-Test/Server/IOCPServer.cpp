@@ -376,6 +376,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		MEMCPYBUFTOPACKET(PPS);
 
 		int SendPlayerRoomNum = id / 6;
+		m_Clients[id]->SetECharacter(PPS.PickedCharacter);
 
 		// Send To Other Player Pick State
 		SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
@@ -476,6 +477,34 @@ void IOCPServer::ProcessDisconnectPlayer(PDisconnect p)
 {
 	m_Clients[p.DisconnectPlayerSerial]->Init();
 	m_iClientCount--;
+}
+
+bool IOCPServer::CheckSelectDuplication(int id, ECharacter c)
+{
+	int roomNum = id / MAXCLIENT;
+	int clientNum = id % MAXCLIENT;
+	if (clientNum < MAXCLIENT / 2)
+	{
+		for (int i = 0; i < MAXCLIENT / 2; i++)
+		{
+			if (m_Clients[roomNum * MAXCLIENT + i]->GetECharacter() == c)
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		for (int i = MAXCLIENT / 2; i < MAXCLIENT; i++)
+		{
+			if (m_Clients[roomNum * MAXCLIENT + i]->GetECharacter() == c)
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
 }
 
 //void IOCPServer::ProcessNewPlayers(PSendPlayerSockets p)

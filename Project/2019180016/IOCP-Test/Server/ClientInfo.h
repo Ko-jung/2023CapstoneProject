@@ -19,20 +19,22 @@ public:
 	void Recv();
 
 public:
-	float ChangeHp(float damage) { return (HP -= damage); }
+	float ChangeHp(float damage) { return (HP = HP - damage); }
 
 
 	SOCKET& GetSocket()							{ return m_sClientSocket; }
 	int GetRemainDataLen()						{ return m_iRemainDataLen; }
-	const int GetClientNum()							{ return m_iClientNum; }
+	const int GetClientNum()					{ return m_iClientNum; }
 	int GetRoomNum()							{ return m_iRoomNum; }
 	//void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
+	ECharacter GetECharacter()					{ return SelectInfo; }
 
 	void SetSocket(const SOCKET& s)			{ m_sClientSocket = s; }
 	void SetRemainDataLen(int len)			{ m_iRemainDataLen = len; }
 	void SetClientNum(int num)				{ m_iClientNum = num; }
 	void SetRoomNum(int num)				{ m_iRoomNum = num; }
 	//void SetPos(float x, float y, float z)	{ PosX = x; PosY = y; PosZ = z; }
+	void SetECharacter(ECharacter c)		{ SelectInfo = c; }
 
 private:
 	void Send();
@@ -49,5 +51,6 @@ protected:
 
 	// Gaming data, later separated
 	std::atomic<float> HP;
+	ECharacter SelectInfo;
 };
 

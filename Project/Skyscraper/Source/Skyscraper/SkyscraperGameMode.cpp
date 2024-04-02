@@ -66,7 +66,7 @@ void ASkyscraperGameMode::ProcessFunc()
 			instance->SetSocket(m_Socket);
 			instance->SetIsConnect(bIsConnected);
 			instance->SetSerialNum(SerialNum);
-			UGameplayStatics::OpenLevel(this, FName("MainGameLevel"));
+			UGameplayStatics::OpenLevel(this, FName("SocketMainGameLevel"));
 		}
 			break;
 		default:

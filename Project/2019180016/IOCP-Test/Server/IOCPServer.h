@@ -46,6 +46,7 @@ public:
 	void ProcessPlayerPosition(PPlayerPosition p);
 	void ProcessDisconnectPlayer(PDisconnect p);
 	//void ProcessNewPlayers(PSendPlayerSockets p);
+	bool CheckSelectDuplication(int id, ECharacter c);
 
 	void TestSend();
 	std::thread TempSendThread;

@@ -257,6 +257,10 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 		m_MatchingQueue.push(m_Clients[id]);
 		CheckingMatchingQueue();
 		break;
+	case (int)COMP_OP::OP_CANCLEMATCHING:
+		//m_MatchingQueue.push(m_Clients[id]);
+		//CheckingMatchingQueue();
+		break;
 	default:
 		break;
 	}

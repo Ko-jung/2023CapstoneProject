@@ -7,7 +7,8 @@
 NetworkManager::NetworkManager() : 
 	Gamemode(nullptr),
 	bIsConnected(false),
-	SerialNum(0)
+	SerialNum(0),
+	State(NetworkState::Lobby)
 {
 }
 
@@ -83,17 +84,53 @@ void NetworkManager::ProcessRecv(int packetType)
 		return;
 	}
 
+	switch (State)
+	{
+	case NetworkState::Lobby:
+		ProcessRecvFromLobby(packetType);
+		break;
+	case NetworkState::SelectGame:
+		ProcessRecvFromSelectGame(packetType);
+		break;
+	case NetworkState::MainGame:
+		ProcessRecvFromMainGame(packetType);
+		break;
+	default:
+		break;
+	}
+}
 
+void NetworkManager::ProcessRecvFromLobby(int packetType)
+{
 	switch (packetType)
 	{
+	case(int)COMP_OP::OP_CONNECTTOGAMESERVER:
+	{
+		PConnectToGameserver* PCTG= new PConnectToGameserver();
+		memcpy(PCTG, m_sRecvBuffer, sizeof(*PCTG));
+
+		Gamemode->PushQueue(EFunction::ECONNECTTOGAMESERVER, PCTG);
+		State = NetworkState::Lobby;
+	}
+	break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Recv FromLobby OP Error!"));
+		break;
+	}
+}
+
+void NetworkManager::ProcessRecvFromSelectGame(int packetType)
+{
 	// Select Game Mode
+	switch (packetType)
+	{
 	case(int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
 		PPlayerSelectInfo* PPP = new PPlayerSelectInfo();
 		memcpy(PPP, m_sRecvBuffer, sizeof(PPlayerSelectInfo));
 		Gamemode->PushQueue(EFunction::EPLAYERSELECTINFO, PPP);
 	}
-		break;
+	break;
 	case (int)COMP_OP::OP_PLAYERJOIN:
 	{
 		PPlayerJoin* PPJ = new PPlayerJoin();
@@ -121,15 +158,26 @@ void NetworkManager::ProcessRecv(int packetType)
 		Gamemode->PushQueue(EFunction::ESETTIMER, PST);
 		UE_LOG(LogTemp, Warning, TEXT("New Timer Push, Time is %f s"), PST->SecondsUntilActivation);
 	}
-		break;
+	break;
 	case(int)COMP_OP::OP_STARTGAME:
 	{
 		PStartGame* PSG = new PStartGame();
 		Gamemode->PushQueue(EFunction::ESTARTGAME, PSG);
-	}
-		break;
 
+		State = NetworkState::MainGame;
+	}
+	break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Recv SelectGame OP Error!"));
+		break;
+	}
+}
+
+void NetworkManager::ProcessRecvFromMainGame(int packetType)
+{
 	// Main Game Mode
+	switch (packetType)
+	{
 	case (int)COMP_OP::OP_PLAYERPOSITION:
 	{
 		PPlayerPosition* PlayerPosition = new PPlayerPosition();
@@ -143,9 +191,9 @@ void NetworkManager::ProcessRecv(int packetType)
 		memcpy(PCPHP, m_sRecvBuffer, sizeof(*PCPHP));
 		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERHP, PCPHP);
 	}
-		break;
+	break;
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Recv OP Error!"));
+		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;
 	}
 }

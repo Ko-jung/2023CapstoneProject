@@ -17,8 +17,15 @@ void ANetworkGameMode::BeginPlay()
 
 	m_Socket = NetworkManager::Instance();
 	m_Socket->InitSocket();
+	if (IsConnectToLobby)
+	{
+		bIsConnected = m_Socket->Connect(SERVER_IP, LOBBY_SERVER_PORT);
+	}
+	else
+	{
+		bIsConnected = m_Socket->Connect(SERVER_IP, GAME_SERVER_PORT);
+	}
 
-	bIsConnected = m_Socket->Connect(SERVER_IP, GAME_SERVER_PORT);
 	if (bIsConnected)
 	{
 		m_Socket->StartListen();

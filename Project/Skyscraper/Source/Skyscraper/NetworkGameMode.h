@@ -12,6 +12,7 @@
 
 enum EFunction
 {
+	ECONNECTTOGAMESERVER,
 	ESPAWNPLAYER,
 	EBPPOSSESS,
 	EPLAYERTRANSFORM,
@@ -56,4 +57,6 @@ protected:
 
 	bool bIsConnected;
 	int SerialNum;
+
+	bool IsConnectToLobby;
 };

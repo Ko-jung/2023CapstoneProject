@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "../NetworkGameMode.h"
 #include "LobbyMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SKYSCRAPER_API ALobbyMode : public AGameModeBase
+class SKYSCRAPER_API ALobbyMode : public ANetworkGameMode
 {
 	GENERATED_BODY()
 	
@@ -19,9 +19,11 @@ public:
 	virtual void Tick(float) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-private:
-	class NetworkManager* m_Socket;
+	virtual void ProcessFunc() override;
 
-	bool bIsConnected;
-	int SerialNum;
+	UFUNCTION(Exec)
+	void Ready();
+
+private:
+	bool IsReady;
 };

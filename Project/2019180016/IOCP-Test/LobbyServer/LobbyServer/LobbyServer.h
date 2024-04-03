@@ -2,6 +2,7 @@
 
 #include "../../Common/Define.h"
 #include <concurrent_priority_queue.h>
+#include <list>
 
 #define GAMESERVER 9998
 

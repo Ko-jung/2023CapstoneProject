@@ -20,6 +20,13 @@
 
 class ANetworkGameMode;
 
+enum class NetworkState
+{
+	Lobby,
+	SelectGame,
+	MainGame
+};
+
 /**
  * 
  */
@@ -36,6 +43,9 @@ public:
 	void Disconnect();
 
 	void ProcessRecv(int packetType);
+	void ProcessRecvFromLobby(int packetType);
+	void ProcessRecvFromSelectGame(int packetType);
+	void ProcessRecvFromMainGame(int packetType);
 	void Send(const Packet* packet, int packetsize);
 
 // FRunnable Function
@@ -71,6 +81,8 @@ private:
 
 	ANetworkGameMode* Gamemode;
 	bool bIsConnected;
+
+	NetworkState State;
 
 	/// <summary>
 	/// [0, 5]

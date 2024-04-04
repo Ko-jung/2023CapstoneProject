@@ -21,7 +21,7 @@ public:
 	void PlayFireAnim();
 
 	UFUNCTION(BlueprintCallable)
-	void Fire(float fBaseDamage);
+	virtual void Fire(float fBaseDamage);
 	UFUNCTION(BlueprintCallable)
 		void EnemyFire(float fBaseDamage);
 

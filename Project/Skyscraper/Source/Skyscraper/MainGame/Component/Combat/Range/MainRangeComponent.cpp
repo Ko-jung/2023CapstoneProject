@@ -81,7 +81,7 @@ void UMainRangeComponent::BeginPlay()
 
 			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 			{
-				EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Started, this, &ThisClass::PlayFireAnim);
+				EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &ThisClass::PlayFireAnim);
 				EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &ThisClass::PlayReloadAnim);
 			}
 		}

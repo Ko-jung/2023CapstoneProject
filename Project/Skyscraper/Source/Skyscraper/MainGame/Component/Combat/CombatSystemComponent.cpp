@@ -31,7 +31,7 @@ UCombatSystemComponent::UCombatSystemComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	MeleeSelect = EMeleeSelect::EMS_Dagger;
-	RangeSelect = ERangeSelect::ERS_Rifle;
+	RangeSelect = ERangeSelect::ERS_RPG;
 	OwnerCharacter = nullptr;
 	OwnerAnimInstance = nullptr;
 	MainWeaponComponent = nullptr;

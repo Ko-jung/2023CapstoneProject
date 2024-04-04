@@ -6,6 +6,7 @@
 #include "MainRangeComponent.h"
 #include "RPGComponent.generated.h"
 
+class ARPGBullet;
 /**
  * 
  */
@@ -13,7 +14,10 @@ UCLASS()
 class SKYSCRAPER_API URPGComponent : public UMainRangeComponent
 {
 	GENERATED_BODY()
-	
+
+	TSubclassOf<ARPGBullet> RPGBulletBPClass;
 public:
 	URPGComponent();
+
+	virtual void Fire(float fBaseDamage) override;
 };

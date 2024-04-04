@@ -3,8 +3,8 @@
 
 int main()
 {
-	std::locale::global(std::locale("Korean"));
-	std::wcout.imbue(std::locale("korean"));
+	setlocale(LC_ALL, "");
+	std::wcout.imbue(std::locale(""));
 
 	LobbyServer* server = new LobbyServer();
 

@@ -249,12 +249,13 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessRecvFromGame(id, bytes, exp);
 		return;
 	}
-	const int PacketType = *(int*)exp->_wsa_buf.buf;
+	const int PacketType = *(BYTE*)exp->_wsa_buf.buf;
 
 	switch (PacketType)
 	{
 	case (int)COMP_OP::OP_STARTMATCHING:
 		m_MatchingQueue.push(m_Clients[id]);
+		cout << id << "번 Ready" << endl;
 		CheckingMatchingQueue();
 		break;
 	case (int)COMP_OP::OP_CANCLEMATCHING:
@@ -287,7 +288,7 @@ void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
 		for (int i = 0; i < MAXPLAYER; )
 		{
-			if (m_MatchingQueue.try_pop(client))
+			while (m_MatchingQueue.try_pop(client))
 			{
 				client->SendProcess(sizeof(PConnectToGameserver), &SPS);
 

@@ -16,7 +16,27 @@ void ALobbyMode::BeginPlay()
 	IsConnectToLobby = true;
 	IsReady = false;
 
-	Super::BeginPlay();
+	m_Socket = new NetworkManager();
+	m_Socket->InitSocket();
+	bIsConnected = m_Socket->Connect(SERVER_IP, LOBBY_SERVER_PORT);
+
+	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), bIsConnected);
+
+	// Lobby Gamemode에선 Super를 호출하지 않는다
+
+	if (bIsConnected)
+	{
+		m_Socket->SetState(NetworkState::Lobby);
+		m_Socket->StartListen();
+		m_Socket->SetGamemode(this);
+		SerialNum = m_Socket->GetSerialNum();
+
+		UE_LOG(LogClass, Warning, TEXT("IOCP lobby Server connect success!"));
+	}
+	else
+	{
+		UE_LOG(LogClass, Warning, TEXT("IOCP lobby Server connect FAIL!"));
+	}
 }
 
 void ALobbyMode::Tick(float Deltatime)
@@ -28,22 +48,8 @@ void ALobbyMode::Tick(float Deltatime)
 
 void ALobbyMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	switch (EndPlayReason)
-	{
-	case EEndPlayReason::Type::LevelTransition:
-		UE_LOG(LogTemp, Warning, TEXT("Level Transition"));
-		//break;
-	case EEndPlayReason::Type::Destroyed:
-	case EEndPlayReason::Type::EndPlayInEditor:
-	case EEndPlayReason::Type::RemovedFromWorld:
-	case EEndPlayReason::Type::Quit:
-		UE_LOG(LogTemp, Warning, TEXT("Level non Transition"));
-		m_Socket->StopListen();
-		FuncQueue.clear();
-		break;
-	default:
-		break;
-	}
+	//m_Socket->StopListen();
+	//FuncQueue.clear();
 }
 
 void ALobbyMode::ProcessFunc()
@@ -64,7 +70,8 @@ void ALobbyMode::ProcessFunc()
 			//instance->SetIsConnect(bIsConnected);
 			//instance->SetSerialNum(SerialNum);
 
-			UGameplayStatics::OpenLevel(this, FName("SocketMainGameLevel"));
+			UE_LOG(LogClass, Warning, TEXT("Level Transate"));
+			UGameplayStatics::OpenLevel(this, FName("SelectCharacterLevel"));
 			break;
 		}
 		default:

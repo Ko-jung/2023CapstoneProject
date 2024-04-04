@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../NetworkGameMode.h"
+
 #include "LobbyMode.generated.h"
 
 /**
@@ -19,7 +20,7 @@ public:
 	virtual void Tick(float) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	virtual void ProcessFunc() override;
+	void ProcessFunc();
 
 	UFUNCTION(Exec)
 	void Ready();

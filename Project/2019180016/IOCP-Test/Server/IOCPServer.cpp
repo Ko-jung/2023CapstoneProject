@@ -403,7 +403,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)
 {
-	const int PacketType = *(int*)exp->_wsa_buf.buf;
+	const int PacketType = *(BYTE*)exp->_wsa_buf.buf;
 	switch (PacketType)
 	{
 	case(int)COMP_OP::OP_SS_EMPTYROOMNUM:

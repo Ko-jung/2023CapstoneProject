@@ -43,6 +43,7 @@ void TimerMgr::Pop()
 			return;
 		}
 	}
+	std::this_thread::yield();
 }
 
 void TimerMgr::Insert(TimerEvent TE)

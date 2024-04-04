@@ -6,14 +6,16 @@
 
 NetworkManager::NetworkManager() : 
 	Gamemode(nullptr),
+	Thread(nullptr),
 	bIsConnected(false),
 	SerialNum(0),
-	State(NetworkState::Lobby)
+	State(NetworkState::SelectGame)
 {
 }
 
 NetworkManager::~NetworkManager()
 {
+	closesocket(m_ServerSocket);
 }
 
 bool NetworkManager::InitSocket()
@@ -110,6 +112,7 @@ void NetworkManager::ProcessRecvFromLobby(int packetType)
 		memcpy(PCTG, m_sRecvBuffer, sizeof(*PCTG));
 
 		Gamemode->PushQueue(EFunction::ECONNECTTOGAMESERVER, PCTG);
+		StopListen();
 		State = NetworkState::Lobby;
 	}
 	break;
@@ -212,6 +215,7 @@ bool NetworkManager::StartListen()
 {
 	if (Thread != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Thread Is NOT NULL"));
 		// Thread->Kill();
 		// delete Thread;
 		// Thread = nullptr;
@@ -234,11 +238,6 @@ void NetworkManager::StopListen()
 	bIsConnected = false;
 
 	Stop();
-	//Thread->WaitForCompletion();
-	Thread->Kill();
-	delete Thread;
-	Thread = nullptr;
-	StopTaskCounter.Reset();
 }
 
 bool NetworkManager::Init()
@@ -254,6 +253,7 @@ uint32 NetworkManager::Run()
 	while (bStopSwich)
 	{
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer, MAX_BUFFER, 0);
+		UE_LOG(LogTemp, Warning, TEXT("Something RECV"));
 
 		if (nRecvLen == 0)
 		{
@@ -267,13 +267,19 @@ uint32 NetworkManager::Run()
 			break;
 		}
 
-
 		BYTE OP;
 		memcpy(&OP, m_sRecvBuffer, sizeof(BYTE));
 
 		ProcessRecv(OP);
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
+
+	//Thread->WaitForCompletion();
+	//Thread->Kill();
+	delete Thread;
+	Thread = nullptr;
+	StopTaskCounter.Reset();
+
 	return 0;
 }
 

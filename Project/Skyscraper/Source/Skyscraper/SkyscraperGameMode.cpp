@@ -79,7 +79,6 @@ void ASkyscraperGameMode::ProcessFunc()
 
 void ASkyscraperGameMode::BeginPlay()
 {
-	IsConnectToLobby = false;
 	Super::BeginPlay();
 }
 

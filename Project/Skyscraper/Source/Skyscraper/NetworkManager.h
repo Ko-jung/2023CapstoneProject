@@ -65,6 +65,7 @@ public:
 public:
 	void SetGamemode(ANetworkGameMode* gamemode) { Gamemode = gamemode; };
 	const int& GetSerialNum() { return SerialNum; }
+	void SetState(NetworkState s) { State = s; }
 
 public:
 	// Singleton

@@ -11,7 +11,7 @@
 #include <functional>
 #include <unordered_map>
 
-#include "../../../Packet/Packet.h"
+#include "../../../Common/Packet.h"
 #include "../Common/LogUtil.h"
 
 #pragma comment(lib, "MSWSock.lib")

@@ -3,8 +3,8 @@
 #include "SkyscraperGameMode.h"
 #include "MainGame/Actor/Character/SkyscraperCharacter.h"
 
-#include "NetworkManager.h"
-#include "SocketGameInstance.h"
+#include "Network/NetworkManager.h"
+#include "Network/SocketGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "UObject/ConstructorHelpers.h"

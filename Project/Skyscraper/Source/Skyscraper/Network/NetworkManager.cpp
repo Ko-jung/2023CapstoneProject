@@ -195,6 +195,13 @@ void NetworkManager::ProcessRecvFromMainGame(int packetType)
 		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERHP, PCPHP);
 	}
 	break;
+	case (int)COMP_OP::OP_CHANGEDPLAYERSTATE:
+	{
+		PChangedPlayerState* PCPS = new PChangedPlayerState();
+		memcpy(PCPS, m_sRecvBuffer, sizeof(*PCPS));
+		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERSTATE, PCPS);
+	}
+	break;
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;

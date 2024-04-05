@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+
+#include "../../Common/EnumDef.h"
+
 #include "HealthComponent.generated.h"
 
 class UProgressBar;
@@ -57,6 +60,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		float GetHealthPercent() const;
+
+
+	// Process Packet From Server
+	void ChangeCurrentHp(float hp);
+	void ChangeState(ECharacterState s);
 
 private:
 	void SetPlayerDie();

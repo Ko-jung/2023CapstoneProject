@@ -71,18 +71,30 @@ struct PDamagedPlayer : Packet
 	char WeaponEnum;
 
 	PDamagedPlayer() : Packet(COMP_OP::OP_DAMAGEDPLAYER), ChangedPlayerSerial(-1), IsMelee(true), WeaponEnum(-1){ }
-	PDamagedPlayer(int serial, bool isMelee, char weaponEnum) : Packet(COMP_OP::OP_CHANGEDPLAYERHP),
+	PDamagedPlayer(int serial, bool isMelee, char weaponEnum) : Packet(COMP_OP::OP_DAMAGEDPLAYER),
 		ChangedPlayerSerial(serial), IsMelee(isMelee), WeaponEnum(weaponEnum) { }
 };
 
+// Send If Character Damaged
 struct PChangedPlayerHP : Packet
 {
 	int ChangedPlayerSerial;
 	float AfterHP;
 
-	PChangedPlayerHP() : Packet(COMP_OP::OP_DAMAGEDPLAYER), ChangedPlayerSerial(-1), AfterHP(-1.f) {}
-	PChangedPlayerHP(int changedPlayerSerial, float afterHP) : Packet(COMP_OP::OP_DAMAGEDPLAYER),
+	PChangedPlayerHP() : Packet(COMP_OP::OP_CHANGEDPLAYERHP), ChangedPlayerSerial(-1), AfterHP(-1.f) {}
+	PChangedPlayerHP(int changedPlayerSerial, float afterHP) : Packet(COMP_OP::OP_CHANGEDPLAYERHP),
 		ChangedPlayerSerial(changedPlayerSerial), AfterHP(afterHP) {}
+};
+
+// Send If Character Dead or ReSpawn
+struct PChangedPlayerState : Packet
+{
+	int ChangedPlayerSerial;
+	ECharacterState State;
+
+	PChangedPlayerState() : Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(-1), State(ECharacterState::LIVING) {}
+	PChangedPlayerState(int serial, ECharacterState state) :
+		Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(serial), State(state) {}
 };
 
 #pragma pack(push, 1)

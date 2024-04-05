@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 
-#include "../../Packet/Packet.h"
+#include "../../Common/Packet.h"
 #include <concurrent_queue.h>
 
 #define MAXPLAYER 6
@@ -20,6 +20,7 @@ enum EFunction
 	ESETTIMER,
 	ESTARTGAME,
 	ECHANGEDPLAYERHP,
+	ECHANGEDPLAYERSTATE,
 
 	//ESERVERCLOSE,
 };

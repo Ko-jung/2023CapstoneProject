@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NetworkGameMode.h"
+#include "Network/NetworkGameMode.h"
 #include "SkyscraperGameMode.generated.h"
 
 UCLASS(minimalapi)

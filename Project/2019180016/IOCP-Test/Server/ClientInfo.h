@@ -19,7 +19,8 @@ public:
 	void Recv();
 
 public:
-	float ChangeHp(float damage) { return (HP = HP - damage); }
+	// Return True if Dead
+	bool TakeDamage(float damage);
 
 
 	SOCKET& GetSocket()							{ return m_sClientSocket; }
@@ -27,15 +28,18 @@ public:
 	const int GetClientNum()					{ return m_iClientNum; }
 	int GetRoomNum()							{ return m_iRoomNum; }
 	//void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
-	ECharacter GetECharacter()					{ return SelectInfo; }
 
 	void SetSocket(const SOCKET& s)			{ m_sClientSocket = s; }
 	void SetRemainDataLen(int len)			{ m_iRemainDataLen = len; }
 	void SetClientNum(int num)				{ m_iClientNum = num; }
 	void SetRoomNum(int num)				{ m_iRoomNum = num; }
 	//void SetPos(float x, float y, float z)	{ PosX = x; PosY = y; PosZ = z; }
-	void SetECharacter(ECharacter c)		{ SelectInfo = c; }
 
+	// Gaming data, later separated
+	ECharacter GetECharacter() { return SelectInfo; }
+	float GetCurrnetHp() { return CurrentHp; }
+
+	void SetECharacter(ECharacter c) { SelectInfo = c; }
 private:
 	void Send();
 
@@ -50,7 +54,8 @@ protected:
 	EXP_OVER m_Exp;
 
 	// Gaming data, later separated
-	std::atomic<float> HP;
+	float MaxHP;
+	std::atomic<float> CurrentHp;
 	ECharacter SelectInfo;
 };
 

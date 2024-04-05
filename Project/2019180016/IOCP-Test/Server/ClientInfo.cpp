@@ -9,7 +9,7 @@ ClientInfo::ClientInfo(int ClientNum):
 	m_iRemainDataLen(0),
 	m_iClientNum(ClientNum),
 	m_iRoomNum(-1),
-	HP(1000.f),
+	MaxHP(1000.f),
 	SelectInfo(ECharacter::NullCharacter)
 {
 	//m_sClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -55,6 +55,17 @@ void ClientInfo::Recv()
 	{
 		printf_s("[ERROR] WSARecv 에러, 코드 : %d", WSAGetLastError());
 	}
+}
+
+bool ClientInfo::TakeDamage(float damage)
+{
+	CurrentHp -= damage;
+	if (CurrentHp <= 0.0f)
+	{
+		CurrentHp = 0.f;
+		return true;
+	}
+	return false;
 }
 
 void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)

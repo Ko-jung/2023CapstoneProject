@@ -2,7 +2,7 @@
 
 
 #include "LobbyMode.h"
-#include "../NetworkManager.h"
+#include "NetworkManager.h"
 #include "Kismet/GameplayStatics.h"
 
 void ALobbyMode::BeginPlay()

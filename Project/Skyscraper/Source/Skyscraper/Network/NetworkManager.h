@@ -11,7 +11,7 @@
 #include <map>
 #include <queue>
 
-#include "../../Packet/Packet.h"
+#include "../../Common/Packet.h"
 
 #define	MAX_BUFFER				256
 #define GAME_SERVER_PORT		9000

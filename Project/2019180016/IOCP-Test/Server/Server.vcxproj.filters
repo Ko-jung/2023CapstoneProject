@@ -74,10 +74,10 @@
     <ClInclude Include="..\Common\Define.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Packet\EnumDef.h">
+    <ClInclude Include="..\..\..\Common\EnumDef.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Packet\Packet.h">
+    <ClInclude Include="..\..\..\Common\Packet.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

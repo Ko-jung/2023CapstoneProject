@@ -95,6 +95,29 @@ float UHealthComponent::GetHealthPercent() const
 	
 }
 
+void UHealthComponent::ChangeCurrentHp(float hp)
+{
+	CurrentHealth = hp;
+
+	HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+}
+
+void UHealthComponent::ChangeState(ECharacterState s)
+{
+	switch (s)
+	{
+	case ECharacterState::LIVING:
+		break;
+	case ECharacterState::DYING:
+		break;
+	case ECharacterState::DEAD:
+		SetPlayerDie();
+		break;
+	default:
+		break;
+	}
+}
+
 void UHealthComponent::SetPlayerDie()
 {
 	LivingState = EHealthState::EHS_DEAD;

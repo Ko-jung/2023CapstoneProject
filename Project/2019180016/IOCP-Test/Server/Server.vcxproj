@@ -142,8 +142,8 @@
     <ClCompile Include="TimerMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Packet\EnumDef.h" />
-    <ClInclude Include="..\..\..\Packet\Packet.h" />
+    <ClInclude Include="..\..\..\Common\EnumDef.h" />
+    <ClInclude Include="..\..\..\Common\Packet.h" />
     <ClInclude Include="..\Common\Define.h" />
     <ClInclude Include="..\Common\LogUtil.h" />
     <ClInclude Include="ClientInfo.h" />

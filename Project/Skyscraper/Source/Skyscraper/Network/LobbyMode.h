@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../NetworkGameMode.h"
+#include "NetworkGameMode.h"
 
 #include "LobbyMode.generated.h"
 

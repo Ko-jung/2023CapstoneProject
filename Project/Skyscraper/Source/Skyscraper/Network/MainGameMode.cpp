@@ -5,7 +5,8 @@
 
 #include "SocketGameInstance.h"
 
-#include "MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "../MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "../MainGame/Component/Health/HealthComponent.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -33,23 +34,18 @@ void AMainGameMode::BeginPlay()
 		{
 		case ECharacter::Assassin:
 			Class = AssassinCharacter;
-			//Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(AssassinCharacter, spawnLocation, rotator, spawnParams));
 			break;
 		case ECharacter::Boomerang:
 			Class = BoomerangCharacter;
-			//Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(BoomerangCharacter, spawnLocation, rotator, spawnParams));
 			break;
 		case ECharacter::Detector:
 			Class = DetectionCharacter;
-			//Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(DetectionCharacter, spawnLocation, rotator, spawnParams));
 			break;
 		case ECharacter::Elect:
 			Class = ElectricCharacter;
-			//Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(ElectricCharacter, spawnLocation, rotator, spawnParams));
 			break;
 		case ECharacter::Shield:
 			Class = ShieldCharacter;
-			//Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(ShieldCharacter, spawnLocation, rotator, spawnParams));
 			break;
 		case ECharacter::Wind:
 			Class = WindCharacter;
@@ -99,8 +95,15 @@ void AMainGameMode::ProcessFunc()
 		case ECHANGEDPLAYERHP:
 		{
 			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(argu);
+			
+			Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
+			break;
+		}
+		case ECHANGEDPLAYERSTATE:
+		{
+			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(argu);
 
-			// Set Player HP
+			Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
 			break;
 		}
 		default:

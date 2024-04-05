@@ -2,7 +2,7 @@
 
 
 #include "SocketGameInstance.h"
-#include "../../../Packet/Packet.h"
+#include "../../../../Common/Packet.h"
 
 
 void USocketGameInstance::Init()

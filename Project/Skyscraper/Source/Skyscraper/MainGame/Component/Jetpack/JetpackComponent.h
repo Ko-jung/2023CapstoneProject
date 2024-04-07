@@ -34,14 +34,16 @@ protected:
 	void ToGlidingSpeed();
 	void DashFast();
 	void DashStop();
-	void Dodge(const FInputActionValue& InputActionValue);
-
+	UFUNCTION()
+	void SlowdownDodge();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION()
 	void OnLandJetpack();
+
+	void Dodge(FVector2D InputValue);
 protected:
 	// == Owner 캐릭터 관련
 	UPROPERTY()
@@ -60,7 +62,14 @@ protected:
 		float DashGaugePerSec;
 	UPROPERTY(EditAnywhere)
 		float MaxDashSpeed;
+	UPROPERTY(EditAnywhere)
+		float DodgeReductionGauge;
+	UPROPERTY(EditAnywhere)
+		float DodgeSpeed;
+	UPROPERTY(EditAnywhere)
+		float DodgeSlowdownValue;
 	bool bHoverStoping;
+	FTimerHandle SlowdownDodgeTimerHandle;
 
 protected:
 	UFUNCTION()
@@ -78,6 +87,5 @@ private:
 		UInputAction* IA_Jetpack_Hover;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_Jetpack_DashFast;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		UInputAction* IA_Jetpack_Dodge;
+	
 };

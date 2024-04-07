@@ -91,6 +91,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_LookAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultLook.IA_GameDefaultLook'"));
 		LookAction = IA_LookAsset.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_DodgeRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Dodge.IA_Jetpack_Dodge'"));
+		IA_Jetpack_Dodge = IA_Jetpack_DodgeRef.Object;
 	}
 
 	{ // == Set components
@@ -220,6 +223,8 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Move);
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Look);
+		// (Jetpack) Dodge
+		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Dodge);
 	}
 	else
 	{
@@ -260,5 +265,14 @@ void ASkyscraperCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
+{
+	if(JetpackComponent)
+	{
+		FVector2D value = InputActionValue.Get<FVector2D>();
+		JetpackComponent->Dodge(value);
 	}
 }

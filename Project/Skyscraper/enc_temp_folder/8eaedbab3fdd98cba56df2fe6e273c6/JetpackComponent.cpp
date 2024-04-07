@@ -210,22 +210,20 @@ void UJetpackComponent::DashStop()
 void UJetpackComponent::Dodge(FVector2D InputValue)
 {
 	if (JetpackFuel < 0.1f) return;
-	UE_LOG(LogTemp, Warning, TEXT("%f,%f"), InputValue.X, InputValue.Y);
+
 	// 중력 없애기
 	GetOwnerCharacterMovement()->GravityScale = 0.0f;
 
 	// 액터 위치 살짝 올린 뒤 이동(바로 땅에 닿인상태에서 진행시 바로 내려오는 현상 수정)
 	OwnerCharacter->SetActorLocation(OwnerCharacter->GetActorLocation() + FVector(0.0f, 0.0f, 3.0f));
-	
+
 	// 캐릭터 발사
-	FVector	ForwardVector = OwnerCharacter->GetActorForwardVector();
-	FVector	RightVector = OwnerCharacter->GetActorRightVector();
+	FVector	ForwardVector = GetOwnerPlayerController()->GetControlRotation().Vector();
+	FVector	RightVector = ForwardVector.RightVector;
 	ForwardVector *= InputValue.X;
 	RightVector *= InputValue.Y;
 
-	FVector LaunchVelocity = (ForwardVector + RightVector);
-	LaunchVelocity.Normalize();
-	LaunchVelocity = LaunchVelocity* DodgeSpeed * FVector(1.0f, 1.0f, 0.0f);
+	FVector LaunchVelocity = (ForwardVector + RightVector).Normalize()* DodgeSpeed* FVector(1.0f, 1.0f, 0.0f);
 	OwnerCharacter->LaunchCharacter(LaunchVelocity,false,false);
 
 	// 연료 사용
@@ -244,11 +242,10 @@ void UJetpackComponent::SlowdownDodge()
 {
 	if(GetOwnerCharacterMovement()->Velocity.Length()<600.0f)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(SlowdownDodgeTimerHandle);
 		GetOwnerCharacterMovement()->GravityScale = 1.0f;
 	}else
 	{
 		GetOwnerCharacterMovement()->Velocity *= DodgeSlowdownValue;
-			GetWorld()->GetTimerManager().SetTimer(SlowdownDodgeTimerHandle, this, &ThisClass::SlowdownDodge, 0.1f, false, 0.1f);
+		GetWorld()->GetTimerManager().SetTimer(SlowdownDodgeTimerHandle, this, &ThisClass::SlowdownDodge, 0.1f, false, 0.1f);
 	}
 }

@@ -51,6 +51,9 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_Jetpack_Dodge;
+
 	UPROPERTY(VisibleAnywhere)
 	bool IsHover;
 
@@ -80,6 +83,7 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	void Dodge(const FInputActionValue& InputActionValue);
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	

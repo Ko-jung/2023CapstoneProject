@@ -10,6 +10,7 @@ ClientInfo::ClientInfo(int ClientNum):
 	m_iClientNum(ClientNum),
 	m_iRoomNum(-1),
 	MaxHP(1000.f),
+	CurrentHp(1000.f),
 	SelectInfo(ECharacter::NullCharacter)
 {
 	//m_sClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -33,6 +34,7 @@ void ClientInfo::Init()
 	m_iRemainDataLen = 0;
 	m_iClientNum = -1;
 	m_iRoomNum = -1;
+	CurrentHp = MaxHP;
 	ZeroMemory(&m_Exp, sizeof(m_Exp));
 }
 
@@ -59,7 +61,7 @@ void ClientInfo::Recv()
 
 bool ClientInfo::TakeDamage(float damage)
 {
-	CurrentHp -= damage;
+	CurrentHp = CurrentHp - damage;
 	if (CurrentHp <= 0.0f)
 	{
 		CurrentHp = 0.f;

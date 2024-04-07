@@ -26,6 +26,9 @@ public:
 	//UFUNCTION(BlueprintNativeEvent)
 	//void SpawnCharactersUsingSelectInfo(TSubclassOf<class ASkyscraperCharacter> Class, FVector location);
 
+	UFUNCTION(BlueprintCallable)
+	void Test_TakeDamage(int DamageType);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
 	TSubclassOf<class ASkyscraperCharacter> AssassinCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")

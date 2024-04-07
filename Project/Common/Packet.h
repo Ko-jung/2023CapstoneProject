@@ -66,12 +66,12 @@ struct PPlayerPosition : Packet, PTransform
 
 struct PDamagedPlayer : Packet
 {
-	int ChangedPlayerSerial;
+	BYTE ChangedPlayerSerial;
 	bool IsMelee;
 	char WeaponEnum;
 
 	PDamagedPlayer() : Packet(COMP_OP::OP_DAMAGEDPLAYER), ChangedPlayerSerial(-1), IsMelee(true), WeaponEnum(-1){ }
-	PDamagedPlayer(int serial, bool isMelee, char weaponEnum) : Packet(COMP_OP::OP_DAMAGEDPLAYER),
+	PDamagedPlayer(BYTE serial, bool isMelee, char weaponEnum) : Packet(COMP_OP::OP_DAMAGEDPLAYER),
 		ChangedPlayerSerial(serial), IsMelee(isMelee), WeaponEnum(weaponEnum) { }
 };
 

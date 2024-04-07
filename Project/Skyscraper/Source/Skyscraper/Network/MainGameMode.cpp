@@ -12,8 +12,8 @@ void AMainGameMode::BeginPlay()
 {
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo = instance->GetSelectInfo();
-	m_Socket = instance->GetSocket();
 	bIsConnected = instance->GetIsConnect();
+	m_Socket = instance->GetSocket();
 	SerialNum = instance->GetSerialNum();
 	m_Socket->SetGamemode(this);
 	m_Socket->StartListen();
@@ -66,9 +66,12 @@ void AMainGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 
-	SendPlayerLocation();
+	//if (bIsConnected)
+	//{
+	//}
+		SendPlayerLocation();
+		ProcessFunc();
 
-	ProcessFunc();
 }
 
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -95,7 +98,7 @@ void AMainGameMode::ProcessFunc()
 		case ECHANGEDPLAYERHP:
 		{
 			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(argu);
-			
+
 			Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
 			break;
 		}
@@ -150,4 +153,45 @@ void AMainGameMode::SendPlayerLocation()
 	PlayerPosition.PlayerSpeed = speed;
 
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
+}
+
+void AMainGameMode::Test_TakeDamage(int DamageType)
+{
+	PDamagedPlayer PDP;
+	PDP.ChangedPlayerSerial = SerialNum;
+	switch (DamageType)
+	{
+	case 0:
+		PDP.IsMelee = true;
+		PDP.WeaponEnum = 0;
+		break;
+	case 1:
+		PDP.IsMelee = true;
+		PDP.WeaponEnum = 1;
+		break;
+	case 2:
+		PDP.IsMelee = true;
+		PDP.WeaponEnum = 2;
+		break;
+	case 3:
+		PDP.IsMelee = false;
+		PDP.WeaponEnum = 0;
+		break;
+	case 4:
+		PDP.IsMelee = false;
+		PDP.WeaponEnum = 1;
+		break;
+	case 5:
+		PDP.IsMelee = false;
+		PDP.WeaponEnum = 2;
+		break;
+	case 6:
+	case 7:
+	default:
+		break;
+	}
+
+	UE_LOG(LogClass, Warning, TEXT("PDP.ChangedPlayerSerial Is %d!"), PDP.ChangedPlayerSerial);
+	UE_LOG(LogClass, Warning, TEXT("sizeof(PDamagedPlayer) Is %d!, sizeof(PDP) Is %d!"), sizeof(PDamagedPlayer), sizeof(PDP));
+	m_Socket->Send(&PDP, sizeof(PDamagedPlayer));
 }

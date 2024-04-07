@@ -382,21 +382,23 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
 	}
 	break;
-	case (int)COMP_OP::OP_CHANGEDPLAYERHP:
+	case (int)COMP_OP::OP_DAMAGEDPLAYER:
 	{
 		PDamagedPlayer PDP;
 		MEMCPYBUFTOPACKET(PDP);
-		int TargetPlayerHp = PDP.ChangedPlayerSerial;
+		BYTE TargetPlayerSerialNum = PDP.ChangedPlayerSerial;
 		int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
 
-		bool IsDead = m_Clients[TargetPlayerHp]->TakeDamage(Damage);
-		PChangedPlayerHP PCPHP(TargetPlayerHp, m_Clients[TargetPlayerHp]->GetCurrnetHp());
 		int SendPlayerRoomNum = id / 6;
+		int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
+
+		bool IsDead = m_Clients[TargetPlayerId]->TakeDamage(Damage);
+		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, m_Clients[TargetPlayerId]->GetCurrnetHp());
 		SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
 
 		if (IsDead)
 		{
-			PChangedPlayerState PCPS(TargetPlayerHp, ECharacterState::DEAD);
+			PChangedPlayerState PCPS(TargetPlayerSerialNum, ECharacterState::DEAD);
 			SendPacketToAllSocketsInRoom(id / 6, &PCPS, sizeof(PCPS));
 		}
 	}

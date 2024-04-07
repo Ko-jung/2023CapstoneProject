@@ -19,6 +19,7 @@
 #include "Skyscraper/MainGame/Component/Combat/Melee/MainMeleeComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/MainRangeComponent.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
+#include "Skyscraper/MainGame/Component/Jetpack/JetpackComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -29,7 +30,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
+	IsHover = false;
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -94,6 +97,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		CombatSystemComponent = CreateDefaultSubobject<UCombatSystemComponent>(TEXT("CombatSystemComponent"));
 		MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 		HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+		JetpackComponent = CreateDefaultSubobject<UJetpackComponent>(TEXT("JetpackComponent"));
 	}
 
 	{ // == Set Anim Montages
@@ -166,6 +170,13 @@ void ASkyscraperCharacter::BeginPlay()
 	}
 }
 
+void ASkyscraperCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	JetpackComponent->OnLandJetpack();
+}
+
 float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -205,14 +216,8 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Move);
-
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Look);
 	}

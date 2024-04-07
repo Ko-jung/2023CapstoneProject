@@ -8,6 +8,7 @@
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
 #include "SkyscraperCharacter.generated.h"
 
+class UJetpackComponent;
 class UHealthComponent;
 class UMainRangeComponent;
 class USpringArmComponent;
@@ -50,15 +51,22 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(VisibleAnywhere)
+	bool IsHover;
 
 public:
 	ASkyscraperCharacter();
+
+public:
+	// == 소유 컴퍼넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UCombatSystemComponent* CombatSystemComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UMotionWarpingComponent* MotionWarpingComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UHealthComponent* HealthComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UJetpackComponent* JetpackComponent;
 	
 protected:
 	UPROPERTY()
@@ -76,8 +84,9 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
 
+	virtual void Landed(const FHitResult& Hit) override;
 	
 public:
 	// == Get component
@@ -100,6 +109,10 @@ public:
 
 	void SetSpeed(float s) { Speed = s; }
 	int  GetSpeed() { return Speed; }
+
+
+	FORCEINLINE void SetIsHover(bool NewIsHover) { IsHover = NewIsHover; }
+	FORCEINLINE bool GetIsHover() const { return IsHover; }
 protected:
 	float Speed;
 };

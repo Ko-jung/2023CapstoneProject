@@ -61,7 +61,7 @@ public:
 	ASkyscraperCharacter();
 
 public:
-	// == ¼ÒÀ¯ ÄÄÆÛ³ÍÆ®
+	// == ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û³ï¿½Æ®
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UCombatSystemComponent* CombatSystemComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)

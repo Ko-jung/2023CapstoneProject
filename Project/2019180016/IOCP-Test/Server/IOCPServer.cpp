@@ -396,6 +396,18 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, m_Clients[TargetPlayerId]->GetCurrnetHp());
 		SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
 
+		// Sender SerialNum:1 -> Recv Num:0 -> id:1
+		// Sender SerialNum:0 -> Recv Num:1 -> id:0 ??
+		// Client SerialNum == Server id is [true]
+		// 보내기 직전 PDamagedPlayer.ChangedPlayerSerial 값과 id는 같음
+		// 서버 PDamagedPlayer에서 memcpy시 담긴 정보가 달라짐
+		
+		// 클라 둘 다 보내기 때문에 -> O editor printstring이 각 클라 둘다 찍힘 --- 해결완료
+		// 알고보면 두 번 오는거다? -> X printlog가 한 번만 찍힘. 체력은 결국 한 번만 깎이고 있다는거
+		// 왜 서버는 한 번만 받는가? -> 두 개가 연속으로와서 뒷 부분이 짤리나? X -> exp가 달라서 그럴일 없는듯
+		//							 -> Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다.
+		LogUtil::PrintLog("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
 		if (IsDead)
 		{
 			PChangedPlayerState PCPS(TargetPlayerSerialNum, ECharacterState::DEAD);

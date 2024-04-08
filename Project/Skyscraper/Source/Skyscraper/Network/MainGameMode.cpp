@@ -191,7 +191,12 @@ void AMainGameMode::Test_TakeDamage(int DamageType)
 		break;
 	}
 
-	UE_LOG(LogClass, Warning, TEXT("PDP.ChangedPlayerSerial Is %d!"), PDP.ChangedPlayerSerial);
-	UE_LOG(LogClass, Warning, TEXT("sizeof(PDamagedPlayer) Is %d!, sizeof(PDP) Is %d!"), sizeof(PDamagedPlayer), sizeof(PDP));
+	UE_LOG(LogTemp, Warning, TEXT("PDP.ChangedPlayerSerial Is %d!"), PDP.ChangedPlayerSerial);
+	UE_LOG(LogTemp, Warning, TEXT("sizeof(PDamagedPlayer) Is %d!, sizeof(PDP) Is %d!"), sizeof(PDamagedPlayer), sizeof(PDP));
 	m_Socket->Send(&PDP, sizeof(PDamagedPlayer));
+}
+
+void AMainGameMode::Test_TakeDamageACharacter(ASkyscraperCharacter* DamageType)
+{
+
 }

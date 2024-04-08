@@ -6,6 +6,8 @@
 #include "NetworkGameMode.h"
 #include "MainGameMode.generated.h"
 
+class ASkyscraperCharacter;
+
 /**
  * 
  */
@@ -28,19 +30,21 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Test_TakeDamage(int DamageType);
+	UFUNCTION(BlueprintCallable)
+	void Test_TakeDamageACharacter(ASkyscraperCharacter* character);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<class ASkyscraperCharacter> AssassinCharacter;
+	TSubclassOf<ASkyscraperCharacter> AssassinCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<class ASkyscraperCharacter> BoomerangCharacter;
+	TSubclassOf<ASkyscraperCharacter> BoomerangCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<class ASkyscraperCharacter> DetectionCharacter;
+	TSubclassOf<ASkyscraperCharacter> DetectionCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<class ASkyscraperCharacter> ElectricCharacter;
+	TSubclassOf<ASkyscraperCharacter> ElectricCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<class ASkyscraperCharacter> ShieldCharacter;
+	TSubclassOf<ASkyscraperCharacter> ShieldCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<class ASkyscraperCharacter> WindCharacter;
+	TSubclassOf<ASkyscraperCharacter> WindCharacter;
 
 private:
 	TArray<ASkyscraperCharacter*> Characters;

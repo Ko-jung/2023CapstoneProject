@@ -260,7 +260,7 @@ uint32 NetworkManager::Run()
 	while (bStopSwich)
 	{
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer, MAX_BUFFER, 0);
-		UE_LOG(LogTemp, Warning, TEXT("Something RECV"));
+		//UE_LOG(LogTemp, Warning, TEXT("Something RECV"));
 
 		if (nRecvLen == 0)
 		{

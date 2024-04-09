@@ -10,7 +10,7 @@ public class Skyscraper : ModuleRules
 
         bEnableExceptions = true;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "GeometryCollectionEngine", "EnhancedInput", "MotionWarping" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "GeometryCollectionEngine", "EnhancedInput", "MotionWarping", "Niagara" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
     }
 }

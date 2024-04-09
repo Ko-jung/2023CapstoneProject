@@ -165,10 +165,18 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		// == TODO: Stiffness And Down Later
 		if(bDoDown)
 		{
-			Cast<ASkyscraperCharacter>(HitActor)->DoDown(OwnerCharacter->GetActorForwardVector());
+			if(ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
+			{
+				TargetCharacter->DoDown(OwnerCharacter->GetActorForwardVector());
+			}
+			
 		}else
 		{
-			Cast<ASkyscraperCharacter>(HitActor)->DoStiffness(fStiffnessTime);
+			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
+			{
+				Cast<ASkyscraperCharacter>(HitActor)->DoStiffness(fStiffnessTime);
+			}
+			
 		}
 		
 		// == "This function will only execute on the server" <<= now, just client level

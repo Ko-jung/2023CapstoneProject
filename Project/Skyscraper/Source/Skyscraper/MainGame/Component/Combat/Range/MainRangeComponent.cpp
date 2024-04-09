@@ -153,22 +153,23 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		{
 			AActor* HitActor = OutHit.GetActor();
 			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
-
-			{ // 대미지 소환 액터 소환
-				FTransform SpawnTransform;
-				SpawnTransform.SetLocation(OutHit.Location);
-				FRotator rotator = (OutHit.TraceEnd - OutHit.TraceStart).ToOrientationRotator();
-				rotator.Pitch += 180.0f;
-				SpawnTransform.SetRotation(rotator.Quaternion());
-				ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
-				if (DamageSpawner)
-				{
-					DamageSpawner->SetActorLocation(OutHit.Location);
-					DamageSpawner->Initialize(fBaseDamage, 0.6f);
-					DamageSpawner->FinishSpawning(SpawnTransform);
+			if (OutHit.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
+			{
+				{ // 대미지 소환 액터 소환
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(OutHit.Location);
+					FRotator rotator = (OutHit.TraceEnd - OutHit.TraceStart).ToOrientationRotator();
+					rotator.Pitch += 180.0f;
+					SpawnTransform.SetRotation(rotator.Quaternion());
+					ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
+					if (DamageSpawner)
+					{
+						DamageSpawner->SetActorLocation(OutHit.Location);
+						DamageSpawner->Initialize(fBaseDamage, 0.6f);
+						DamageSpawner->FinishSpawning(SpawnTransform);
+					}
 				}
 			}
-			
 		}
 	}
 

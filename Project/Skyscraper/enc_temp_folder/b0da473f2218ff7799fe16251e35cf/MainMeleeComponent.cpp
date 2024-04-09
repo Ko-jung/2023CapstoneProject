@@ -14,8 +14,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
-#include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
-#include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 
 // Sets default values for this component's properties
 UMainMeleeComponent::UMainMeleeComponent()
@@ -183,25 +181,6 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		
 		// == "This function will only execute on the server" <<= now, just client level
 		UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
-
-		if(HitResult.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
-		{
-			{ // 대미지 소환 액터 소환
-				FTransform SpawnTransform;
-				SpawnTransform.SetLocation(HitResult.Location);
-				FRotator rotator = (HitResult.TraceEnd - HitResult.TraceStart).ToOrientationRotator();
-				rotator.Pitch += 180.0f;
-				SpawnTransform.SetRotation(rotator.Quaternion());
-				ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
-				if (DamageSpawner)
-				{
-					DamageSpawner->SetActorLocation(HitResult.Location);
-					DamageSpawner->Initialize(fBaseDamage, 0.6f);
-					DamageSpawner->FinishSpawning(SpawnTransform);
-				}
-			}
-		}
-		
 	}
 
 }

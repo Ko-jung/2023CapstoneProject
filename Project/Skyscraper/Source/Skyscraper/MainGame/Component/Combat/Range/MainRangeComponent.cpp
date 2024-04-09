@@ -14,6 +14,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
 
 // Sets default values for this component's properties
 UMainRangeComponent::UMainRangeComponent()
@@ -152,6 +153,19 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		{
 			AActor* HitActor = OutHit.GetActor();
 			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+			FTransform SpawnTransform;
+			SpawnTransform.SetLocation(OutHit.Location);
+
+			FRotator rotator = (OutHit.TraceEnd - OutHit.TraceStart).ToOrientationRotator();
+			rotator.Pitch += 180.0f;
+			SpawnTransform.SetRotation(rotator.Quaternion());
+			ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
+			if (DamageSpawner)
+			{
+				DamageSpawner->SetActorLocation(OutHit.Location);
+				DamageSpawner->Initialize(fBaseDamage, 0.6f);
+				DamageSpawner->FinishSpawning(SpawnTransform);
+			}
 		}
 	}
 

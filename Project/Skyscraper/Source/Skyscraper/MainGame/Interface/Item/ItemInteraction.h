@@ -22,5 +22,5 @@ class SKYSCRAPER_API IItemInteraction
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void ItemInteraction(const AActor* InteractionActor) = 0;
+	virtual void ItemInteraction(AActor* InteractionActor) = 0;
 };

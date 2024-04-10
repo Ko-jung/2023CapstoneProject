@@ -51,9 +51,14 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	// 제트팩 WW/AA/SS/DD 회피 Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_Jetpack_Dodge;
 
+	// 아이템 상호작용 Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_ItemInteraction;
+	
 	UPROPERTY(VisibleAnywhere)
 	bool IsHover;
 
@@ -82,8 +87,10 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
+	// 제트팩 컴퍼넌트 - 회피 기능 사용
 	void Dodge(const FInputActionValue& InputActionValue);
+	// 아이템 상호작용 키 
+	void ItemInteraction();
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	

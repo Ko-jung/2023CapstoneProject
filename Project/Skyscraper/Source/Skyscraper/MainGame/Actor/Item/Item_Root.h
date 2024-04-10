@@ -8,6 +8,8 @@
 #include "Skyscraper/MainGame/Interface/Item/ItemInteraction.h"
 #include "Item_Root.generated.h"
 
+class ASkyscraperCharacter;
+class UProgressBar;
 class UTextRenderComponent;
 class UWidgetComponent;
 class USphereComponent;
@@ -46,8 +48,11 @@ class SKYSCRAPER_API AItem_Root : public AActor, public IItemInteraction
 	// 상호작용 키 위젯
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> WBP_InteractionKey;
+
+	UPROPERTY()
+	TObjectPtr<UProgressBar> InteractionBar;
 	
-public:	
+public:
 	// 생성자
 	AItem_Root();
 
@@ -57,11 +62,28 @@ protected:
 	// End Play
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	// 상호작용 완료시 처리할 아이템 효과 함수
+	void DoItemEffect(const ASkyscraperCharacter* ItemUsedCharacter);
+
+	// Begin Overlap - SphereComponent
 	UFUNCTION()
-	virtual void DoItemEffect(){};
+	void SphereBeginOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep,
+			const FHitResult& SweepResult);
+
+	// End Overlap - SphereComponent
+	UFUNCTION()
+		void SphereEndOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex);
+
+	// End Overlap시 플레이어의 위젯을 제거하는 함수
+	void RemovePlayerWidget(AActor* EndOverlapCharacter);
+
+	// 프로그레스 바의 퍼센트를 바꾸는 함수
+	void SetProgressBarPercent() const;
 public:	
 	// Tick Event
 	virtual void Tick(float DeltaTime) override;
 	// 인터페이스 - 상호작용 키를 통한 상호작용 시 실행될 함수
-	virtual void ItemInteraction(const AActor* InteractionActor) override;
+	virtual void ItemInteraction(AActor* InteractionActor) override;
 };
+
+

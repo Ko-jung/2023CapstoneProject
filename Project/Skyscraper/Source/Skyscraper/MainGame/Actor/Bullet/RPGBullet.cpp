@@ -66,6 +66,9 @@ void ARPGBullet::Explode(class UPrimitiveComponent* OverlappedComp, class AActor
 
 	// == TODO: Add Self And Team Characters
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 100.0f, nullptr, IgnoreActors);
+
+	// == TODO: Spawn Damage Spawner 
+
 	// == TODO: Delete Debug Later
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 100.0f, 10, FColor::Black, true, 3.0f, 0, 3);
 

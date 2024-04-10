@@ -15,6 +15,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
+#include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 
 // Sets default values for this component's properties
 UMainRangeComponent::UMainRangeComponent()

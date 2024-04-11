@@ -4,6 +4,7 @@
 #include "HealthComponent.h"
 
 #include "Components/ProgressBar.h"
+#include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Skyscraper/MainGame/Widget/Health/HealthBar.h"
 
@@ -15,6 +16,7 @@ UHealthComponent::UHealthComponent()
 	OwnerCharacter = nullptr;
 	LivingState = EHealthState::EHS_LIVING;
 	HealthProgressBar = nullptr;
+	bIsGodMode = false;
 
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -74,6 +76,9 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UHealthComponent::GetDamaged(float fBaseDamage)
 {
+	// 무적 상태라면 대미지 안받도록
+	if (bIsGodMode) return;
+
 	CurrentHealth = FMath::Max(CurrentHealth - fBaseDamage, 0.0f);
 	if(CurrentHealth<=0.0f)
 	{
@@ -93,6 +98,11 @@ float UHealthComponent::GetHealthPercent() const
 	
 	return 1.0f;
 	
+}
+
+void UHealthComponent::SetHealthGodMode(bool bSet)
+{
+	bIsGodMode = bSet;
 }
 
 void UHealthComponent::ChangeCurrentHp(float hp)

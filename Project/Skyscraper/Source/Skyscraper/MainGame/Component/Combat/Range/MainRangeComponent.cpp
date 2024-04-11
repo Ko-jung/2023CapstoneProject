@@ -131,6 +131,12 @@ void UMainRangeComponent::PlayFireAnim()
 
 void UMainRangeComponent::UseBullet()
 {
+	if(bIsBulletInfinity)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Bullet Infinity Time"));
+		return;
+	}
+
 	CurrentBulletCount -= 1;
 	UE_LOG(LogTemp, Warning, TEXT("BulletCount : %d"), CurrentBulletCount);
 	// == TODO: Set UI BulletCount text
@@ -275,5 +281,35 @@ void UMainRangeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	UE_LOG(LogTemp, Warning, TEXT("%d %d"), CurrentBulletCount, BulletMaxCount);
 	// ...
+}
+
+void UMainRangeComponent::ActivateBulletInfinity(float BulletInfinityTime)
+{
+	bIsBulletInfinity = true;
+
+	// 현재 탄이 없을 경우 1개를 추가하여 바로 무한 모드를 적용시킬 수 있게 한다.
+	if (CurrentBulletCount == 0) 
+	{
+		CurrentBulletCount += 1;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Bullet Infinity Activate"));
+
+	if (!BulletInfinityTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().SetTimer(BulletInfinityTimerHandle, this, &ThisClass::DeactivateBulletInfinity, 0.2f, false, BulletInfinityTime);
+	}
+	else      // 타이머가 기존에 실행 중이었다면 (무적 모드 중이었다면, 시간 초기화)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(BulletInfinityTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(BulletInfinityTimerHandle, this, &ThisClass::DeactivateBulletInfinity, 0.2f, false, BulletInfinityTime);
+	}
+}
+
+void UMainRangeComponent::DeactivateBulletInfinity()
+{
+	GetWorld()->GetTimerManager().ClearTimer(BulletInfinityTimerHandle);
+	bIsBulletInfinity = false;
+	UE_LOG(LogTemp, Warning, TEXT("Bullet Infinity Deactivate"));
 }
 

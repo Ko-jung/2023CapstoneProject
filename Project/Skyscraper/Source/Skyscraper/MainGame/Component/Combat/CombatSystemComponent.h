@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Range/MainRangeComponent.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
 #include "Skyscraper/Enum/ERangeSelect.h"
@@ -92,7 +93,7 @@ protected:
 	void OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted);
 public:	
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
-
+	FORCEINLINE UMainRangeComponent* GetRangeComponent() const { return Cast<UMainRangeComponent>(MainRangeWeaponComponent); }
 
 
 private:

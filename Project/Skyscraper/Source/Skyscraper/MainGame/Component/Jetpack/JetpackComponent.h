@@ -18,7 +18,7 @@ class SKYSCRAPER_API UJetpackComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
+	// »ý¼ºÀÚ
 	UJetpackComponent();
 
 protected:

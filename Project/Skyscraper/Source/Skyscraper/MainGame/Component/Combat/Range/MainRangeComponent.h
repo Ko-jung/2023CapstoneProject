@@ -14,54 +14,66 @@ class SKYSCRAPER_API UMainRangeComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
+	// 생성자
 	UMainRangeComponent();
 
 	// InputMappingContext 추가 및 삭제 함수
 	void AddInputMappingContext();
 	void RemoveInputMappingContext();
 
+	// 총발사를 위한 애니메이션을 재생하는 함수
 	UFUNCTION(BlueprintCallable)
 	void PlayFireAnim();
 
+	// 탄 발사 로직 함수
 	UFUNCTION(BlueprintCallable)
 	virtual void Fire(float fBaseDamage);
+	// 적군 탄 발사 로직 함수
 	UFUNCTION(BlueprintCallable)
 		void EnemyFire(float fBaseDamage);
 
-	UFUNCTION(BlueprintCallable)
-		void BulletReloading();
+	// 재장전을 위한 애니메이션을 재생하는 함수
 	UFUNCTION(BlueprintCallable)
 		void PlayReloadAnim();
+	// 재장전 로직 함수
+	UFUNCTION(BlueprintCallable)
+		void BulletReloading();
+
+	// 발사 가능한지 상태를 반환하는 함수
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
 
 protected:
-	// Called when the game starts
+	// BeginPlay / EndPlay
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	
-	// == Owner Character Variable
+	// 소유 캐릭터 변수
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
 
-	// == MainRange Variable
+	// 발사 관련 변수
 	UPROPERTY(VisibleAnywhere, Category = Fire)
 		float CurrentFireCoolTime;
 	UPROPERTY(EditAnywhere,Category = Fire)
 		float FireMaxCoolTime;
+	// 재장전 관련 변수
 	UPROPERTY(VisibleAnywhere, Category = Reload)
 		float CurrentReloadCoolTime;
 	UPROPERTY(EditAnywhere, Category = Reload)
 		float ReloadMaxCoolTime;
 	UPROPERTY(EditAnywhere, Category = Reload)
 		float ReloadSpeedTime;
+	// 총알 관련 변수
 	UPROPERTY(VisibleAnywhere, Category = Bullet)
 		int32 CurrentBulletCount;
 	UPROPERTY(EditAnywhere, Category = Bullet)
 		int32 BulletMaxCount;
+	UPROPERTY()
+		bool bIsBulletInfinity;
 
+	// 총기 반동 관련 변수
 	UPROPERTY(EditAnywhere, Category = Recoil)
 		float RecoilAboveAmount;
 	UPROPERTY(EditAnywhere, Category = Recoil)
@@ -73,17 +85,16 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Recoil)
 		float RecoilSpeed;
 
-
-
-	// == Anim Variable
+	// 애니메이션 관련 변수
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
 	ECharacterAnimMontage FireAnimMontageKey;
 	ECharacterAnimMontage ReloadAnimMontageKey;
 
-	// == Timer Handle Variable And Function
+	// 발사 / 재장전 등의 쿨타임에 대한 타이머 핸들 변수
 	FTimerHandle FireCoolTimerHandle;
 	FTimerHandle ReloadCoolTimerHandle;
+	FTimerHandle BulletInfinityTimerHandle;
 
 
 protected:
@@ -102,6 +113,11 @@ public:
 	FORCEINLINE APlayerController* GetOwnerPlayerController()const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 
 	FORCEINLINE void SetBulletMaxCount(int32 iNewBulletCount) { CurrentBulletCount = BulletMaxCount = iNewBulletCount;  }
+
+	UFUNCTION()
+		void ActivateBulletInfinity(float BulletInfinityTime);
+	UFUNCTION()
+		void DeactivateBulletInfinity();
 
 private:
 	// == Input Action And Input Mapping Context

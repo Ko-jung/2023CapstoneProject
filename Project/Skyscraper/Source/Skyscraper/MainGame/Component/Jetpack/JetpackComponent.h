@@ -22,54 +22,92 @@ public:
 	UJetpackComponent();
 
 protected:
-	// Called when the game starts
+	// BeginPlay
 	virtual void BeginPlay() override;
 
+	// 플레이어의 최대 속도에 대한 Clamp 함수
 	FVector ClampToMaxWalkSpeed(const FVector& NewVelocity);
+
+	// 부스터 연료 설정 함수
 	void SetFuel(double NewFuel);
+	// 공중 모드 설정 함수
 	void SetHoveringMode(bool bHover);
+	// 부스터 속력(캐릭터 무브먼트 컴퍼넌트 속력) 변경 함수
 	void AddJetpackVelocity(FVector AddVelocity, float FuelReduction);
+
+	// 공중 날기 로직 함수
 	void Hover(const FInputActionValue& InputActionValue);
+	// 공중 날기 종료 로직 함수
 	void HoverStop();
+
+	// 공중 날기 종료시 천천히 낙하(글라이딩) 속도로 변경하는 함수
 	void ToGlidingSpeed();
+
+	// 빠른 대쉬 로직 함수
 	void DashFast();
+	// 빠른 대쉬 종료 로직 함수
+
 	void DashStop();
+
+	// 회피(Dodge) 시 속도 감소를 위한 함수
 	UFUNCTION()
 	void SlowdownDodge();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// 캐릭터가 땅에 닿았을 때(On Landed) 실행될 함수
 	UFUNCTION()
 	void OnLandJetpack();
 
+	// 회피 로직 함수
 	void Dodge(FVector2D InputValue);
+
+	UFUNCTION()
+		void ActivateBoostGaugeInfinity(float InfinityTime);
+	UFUNCTION()
+		void DeactivateBoostGaugeInfinity();
+
+
 protected:
 	// == Owner 캐릭터 관련
 	UPROPERTY()
 		TObjectPtr<ASkyscraperCharacter> OwnerCharacter;
 
 	// == 제트팩 변수
+	// 연료 관련 변수
 	UPROPERTY(VisibleAnywhere)
 		double JetpackFuel;
 	UPROPERTY(EditAnywhere)
 		double MaxJetpackFuel;
+
+	// 속도 관련 함수
 	UPROPERTY(EditAnywhere)
 		float HoveringMaxSpeed;
+	UPROPERTY(EditAnywhere)
+		float MaxDashSpeed;
+	UPROPERTY(EditAnywhere)
+		float DodgeSpeed;
+	UPROPERTY(EditAnywhere)
+		float DodgeSlowdownValue;
+
+	// 게이지 사용 수치 관련 함수
 	UPROPERTY(EditAnywhere)
 		float HoverGaugePerSec;
 	UPROPERTY(EditAnywhere)
 		float DashGaugePerSec;
 	UPROPERTY(EditAnywhere)
-		float MaxDashSpeed;
-	UPROPERTY(EditAnywhere)
 		float DodgeReductionGauge;
-	UPROPERTY(EditAnywhere)
-		float DodgeSpeed;
-	UPROPERTY(EditAnywhere)
-		float DodgeSlowdownValue;
+
 	bool bHoverStoping;
+
+	// 부스터 게이지 무한 bool 변수
+	UPROPERTY()
+		bool bIsBoostGaugeInfinity;
+
+	// 타이머 핸들
 	FTimerHandle SlowdownDodgeTimerHandle;
+	FTimerHandle BoostGaugeInfinityTimerHandle;
 
 protected:
 	UFUNCTION()

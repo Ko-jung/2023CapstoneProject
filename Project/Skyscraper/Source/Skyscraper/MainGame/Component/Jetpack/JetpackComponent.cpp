@@ -113,6 +113,11 @@ FVector UJetpackComponent::ClampToMaxWalkSpeed(const FVector& NewVelocity)
 
 void UJetpackComponent::SetFuel(double NewFuel)
 {
+	if (bIsBoostGaugeInfinity)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Time : %f"),JetpackFuel);
+		return;
+	}
 	JetpackFuel = FMath::Max(0.0f, NewFuel);
 	// == TODO: UI 내 제트팩 연료 설정
 }
@@ -240,6 +245,7 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 	//UE_LOG(LogTemp, Warning, TEXT("%f %f"), InputValue.X, InputValue.Y);
 }
 
+
 void UJetpackComponent::SlowdownDodge()
 {
 	if(GetOwnerCharacterMovement()->Velocity.Length()<600.0f)
@@ -251,4 +257,32 @@ void UJetpackComponent::SlowdownDodge()
 		GetOwnerCharacterMovement()->Velocity *= DodgeSlowdownValue;
 			GetWorld()->GetTimerManager().SetTimer(SlowdownDodgeTimerHandle, this, &ThisClass::SlowdownDodge, 0.1f, false, 0.1f);
 	}
+}
+
+
+
+void UJetpackComponent::ActivateBoostGaugeInfinity(float InfinityTime)
+{
+	bIsBoostGaugeInfinity = true;
+	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Activate"));
+
+	JetpackFuel = FMath::Max(JetpackFuel, 0.33f);
+
+
+	if (!BoostGaugeInfinityTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().SetTimer(BoostGaugeInfinityTimerHandle, this, &ThisClass::DeactivateBoostGaugeInfinity, 0.2f, false, InfinityTime);
+	}
+	else      // 타이머가 기존에 실행 중이었다면 (무적 모드 중이었다면, 시간 초기화)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(BoostGaugeInfinityTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(BoostGaugeInfinityTimerHandle, this, &ThisClass::DeactivateBoostGaugeInfinity, 0.2f, false, InfinityTime);
+	}
+}
+
+void UJetpackComponent::DeactivateBoostGaugeInfinity()
+{
+	GetWorld()->GetTimerManager().ClearTimer(BoostGaugeInfinityTimerHandle);
+	bIsBoostGaugeInfinity = false;
+	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Deactivate"));
 }

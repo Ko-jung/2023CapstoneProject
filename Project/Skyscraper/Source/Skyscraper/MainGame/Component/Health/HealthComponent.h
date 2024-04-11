@@ -81,9 +81,9 @@ public:
 
 	// 캐릭터 무적 상태 변수 Setter
 	UFUNCTION(BlueprintCallable)
-		void TurnOnGodMode(float GodModeTime);
+		void ActivateGodMode(float GodModeTime);
 	UFUNCTION()
-	void TurnOffGodMode();
+	void DeactivateGodMode();
 
 	// Process Packet From Server
 	void ChangeCurrentHp(float hp);

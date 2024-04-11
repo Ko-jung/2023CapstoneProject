@@ -9,7 +9,7 @@
 void AItem_Single_GodMode::DoItemEffect(ASkyscraperCharacter* ItemUsedCharacter)
 {
 	TargetCharacter = ItemUsedCharacter;
-	TargetCharacter->HealthComponent->TurnOnGodMode(GodModeTime);
+	TargetCharacter->HealthComponent->ActivateGodMode(GodModeTime);
 
 	Super::DoItemEffect(ItemUsedCharacter);
 }

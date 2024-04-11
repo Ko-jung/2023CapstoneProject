@@ -14,7 +14,10 @@
 #include "Components/InputComponent.h"
 #include <MotionWarpingComponent.h>
 
+#include "MyBlueprintItemDragDropAction.h"
 #include "Engine/DamageEvents.h"
+#include "Kismet/GameplayStatics.h"
+#include "Skyscraper/MainGame/Actor/Item/Item_Root.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Melee/MainMeleeComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/MainRangeComponent.h"
@@ -94,6 +97,10 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_DodgeRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Dodge.IA_Jetpack_Dodge'"));
 		IA_Jetpack_Dodge = IA_Jetpack_DodgeRef.Object;
+
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ItemInteractionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultItemInteraction.IA_GameDefaultItemInteraction'"));
+		IA_ItemInteraction = IA_ItemInteractionRef.Object;
 	}
 
 	{ // == Set components
@@ -233,6 +240,9 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Look);
 		// (Jetpack) Dodge
 		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Dodge);
+		// 아이템 상호작용
+		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
+		
 	}
 	else
 	{
@@ -283,4 +293,24 @@ void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
 		FVector2D value = InputActionValue.Get<FVector2D>();
 		JetpackComponent->Dodge(value);
 	}
+}
+
+void ASkyscraperCharacter::ItemInteraction()
+{
+	// 월드 내 오브젝트 중 아이템 액터 찾기
+	// 다만, 월드 내 모든 오브젝트에 대해서 탐색하는 것이므로 굳이 런타임중 0~3개 만 존재하는 액터에 대해서
+	// GetAllActorsOfClass 를 하는 것은 매우 비효율 적일 것으로 예상되므로
+	// 다른 방법을 찾아보기 (노션 탐구)
+	TArray<AActor*> ItemActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AItem_Root::StaticClass(), ItemActors);
+
+	// C++ 인터페이스 함수 실행
+	for(AActor* ItemActor : ItemActors)
+	{
+		if (IItemInteraction* ItemInterface = Cast<IItemInteraction>(ItemActor))
+		{
+			ItemInterface->ItemInteraction(this);
+		}
+	}
+
 }

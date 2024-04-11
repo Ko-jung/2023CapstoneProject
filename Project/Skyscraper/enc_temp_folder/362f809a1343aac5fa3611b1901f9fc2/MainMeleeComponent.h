@@ -19,9 +19,6 @@ public:
 	// Sets default values for this component's properties
 	UMainMeleeComponent();
 
-	// InputMappingContext 추가 및 삭제 함수
-	void AddInputMappingContext();
-	void RemoveInputMappingContext();
 
 	// == Do attack action by anim montage anim notify
 	UFUNCTION(BlueprintCallable)
@@ -39,12 +36,11 @@ protected:
 
 	// == OwnerCharacter's CharacterAnimMontages - key variable
 	TArray<ECharacterAnimMontage> AnimMontageKeys;
+	
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	
 
 
 	// == Play melee attack montage for attack

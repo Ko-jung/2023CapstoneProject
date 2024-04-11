@@ -40,6 +40,7 @@ UMainMeleeComponent::UMainMeleeComponent()
 	}
 }
 
+
 // Called when the game starts
 void UMainMeleeComponent::BeginPlay()
 {
@@ -50,20 +51,7 @@ void UMainMeleeComponent::BeginPlay()
 	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
 
-	// == TODO: Create Melee Widget
-}
-
-
-void UMainMeleeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	//UnBind Input Mapping Context
-	RemoveInputMappingContext();
-
-	// == TOOD: Unbind Melee Widget
-}
-
-void UMainMeleeComponent::AddInputMappingContext()
-{
+	//Add Input Mapping Context
 	if (APlayerController* PlayerController = GetOwnerPlayerController())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -76,10 +64,13 @@ void UMainMeleeComponent::AddInputMappingContext()
 			}
 		}
 	}
+
+	// == TODO: Create Melee Widget
 }
 
-void UMainMeleeComponent::RemoveInputMappingContext()
+void UMainMeleeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	//UnBind Input Mapping Context
 	if (APlayerController* PlayerController = GetOwnerPlayerController())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -87,6 +78,8 @@ void UMainMeleeComponent::RemoveInputMappingContext()
 			Subsystem->RemoveMappingContext(IMC_MeleeInput);
 		}
 	}
+
+	// == TOOD: Unbind Melee Widget
 }
 
 void UMainMeleeComponent::PlayAttackAnimMontage()

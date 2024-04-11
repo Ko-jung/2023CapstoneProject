@@ -90,12 +90,16 @@ void UCombatSystemComponent::BeginPlay()
 	}
 
 	{ // 소유 캐릭터에 근접 및 원거리 무기 컴퍼넌트 생성
-		MainMeleeWeaponComponent =OwnerCharacter->AddComponentByClass(MeleeClass[(uint8)MeleeSelect], false, FTransform(), true);
+		MainMeleeWeaponComponent = OwnerCharacter->AddComponentByClass(MeleeClass[(uint8)MeleeSelect], false, FTransform(), true);
 		MainMeleeWeaponComponent->RegisterComponent();
-		Cast<UMainMeleeComponent>(MainMeleeWeaponComponent)->AddInputMappingContext();
+		
+		
 
+		MainWeaponComponent = MainMeleeWeaponComponent;
+		
 		MainRangeWeaponComponent = OwnerCharacter->AddComponentByClass(RangeClass[(uint8)RangeSelect], false, FTransform(), true);
 		MainRangeWeaponComponent->RegisterComponent();
+		OwnerCharacter->RemoveOwnedComponent(MainRangeWeaponComponent);
 	}
 
 	//Add Input Mapping Context
@@ -127,30 +131,15 @@ void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)
 		return;
 	}
 
-	// 무기를 착용 중일때는 그냥 변경해주면 됨
-	
 	if(MainWeaponComponent)
 	{
-		if(UMainMeleeComponent* MeleeComp = Cast<UMainMeleeComponent>(MainWeaponComponent))
-		{
-			MeleeComp->RemoveInputMappingContext();
-		}
-		else if (UMainRangeComponent* RangeComp = Cast<UMainRangeComponent>(MainWeaponComponent))
-		{
-			RangeComp->RemoveInputMappingContext();
-		}
+		//MainWeaponComponent->DestroyComponent();
+		//MainWeaponComponent.
+		//MainWeaponComponent = nullptr;
+		MainWeaponComponent->SetActiveFlag(false);
+		MainWeaponComponent = TargetWeaponComponent;
+		MainWeaponComponent->SetActiveFlag(true);
 	}
-	
-	if (UMainMeleeComponent* MeleeComp = Cast<UMainMeleeComponent>(TargetWeaponComponent))
-	{
-		MeleeComp->AddInputMappingContext();
-	}
-	else if (UMainRangeComponent* RangeComp = Cast<UMainRangeComponent>(TargetWeaponComponent))
-	{
-		RangeComp->AddInputMappingContext();
-	}
-
-	MainWeaponComponent = TargetWeaponComponent;
 
 	
 }

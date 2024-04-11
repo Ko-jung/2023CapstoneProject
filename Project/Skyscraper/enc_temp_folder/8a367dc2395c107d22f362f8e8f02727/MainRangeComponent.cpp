@@ -72,19 +72,9 @@ void UMainRangeComponent::BeginPlay()
 	CurrentBulletCount = BulletMaxCount;
 	// == TODO: UI BulletCount set
 
-	// == TODO: Create Range Widget
-	
-}
 
 
-void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	//Unbind Input Mapping Context
-	RemoveInputMappingContext();
-}
-
-void UMainRangeComponent::AddInputMappingContext()
-{
+	//Add Input Mapping Context
 	if (APlayerController* PlayerController = GetOwnerPlayerController())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -98,16 +88,20 @@ void UMainRangeComponent::AddInputMappingContext()
 			}
 		}
 	}
+
+	// == TODO: Create Melee Widget
+	
 }
 
-void UMainRangeComponent::RemoveInputMappingContext()
+void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	//Unbind Input Mapping Context
 	if (APlayerController* PlayerController = GetOwnerPlayerController())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->RemoveMappingContext(IMC_RangeInput);
-
+			
 		}
 	}
 }

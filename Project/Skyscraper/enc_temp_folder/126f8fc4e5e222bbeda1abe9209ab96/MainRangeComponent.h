@@ -17,10 +17,6 @@ public:
 	// Sets default values for this component's properties
 	UMainRangeComponent();
 
-	// InputMappingContext 추가 및 삭제 함수
-	void AddInputMappingContext();
-	void RemoveInputMappingContext();
-
 	UFUNCTION(BlueprintCallable)
 	void PlayFireAnim();
 
@@ -35,12 +31,10 @@ public:
 		void PlayReloadAnim();
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
-
-protected:
+	protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 	
 	// == Owner Character Variable
 	UPROPERTY()
@@ -78,6 +72,10 @@ protected:
 	// == Anim Variable
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
+	//UPROPERTY(EditAnywhere, Category = AnimMontage)
+	//	UAnimMontage* AM_Fire;
+	//UPROPERTY(EditAnywhere, Category = AnimMontage)
+	//	UAnimMontage* AM_Reload;
 	ECharacterAnimMontage FireAnimMontageKey;
 	ECharacterAnimMontage ReloadAnimMontageKey;
 

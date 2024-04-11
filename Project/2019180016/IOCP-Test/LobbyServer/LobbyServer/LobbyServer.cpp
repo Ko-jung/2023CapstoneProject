@@ -1,5 +1,5 @@
 #include "LobbyServer.h"
-#include "../../Server/ClientInfo.h"
+#include "LobbyClientInfo.h"
 #include "../../Common/LogUtil.h"
 
 LobbyServer::LobbyServer()
@@ -25,11 +25,11 @@ bool LobbyServer::Init(const int WorkerNum)
 	}
 	m_iWorkerNum = WorkerNum - 2;
 
-	m_GameServerSocket = new ClientInfo();
+	m_GameServerSocket = new LobbyClientInfo();
 	m_GameServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));
 	for (int i = 0; i < MAXCLIENT; i++)
 	{
-		m_Clients[i] = new ClientInfo();
+		m_Clients[i] = new LobbyClientInfo();
 	}
 
 	return true;
@@ -145,9 +145,9 @@ void LobbyServer::Worker()
 	}
 }
 
-ClientInfo* LobbyServer::GetEmptyClient()
+LobbyClientInfo* LobbyServer::GetEmptyClient()
 {
-	auto it = std::find_if(m_Clients.begin(), m_Clients.end(), [](ClientInfo* a) {return a->GetClientNum() == -1; });
+	auto it = std::find_if(m_Clients.begin(), m_Clients.end(), [](LobbyClientInfo* a) {return a->GetClientNum() == -1; });
 	if (it != m_Clients.end())
 	{
 		return *it;
@@ -196,7 +196,7 @@ void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
 	{
 		// ��� Ŭ���� ���� ��ȣ�� ����??
 
-		ClientInfo* socket = GetEmptyClient();
+		LobbyClientInfo* socket = GetEmptyClient();
 		socket->SetClientNum(m_iClientId);
 		socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
 
@@ -282,7 +282,7 @@ void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 		PConnectToGameserver SPS;
 		SPS.RoomNum = PER.RoomNum;
 
-		ClientInfo* client;
+		LobbyClientInfo* client;
 
 		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
 		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로

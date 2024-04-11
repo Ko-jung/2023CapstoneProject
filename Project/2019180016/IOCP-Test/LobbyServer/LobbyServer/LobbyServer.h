@@ -6,7 +6,7 @@
 
 #define GAMESERVER 9998
 
-class ClientInfo;
+class LobbyClientInfo;
 
 class LobbyServer
 {
@@ -21,7 +21,7 @@ public:
 	void ThreadJoin();
 	void Worker();
 
-	ClientInfo* GetEmptyClient();
+	LobbyClientInfo* GetEmptyClient();
 
 	void CheckingMatchingQueue();
 	bool ConnectToGameServer();
@@ -37,10 +37,10 @@ private:
 	SOCKET m_ListenSocket;
 
 	EXP_OVER* m_GameServerOver;
-	ClientInfo* m_GameServerSocket;
+	LobbyClientInfo* m_GameServerSocket;
 
-	std::array<ClientInfo*, MAXCLIENT> m_Clients;
-	Concurrency::concurrent_priority_queue< ClientInfo*> m_MatchingQueue;
+	std::array<LobbyClientInfo*, MAXCLIENT> m_Clients;
+	Concurrency::concurrent_priority_queue< LobbyClientInfo*> m_MatchingQueue;
 
 	std::vector<std::thread> m_tWorkerThreads;
 	int m_iWorkerNum;

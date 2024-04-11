@@ -21,10 +21,10 @@
     <ClCompile Include="LobbyServer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Server\ClientInfo.cpp">
+    <ClCompile Include="..\..\Common\LogUtil.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\LogUtil.cpp">
+    <ClCompile Include="LobbyClientInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="..\..\Common\LogUtil.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Server\ClientInfo.h">
+    <ClInclude Include="LobbyClientInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -128,13 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Common\LogUtil.cpp" />
-    <ClCompile Include="..\..\Server\ClientInfo.cpp" />
+    <ClCompile Include="LobbyClientInfo.cpp" />
     <ClCompile Include="LobbyServer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\LogUtil.h" />
-    <ClInclude Include="..\..\Server\ClientInfo.h" />
+    <ClInclude Include="LobbyClientInfo.h" />
     <ClInclude Include="LobbyServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

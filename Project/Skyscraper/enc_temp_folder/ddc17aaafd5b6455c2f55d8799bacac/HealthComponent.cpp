@@ -104,14 +104,8 @@ void UHealthComponent::TurnOnGodMode(float GodModeTime)
 {
 	bIsGodMode = true;
 	UE_LOG(LogTemp, Warning, TEXT("god mode on"));
-
 	if (!GodModeTimerHandle.IsValid())
 	{
-		GetWorld()->GetTimerManager().SetTimer(GodModeTimerHandle, this, &ThisClass::TurnOffGodMode, 0.2f, false, GodModeTime);
-	}
-	else      // 타이머가 기존에 실행 중이었다면 (무적 모드 중이었다면, 시간 초기화)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(GodModeTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(GodModeTimerHandle, this, &ThisClass::TurnOffGodMode, 0.2f, false, GodModeTime);
 	}
 }

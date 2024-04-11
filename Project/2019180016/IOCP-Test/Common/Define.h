@@ -28,8 +28,15 @@
 #define LOBBYSERVERIP "127.0.0.1"
 #define LOBBYSERVERPORT 9001
 
-#define MEMCPYBUFTOPACKET(packet, bytes) memcpy(&packet, (exp->_wsa_buf.buf + bytes), sizeof(packet))
+//#define MEMCPYBUFTOPACKET(packet, bytes) memcpy(&packet, (exp->_wsa_buf.buf + bytes), sizeof(packet))
 
+#define SingleTon(ClassName)\
+public:\
+static ClassName* Instance()\
+{\
+	static ClassName inst;\
+	return &inst;\
+}
 
 using std::cout;
 using std::endl;

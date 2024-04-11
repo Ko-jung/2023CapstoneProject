@@ -72,38 +72,23 @@ bool ClientInfo::TakeDamage(float damage)
 
 void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 {
+	int remaindata = bytes + m_iRemainDataLen;
+	char* packet = exp->_net_buf;
 
+	// ��Ŷ ������
+	while (remaindata > 0) {
+		Packet* p = reinterpret_cast<Packet*>(packet);
 
-
-
-	//int remaindata = bytes + m_iRemainDataLen;
-	//char* packet = exp->_net_buf;
-	//std::string str(exp->_wsa_buf.buf);
-
-	//std::stringstream RecvDataStream;
-	//RecvDataStream << exp->_wsa_buf.buf;
-
-	//int OP;
-	//RecvDataStream >> OP;
-
-	//Packet* packet = GetPacket((COMP_OP)OP);
-
-	// cout << m_iClientNum << "Num Recv Data: " << (RecvDataStream.str()) << endl;
-
-	//// ��Ŷ ������
-	//while (remaindata > 0) {
-	//	BASE_PACKET* p = reinterpret_cast<BASE_PACKET*>(packet);
-
-	//	if (p->size <= remaindata) {
-	//		CPacketMgr::GetInstance()->Packet_Exec(p, this);
-	//		packet += p->size;
-	//		remaindata -= p->size;
-	//	}
-	//	else break;
-	//}
-	//m_iRemainDataLen = remaindata;
-	//if (remaindata > 0)
-	//	memmove(exp->_net_buf, packet, remaindata);
+		if (p->PacketSize <= remaindata) {
+			PacketMgr::Instance()->ProcessPacket(p, this);
+			packet += p->PacketSize;
+			remaindata -= p->PacketSize;
+		}
+		else break;
+	}
+	m_iRemainDataLen = remaindata;
+	if (remaindata > 0)
+		memmove(exp->_net_buf, packet, remaindata);
 	Recv();
 }
 

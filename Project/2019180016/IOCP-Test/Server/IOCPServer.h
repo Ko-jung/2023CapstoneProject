@@ -23,12 +23,11 @@ public:
 	void ThreadJoin();
 	void Timer();
 
-	ClientInfo* GetEmptyClient();
 	//const int GetEmptyRoomNum();
 	bool ReadyToNextAccept();
 	void AccpetLobbyServer();
 
-	int GetWeaponDamage(bool isMelee, int weaponEnum);
+	//int GetWeaponDamage(bool isMelee, int weaponEnum);
 
 public:
 	void Accept(int id, int bytes, EXP_OVER* exp);
@@ -37,16 +36,16 @@ public:
 
 	void ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp);
 
-	void SendPlayerJoinPacket(int JoinPlayerSerial);
-	void SendTileDrop(int id/*, BYTE tileDropLevel*/);
-	void SendSelectTime(int NowClientNum, float time);
-	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
+	//void SendPlayerJoinPacket(int JoinPlayerSerial);
+	//void SendTileDrop(int id/*, BYTE tileDropLevel*/);
+	//void SendSelectTime(int NowClientNum, float time);
+	//void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
 	//void SendPacketToAllSocketsInRoomAfterTimer(int roomId, COMP_OP packetType);
 
-	void ProcessPlayerPosition(PPlayerPosition p);
-	void ProcessDisconnectPlayer(PDisconnect p);
+	//void ProcessPlayerPosition(PPlayerPosition p);
+	//void ProcessDisconnectPlayer(PDisconnect p);
 	//void ProcessNewPlayers(PSendPlayerSockets p);
-	bool CheckSelectDuplication(int id, ECharacter c);
+	//bool CheckSelectDuplication(int id, ECharacter c);
 
 	void TestSend();
 	std::thread TempSendThread;
@@ -71,16 +70,10 @@ protected:
 
 	std::unordered_map < COMP_OP, std::function<void(int, int, EXP_OVER*)>> m_IocpFunctionMap;
 
-	std::shared_ptr<class TimerMgr> m_TimerMgr;
-
-	std::array<ClientInfo*, MAXCLIENT> m_Clients;
-
+	class TimerMgr* m_TimerMgr;
 	//Concurrency::concurrent_priority_queue<ClientInfo*> m_ClientSocketPool;
 
 	int m_iWorkerNum;
-
-	std::atomic<int> m_iClientId;
-	std::atomic<int> m_iClientCount;
 
 	int m_iRoomId;
 };

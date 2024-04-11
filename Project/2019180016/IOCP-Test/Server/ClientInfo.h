@@ -28,6 +28,7 @@ public:
 	const int GetClientNum()					{ return m_iClientNum; }
 	int GetRoomNum()							{ return m_iRoomNum; }
 	//void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
+	EXP_OVER* GetExp() { return &m_Exp; }
 
 	void SetSocket(const SOCKET& s)			{ m_sClientSocket = s; }
 	void SetRemainDataLen(int len)			{ m_iRemainDataLen = len; }

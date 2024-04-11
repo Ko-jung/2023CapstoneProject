@@ -269,14 +269,14 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 
 void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 {
-	const int PacketType = *(int*)exp->_wsa_buf.buf;
+	const BYTE PacketType = *(int*)exp->_wsa_buf.buf;
 	switch (PacketType)
 	{
 	case(int)COMP_OP::OP_SS_EMPTYROOMNUM:
 	{
 		// Get Room num from Gameserver
 		PEmptyRoomNum PER;
-		MEMCPYBUFTOPACKET(PER, 0);
+		memcpy(&PER, exp->_wsa_buf.buf, sizeof(PER));
 
 		// Notify Room Num to Clients
 		PConnectToGameserver SPS;

@@ -6,8 +6,11 @@
 #include "Object.h"
 
 #include "Manager/TimerMgr.h"
-#include "TimerEvent.h"
 #include "Manager/RoomMgr.h"
+#include "Manager/ClientMgr.h"
+#include "Manager/PacketMgr.h"
+
+#include "TimerEvent.h"
 
 #include <chrono>
 
@@ -21,11 +24,9 @@ IOCPServer::IOCPServer()
 
 	//m_IocpFunctionMap.insert({ COMP_OP::OP_POSITION,[this](int id, int bytes, EXP_OVER* exp) {RecvNewPosition(id, bytes, exp); } });
 
-	m_iClientId = 0;
-	m_iClientCount = 0;
 	m_iRoomId = 0;
 
-	m_TimerMgr = std::make_shared<TimerMgr>();
+	m_TimerMgr = TimerMgr::Instance();
 
 	IsLobbyServerConnect = false;
 }
@@ -51,17 +52,11 @@ bool IOCPServer::Init(const int WorkerNum)
 
 	m_iWorkerNum = WorkerNum - 2;
 
-	for (auto& c : m_Clients)
-	{
-		c = new ClientInfo();
-	}
-
 	return true;
 }
 
 bool IOCPServer::BindListen(const int PortNum)
 {
-
 	SOCKADDR_IN server_addr;
 	ZeroMemory(&server_addr, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
@@ -172,19 +167,6 @@ void IOCPServer::Timer()
 	}
 }
 
-ClientInfo* IOCPServer::GetEmptyClient()
-{
-	auto it = std::find_if(m_Clients.begin(), m_Clients.end(), [](ClientInfo* a) {return a->GetClientNum() == -1; });
-	if (it != m_Clients.end())
-	{
-		return *it;
-	}
-	else
-	{
-		return nullptr;
-	}
-}
-
 //const int IOCPServer::GetEmptyRoomNum()
 //{
 //	//auto it = std::find_if(m_Clients.begin(), m_Clients.end(),
@@ -236,38 +218,6 @@ void IOCPServer::AccpetLobbyServer()
 	m_LobbyServerSocket->Recv();
 }
 
-int IOCPServer::GetWeaponDamage(bool isMelee, int weaponEnum)
-{
-	if (isMelee)
-	{
-		switch (weaponEnum)
-		{
-		case (int)EMeleeWeapon::Dagger:
-			return 120;
-		case (int)EMeleeWeapon::Greatsword:
-			return 200;
-		case (int)EMeleeWeapon::Katana:
-			return 150;
-		default:
-			return 0;
-		}
-	}
-	else
-	{
-		switch (weaponEnum)
-		{
-		case (int)ERangeWeapon::AssaultRifle:
-			return 100;
-		case (int)ERangeWeapon::GrenadeLauncher:
-			return 300;
-		case (int)ERangeWeapon::SubmachineGun:
-			return 50;
-		default:
-			return 0;
-		}
-	}
-}
-
 void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 {
 	if (!IsLobbyServerConnect)
@@ -285,13 +235,13 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 	}
 	else
 	{
+		ClientMgr* ClientManager = ClientMgr::Instance();
 		// id�� �������� ��ȣ 9999�� ������ ��?
-		if (m_iClientCount < MAXCLIENT)
+		if (ClientManager->GetClientCount() < MAXCLIENT)
 		{
 			// ��� Ŭ���� ���� ��ȣ�� ����??
-			ClientInfo* socket = GetEmptyClient();
-
-			int NowClientNum = m_iClientId++;
+			int NowClientNum;
+			ClientInfo* socket = ClientMgr::Instance()->GetEmptyClient(NowClientNum);
 
 			socket->SetClientNum(NowClientNum);
 			socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
@@ -306,22 +256,12 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 			// Push Game Start Timer (Time to Select Weapon)
 			if (NowClientNum % MAXPLAYER == MAXPLAYER - 1)
 			{
-				// 너무 빨리 보내면 못 받는다
-				TimerEvent TE1(std::chrono::seconds(1),
-					std::bind(&IOCPServer::SendSelectTime, this, NowClientNum, 40.f));
-				m_TimerMgr->Insert(TE1);
-
-				TimerEvent TE2(std::chrono::seconds(40),
-					std::bind(&IOCPServer::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
-				m_TimerMgr->Insert(TE2);
+				PacketMgr::Instance()->GameBeginProcessing(NowClientNum);
 			}
 
 			// SendPlayerJoinPacket(m_iClientId);
 
 			cout << NowClientNum << "번 Accept" << endl;
-
-			//m_iClientId++;
-			m_iClientCount++;
 
 			if (!ReadyToNextAccept())
 			{
@@ -347,113 +287,8 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessRecvFromLobby(id, bytes, exp);
 		return;
 	}
-	int ReadByte = 0;
-	while (ReadByte < bytes)
-	{
-		const BYTE PacketType = *(BYTE*)(exp->_wsa_buf.buf + ReadByte);
-		int RemainByte = bytes - ReadByte;
 
-		switch (PacketType)
-		{
-		case (int)COMP_OP::OP_POSITION:
-
-			break;
-		case (int)COMP_OP::OP_PLAYERPOSITION:
-		{
-			if (sizeof(PPlayerPosition) > RemainByte)
-			{
-				ReadByte += RemainByte;
-				break;
-			}
-
-			PPlayerPosition PPP;
-			//memcpy(&PPP, exp->_wsa_buf.buf, sizeof(PPlayerPosition));
-			MEMCPYBUFTOPACKET(PPP, ReadByte);
-			ProcessPlayerPosition(PPP);
-
-			ReadByte += sizeof(PPP);
-		}
-		break;
-		case (int)COMP_OP::OP_DISCONNECT:
-		{
-			if (sizeof(PDisconnect) > RemainByte)
-			{
-				ReadByte += RemainByte;
-				break;
-			}
-
-			PDisconnect disconnect(-1);
-			memcpy(&disconnect, exp->_wsa_buf.buf, sizeof(PDisconnect));
-			ProcessDisconnectPlayer(disconnect);
-
-			ReadByte += sizeof(disconnect);
-		}
-		break;
-		case (int)COMP_OP::OP_SELECTWEAPONINFO:
-		{
-			if (sizeof(PPlayerSelectInfo) > RemainByte)
-			{
-				ReadByte += RemainByte;
-				break;
-			}
-
-			PPlayerSelectInfo PPS;
-			MEMCPYBUFTOPACKET(PPS, ReadByte);
-
-			int SendPlayerRoomNum = id / 6;
-			m_Clients[id]->SetECharacter(PPS.PickedCharacter);
-
-			// Send To Other Player Pick State
-			SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
-
-			ReadByte += sizeof(PPS);
-		}
-		break;
-		case (int)COMP_OP::OP_DAMAGEDPLAYER:
-		{
-			if (sizeof(PDamagedPlayer) > RemainByte)
-			{
-				ReadByte += RemainByte;
-				break;
-			}
-
-			PDamagedPlayer PDP;
-			MEMCPYBUFTOPACKET(PDP, ReadByte);
-			BYTE TargetPlayerSerialNum = PDP.ChangedPlayerSerial;
-			int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
-
-			int SendPlayerRoomNum = id / 6;
-			int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
-
-			bool IsDead = m_Clients[TargetPlayerId]->TakeDamage(Damage);
-			PChangedPlayerHP PCPHP(TargetPlayerSerialNum, m_Clients[TargetPlayerId]->GetCurrnetHp());
-			SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
-			
-			ReadByte += sizeof(PCPHP);
-
-			// 클라 둘 다 보내기 때문에  -> O editor printstring이 각 클라 둘다 찍힘 --- 해결완료
-			// 알고보면 두 번 오는거다?  -> X printlog가 한 번만 찍힘. 체력은 결국 한 번만 깎이고 있다는거
-			// 왜 서버는 한 번만 받는가? -> 두 개가 연속으로와서 뒷 부분이 짤리나? X -> exp가 달라서 그럴일 없는듯
-			//							 -> Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다.
-			// Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다. WHY?
-			// 진짜 매우 가끔 된다. 매번 보내는 Position을 제거하면 정상 작동
-
-			LogUtil::PrintLog("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-			if (IsDead)
-			{
-				PChangedPlayerState PCPS(TargetPlayerSerialNum, ECharacterState::DEAD);
-				SendPacketToAllSocketsInRoom(id / 6, &PCPS, sizeof(PCPS));
-			}
-		}
-		break;
-		default:
-			LogUtil::PrintLog("abc");
-			break;
-		}
-	}
-
-	m_Clients[id]->RecvProcess(bytes, exp);
+	ClientMgr::Instance()->RecvProcess(id, bytes, exp);
 }
 
 void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)
@@ -471,95 +306,6 @@ void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)
 	default:
 		break;
 	}
-}
-
-void IOCPServer::SendPlayerJoinPacket(int JoinPlayerSerial)
-{
-	PPlayerJoin JoinPacket(m_iClientId);
-	for (const auto& socket : m_Clients)
-	{
-		if (socket->GetClientNum() != -1)
-		{
-			socket->SendProcess(sizeof(PPlayerJoin), &JoinPacket);
-		}
-	}
-}
-
-void IOCPServer::SendTileDrop(int id)
-{
-	PTileDrop PTD;
-	m_Clients[id]->SendProcess(sizeof(PTileDrop), &PTD);
-}
-
-void IOCPServer::SendSelectTime(int NowClientNum, float time)
-{
-	PSetTimer PST = PSetTimer(ETimer::SelectTimer, time);
-	SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
-}
-
-void IOCPServer::SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize)
-{
-	for (int i = 0; i < MAXPLAYER; i++)
-	{
-		SOCKET s = m_Clients[roomId * 6 + i]->GetSocket();
-
-		if (s != INVALID_SOCKET)
-		{
-			m_Clients[roomId * 6 + i]->SendProcess(packetSize, p);
-		}
-	}
-}
-
-void IOCPServer::ProcessPlayerPosition(PPlayerPosition p)
-{
-	int serial = p.PlayerSerial;
-	auto Client = m_Clients[serial];
-	int RoomNum = Client->GetRoomNum();
-
-	//Client->SetPos(p.x, p.y, p.z);
-
-	for (const auto& c : m_Clients)
-	{
-		int CNum = c->GetClientNum();
-		if (CNum != -1 && CNum != serial)
-		{
-			c->SendProcess(sizeof(PPlayerPosition), &p);
-		}
-	}
-}
-
-void IOCPServer::ProcessDisconnectPlayer(PDisconnect p)
-{
-	m_Clients[p.DisconnectPlayerSerial]->Init();
-	m_iClientCount--;
-}
-
-bool IOCPServer::CheckSelectDuplication(int id, ECharacter c)
-{
-	int roomNum = id / MAXCLIENT;
-	int clientNum = id % MAXCLIENT;
-	if (clientNum < MAXCLIENT / 2)
-	{
-		for (int i = 0; i < MAXCLIENT / 2; i++)
-		{
-			if (m_Clients[roomNum * MAXCLIENT + i]->GetECharacter() == c)
-			{
-				return false;
-			}
-		}
-	}
-	else
-	{
-		for (int i = MAXCLIENT / 2; i < MAXCLIENT; i++)
-		{
-			if (m_Clients[roomNum * MAXCLIENT + i]->GetECharacter() == c)
-			{
-				return false;
-			}
-		}
-	}
-
-	return true;
 }
 
 //void IOCPServer::ProcessNewPlayers(PSendPlayerSockets p)
@@ -617,10 +363,4 @@ void IOCPServer::TestSend()
 	//	std::this_thread::sleep_for(std::chrono::seconds(3));
 	//}
 	//delete m_TimerMgrMap[0];
-}
-
-void IOCPServer::StartGame(int RoomNum, int ClientNum, void* etc)
-{
-	PStartGame PSG;
-	SendPacketToAllSocketsInRoom(RoomNum, &PSG, sizeof(PSG));
 }

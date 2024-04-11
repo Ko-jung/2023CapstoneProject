@@ -4,10 +4,18 @@
 #include <functional>
 
 #include "../TimerEvent.h"
+#include "../../Common/Define.h"
 
 // Ÿ�̸� �Ŵ���, �� �� �ϳ��� ������ ����
 class TimerMgr
 {
+	//static TimerMgr* Instance()
+	//{
+	//	static TimerMgr inst;
+	//	return &inst;
+	//}
+	SingleTon(TimerMgr)
+
 public:
 	TimerMgr();
 	virtual ~TimerMgr();

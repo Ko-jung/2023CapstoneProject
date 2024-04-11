@@ -56,6 +56,7 @@ public:
 	// 생성자
 	AItem_Root();
 
+
 protected:
 	// Begin Play
 	virtual void BeginPlay() override;
@@ -63,7 +64,8 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	// 상호작용 완료시 처리할 아이템 효과 함수
-	void DoItemEffect(const ASkyscraperCharacter* ItemUsedCharacter);
+	UFUNCTION()
+	virtual void DoItemEffect(ASkyscraperCharacter* ItemUsedCharacter);
 
 	// Begin Overlap - SphereComponent
 	UFUNCTION()

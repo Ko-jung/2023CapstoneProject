@@ -55,7 +55,12 @@ private:
 		bool bIsGodMode;
 	UPROPERTY()
 		UTextRenderComponent* GodModeTextRender;
-	
+
+	// 캐릭터 무적 타이머 핸들
+	UPROPERTY()
+		FTimerHandle GodModeTimerHandle;
+
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -76,7 +81,9 @@ public:
 
 	// 캐릭터 무적 상태 변수 Setter
 	UFUNCTION(BlueprintCallable)
-		void SetHealthGodMode(bool bSet);
+		void TurnOnGodMode(float GodModeTime);
+	UFUNCTION()
+	void TurnOffGodMode();
 
 	// Process Packet From Server
 	void ChangeCurrentHp(float hp);

@@ -62,6 +62,7 @@ AItem_Root::AItem_Root()
 	
 }
 
+
 void AItem_Root::BeginPlay()
 {
 	Super::BeginPlay();
@@ -80,9 +81,8 @@ void AItem_Root::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
-void AItem_Root::DoItemEffect(const ASkyscraperCharacter* ItemUsedCharacter)
+void AItem_Root::DoItemEffect(ASkyscraperCharacter* ItemUsedCharacter)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Do Item Effect"));
 	Destroy();
 }
 

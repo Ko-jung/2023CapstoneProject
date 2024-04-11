@@ -103,7 +103,7 @@ float UHealthComponent::GetHealthPercent() const
 void UHealthComponent::TurnOnGodMode(float GodModeTime)
 {
 	bIsGodMode = true;
-	UE_LOG(LogTemp, Warning, TEXT("god mode on"));
+
 	if (!GodModeTimerHandle.IsValid())
 	{
 		GetWorld()->GetTimerManager().SetTimer(GodModeTimerHandle, this, &ThisClass::TurnOffGodMode, 0.2f, false, GodModeTime);
@@ -114,7 +114,6 @@ void UHealthComponent::TurnOffGodMode()
 {
 	GetWorld()->GetTimerManager().ClearTimer(GodModeTimerHandle);
 	bIsGodMode = false;
-	UE_LOG(LogTemp, Warning, TEXT("God Mode Turnn Off"));
 }
 
 void UHealthComponent::ChangeCurrentHp(float hp)

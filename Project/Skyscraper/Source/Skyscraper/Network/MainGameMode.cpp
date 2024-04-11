@@ -69,8 +69,9 @@ void AMainGameMode::Tick(float Deltatime)
 	//if (bIsConnected)
 	//{
 	//}
-		SendPlayerLocation();
 		ProcessFunc();
+
+		SendPlayerLocation();
 
 }
 
@@ -107,6 +108,13 @@ void AMainGameMode::ProcessFunc()
 			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(argu);
 
 			Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
+			break;
+		}
+		case ETAKEDAMAGE:
+		{
+			//PDamagedPlayer* PDP = static_cast<PDamagedPlayer*>(argu);
+			//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
+			m_Socket->Send(argu, sizeof(PDamagedPlayer));
 			break;
 		}
 		default:
@@ -157,33 +165,33 @@ void AMainGameMode::SendPlayerLocation()
 
 void AMainGameMode::Test_TakeDamage(int DamageType)
 {
-	PDamagedPlayer PDP;
-	PDP.ChangedPlayerSerial = SerialNum;
+	PDamagedPlayer* PDP = new PDamagedPlayer();
+	PDP->ChangedPlayerSerial = SerialNum;
 	switch (DamageType)
 	{
 	case 0:
-		PDP.IsMelee = true;
-		PDP.WeaponEnum = 0;
+		PDP->IsMelee = true;
+		PDP->WeaponEnum = 0;
 		break;
 	case 1:
-		PDP.IsMelee = true;
-		PDP.WeaponEnum = 1;
+		PDP->IsMelee = true;
+		PDP->WeaponEnum = 1;
 		break;
 	case 2:
-		PDP.IsMelee = true;
-		PDP.WeaponEnum = 2;
+		PDP->IsMelee = true;
+		PDP->WeaponEnum = 2;
 		break;
 	case 3:
-		PDP.IsMelee = false;
-		PDP.WeaponEnum = 0;
+		PDP->IsMelee = false;
+		PDP->WeaponEnum = 0;
 		break;
 	case 4:
-		PDP.IsMelee = false;
-		PDP.WeaponEnum = 1;
+		PDP->IsMelee = false;
+		PDP->WeaponEnum = 1;
 		break;
 	case 5:
-		PDP.IsMelee = false;
-		PDP.WeaponEnum = 2;
+		PDP->IsMelee = false;
+		PDP->WeaponEnum = 2;
 		break;
 	case 6:
 	case 7:
@@ -191,12 +199,6 @@ void AMainGameMode::Test_TakeDamage(int DamageType)
 		break;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("PDP.ChangedPlayerSerial Is %d!"), PDP.ChangedPlayerSerial);
-	UE_LOG(LogTemp, Warning, TEXT("sizeof(PDamagedPlayer) Is %d!, sizeof(PDP) Is %d!"), sizeof(PDamagedPlayer), sizeof(PDP));
-	m_Socket->Send(&PDP, sizeof(PDamagedPlayer));
-}
-
-void AMainGameMode::Test_TakeDamageACharacter(ASkyscraperCharacter* DamageType)
-{
-
+	//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
+	PushQueue(ETAKEDAMAGE, PDP);
 }

@@ -276,7 +276,7 @@ void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 	{
 		// Get Room num from Gameserver
 		PEmptyRoomNum PER;
-		MEMCPYBUFTOPACKET(PER);
+		MEMCPYBUFTOPACKET(PER, 0);
 
 		// Notify Room Num to Clients
 		PConnectToGameserver SPS;

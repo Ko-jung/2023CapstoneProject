@@ -135,11 +135,12 @@
     <ClCompile Include="ClientInfo.cpp" />
     <ClCompile Include="IOCPServer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Manager\ClientMgr.cpp" />
+    <ClCompile Include="Manager\PacketMgr.cpp" />
+    <ClCompile Include="Manager\RoomMgr.cpp" />
+    <ClCompile Include="Manager\TimerMgr.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="PacketMgr.cpp" />
-    <ClCompile Include="RoomMgr.cpp" />
     <ClCompile Include="TimerEvent.cpp" />
-    <ClCompile Include="TimerMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\EnumDef.h" />
@@ -148,11 +149,12 @@
     <ClInclude Include="..\Common\LogUtil.h" />
     <ClInclude Include="ClientInfo.h" />
     <ClInclude Include="IOCPServer.h" />
+    <ClInclude Include="Manager\ClientMgr.h" />
+    <ClInclude Include="Manager\PacketMgr.h" />
+    <ClInclude Include="Manager\RoomMgr.h" />
+    <ClInclude Include="Manager\TimerMgr.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="PacketMgr.h" />
-    <ClInclude Include="RoomMgr.h" />
     <ClInclude Include="TimerEvent.h" />
-    <ClInclude Include="TimerMgr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

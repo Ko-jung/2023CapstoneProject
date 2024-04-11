@@ -10,10 +10,10 @@ using std::endl;
 struct Packet
 {
 	BYTE PacketType;
-	//int PacketType;
+	//WORD PacketSize;
 	int RoomNum;
 
-	Packet() :PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) {}
+	Packet() :PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) { /*sizeof(Packet);*/ }
 	Packet(COMP_OP op) : PacketType((int)op), RoomNum(-1) {}
 };
 #pragma pack(pop)

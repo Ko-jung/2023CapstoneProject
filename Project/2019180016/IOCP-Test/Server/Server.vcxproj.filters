@@ -16,6 +16,15 @@
     <Filter Include="Common">
       <UniqueIdentifier>{b76429b2-70ef-4186-b8e5-332144e1e24e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Manager">
+      <UniqueIdentifier>{de14a960-0736-4b00-8ed1-1120adfb720b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Header">
+      <UniqueIdentifier>{18d1bea6-d828-4f2d-b989-a294ea35bd85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Source">
+      <UniqueIdentifier>{33703329-5e36-42bf-b56f-5309dbc9a3c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -27,23 +36,26 @@
     <ClCompile Include="ClientInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PacketMgr.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="TimerMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="TimerEvent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="RoomMgr.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\LogUtil.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\ClientMgr.cpp">
+      <Filter>소스 파일\Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\PacketMgr.cpp">
+      <Filter>소스 파일\Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\RoomMgr.cpp">
+      <Filter>소스 파일\Manager\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\TimerMgr.cpp">
+      <Filter>소스 파일\Manager\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,19 +65,10 @@
     <ClInclude Include="ClientInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PacketMgr.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TimerMgr.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="TimerEvent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\LogUtil.h">
@@ -79,6 +82,18 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\Packet.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\PacketMgr.h">
+      <Filter>소스 파일\Manager\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\RoomMgr.h">
+      <Filter>소스 파일\Manager\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\TimerMgr.h">
+      <Filter>소스 파일\Manager\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\ClientMgr.h">
+      <Filter>소스 파일\Manager\Header</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

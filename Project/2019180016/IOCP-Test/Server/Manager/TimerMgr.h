@@ -3,7 +3,7 @@
 #include <concurrent_priority_queue.h>
 #include <functional>
 
-#include "TimerEvent.h"
+#include "../TimerEvent.h"
 
 // Ÿ�̸� �Ŵ���, �� �� �ϳ��� ������ ����
 class TimerMgr

@@ -30,8 +30,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Test_TakeDamage(int DamageType);
-	UFUNCTION(BlueprintCallable)
-	void Test_TakeDamageACharacter(ASkyscraperCharacter* character);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
 	TSubclassOf<ASkyscraperCharacter> AssassinCharacter;

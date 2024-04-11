@@ -3,7 +3,7 @@
 #include "../Common/LogUtil.h"
 
 #include <sstream>
-#include "PacketMgr.h"
+#include "Manager/PacketMgr.h"
 
 ClientInfo::ClientInfo(int ClientNum):
 	m_iRemainDataLen(0),
@@ -72,6 +72,10 @@ bool ClientInfo::TakeDamage(float damage)
 
 void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 {
+
+
+
+
 	//int remaindata = bytes + m_iRemainDataLen;
 	//char* packet = exp->_net_buf;
 	//std::string str(exp->_wsa_buf.buf);
@@ -86,7 +90,7 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 
 	// cout << m_iClientNum << "Num Recv Data: " << (RecvDataStream.str()) << endl;
 
-	// ��Ŷ ������
+	//// ��Ŷ ������
 	//while (remaindata > 0) {
 	//	BASE_PACKET* p = reinterpret_cast<BASE_PACKET*>(packet);
 

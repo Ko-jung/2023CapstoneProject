@@ -5,9 +5,9 @@
 #include "ClientInfo.h"
 #include "Object.h"
 
-#include "TimerMgr.h"
+#include "Manager/TimerMgr.h"
 #include "TimerEvent.h"
-#include "RoomMgr.h"
+#include "Manager/RoomMgr.h"
 
 #include <chrono>
 
@@ -347,76 +347,110 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessRecvFromLobby(id, bytes, exp);
 		return;
 	}
-
-	const BYTE PacketType = *(BYTE*)exp->_wsa_buf.buf;
-
-	switch (PacketType)
+	int ReadByte = 0;
+	while (ReadByte < bytes)
 	{
-	case (int)COMP_OP::OP_POSITION:
+		const BYTE PacketType = *(BYTE*)(exp->_wsa_buf.buf + ReadByte);
+		int RemainByte = bytes - ReadByte;
 
-		break;
-	case (int)COMP_OP::OP_PLAYERPOSITION:
-	{
-		PPlayerPosition PPP;
-		//memcpy(&PPP, exp->_wsa_buf.buf, sizeof(PPlayerPosition));
-		MEMCPYBUFTOPACKET(PPP);
-		ProcessPlayerPosition(PPP);
-	}
-	break;
-	case (int)COMP_OP::OP_DISCONNECT:
-	{
-		PDisconnect disconnect(-1);
-		memcpy(&disconnect, exp->_wsa_buf.buf, sizeof(PDisconnect));
-		ProcessDisconnectPlayer(disconnect);
-	}
-	break;
-	case (int)COMP_OP::OP_SELECTWEAPONINFO:
-	{
-		PPlayerSelectInfo PPS;
-		MEMCPYBUFTOPACKET(PPS);
-
-		int SendPlayerRoomNum = id / 6;
-		m_Clients[id]->SetECharacter(PPS.PickedCharacter);
-
-		// Send To Other Player Pick State
-		SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
-	}
-	break;
-	case (int)COMP_OP::OP_DAMAGEDPLAYER:
-	{
-		PDamagedPlayer PDP;
-		MEMCPYBUFTOPACKET(PDP);
-		BYTE TargetPlayerSerialNum = PDP.ChangedPlayerSerial;
-		int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
-
-		int SendPlayerRoomNum = id / 6;
-		int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
-
-		bool IsDead = m_Clients[TargetPlayerId]->TakeDamage(Damage);
-		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, m_Clients[TargetPlayerId]->GetCurrnetHp());
-		SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
-
-		// Sender SerialNum:1 -> Recv Num:0 -> id:1
-		// Sender SerialNum:0 -> Recv Num:1 -> id:0 ??
-		// Client SerialNum == Server id is [true]
-		// 보내기 직전 PDamagedPlayer.ChangedPlayerSerial 값과 id는 같음
-		// 서버 PDamagedPlayer에서 memcpy시 담긴 정보가 달라짐
-		
-		// 클라 둘 다 보내기 때문에 -> O editor printstring이 각 클라 둘다 찍힘 --- 해결완료
-		// 알고보면 두 번 오는거다? -> X printlog가 한 번만 찍힘. 체력은 결국 한 번만 깎이고 있다는거
-		// 왜 서버는 한 번만 받는가? -> 두 개가 연속으로와서 뒷 부분이 짤리나? X -> exp가 달라서 그럴일 없는듯
-		//							 -> Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다.
-		LogUtil::PrintLog("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-		if (IsDead)
+		switch (PacketType)
 		{
-			PChangedPlayerState PCPS(TargetPlayerSerialNum, ECharacterState::DEAD);
-			SendPacketToAllSocketsInRoom(id / 6, &PCPS, sizeof(PCPS));
+		case (int)COMP_OP::OP_POSITION:
+
+			break;
+		case (int)COMP_OP::OP_PLAYERPOSITION:
+		{
+			if (sizeof(PPlayerPosition) > RemainByte)
+			{
+				ReadByte += RemainByte;
+				break;
+			}
+
+			PPlayerPosition PPP;
+			//memcpy(&PPP, exp->_wsa_buf.buf, sizeof(PPlayerPosition));
+			MEMCPYBUFTOPACKET(PPP, ReadByte);
+			ProcessPlayerPosition(PPP);
+
+			ReadByte += sizeof(PPP);
 		}
-	}
-	break;
-	default:
 		break;
+		case (int)COMP_OP::OP_DISCONNECT:
+		{
+			if (sizeof(PDisconnect) > RemainByte)
+			{
+				ReadByte += RemainByte;
+				break;
+			}
+
+			PDisconnect disconnect(-1);
+			memcpy(&disconnect, exp->_wsa_buf.buf, sizeof(PDisconnect));
+			ProcessDisconnectPlayer(disconnect);
+
+			ReadByte += sizeof(disconnect);
+		}
+		break;
+		case (int)COMP_OP::OP_SELECTWEAPONINFO:
+		{
+			if (sizeof(PPlayerSelectInfo) > RemainByte)
+			{
+				ReadByte += RemainByte;
+				break;
+			}
+
+			PPlayerSelectInfo PPS;
+			MEMCPYBUFTOPACKET(PPS, ReadByte);
+
+			int SendPlayerRoomNum = id / 6;
+			m_Clients[id]->SetECharacter(PPS.PickedCharacter);
+
+			// Send To Other Player Pick State
+			SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
+
+			ReadByte += sizeof(PPS);
+		}
+		break;
+		case (int)COMP_OP::OP_DAMAGEDPLAYER:
+		{
+			if (sizeof(PDamagedPlayer) > RemainByte)
+			{
+				ReadByte += RemainByte;
+				break;
+			}
+
+			PDamagedPlayer PDP;
+			MEMCPYBUFTOPACKET(PDP, ReadByte);
+			BYTE TargetPlayerSerialNum = PDP.ChangedPlayerSerial;
+			int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
+
+			int SendPlayerRoomNum = id / 6;
+			int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
+
+			bool IsDead = m_Clients[TargetPlayerId]->TakeDamage(Damage);
+			PChangedPlayerHP PCPHP(TargetPlayerSerialNum, m_Clients[TargetPlayerId]->GetCurrnetHp());
+			SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
+			
+			ReadByte += sizeof(PCPHP);
+
+			// 클라 둘 다 보내기 때문에  -> O editor printstring이 각 클라 둘다 찍힘 --- 해결완료
+			// 알고보면 두 번 오는거다?  -> X printlog가 한 번만 찍힘. 체력은 결국 한 번만 깎이고 있다는거
+			// 왜 서버는 한 번만 받는가? -> 두 개가 연속으로와서 뒷 부분이 짤리나? X -> exp가 달라서 그럴일 없는듯
+			//							 -> Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다.
+			// Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다. WHY?
+			// 진짜 매우 가끔 된다. 매번 보내는 Position을 제거하면 정상 작동
+
+			LogUtil::PrintLog("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+			if (IsDead)
+			{
+				PChangedPlayerState PCPS(TargetPlayerSerialNum, ECharacterState::DEAD);
+				SendPacketToAllSocketsInRoom(id / 6, &PCPS, sizeof(PCPS));
+			}
+		}
+		break;
+		default:
+			LogUtil::PrintLog("abc");
+			break;
+		}
 	}
 
 	m_Clients[id]->RecvProcess(bytes, exp);

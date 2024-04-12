@@ -229,6 +229,29 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s)
 	SetSpeed(s);
 }
 
+void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime)
+{
+	SpeedBuffValue = NewSpeedBuffValue;
+	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed* SpeedBuffValue;
+
+	if (!SpeedBuffTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().SetTimer(SpeedBuffTimerHandle, this, &ThisClass::ResetSpeedBuffValue, 0.2f, false, fBuffTime);
+	}
+	else      // 타이머가 기존에 실행 중이었다면 (무적 모드 중이었다면, 시간 초기화)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(SpeedBuffTimerHandle, this, &ThisClass::ResetSpeedBuffValue, 0.2f, false, fBuffTime);
+	}
+}
+
+void ASkyscraperCharacter::ResetSpeedBuffValue()
+{
+	GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
+	SpeedBuffValue = 1.0f;
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

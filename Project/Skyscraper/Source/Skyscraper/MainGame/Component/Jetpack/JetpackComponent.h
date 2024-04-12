@@ -63,6 +63,7 @@ public:
 	// 회피 로직 함수
 	void Dodge(FVector2D InputValue);
 
+	// 부스터 무한 적용 및 해제 함수
 	UFUNCTION()
 		void ActivateBoostGaugeInfinity(float InfinityTime);
 	UFUNCTION()

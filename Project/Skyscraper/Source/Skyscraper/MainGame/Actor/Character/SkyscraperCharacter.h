@@ -69,7 +69,8 @@ class ASkyscraperCharacter : public ACharacter
 	// 캐릭터 스피드 버프 수치 - 기본 1.0f ( 40% 증가 버프 받으면 1.4f ...)
 	UPROPERTY(EditAnywhere)
 		float SpeedBuffValue;
-	
+
+	FTimerHandle SpeedBuffTimerHandle;
 
 public:
 	ASkyscraperCharacter();
@@ -136,6 +137,12 @@ public:
 
 	FORCEINLINE float GetCharacterMaxWalkSpeed() const { return CharacterMaxWalkSpeed; }
 	FORCEINLINE float GetSpeedBuffValue() const { return SpeedBuffValue; }
+	
+
+	// 스피드 증가 적용 해제 함수
+	void SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime);
+	UFUNCTION()
+		void ResetSpeedBuffValue();
 protected:
 	float Speed;
 };

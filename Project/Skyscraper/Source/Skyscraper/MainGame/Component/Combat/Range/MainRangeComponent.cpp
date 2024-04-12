@@ -144,6 +144,8 @@ void UMainRangeComponent::UseBullet()
 
 void UMainRangeComponent::Fire(float fBaseDamage)
 {
+	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
+
 	if (!GetOwnerPlayerController()) 
 	{
 		EnemyFire(fBaseDamage);

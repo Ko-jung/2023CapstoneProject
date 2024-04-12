@@ -70,7 +70,13 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 		float SpeedBuffValue;
 
+	UPROPERTY(EditAnywhere)
+		float PowerBuffValue;
+
+
+	// 타이머 핸들
 	FTimerHandle SpeedBuffTimerHandle;
+	FTimerHandle PowerBuffTimerHandle;
 
 public:
 	ASkyscraperCharacter();
@@ -107,8 +113,14 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay() override;
 
+	// 캐릭터가 땅에 닿았을 때 실행될 함수
 	virtual void Landed(const FHitResult& Hit) override;
-	
+
+	// 버프(속도/공격력 증가 등) 타이머 시간 이후 초기화 시키는 함수
+	UFUNCTION()
+		void ResetSpeedBuffValue();
+	UFUNCTION()
+		void ResetPowerBuffValue();
 public:
 	// == Get component
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -135,14 +147,19 @@ public:
 	FORCEINLINE void SetIsHover(bool NewIsHover) { bIsHover = NewIsHover; }
 	FORCEINLINE bool GetIsHover() const { return bIsHover; }
 
+	// 캐릭터 기본 걷기 최대 속도 반환 함수
 	FORCEINLINE float GetCharacterMaxWalkSpeed() const { return CharacterMaxWalkSpeed; }
+	// 캐릭터 스피드 버프 수치 (기본 1.0f / 25% 증가시 1.25f 반환) 반환 함수
 	FORCEINLINE float GetSpeedBuffValue() const { return SpeedBuffValue; }
-	
+	// 캐릭터 공격력 버프 수치 (기본 1.0f / 25% 증가시 1.25f 반환) 반환 함수
+	FORCEINLINE float GetPowerBuffValue() const { return PowerBuffValue; }
 
 	// 스피드 증가 적용 해제 함수
 	void SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime);
-	UFUNCTION()
-		void ResetSpeedBuffValue();
+
+	// 공격력 증가 적용 해제 함수
+	void SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime);
+
 protected:
 	float Speed;
 };

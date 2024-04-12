@@ -37,6 +37,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	bIsHover = false;
 	CharacterMaxWalkSpeed = 600.0f;
 	SpeedBuffValue = 1.0f;
+	PowerBuffValue = 1.0f;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -249,6 +250,27 @@ void ASkyscraperCharacter::ResetSpeedBuffValue()
 {
 	GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
 	SpeedBuffValue = 1.0f;
+}
+
+void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime)
+{
+	PowerBuffValue = NewPowerBuffValue;;
+
+	if (!PowerBuffTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().SetTimer(PowerBuffTimerHandle, this, &ThisClass::ResetPowerBuffValue, 0.2f, false, fBuffTime);
+	}
+	else      // 타이머가 기존에 실행 중이었다면 (무적 모드 중이었다면, 시간 초기화)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(PowerBuffTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(PowerBuffTimerHandle, this, &ThisClass::ResetPowerBuffValue, 0.2f, false, fBuffTime);
+	}
+}
+
+void ASkyscraperCharacter::ResetPowerBuffValue()
+{
+	GetWorld()->GetTimerManager().ClearTimer(PowerBuffTimerHandle);
+	PowerBuffValue = 1.0f;
 }
 
 

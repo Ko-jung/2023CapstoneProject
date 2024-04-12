@@ -31,6 +31,9 @@ URPGComponent::URPGComponent()
 void URPGComponent::Fire(float fBaseDamage)
 {
 	if (!GetOwnerPlayerController()) return;
+
+	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
+
 	FVector SpawnLocation = OwnerCharacter->GetActorLocation();
 
 	FVector BulletDestination = GetOwnerPlayerController()->GetControlRotation().Vector() * 8000.0f  

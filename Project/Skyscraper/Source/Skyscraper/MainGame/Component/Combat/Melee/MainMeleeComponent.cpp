@@ -157,6 +157,7 @@ void UMainMeleeComponent::Attack()
 
 void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTime, float fBaseDamage, bool bDoDown)
 {
+	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
 	FVector Start = OwnerCharacter->GetActorLocation();
 	// == if set attack range, fix this line to variable
 	FVector End = Start + OwnerCharacter->GetActorForwardVector() * 150;

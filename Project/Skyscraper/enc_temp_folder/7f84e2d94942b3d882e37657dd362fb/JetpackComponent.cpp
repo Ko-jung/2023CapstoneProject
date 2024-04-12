@@ -250,7 +250,7 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 
 void UJetpackComponent::SlowdownDodge()
 {
-	if(GetOwnerCharacterMovement()->Velocity.Length()<= OwnerCharacter->GetCharacterMaxWalkSpeed())
+	if(GetOwnerCharacterMovement()->Velocity.Length()<600.0f)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(SlowdownDodgeTimerHandle);
 		GetOwnerCharacterMovement()->GravityScale = 1.0f;

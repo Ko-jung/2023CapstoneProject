@@ -36,6 +36,8 @@ private:
 		float CurrentHealth;
 	UPROPERTY(EditAnywhere, Category = Health)
 		float MaxHealth;
+	UPROPERTY()
+		float OriginMaxHealth;
 	EHealthState LivingState;
 
 	// 컴퍼넌트 소유 캐릭터
@@ -60,11 +62,20 @@ private:
 	UPROPERTY()
 		FTimerHandle GodModeTimerHandle;
 
+	// 체력 증가 타이머 핸들
+	UPROPERTY()
+		FTimerHandle PlusHealthBuffTimerHandle;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	// 캐릭터 무적 시간(타이머) 종료시 실행될 함수
+	UFUNCTION()
+		void DeactivateGodMode();
+	// 캐릭터 추가 체력 시간(타이머) 종료시 실행될 함수
+	UFUNCTION()
+		void DeactivatePlusHealth();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -82,8 +93,10 @@ public:
 	// 캐릭터 무적 상태 변수 Setter
 	UFUNCTION(BlueprintCallable)
 		void ActivateGodMode(float GodModeTime);
-	UFUNCTION()
-	void DeactivateGodMode();
+
+	// 캐릭터 체력 추가 실행 함수
+	UFUNCTION(BlueprintCallable)
+		void ActivatePlusHealthBuff(float PlusHealthPercent, float PlusHealthTime);
 
 	// Process Packet From Server
 	void ChangeCurrentHp(float hp);

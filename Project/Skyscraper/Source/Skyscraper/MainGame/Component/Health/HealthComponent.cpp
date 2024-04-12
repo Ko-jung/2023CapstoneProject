@@ -12,6 +12,7 @@
 UHealthComponent::UHealthComponent()
 {
 	MaxHealth = 1000.0f;
+	OriginMaxHealth = MaxHealth;
 	CurrentHealth = 0.0f;
 	OwnerCharacter = nullptr;
 	LivingState = EHealthState::EHS_LIVING;
@@ -29,7 +30,7 @@ UHealthComponent::UHealthComponent()
 	{
 		HealthBarWidgetComponent->SetWidgetClass(HealthBarWidgetRef.Class);
 		HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-		HealthBarWidgetComponent->SetDrawSize(FVector2D(200.0f, 50.0f));
+		HealthBarWidgetComponent->SetDrawSize(FVector2D(150.0f, 25.0f));
 		HealthBarWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	
@@ -121,6 +122,40 @@ void UHealthComponent::DeactivateGodMode()
 	GetWorld()->GetTimerManager().ClearTimer(GodModeTimerHandle);
 	bIsGodMode = false;
 	UE_LOG(LogTemp, Warning, TEXT("God Mode Turnn Off"));
+}
+
+
+void UHealthComponent::ActivatePlusHealthBuff(float PlusHealthPercent, float PlusHealthTime)
+{
+	float PlusHealthValue = OriginMaxHealth * PlusHealthPercent;
+	MaxHealth += PlusHealthValue;
+	CurrentHealth += PlusHealthValue;
+	UE_LOG(LogTemp, Warning, TEXT("health %f / %f Plus - %f"), CurrentHealth, MaxHealth, PlusHealthValue);
+	HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+
+	if (!PlusHealthBuffTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().SetTimer(PlusHealthBuffTimerHandle, this, &ThisClass::DeactivatePlusHealth, 0.2f, false, PlusHealthTime);
+	}
+	else      // 타이머가 기존에 실행 중이었다면 (무적 모드 중이었다면, 시간 초기화)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(PlusHealthBuffTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(PlusHealthBuffTimerHandle, this, &ThisClass::DeactivatePlusHealth, 0.2f, false, PlusHealthTime);
+	}
+
+}
+
+void UHealthComponent::DeactivatePlusHealth()
+{
+	if(PlusHealthBuffTimerHandle.IsValid())
+	{
+		float PlusHealthValue = MaxHealth - OriginMaxHealth;
+		MaxHealth = OriginMaxHealth;
+		CurrentHealth = FMath::Max(CurrentHealth - PlusHealthValue, 1.0f);
+		UE_LOG(LogTemp, Warning, TEXT("health plus end, %f / %f"), CurrentHealth,MaxHealth);
+		HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+		GetWorld()->GetTimerManager().ClearTimer(PlusHealthBuffTimerHandle);
+	}
 }
 
 void UHealthComponent::ChangeCurrentHp(float hp)

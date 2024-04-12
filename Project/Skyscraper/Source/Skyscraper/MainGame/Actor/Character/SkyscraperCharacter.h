@@ -58,15 +58,24 @@ class ASkyscraperCharacter : public ACharacter
 	// 아이템 상호작용 Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_ItemInteraction;
-	
+
+	// 플레이어가 떠 있는지에 대한 변수 (AnimInstance에서 사용 예정)
 	UPROPERTY(VisibleAnywhere)
-	bool IsHover;
+		bool bIsHover;
+
+	// 캐릭터 기본 걷기 속도
+	UPROPERTY(EditAnywhere)
+		float CharacterMaxWalkSpeed;
+	// 캐릭터 스피드 버프 수치 - 기본 1.0f ( 40% 증가 버프 받으면 1.4f ...)
+	UPROPERTY(EditAnywhere)
+		float SpeedBuffValue;
+	
 
 public:
 	ASkyscraperCharacter();
 
 public:
-	// == ���� ���۳�Ʈ
+	// == 컴퍼넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UCombatSystemComponent* CombatSystemComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
@@ -121,9 +130,12 @@ public:
 	void SetSpeed(float s) { Speed = s; }
 	int  GetSpeed() { return Speed; }
 
+	// bIsHover 값 setter / getter
+	FORCEINLINE void SetIsHover(bool NewIsHover) { bIsHover = NewIsHover; }
+	FORCEINLINE bool GetIsHover() const { return bIsHover; }
 
-	FORCEINLINE void SetIsHover(bool NewIsHover) { IsHover = NewIsHover; }
-	FORCEINLINE bool GetIsHover() const { return IsHover; }
+	FORCEINLINE float GetCharacterMaxWalkSpeed() const { return CharacterMaxWalkSpeed; }
+	FORCEINLINE float GetSpeedBuffValue() const { return SpeedBuffValue; }
 protected:
 	float Speed;
 };

@@ -8,7 +8,7 @@
 #include "Skyscraper/Enum/EItemEffect.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
 #include "Skyscraper/MainGame/Interface/Item/ItemInteraction.h"
-#include "Item_Root.generated.h"
+#include "LootingItemActor.generated.h"
 
 class ASkyscraperCharacter;
 class UProgressBar;
@@ -17,53 +17,53 @@ class UWidgetComponent;
 class USphereComponent;
 
 UCLASS()
-class SKYSCRAPER_API AItem_Root : public AActor, public IItemInteraction
+class SKYSCRAPER_API ALootingItemActor : public AActor, public IItemInteraction
 {
 	GENERATED_BODY()
-
-	// 아이템의 희귀도 enum 변수
-	UPROPERTY(EditAnywhere)
-	EItemRareLevel ItemRareLevel;
+	
+		// 아이템의 희귀도 enum 변수
+		UPROPERTY(EditAnywhere)
+		EItemRareLevel ItemRareLevel;
 	// 아이템의 효과 enum 변수
 	UPROPERTY(EditAnywhere)
-	EItemEffect ItemEffectType;
+		EItemEffect ItemEffectType;
 
 	// 오버랩 범위 SphereComponent
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> SphereComponent;
+		TObjectPtr<USphereComponent> SphereComponent;
 	// 상호작용 게이지 Widget Component
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UWidgetComponent> GaugeWidgetComponent;
+		TObjectPtr<UWidgetComponent> GaugeWidgetComponent;
 	// Text Render
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UTextRenderComponent> TextRenderComponent;
+		TObjectPtr<UTextRenderComponent> TextRenderComponent;
 
 	// 상호작용 필요 시간
 	UPROPERTY(EditAnywhere)
-	float RequiredTime;
+		float RequiredTime;
 	// 현재 상호작용 시간
 	UPROPERTY()
-	float CurrentInteractionTime;
+		float CurrentInteractionTime;
 	// 가장 이전 상호작용 시간
 	UPROPERTY()
-	float LastInteractionTime;
+		float LastInteractionTime;
 	// Player - Widget 맵
 	UPROPERTY()
-	TMap<AActor*, UUserWidget*> PlayerAndWidgetMap;
+		TMap<AActor*, UUserWidget*> PlayerAndWidgetMap;
 	// 현재 상호작용 중인 캐릭터
 	UPROPERTY()
-	TObjectPtr<AActor> CurrentInteractionActor;
+		TObjectPtr<AActor> CurrentInteractionActor;
 
 	// 상호작용 키 위젯
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> WBP_InteractionKey;
+		TSubclassOf<UUserWidget> WBP_InteractionKey;
 
 	UPROPERTY()
-	TObjectPtr<UProgressBar> InteractionBar;
-	
+		TObjectPtr<UProgressBar> InteractionBar;
+
 public:
 	// 생성자
-	AItem_Root();
+	ALootingItemActor();
 
 
 protected:
@@ -74,11 +74,11 @@ protected:
 
 	// 상호작용 완료시 해당 캐릭터에게 아이템을 추가하는 함수
 	UFUNCTION()
-	virtual void AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCharacter);
+		virtual void AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCharacter);
 
 	// Begin Overlap - SphereComponent
 	UFUNCTION()
-	void SphereBeginOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep,
+		void SphereBeginOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep,
 			const FHitResult& SweepResult);
 
 	// End Overlap - SphereComponent
@@ -90,7 +90,7 @@ protected:
 
 	// 프로그레스 바의 퍼센트를 바꾸는 함수
 	void SetProgressBarPercent() const;
-public:	
+public:
 	// Tick Event
 	virtual void Tick(float DeltaTime) override;
 	// 인터페이스 - 상호작용 키를 통한 상호작용 시 실행될 함수
@@ -99,5 +99,3 @@ public:
 	// SpawnActorDeferred 를 통해 액터를 생성 후 초기화할 때 사용할 함수
 	FORCEINLINE void Initialize(EItemEffect EffectType, EItemRareLevel RareLevel) { ItemEffectType = EffectType; ItemRareLevel = RareLevel; }
 };
-
-

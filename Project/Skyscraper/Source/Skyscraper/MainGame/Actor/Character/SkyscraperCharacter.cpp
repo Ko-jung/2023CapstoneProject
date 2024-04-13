@@ -17,7 +17,7 @@
 #include "MyBlueprintItemDragDropAction.h"
 #include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
-#include "Skyscraper/MainGame/Actor/Item/Item_Root.h"
+#include "Skyscraper/MainGame/Actor/LootingItem/LootingItemActor.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Melee/MainMeleeComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/MainRangeComponent.h"
@@ -364,7 +364,7 @@ void ASkyscraperCharacter::ItemInteraction()
 	// GetAllActorsOfClass 를 하는 것은 매우 비효율 적일 것으로 예상되므로
 	// 다른 방법을 찾아보기 (노션 탐구)
 	TArray<AActor*> ItemActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AItem_Root::StaticClass(), ItemActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALootingItemActor::StaticClass(), ItemActors);
 
 	// C++ 인터페이스 함수 실행
 	for(AActor* ItemActor : ItemActors)

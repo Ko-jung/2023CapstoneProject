@@ -83,6 +83,10 @@ void AItem_Root::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AItem_Root::DoItemEffect(ASkyscraperCharacter* ItemUsedCharacter)
 {
+	UE_LOG(LogTemp, Warning, TEXT("DoItemEffect"));
+	// 사용한 캐릭터에게 아이템을 추가
+	ItemUsedCharacter->AddItem(ItemEffectType, ItemRareLevel);
+
 	Destroy();
 }
 

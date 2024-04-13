@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Blueprint/UserWidget.h"
+#include "Skyscraper/Enum/EItemEffect.h"
+#include "Skyscraper/Enum/EItemRareLevel.h"
 #include "Skyscraper/MainGame/Interface/Item/ItemInteraction.h"
 #include "Item_Root.generated.h"
 
@@ -18,6 +20,13 @@ UCLASS()
 class SKYSCRAPER_API AItem_Root : public AActor, public IItemInteraction
 {
 	GENERATED_BODY()
+
+	// 아이템의 희귀도 enum 변수
+	UPROPERTY(EditAnywhere)
+	EItemRareLevel ItemRareLevel;
+	// 아이템의 효과 enum 변수
+	UPROPERTY(EditAnywhere)
+	EItemEffect ItemEffectType;
 
 	// 오버랩 범위 SphereComponent
 	UPROPERTY(VisibleAnywhere)
@@ -63,7 +72,8 @@ protected:
 	// End Play
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	// 상호작용 완료시 처리할 아이템 효과 함수
+	// 상호작용 완료시 해당 캐릭터에게 아이템을 추가하는 함수
+	// TODO: 꼭 이름 변경하기 AddItemToUsedCharacter 로!!
 	UFUNCTION()
 	virtual void DoItemEffect(ASkyscraperCharacter* ItemUsedCharacter);
 
@@ -86,6 +96,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// 인터페이스 - 상호작용 키를 통한 상호작용 시 실행될 함수
 	virtual void ItemInteraction(AActor* InteractionActor) override;
+
+	// SpawnActorDeferred 를 통해 액터를 생성 후 초기화할 때 사용할 함수
+	FORCEINLINE void Initialize(EItemEffect EffectType, EItemRareLevel RareLevel) { ItemEffectType = EffectType; ItemRareLevel = RareLevel; }
 };
 
 

@@ -83,28 +83,32 @@ void ClientMgr::ProcessPlayerPosition(PPlayerPosition p)
 
 bool ClientMgr::CheckSelectDuplication(int id, ECharacter c)
 {
-	int roomNum = id / MAXCLIENT;
-	int clientNum = id % MAXCLIENT;
-	if (clientNum < MAXCLIENT / 2)
+	int roomNum = id / MAXPLAYER;
+	int clientNum = id % MAXPLAYER;
+
+	int temp = 6; // MAXPLAYER
+
+	// Blue Team
+	if (clientNum < temp / 2)
 	{
-		for (int i = 0; i < MAXCLIENT / 2; i++)
+		for (int i = 0; i < temp / 2; i++)
 		{
-			if (m_Clients[roomNum * MAXCLIENT + i]->GetECharacter() == c)
+			if (m_Clients[roomNum * temp + i]->GetECharacter() == c)
 			{
-				return false;
+				return true;
 			}
 		}
 	}
+	// Red Team
 	else
 	{
-		for (int i = MAXCLIENT / 2; i < MAXCLIENT; i++)
+		for (int i = temp / 2; i < temp; i++)
 		{
-			if (m_Clients[roomNum * MAXCLIENT + i]->GetECharacter() == c)
+			if (m_Clients[roomNum * temp + i]->GetECharacter() == c)
 			{
-				return false;
+				return true;
 			}
 		}
 	}
-
-	return true;
+	return false;
 }

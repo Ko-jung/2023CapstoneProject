@@ -20,7 +20,6 @@ public:
 
 	bool CheckSelectDuplication(int id, ECharacter c);
 
-
 	ClientInfo* GetEmptyClient();
 	ClientInfo* GetEmptyClient(int& clientNum);
 	const int GetClientCount() { return m_iClientCount; }

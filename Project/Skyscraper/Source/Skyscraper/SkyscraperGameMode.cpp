@@ -109,6 +109,7 @@ void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 		UE_LOG(LogClass, Warning, TEXT("PPlayerPickInfo Packet ClientNum == -1!"));
 	}
 
+	// Why 127?
 	ECharacter   Character   = PPP->PickedCharacter;
 	EMeleeWeapon MeleeWeapon = PPP->PickedMeleeWeapon;
 	ERangeWeapon RangeWeapon = PPP->PickedRangeWeapon;

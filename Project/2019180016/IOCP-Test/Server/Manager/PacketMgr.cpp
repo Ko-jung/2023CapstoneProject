@@ -48,6 +48,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		//memcpy(&PPP, c->GetExp()->_wsa_buf.buf, sizeof(PPP));
 		MEMCPYBUFTOPACKET(PPP);
 		ClientMgr::Instance()->ProcessPlayerPosition(PPP);
+		//ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PPP, sizeof(PPP));
 	}
 	break;
 	case (int)COMP_OP::OP_DISCONNECT:
@@ -65,17 +66,9 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		int id = c->GetClientNum();
 
 		int SendPlayerRoomNum = id / 6;
-		bool IsDuplicate = ClientMgr::Instance()->CheckSelectDuplication(id, PPS.PickedCharacter);
+		ClientMgr::Instance()->GetClients()[id]->SetECharacter(PPS.PickedCharacter);
 
-		if (not IsDuplicate)
-		{
-			ClientMgr::Instance()->GetClients()[id]->SetECharacter(PPS.PickedCharacter);
-		}
-		else
-		{
-			PPS.PickedCharacter = ClientMgr::Instance()->GetClients()[id]->GetECharacter();
-		}
-
+		// Send To Other Player Pick State
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
 	}
 	break;
@@ -115,6 +108,12 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		LogUtil::PrintLog("abc");
 		break;
 	}
+}
+
+void PacketMgr::StartGame(int RoomNum, int ClientNum, void* etc)
+{
+	PStartGame PSG;
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PSG, sizeof(PSG));
 }
 
 void PacketMgr::GameBeginProcessing(int NowClientNum)
@@ -195,10 +194,4 @@ void PacketMgr::SendSelectTime(int NowClientNum, float time)
 {
 	PSetTimer PST = PSetTimer(ETimer::SelectTimer, time);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
-}
-
-void PacketMgr::StartGame(int RoomNum, int ClientNum, void* etc)
-{
-	PStartGame PSG;
-	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PSG, sizeof(PSG));
 }

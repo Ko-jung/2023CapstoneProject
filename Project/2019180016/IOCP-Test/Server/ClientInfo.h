@@ -37,14 +37,10 @@ public:
 	//void SetPos(float x, float y, float z)	{ PosX = x; PosY = y; PosZ = z; }
 
 	// Gaming data, later separated
-	ECharacter GetECharacter() { return CharacterInfo; }
-	EMeleeWeapon GetEMeleeWeapon() { return WeaponInfo; }
-	ERangeWeapon GetERangeWeapon() { return RangeInfo; }
+	ECharacter GetECharacter() { return SelectInfo; }
 	float GetCurrnetHp() { return CurrentHp; }
 
-	void SetECharacter(ECharacter c) { CharacterInfo = c; }
-	void SetEMeleeWeapon(EMeleeWeapon c) { WeaponInfo = c; }
-	void SetERangeWeapon(ERangeWeapon c) { RangeInfo = c; }
+	void SetECharacter(ECharacter c) { SelectInfo = c; }
 private:
 	void Send();
 
@@ -61,9 +57,6 @@ protected:
 	// Gaming data, later separated
 	float MaxHP;
 	std::atomic<float> CurrentHp;
-
-	ECharacter CharacterInfo;
-	EMeleeWeapon WeaponInfo;
-	ERangeWeapon RangeInfo;
+	ECharacter SelectInfo;
 };
 

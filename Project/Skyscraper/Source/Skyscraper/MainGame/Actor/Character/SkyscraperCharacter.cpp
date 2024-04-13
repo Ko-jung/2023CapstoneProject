@@ -23,6 +23,8 @@
 #include "Skyscraper/MainGame/Component/Combat/Range/MainRangeComponent.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 #include "Skyscraper/MainGame/Component/Jetpack/JetpackComponent.h"
+#include "Skyscraper/MainGame/Item/ItemFactory/ItemFactory.h"
+#include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -104,6 +106,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ItemInteractionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultItemInteraction.IA_GameDefaultItemInteraction'"));
 		IA_ItemInteraction = IA_ItemInteractionRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ItemUsingRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefault_ItemUsing.IA_GameDefault_ItemUsing'"));
+		IA_ItemUsing = IA_ItemUsingRef.Object;
 	}
 
 	{ // == Set components
@@ -267,6 +272,16 @@ void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuf
 	}
 }
 
+void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel)
+{
+	if(OwningItem.Key==EItemEffect::EIE_NONE)
+	{
+		OwningItem.Key = ItemEffect; OwningItem.Value = RareLevel;
+		UE_LOG(LogTemp, Warning, TEXT("character earn item"));
+	}
+	
+}
+
 void ASkyscraperCharacter::ResetPowerBuffValue()
 {
 	GetWorld()->GetTimerManager().ClearTimer(PowerBuffTimerHandle);
@@ -289,7 +304,7 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Dodge);
 		// 아이템 상호작용
 		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
-		
+		EnhancedInputComponent->BindAction(IA_ItemUsing, ETriggerEvent::Started, this, &ASkyscraperCharacter::UseItem);
 	}
 	else
 	{
@@ -360,4 +375,19 @@ void ASkyscraperCharacter::ItemInteraction()
 		}
 	}
 
+}
+
+void ASkyscraperCharacter::UseItem() 
+{
+	UE_LOG(LogTemp, Warning, TEXT("no item has"));
+	if(OwningItem.Key != EItemEffect::EIE_NONE)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("character use item"));
+		if(ItemObject* Object =	ItemFactory::CreateItem(OwningItem.Key, OwningItem.Value))
+		{
+			Object->DoItemEffect(this);
+		}
+		OwningItem.Key = EItemEffect::EIE_NONE;
+		OwningItem.Value = EItemRareLevel::EIRL_NONE;
+	}
 }

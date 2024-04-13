@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
+#include "Skyscraper/Enum/EItemEffect.h"
+#include "Skyscraper/Enum/EItemRareLevel.h"
 #include "SkyscraperCharacter.generated.h"
 
 class UJetpackComponent;
@@ -35,30 +37,6 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
-
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
-
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
-
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
-
-	// 제트팩 WW/AA/SS/DD 회피 Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		UInputAction* IA_Jetpack_Dodge;
-
-	// 아이템 상호작용 Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		UInputAction* IA_ItemInteraction;
-
 	// 플레이어가 떠 있는지에 대한 변수 (AnimInstance에서 사용 예정)
 	UPROPERTY(VisibleAnywhere)
 		bool bIsHover;
@@ -66,12 +44,15 @@ class ASkyscraperCharacter : public ACharacter
 	// 캐릭터 기본 걷기 속도
 	UPROPERTY(EditAnywhere)
 		float CharacterMaxWalkSpeed;
-	// 캐릭터 스피드 버프 수치 - 기본 1.0f ( 40% 증가 버프 받으면 1.4f ...)
+	// 캐릭터 버프 수치 - 기본 1.0f ( 40% 증가 버프 받으면 1.4f ...)
 	UPROPERTY(EditAnywhere)
 		float SpeedBuffValue;
-
 	UPROPERTY(EditAnywhere)
 		float PowerBuffValue;
+
+	// 캐릭터의 소유하고 있는 아이템에 대한 변수 ( 기본 값 - [EIE_NONE, EIRL_NONE]
+	
+	TTuple<EItemEffect, EItemRareLevel> OwningItem;
 
 
 	// 타이머 핸들
@@ -98,15 +79,18 @@ protected:
 			
 
 protected:
+	// 키 인풋에 따른 액션 함수
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	// 제트팩 컴퍼넌트 - 회피 기능 사용
 	void Dodge(const FInputActionValue& InputActionValue);
 	// 아이템 상호작용 키 
 	void ItemInteraction();
+	// 아이템 사용
+	void UseItem();
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -160,7 +144,39 @@ public:
 	// 공격력 증가 적용 해제 함수
 	void SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime);
 
+	// 아이템을 추가시키는 함수
+	void AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel);
 protected:
 	float Speed;
+
+private:
+	// Input 관련 변수
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputMappingContext* DefaultMappingContext;
+
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* JumpAction;
+
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* MoveAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* LookAction;
+
+	// 제트팩 WW/AA/SS/DD 회피 Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_Jetpack_Dodge;
+
+	// 아이템 상호작용 Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_ItemInteraction;
+
+	// 아이템 사용 Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_ItemUsing;
 };
 

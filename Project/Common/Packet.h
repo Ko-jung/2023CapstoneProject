@@ -52,6 +52,7 @@ struct PPlayerPosition : Packet, PTransform
 {
 	int PlayerSerial;
 	float PlayerSpeed;
+	float PlayerXDirection;
 
 	EPlayerState PlayerState;
 

@@ -48,6 +48,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		//memcpy(&PPP, c->GetExp()->_wsa_buf.buf, sizeof(PPP));
 		MEMCPYBUFTOPACKET(PPP);
 		ClientMgr::Instance()->ProcessPlayerPosition(PPP);
+		//ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PPP, sizeof(PPP));
 	}
 	break;
 	case (int)COMP_OP::OP_DISCONNECT:
@@ -76,7 +77,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PDamagedPlayer PDP;
 		MEMCPYBUFTOPACKET(PDP, ReadByte);
 		BYTE TargetPlayerSerialNum = PDP.ChangedPlayerSerial;
-		int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
+		const int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
 		auto& clients = ClientMgr::Instance()->GetClients();
 
 		int id = c->GetClientNum();
@@ -125,9 +126,19 @@ void PacketMgr::GameBeginProcessing(int NowClientNum)
 	TimerEvent TE2(std::chrono::seconds(40),
 		std::bind(&PacketMgr::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
 	TimerMgr::Instance()->Insert(TE2);
+
+	// ===Tile Drop Timers========
+
+	//============================
+
+	// ===new Room's Kill Count===
+
+	//============================
+
+	// collision Group
 }
 
-int PacketMgr::GetWeaponDamage(bool isMelee, int weaponEnum)
+const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)
 {
 	if (isMelee)
 	{

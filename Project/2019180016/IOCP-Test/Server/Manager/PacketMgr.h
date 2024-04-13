@@ -23,6 +23,6 @@ public:
 private:
 	void SendSelectTime(int NowClientNum, float time);
 
-	int GetWeaponDamage(bool isMelee, int weaponEnum);
+	const int GetWeaponDamage(const bool& isMelee, const int& weaponEnum);
 };
 

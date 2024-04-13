@@ -7,6 +7,7 @@
 
 #include "../MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "../MainGame/Component/Health/HealthComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -33,22 +34,23 @@ void AMainGameMode::BeginPlay()
 		switch (p->PickedCharacter)
 		{
 		case ECharacter::Assassin:
-			Class = AssassinCharacter;
+			(i == SerialNum) ? Class = AssassinCharacter : Class = AIAssassinCharacter;
 			break;
 		case ECharacter::Boomerang:
-			Class = BoomerangCharacter;
+			(i == SerialNum) ? Class = BoomerangCharacter : Class = AIBoomerangCharacter;
+			//Class = BoomerangCharacter;
 			break;
 		case ECharacter::Detector:
-			Class = DetectionCharacter;
+			(i == SerialNum) ? Class = DetectionCharacter : Class = AIDetectionCharacter;
 			break;
 		case ECharacter::Elect:
-			Class = ElectricCharacter;
+			(i == SerialNum) ? Class = ElectricCharacter : Class = AIElectricCharacter;
 			break;
 		case ECharacter::Shield:
-			Class = ShieldCharacter;
+			(i == SerialNum) ? Class = ShieldCharacter : Class = AIShieldCharacter;
 			break;
 		case ECharacter::Wind:
-			Class = WindCharacter;
+			(i == SerialNum) ? Class = WindCharacter : Class = AIWindCharacter;
 			break;
 		case ECharacter::NullCharacter:
 			UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), i);
@@ -92,8 +94,10 @@ void AMainGameMode::ProcessFunc()
 		{
 		case EPLAYERTRANSFORM:
 		{
-			PPlayerPosition* PPP = static_cast<PPlayerPosition*>(argu);
-			SetPlayerPosition(*PPP);
+			//PPlayerPosition* PPP = static_cast<PPlayerPosition*>(argu);
+			PPlayerPosition PPP;
+			memcpy(&PPP, argu, sizeof(PPP));
+			SetPlayerPosition(PPP);
 			break;
 		}
 		case ECHANGEDPLAYERHP:
@@ -135,15 +139,16 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	FTransform transform{ Rotate, Location, FVector(1.f,1.f,1.f) };
 
 	float speed = PlayerPosition.PlayerSpeed;
+	float XRotate = PlayerPosition.PlayerXDirection;
 
-	Characters[Serial]->SyncTransformAndAnim(transform, speed);
+	Characters[Serial]->SyncTransformAndAnim(transform, speed, XRotate);
 }
 
 void AMainGameMode::SendPlayerLocation()
 {
 	FVector location = Characters[SerialNum]->GetActorLocation();
 	FRotator rotate = Characters[SerialNum]->GetActorRotation();
-	int speed = Characters[SerialNum]->GetSpeed();
+	int speed = Characters[SerialNum]->GetVelocity().Length();
 	//FRotator rotate = transform.GetRotation();
 
 	PPlayerPosition PlayerPosition;
@@ -157,10 +162,39 @@ void AMainGameMode::SendPlayerLocation()
 	PlayerPosition.ry = rotate.Yaw;
 	PlayerPosition.rz = rotate.Roll;
 
-
 	PlayerPosition.PlayerSpeed = speed;
 
+	FVector Velo = Characters[SerialNum]->GetVelocity();
+	PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
+
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
+}
+
+float AMainGameMode::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)
+{
+	if (!Velocity.IsNearlyZero())
+	{
+		const FMatrix RotMatrix = FRotationMatrix(BaseRotation);
+		const FVector ForwardVector = RotMatrix.GetScaledAxis(EAxis::X);
+		const FVector RightVector = RotMatrix.GetScaledAxis(EAxis::Y);
+		const FVector NormalizedVel = Velocity.GetSafeNormal2D();
+
+		// get a cos(alpha) of forward vector vs velocity
+		const float ForwardCosAngle = static_cast<float>(FVector::DotProduct(ForwardVector, NormalizedVel));
+		// now get the alpha and convert to degree
+		float ForwardDeltaDegree = FMath::RadiansToDegrees(FMath::Acos(ForwardCosAngle));
+
+		// depending on where right vector is, flip it
+		const float RightCosAngle = static_cast<float>(FVector::DotProduct(RightVector, NormalizedVel));
+		if (RightCosAngle < 0.f)
+		{
+			ForwardDeltaDegree *= -1.f;
+		}
+
+		return ForwardDeltaDegree;
+	}
+
+	return 0.f;
 }
 
 void AMainGameMode::Test_TakeDamage(int DamageType)

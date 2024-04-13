@@ -25,6 +25,9 @@ public:
 	void SetPlayerPosition(PPlayerPosition PlayerPosition);
 	void SendPlayerLocation();
 
+	// UE5 Function Code
+	float CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation);
+
 	//UFUNCTION(BlueprintNativeEvent)
 	//void SpawnCharactersUsingSelectInfo(TSubclassOf<class ASkyscraperCharacter> Class, FVector location);
 
@@ -44,6 +47,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Characters")
 	TSubclassOf<ASkyscraperCharacter> WindCharacter;
 
+	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
+	TSubclassOf<ASkyscraperCharacter> AIAssassinCharacter;
+	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
+	TSubclassOf<ASkyscraperCharacter> AIBoomerangCharacter;
+	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
+	TSubclassOf<ASkyscraperCharacter> AIDetectionCharacter;
+	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
+	TSubclassOf<ASkyscraperCharacter> AIElectricCharacter;
+	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
+	TSubclassOf<ASkyscraperCharacter> AIShieldCharacter;
+	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
+	TSubclassOf<ASkyscraperCharacter> AIWindCharacter;
+
 private:
+	//ASkyscraperCharacter* PossessCharacter;
 	TArray<ASkyscraperCharacter*> Characters;
 };

@@ -122,10 +122,12 @@ public:
 	// == Get Anim Montage
 	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
 
-	void SyncTransformAndAnim(FTransform t, float s);
+	void SyncTransformAndAnim(FTransform t, float s, float r);
 
 	void SetSpeed(float s) { Speed = s; }
+	void SetXRotate(float r) { XRotate = r; }
 	int  GetSpeed() { return Speed; }
+	float GetXRotate() { return XRotate; }
 
 	// bIsHover 값 setter / getter
 	FORCEINLINE void SetIsHover(bool NewIsHover) { bIsHover = NewIsHover; }
@@ -147,7 +149,10 @@ public:
 	// 아이템을 추가시키는 함수
 	void AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel);
 protected:
+	UPROPERTY(BlueprintReadWrite)
 	float Speed;
+	UPROPERTY(BlueprintReadWrite)
+	float XRotate;
 
 private:
 	// Input 관련 변수

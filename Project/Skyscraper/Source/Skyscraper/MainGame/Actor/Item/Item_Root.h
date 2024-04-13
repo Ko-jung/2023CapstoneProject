@@ -73,9 +73,8 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	// 상호작용 완료시 해당 캐릭터에게 아이템을 추가하는 함수
-	// TODO: 꼭 이름 변경하기 AddItemToUsedCharacter 로!!
 	UFUNCTION()
-	virtual void DoItemEffect(ASkyscraperCharacter* ItemUsedCharacter);
+	virtual void AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCharacter);
 
 	// Begin Overlap - SphereComponent
 	UFUNCTION()

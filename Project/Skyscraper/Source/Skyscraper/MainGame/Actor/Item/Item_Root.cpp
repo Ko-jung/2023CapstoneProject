@@ -81,7 +81,7 @@ void AItem_Root::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
-void AItem_Root::DoItemEffect(ASkyscraperCharacter* ItemUsedCharacter)
+void AItem_Root::AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("DoItemEffect"));
 	// 사용한 캐릭터에게 아이템을 추가
@@ -168,7 +168,7 @@ void AItem_Root::ItemInteraction(AActor* InteractionActor)
 		// 시간이 채워졌다면 효과 적용하기
 		if(CurrentInteractionTime >= RequiredTime)
 		{
-			DoItemEffect(InteractionCharacter);
+			AddItemToUsedCharacter(InteractionCharacter);
 		}
 	}
 

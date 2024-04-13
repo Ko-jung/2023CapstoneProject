@@ -386,6 +386,7 @@ void ASkyscraperCharacter::UseItem()
 		if(ItemObject* Object =	ItemFactory::CreateItem(OwningItem.Key, OwningItem.Value))
 		{
 			Object->DoItemEffect(this);
+			delete Object;
 		}
 		OwningItem.Key = EItemEffect::EIE_NONE;
 		OwningItem.Value = EItemRareLevel::EIRL_NONE;

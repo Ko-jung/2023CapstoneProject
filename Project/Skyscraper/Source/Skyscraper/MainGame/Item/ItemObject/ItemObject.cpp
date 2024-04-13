@@ -13,6 +13,7 @@ ItemObject::~ItemObject()
 
 void ItemObject::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
+	UE_LOG(LogTemp, Warning, TEXT("!!!!!!!!!!!!!!!!!"));
 	// virtual
 	// Super 로 할일 있을 시 추가
 }

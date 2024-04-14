@@ -8,12 +8,18 @@
 
 AMeleeEnemyCharacter::AMeleeEnemyCharacter()
 {
-	MeleeComponent = CreateDefaultSubobject<UGreatSwordComponent>(TEXT("Melee"));
+	DoAttackDelay = 0.3f;
+	MeleeClass = UGreatSwordComponent::StaticClass();
+	//MeleeComponent = CreateDefaultSubobject<UGreatSwordComponent>(TEXT("Melee"));
 }
 
 void AMeleeEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// 무기 컴퍼넌트 제작
+	MeleeComponent = Cast<UMainMeleeComponent>(AddComponentByClass(MeleeClass, false, FTransform(), true));
+	MeleeComponent->RegisterComponent();
 
 	GetWorld()->GetTimerManager().SetTimer(EnemyAttackTimerHandle, this, &AMeleeEnemyCharacter::MeleeEnemyAttack, DoAttackDelay, false, 2.0f);
 }

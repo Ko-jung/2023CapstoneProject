@@ -18,8 +18,10 @@ public:
 	AMeleeEnemyCharacter();
 
 	UPROPERTY(EditAnywhere)
-		float DoAttackDelay = 0.3f;
-
+		float DoAttackDelay;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UMainMeleeComponent> MeleeClass;
+	
 protected:
 	virtual void BeginPlay() override;
 

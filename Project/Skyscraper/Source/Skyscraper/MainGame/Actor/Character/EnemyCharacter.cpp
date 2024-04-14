@@ -16,7 +16,11 @@ void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RangeComponent->SetBulletMaxCount(5);
+	if(RangeComponent)
+	{
+		RangeComponent->SetBulletMaxCount(5);
+	}
+	
 
 	GetWorld()->GetTimerManager().SetTimer(EnemyFireTimerHandle, this, &ThisClass::FirePer1Sec, 1.0f, false,2.0f);
 }

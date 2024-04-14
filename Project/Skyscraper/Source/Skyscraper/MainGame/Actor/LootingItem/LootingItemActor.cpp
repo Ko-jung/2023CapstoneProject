@@ -97,11 +97,13 @@ void ALootingItemActor::SphereBeginOverlapFunc(UPrimitiveComponent* OverlappedCo
 	if (TObjectPtr<ASkyscraperCharacter> OverlapCharacter = Cast<ASkyscraperCharacter>(OtherActor))
 	{
 		// 위젯 생성 및 연결
-		UUserWidget* InteractionKeyWidget = CreateWidget(OverlapCharacter->GetPlayerController(), WBP_InteractionKey);
-		InteractionKeyWidget->AddToViewport();
-
-		// TMap에 [캐릭터, 위젯] 튜플 추가
-		PlayerAndWidgetMap.Add(OverlapCharacter, InteractionKeyWidget);
+		if(OverlapCharacter->GetPlayerController())
+		{
+			UUserWidget* InteractionKeyWidget = CreateWidget(OverlapCharacter->GetPlayerController(), WBP_InteractionKey);
+			InteractionKeyWidget->AddToViewport();
+			// TMap에 [캐릭터, 위젯] 튜플 추가
+			PlayerAndWidgetMap.Add(OverlapCharacter, InteractionKeyWidget);
+		}
 	}
 }
 

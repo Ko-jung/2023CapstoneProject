@@ -101,17 +101,23 @@ void UMainMeleeComponent::RemoveThisWeapon()
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
 {
-
 	CanAttack = false;
 
 	int AnimationMovementAxis = 1;
 
 	{ // == Set Animation movement axis by key input
-		if (GetOwnerPlayerController()->IsInputKeyDown(EKeys::W))
+		// For EnemyCharacter
+		if(!GetOwnerPlayerController())	
+		{
+			AnimationMovementAxis = 0;
+		}
+
+		// For Player
+		if (GetOwnerPlayerController() && GetOwnerPlayerController()->IsInputKeyDown(EKeys::W))
 		{
 			AnimationMovementAxis += 1;
 		}
-		else if (GetOwnerPlayerController()->IsInputKeyDown(EKeys::S))
+		if (GetOwnerPlayerController() && GetOwnerPlayerController()->IsInputKeyDown(EKeys::S))
 		{
 			AnimationMovementAxis -= 1;
 		}

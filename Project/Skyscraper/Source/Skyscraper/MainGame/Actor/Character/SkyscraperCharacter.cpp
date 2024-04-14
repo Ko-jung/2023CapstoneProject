@@ -109,7 +109,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ItemUsingRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefault_ItemUsing.IA_GameDefault_ItemUsing'"));
 		IA_ItemUsing = IA_ItemUsingRef.Object;
-	}
+	}		 
 
 	{ // == Set components
 		CombatSystemComponent = CreateDefaultSubobject<UCombatSystemComponent>(TEXT("CombatSystemComponent"));

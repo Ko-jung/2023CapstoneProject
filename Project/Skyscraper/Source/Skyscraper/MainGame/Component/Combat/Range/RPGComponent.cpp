@@ -23,8 +23,20 @@ URPGComponent::URPGComponent()
 	RecoilTime = 0.1f;
 	RecoilSpeed = 20.0f;
 
-	static ConstructorHelpers::FClassFinder<ARPGBullet> RPGBulletBPRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/BP_RPGBullet.BP_RPGBullet_C'"));
-	RPGBulletBPClass = RPGBulletBPRef.Class;
+	{ // 총알 에셋 로드
+		static ConstructorHelpers::FClassFinder<ARPGBullet> RPGBulletBPRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/BP_RPGBullet.BP_RPGBullet_C'"));
+		RPGBulletBPClass = RPGBulletBPRef.Class;
+	}
+	
+	{ // 무기 에셋 로드 
+		WeaponSocketName = TEXT("RPGSocket");
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> RPGSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/gun/rpg.rpg'"));
+		WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RPG Weapon"));
+		WeaponMeshComponent->SetSkeletalMesh(RPGSkeletalMeshRef.Object);
+	}
+
+	
+	
 	
 }
 

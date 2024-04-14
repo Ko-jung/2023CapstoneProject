@@ -31,5 +31,4 @@ URifleComponent::URifleComponent()
 void URifleComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("라이플 컴퍼넌트 잘 만들어짐"));
 }

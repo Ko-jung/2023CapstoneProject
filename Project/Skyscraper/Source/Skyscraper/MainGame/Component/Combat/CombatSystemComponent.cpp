@@ -92,10 +92,11 @@ void UCombatSystemComponent::BeginPlay()
 	{ // 소유 캐릭터에 근접 및 원거리 무기 컴퍼넌트 생성
 		MainMeleeWeaponComponent =OwnerCharacter->AddComponentByClass(MeleeClass[(uint8)MeleeSelect], false, FTransform(), true);
 		MainMeleeWeaponComponent->RegisterComponent();
-		Cast<UMainMeleeComponent>(MainMeleeWeaponComponent)->AddThisWeapon();
 
 		MainRangeWeaponComponent = OwnerCharacter->AddComponentByClass(RangeClass[(uint8)RangeSelect], false, FTransform(), true);
 		MainRangeWeaponComponent->RegisterComponent();
+
+		SwapToRangeWeapon(FInputActionValue());
 	}
 
 	//Add Input Mapping Context
@@ -284,6 +285,27 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 		}
 	}
 	
+}
+
+void UCombatSystemComponent::GetWeaponEquipStateForAnimation(uint8& WeaponType, uint8& EquippedWeapon)
+{
+	if(MainWeaponComponent)
+	{
+		if(MainWeaponComponent == MainMeleeWeaponComponent)
+		{
+			WeaponType = 1;	//근거리 장비 착용중
+			EquippedWeapon = (uint8)MeleeSelect;
+		}
+		else if (MainWeaponComponent == MainRangeWeaponComponent)
+		{
+			WeaponType = 2; // 원거리 장비 착용중
+			EquippedWeapon = (uint8)RangeSelect;
+		}
+	}
+	else
+	{
+		WeaponType = 0;		// 맨손
+	}
 }
 
 void UCombatSystemComponent::OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted)

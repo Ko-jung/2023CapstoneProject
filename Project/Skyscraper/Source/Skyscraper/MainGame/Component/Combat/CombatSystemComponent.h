@@ -30,6 +30,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void Down(FVector DownDirection);
 
+
+	// AnimInstance에서 캐릭터의 Idle 상태 애니메이션을 위해 필요한 변수 getter
+	// WeaponType - 맨손(0), 근거리(1), 원거리(2)
+	// EquippedWeapon - EMeleeSelect/ERangeSelect 값과 동일
+	UFUNCTION(BlueprintCallable)
+		void GetWeaponEquipStateForAnimation(uint8& WeaponType, uint8& EquippedWeapon);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -52,7 +58,7 @@ protected:
 	UPROPERTY(EditAnywhere,Category = MotionWarping)
 		ECharacterAnimMontage DownAnimMontageKey;
 
-	// == Weapon Component Variable
+	// == 무기 컴퍼넌트에 대한 변수
 	UPROPERTY()
 		UActorComponent* MainWeaponComponent;
 	UPROPERTY()

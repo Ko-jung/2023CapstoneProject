@@ -9,7 +9,7 @@ AAssassinCharacter::AAssassinCharacter()
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/4_assassin/assassin.assassin'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
-		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Assassin/ABP_Assassin.ABP_Assassin_C'"));
+		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Assassin/Assassin/ABP_Assassin.ABP_Assassin_C'"));
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 

@@ -8,6 +8,8 @@
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
 #include "Skyscraper/Enum/EItemEffect.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
+#include "Skyscraper/Enum/EMeleeSelect.h"
+#include "Skyscraper/Enum/ERangeSelect.h"
 #include "SkyscraperCharacter.generated.h"
 
 class UJetpackComponent;
@@ -41,6 +43,7 @@ class ASkyscraperCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere)
 		bool bIsHover;
 
+
 	// 캐릭터 기본 걷기 속도
 	UPROPERTY(EditAnywhere)
 		float CharacterMaxWalkSpeed;
@@ -51,7 +54,6 @@ class ASkyscraperCharacter : public ACharacter
 		float PowerBuffValue;
 
 	// 캐릭터의 소유하고 있는 아이템에 대한 변수 ( 기본 값 - [EIE_NONE, EIRL_NONE]
-	
 	TTuple<EItemEffect, EItemRareLevel> OwningItem;
 
 

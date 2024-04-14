@@ -150,10 +150,6 @@ public:
 
 	// 아이템을 추가시키는 함수
 	void AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel);
-
-	// 캐릭터 무적 설정 및 해제 변수 / GodMode인지 get 함수
-	void SetCharacterGodMode(bool bNewGodMode);
-	bool IsCharacterGodMode();
 protected:
 	UPROPERTY(BlueprintReadWrite)
 	float Speed;

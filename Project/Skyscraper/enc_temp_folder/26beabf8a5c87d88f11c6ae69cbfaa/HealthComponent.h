@@ -90,7 +90,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float GetHealthPercent() const;
 
-	// 캐릭터 무적 상태 변수 Setter <- 타이머 전용
+	// 캐릭터 무적 상태 변수 Setter
 	UFUNCTION(BlueprintCallable)
 		void ActivateGodMode(float GodModeTime);
 
@@ -98,15 +98,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ActivatePlusHealthBuff(float PlusHealthPercent, float PlusHealthTime);
 
-	// 무적상태 반환 함수(getter) 및 setter
-	FORCEINLINE bool IsGodMode() const { return bIsGodMode; }
-	FORCEINLINE void SetGodMode(bool bNewGodMode) { bIsGodMode = bNewGodMode; }
-
 	// Process Packet From Server
 	void ChangeCurrentHp(float hp);
 	void ChangeState(ECharacterState s);
 
-	
 private:
 	void SetPlayerDie();
 };

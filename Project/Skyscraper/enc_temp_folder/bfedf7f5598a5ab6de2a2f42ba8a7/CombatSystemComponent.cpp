@@ -252,16 +252,13 @@ void UCombatSystemComponent::LockOn()
 void UCombatSystemComponent::Stiffness(float StiffnessTime)
 {
 	if (StiffnessTime <= FLT_EPSILON) return;
-	if (OwnerCharacter->IsCharacterGodMode()) return;	// 무적이면 경직 먹지 않도록
-
+	
 	const float DamagedAnimPlayRate = OwnerCharacter->GetAnimMontage(StiffnessAnimMontageKey)->GetPlayLength() / StiffnessTime;
 	OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(StiffnessAnimMontageKey), DamagedAnimPlayRate);
 }
 
 void UCombatSystemComponent::Down(FVector DownDirection)
 {
-	if (OwnerCharacter->IsCharacterGodMode()) return;	// 무적이면 다운 당하지 않도록
-
 	{ // == Play Down Montage
 		OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
 		OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(DownAnimMontageKey));

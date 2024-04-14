@@ -287,24 +287,6 @@ void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLe
 	
 }
 
-void ASkyscraperCharacter::SetCharacterGodMode(bool bNewGodMode)
-{
-	if(HealthComponent)
-	{
-		HealthComponent->SetGodMode(bNewGodMode);
-	}
-}
-
-bool ASkyscraperCharacter::IsCharacterGodMode()
-{
-	if(HealthComponent)
-	{
-		return HealthComponent->IsGodMode();
-	}
-
-	return false;
-}
-
 void ASkyscraperCharacter::ResetPowerBuffValue()
 {
 	GetWorld()->GetTimerManager().ClearTimer(PowerBuffTimerHandle);

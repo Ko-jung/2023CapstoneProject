@@ -32,5 +32,15 @@ AAssassinCharacter::AAssassinCharacter()
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_RifleReadyFire) = AM_RifleReadyFireRef.Object;
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Range/Rifle/AM_Assassin_AR_Reload.AM_Assassin_AR_Reload'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_RifleReload) = AM_RifleReloadRef.Object;
+
+		// Stiffness / Down
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StiffnessRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Hit_Fwd.AM_Assassin_Hit_Fwd'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stiffness, AM_StiffnessRef.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StiffnessBwdRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Hit_Bwd.AM_Assassin_Hit_Bwd'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stiffness_Bwd, AM_StiffnessBwdRef.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Down_Fwd.AM_Assassin_Down_Fwd'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down, AM_DownRef.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownBwdRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Down_Bwd.AM_Assassin_Down_Bwd'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down_Bwd, AM_DownBwdRef.Object);
 	}
 }

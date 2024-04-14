@@ -11,5 +11,6 @@ enum class ECharacterAnimMontage
 	ECAM_RifleReadyFire, ECAM_RifleFire, ECAM_RifleReload,
 	ECAM_RPGReadyFire, ECAM_RPGFire, ECAM_RPGReload, 
 	ECAM_Stiffness, ECAM_Down,
+	ECAM_Stiffness_Bwd, ECAM_Down_Bwd
 
 };

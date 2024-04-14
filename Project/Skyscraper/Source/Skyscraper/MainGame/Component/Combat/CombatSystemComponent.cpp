@@ -268,26 +268,30 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 	}
 
 	
-	{ // == Set motion warp target
-		UMotionWarpingComponent* MotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
+	//{ // == Set motion warp target
+	//	UMotionWarpingComponent* MotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
+	//
+	//	{ // == Set "FloatingPosition"
+	//		// == for floating, add FVector(0.0f, 0.0f, 100.0f);
+	//		// == DownDirection * DownDistance(120) <- can make to variable
+	//		FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 120 + FVector(0.0f, 0.0f, 100.0f);
+	//
+	//		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("FloatingPosition"), TargetLocation);
+	//	}
+	//
+	//	{ // == Set "LandingPosition"
+	//		// == for grounding, add FVector(0.0f, 0.0f, -100.0f);
+	//		// == DownDirection * DownDistance(240) <- can make to variable
+	//		FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 240 + FVector(0.0f, 0.0f, -100.0f);
+	//
+	//		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("LandingPosition"), TargetLocation);
+	//	}
+	//}
 
-		{ // == Set "FloatingPosition"
-			// == for floating, add FVector(0.0f, 0.0f, 100.0f);
-			// == DownDirection * DownDistance(120) <- can make to variable
-			FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 120 + FVector(0.0f, 0.0f, 100.0f);
+	// 다운 힘 = 1000.0f
+	DownDirection *= 1000.0f;
+	OwnerCharacter->LaunchCharacter(FVector(DownDirection.X,DownDirection.Y,750.0f), false, true);
 
-			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("FloatingPosition"), TargetLocation);
-		}
-
-		{ // == Set "LandingPosition"
-			// == for grounding, add FVector(0.0f, 0.0f, -100.0f);
-			// == DownDirection * DownDistance(240) <- can make to variable
-			FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 240 + FVector(0.0f, 0.0f, -100.0f);
-
-			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("LandingPosition"), TargetLocation);
-		}
-	}
-	
 }
 
 void UCombatSystemComponent::GetWeaponEquipStateForAnimation(uint8& WeaponType, uint8& EquippedWeapon)

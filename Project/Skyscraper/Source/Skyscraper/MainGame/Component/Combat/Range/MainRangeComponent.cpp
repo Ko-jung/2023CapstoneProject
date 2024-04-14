@@ -147,7 +147,8 @@ void UMainRangeComponent::PlayFireAnim()
 	UE_LOG(LogTemp, Warning, TEXT("총 발사"));
 	CurrentFireCoolTime = FireMaxCoolTime;
 
-	OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
+	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
+	OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(FireAnimMontageKey), 1.0f);
 
 	if(!FireCoolTimerHandle.IsValid())
 	{

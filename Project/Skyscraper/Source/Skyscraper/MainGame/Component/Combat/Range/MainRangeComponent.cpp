@@ -66,10 +66,20 @@ void UMainRangeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 소유자 정보 로드
 	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 
+	// 소유자에게 무기 부착
+	FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget,false};
+	WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
+	WeaponMeshComponent->SetHiddenInGame(true);
+
+	// 총알 탄수 초기화
 	CurrentBulletCount = BulletMaxCount;
+
+	
+
 	// == TODO: UI BulletCount set
 
 	// == TODO: Create Range Widget
@@ -112,14 +122,22 @@ void UMainRangeComponent::RemoveInputMappingContext()
 	}
 }
 
+void UMainRangeComponent::SetWeaponHiddenInGame(bool bNewHidden) const
+{
+	WeaponMeshComponent->SetHiddenInGame(bNewHidden);
+}
+
+
 void UMainRangeComponent::AddThisWeapon()
 {
 	AddInputMappingContext();
+	SetWeaponHiddenInGame(false);
 }
 
 void UMainRangeComponent::RemoveThisWeapon()
 {
 	RemoveInputMappingContext();
+	SetWeaponHiddenInGame(true);
 }
 
 

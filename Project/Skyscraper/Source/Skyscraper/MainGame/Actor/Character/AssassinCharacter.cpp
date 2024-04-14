@@ -26,6 +26,7 @@ AAssassinCharacter::AAssassinCharacter()
 		//*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_KatanaAttack4) = AM_Katana4Ref.Object;
 		
 		//Rifle
+		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Assassin/Combat/Range/Rifle/AM_Assassin_AR_Fire.AM_Assassin_AR_Fire'"));
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Assassin/Combat/Range/Rifle/AM_Assassin_AR_Fire.AM_Assassin_AR_Fire'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_RifleFire) = AM_RifleFireRef.Object;
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleReadyFireRef(TEXT(""));

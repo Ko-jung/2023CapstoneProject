@@ -21,6 +21,12 @@ public:
 	void AddInputMappingContext();
 	void RemoveInputMappingContext();
 
+	// 다시 무기를 장착 하였을 때 키 인풋 추가 및 무기 추가하는 함수
+	void AddThisWeapon();
+	// 무기 컴퍼넌트 제거할 때, 키 인풋 제거 및 무기 제거하는 함수
+	void RemoveThisWeapon();
+	
+
 	// 총발사를 위한 애니메이션을 재생하는 함수
 	UFUNCTION(BlueprintCallable)
 	void PlayFireAnim();
@@ -52,6 +58,15 @@ protected:
 	// 소유 캐릭터 변수
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
+
+	// 착용 시 무기에 대한 변수
+	// 각 하위(자식) 컴퍼넌트 들에서 초기화 진행
+	UPROPERTY()
+		USkeletalMeshComponent* WeaponMesh;
+	UPROPERTY()
+		USkeletalMesh* WeaponObject;
+	UPROPERTY()
+		FName WeaponSocketName;
 
 	// 발사 관련 변수
 	UPROPERTY(VisibleAnywhere, Category = Fire)

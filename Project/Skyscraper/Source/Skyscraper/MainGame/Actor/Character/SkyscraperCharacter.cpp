@@ -152,17 +152,21 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGFire, AM_SMGFireRef.Object);
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SMGReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGReload, AM_SMGReloadRef.Object);
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGReadyFire, nullptr);
 
 		//Rifle
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RifleFire, AM_RifleFireRef.Object);
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RifleReload, AM_RifleReloadRef.Object);
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RifleReadyFire, nullptr);
+
 		//RPG
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RPGFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPGFire, AM_RPGFireRef.Object);
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RPGReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPGReload, AM_RPGReloadRef.Object);
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPGReadyFire, nullptr);
 
 		// Stiffness / Down
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StiffnessRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_GetDamaged.AM_GetDamaged'"));

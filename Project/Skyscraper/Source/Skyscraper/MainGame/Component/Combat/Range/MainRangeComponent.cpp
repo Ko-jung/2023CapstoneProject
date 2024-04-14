@@ -80,7 +80,7 @@ void UMainRangeComponent::BeginPlay()
 void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	//Unbind Input Mapping Context
-	RemoveInputMappingContext();
+	RemoveThisWeapon();
 }
 
 void UMainRangeComponent::AddInputMappingContext()
@@ -112,12 +112,21 @@ void UMainRangeComponent::RemoveInputMappingContext()
 	}
 }
 
+void UMainRangeComponent::AddThisWeapon()
+{
+	AddInputMappingContext();
+}
+
+void UMainRangeComponent::RemoveThisWeapon()
+{
+	RemoveInputMappingContext();
+}
+
 
 void UMainRangeComponent::PlayFireAnim()
 {
 	if (!CanFire()) return;
 	UE_LOG(LogTemp, Warning, TEXT("총 발사"));
-	UseBullet();
 	CurrentFireCoolTime = FireMaxCoolTime;
 
 	OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
@@ -145,6 +154,8 @@ void UMainRangeComponent::UseBullet()
 void UMainRangeComponent::Fire(float fBaseDamage)
 {
 	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
+
+	UseBullet();
 
 	if (!GetOwnerPlayerController()) 
 	{

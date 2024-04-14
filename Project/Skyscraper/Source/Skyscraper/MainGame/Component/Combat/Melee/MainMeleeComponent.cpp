@@ -57,7 +57,7 @@ void UMainMeleeComponent::BeginPlay()
 void UMainMeleeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	//UnBind Input Mapping Context
-	RemoveInputMappingContext();
+	RemoveThisWeapon();
 
 	// == TOOD: Unbind Melee Widget
 }
@@ -87,6 +87,16 @@ void UMainMeleeComponent::RemoveInputMappingContext()
 			Subsystem->RemoveMappingContext(IMC_MeleeInput);
 		}
 	}
+}
+
+void UMainMeleeComponent::AddThisWeapon()
+{
+	AddInputMappingContext();
+}
+
+void UMainMeleeComponent::RemoveThisWeapon()
+{
+	RemoveInputMappingContext();
 }
 
 void UMainMeleeComponent::PlayAttackAnimMontage()

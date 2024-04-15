@@ -59,7 +59,6 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 	bUseControllerRotationYaw = true;
-	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -185,10 +184,6 @@ void ASkyscraperCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
-	{ // 숙이기(crouch)중 카메라 위치 변하지 않도록 값 설정
-		GetCharacterMovement()->SetCrouchedHalfHeight(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight());
-	}
-	
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -362,23 +357,6 @@ void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
-
-		// 좌, 우, 뒤 이동시 이동속도를 느리게 하기 위해 crouch를 사용
-		if((MovementVector.Y + 1.0f) <= FLT_EPSILON)   // 뒤로 이동 중이라면,
-		{
-			Crouch();
-			GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
-		}
-		else if ( !(MovementVector.X <= FLT_EPSILON)  &&  (!((MovementVector.Y - 1.0f) <= FLT_EPSILON)) ) // 좌우 이동중이며, 전방이동 하지 않을 시
-		{
-			Crouch();
-			GetCharacterMovement()->MaxWalkSpeedCrouched = 450.0f;
-		}
-		else
-		{
-			UnCrouch();
-		}
-
 	}
 }
 

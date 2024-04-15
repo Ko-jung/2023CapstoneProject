@@ -37,6 +37,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CreateAttackArea(FVector vHitSize, float fStiffnessTime, float fBaseDamage, bool bDoDown);
 
+	// 적을 맞출 시 HitLag(역경직)을 발생시키는 함수
+	void DoHitLag();
+	void StopHitLag();
+	
 protected:
 	// == OwnerCharacter variable
 	UPROPERTY()
@@ -80,6 +84,9 @@ protected:
 		float LastAttackClickTime;
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
+
+	// 역경직 0.1초에 대한 타이머핸들
+	FTimerHandle HitLagTimerHandle;
 
 	
 public:	

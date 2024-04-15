@@ -243,16 +243,15 @@ void UMainMeleeComponent::DoHitLag()
 		// 몽타쥬 멈추고
 		OwnerAnimInstance->Montage_Pause();
 
-		float HitLagDuration = 1.0f;
 		// 타이머 설정
 		if(!HitLagTimerHandle.IsValid())
 		{
-			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, HitLagDuration);
+			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, 0.1f);
 		}
 		else
 		{
 			GetWorld()->GetTimerManager().ClearTimer(HitLagTimerHandle);
-			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, HitLagDuration);
+			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, 0.1f);
 		}
 		
 	}

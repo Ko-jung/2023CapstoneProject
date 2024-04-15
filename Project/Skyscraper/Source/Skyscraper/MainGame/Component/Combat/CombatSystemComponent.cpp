@@ -250,8 +250,28 @@ void UCombatSystemComponent::Stiffness(float StiffnessTime, FVector StiffnessDir
 	if (StiffnessTime <= FLT_EPSILON) return;
 	if (OwnerCharacter->IsCharacterGodMode()) return;	// 무적이면 경직 먹지 않도록
 
-	const float DamagedAnimPlayRate = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness)->GetPlayLength() / StiffnessTime;
-	OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness), DamagedAnimPlayRate);
+	// 캐릭터와 경직 방향의 각도 구하기
+	float AngleD = FMath::RadiansToDegrees(FMath::Acos(StiffnessDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
+
+	UAnimMontage* Montage = nullptr;
+	// 캐릭터가 뒤에서 공격받은 상황
+	if(AngleD < 90.0f)
+	{
+		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness_Bwd);
+		
+	}
+	// 캐릭터가 앞에서 공격받은 상황
+	else
+	{
+		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness);
+	}
+
+	if(Montage)
+	{
+		const float DamagedAnimPlayRate = Montage->GetPlayLength() / StiffnessTime;
+		OwnerAnimInstance->Montage_Play(Montage, DamagedAnimPlayRate);
+	}
+	
 
 	// 방향으로 800.0f 의 힘으로 경직
 	OwnerCharacter->LaunchCharacter(StiffnessDirection * 800.0f, true, false);
@@ -261,17 +281,36 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 {
 	if (OwnerCharacter->IsCharacterGodMode()) return;	// 무적이면 다운 당하지 않도록
 
-	{ // == Play Down Montage
-		OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
-		OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down));
+
+	// 캐릭터와 경직 방향의 각도 구하기
+	float AngleD = FMath::RadiansToDegrees(FMath::Acos(DownDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
+
+
+	UAnimMontage* Montage = nullptr;
+	// 캐릭터가 뒤에서 공격받은 상황
+	if (AngleD < 90.0f)
+	{
+		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down_Bwd);
+
+	}
+	// 캐릭터가 앞에서 공격받은 상황
+	else
+	{
+		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down);
 	}
 
-	
-	
-	// 다운 힘 = 1000.0f
-	DownDirection *= 1000.0f;
-	OwnerCharacter->LaunchCharacter(FVector(DownDirection.X,DownDirection.Y,750.0f), false, true);
+	if(Montage)
+	{
+		{ // == Play Down Montage
+			OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+			OwnerAnimInstance->Montage_Play(Montage);
+		}
 
+		// 다운 힘 = 1000.0f
+		DownDirection *= 1000.0f;
+		OwnerCharacter->LaunchCharacter(FVector(DownDirection.X, DownDirection.Y, 750.0f), false, true);
+	}
+	
 }
 
 void UCombatSystemComponent::GetWeaponEquipStateForAnimation(uint8& WeaponType, uint8& EquippedWeapon)

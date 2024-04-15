@@ -46,8 +46,10 @@ protected:
 	// 빠른 대쉬 로직 함수
 	void DashFast();
 	// 빠른 대쉬 종료 로직 함수
-
 	void DashStop();
+
+	// 현재 제트팩의 속성 (bIsHovering / bIsDashing) 에 따라 캐릭터 최대 속도 조정
+	void SetCharacterMaxSpeed();
 
 	// 회피(Dodge) 시 속도 감소를 위한 함수
 	UFUNCTION()
@@ -105,6 +107,10 @@ protected:
 	// 부스터 게이지 무한 bool 변수
 	UPROPERTY()
 		bool bIsBoostGaugeInfinity;
+
+	// 현재 제트팩의 상태에 대한 변수, 캐릭터의 속도를 조정할 때 사용
+	bool bIsHovering;
+	bool bIsDashing;
 
 	// 타이머 핸들
 	FTimerHandle SlowdownDodgeTimerHandle;

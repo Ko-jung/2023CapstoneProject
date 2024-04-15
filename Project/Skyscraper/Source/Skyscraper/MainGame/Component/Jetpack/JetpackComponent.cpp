@@ -127,12 +127,13 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 {
 	if (bHover)
 	{
-		// 중간에 버프가 흭득될 경우에도 적용시키기 위해 다음과 같이 매 프레임 계산하도록 설정
-		GetOwnerCharacterMovement()->MaxWalkSpeed = HoveringMaxSpeed * OwnerCharacter->GetSpeedBuffValue();
 		// Hover 중이 아니었다면
 		if (!OwnerCharacter->GetIsHover())
 		{
 			OwnerCharacter->SetIsHover(true);
+
+			bIsHovering = true;
+			SetCharacterMaxSpeed();
 			GetOwnerCharacterMovement()->GravityScale = 0.0f;
 			GetOwnerCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 			GetOwnerCharacterMovement()->MaxAcceleration = 50000.0f;
@@ -141,7 +142,8 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 	else   // bHover == false
 	{
 		OwnerCharacter->SetIsHover(false);
-		GetOwnerCharacterMovement()->MaxWalkSpeed = OwnerCharacter->GetCharacterMaxWalkSpeed() * OwnerCharacter->GetSpeedBuffValue();
+		bIsHovering = false;
+		SetCharacterMaxSpeed();
 		GetOwnerCharacterMovement()->GravityScale = 2.0f;
 
 	}
@@ -197,7 +199,8 @@ void UJetpackComponent::DashFast()
 	if(JetpackFuel >0.0f)
 	{
 		SetHoveringMode(true);
-		GetOwnerCharacterMovement()->MaxWalkSpeed = MaxDashSpeed * OwnerCharacter->GetSpeedBuffValue();
+		bIsDashing = true;
+		SetCharacterMaxSpeed();
 		SetFuel(JetpackFuel - GetWorld()->GetDeltaSeconds() * DashGaugePerSec);
 	}
 	else
@@ -209,8 +212,28 @@ void UJetpackComponent::DashFast()
 void UJetpackComponent::DashStop()
 {
 	ToGlidingSpeed();
-	GetOwnerCharacterMovement()->MaxWalkSpeed = OwnerCharacter->GetCharacterMaxWalkSpeed()*OwnerCharacter->GetSpeedBuffValue();
-	GetOwnerCharacterMovement()->Velocity = ClampToMaxWalkSpeed(GetOwnerCharacterMovement()->Velocity);
+
+	bIsDashing = false;
+	SetCharacterMaxSpeed();
+	//GetOwnerCharacterMovement()->Velocity = ClampToMaxWalkSpeed(GetOwnerCharacterMovement()->Velocity);
+}
+
+void UJetpackComponent::SetCharacterMaxSpeed()
+{
+	if(bIsDashing)
+	{
+		GetOwnerCharacterMovement()->MaxWalkSpeed = MaxDashSpeed * OwnerCharacter->GetSpeedBuffValue();
+		return;
+	}
+
+	if(bIsHovering)
+	{
+		GetOwnerCharacterMovement()->MaxWalkSpeed = HoveringMaxSpeed * OwnerCharacter->GetSpeedBuffValue();
+		return;
+	}
+
+	GetOwnerCharacterMovement()->MaxWalkSpeed = OwnerCharacter->GetCharacterMaxWalkSpeed() * OwnerCharacter->GetSpeedBuffValue();
+	
 }
 
 

@@ -10,6 +10,7 @@
 #include "Skyscraper/Enum/EItemRareLevel.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
 #include "Skyscraper/Enum/ERangeSelect.h"
+#include "Skyscraper/Enum/ESkillActor.h"
 #include "SkyscraperCharacter.generated.h"
 
 class UJetpackComponent;
@@ -157,13 +158,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsCharacterGodMode();
 
-	
+// === 2019180016 ===
 protected:
+	AMainGameMode* MainGameMode;
+
 	UPROPERTY(BlueprintReadWrite)
 	float Speed;
 	UPROPERTY(BlueprintReadWrite)
 	float XRotate;
 
+	UFUNCTION(BlueprintCallable)
+	void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
+// ==================
 private:
 	// Input 관련 변수
 	/** MappingContext */

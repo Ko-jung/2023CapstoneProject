@@ -23,7 +23,7 @@ enum class COMP_OP : unsigned char
 	OP_DAMAGEDPLAYER,
 	OP_CHANGEDPLAYERHP,
 	OP_CHANGEDPLAYERSTATE,
-	OP_OBJECTSPAWN,
+	OP_SPAWNOBJECT,
 	OP_PLAYERJOIN,
 	OP_DISCONNECT,
 	OP_TILEDROP,
@@ -38,6 +38,8 @@ enum class EObject : unsigned char
 {
 	BP_Cube,
 	BP_Player,
+
+	BP_BoomerangGrab,
 };
 
 enum class EPlayerState : unsigned char

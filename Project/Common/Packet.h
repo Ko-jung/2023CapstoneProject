@@ -6,6 +6,16 @@
 using std::cout;
 using std::endl;
 
+// Using in Packet
+struct PVector
+{
+	float X;
+	float Y;
+	float Z;
+	PVector() { X = Y = Z = 0.f; }
+	PVector(float x, float y, float z) { X = x; Y = y; Z = z; }
+};
+
 #pragma pack(push, 1)
 struct Packet
 {
@@ -20,25 +30,21 @@ struct Packet
 
 struct PTransform
 {
-	float x;
-	float y;
-	float z;
+	PVector Location;
 
-	float rx;
-	float ry;
-	float rz;
+	PVector Rotate;
 
-	PTransform() { x = y = z = rx = ry = rz = 0.f; }
-	PTransform(float x, float y, float z) : x(x), y(y), z(z) { rx = ry = rz = 0.f; }
+	PTransform() { Location.X = Location.Y = Location.Z = Rotate.X = Rotate.Y = Rotate.Z  = 0.f; }
+	PTransform(float x, float y, float z) : Location{ x, y, z } { Rotate = PVector{}; }
 	PTransform(float x, float y, float z, float rx, float ry, float rz)
-		: x(x), y(y), z(z), rx(rx), ry(ry), rz(rz)	{}
+		: Location{ x, y, z }, Rotate{ rx, ry, rz } {}
 };
 
 struct PPosition : Packet, PTransform
 {
 	EObject ObjectType;
 
-	PPosition() : Packet(COMP_OP::OP_POSITION), ObjectType(EObject::BP_Cube) { x = y = z = rx = ry = rz = 0.f; PacketSize = sizeof(PPosition); }
+	PPosition() : Packet(COMP_OP::OP_POSITION), ObjectType(EObject::BP_Cube) { Location = Rotate = PVector{}; PacketSize = sizeof(PPosition); }
 	PPosition(float x, float y, float z) : Packet(COMP_OP::OP_POSITION), PTransform(x, y, z), ObjectType(EObject::BP_Cube) { PacketSize = sizeof(PPosition); }
 	PPosition(float x, float y, float z, float rx, float ry, float rz)
 		: Packet(COMP_OP::OP_POSITION), PTransform(x, y, z, rx, ry, rz), ObjectType(EObject::BP_Cube)
@@ -107,13 +113,15 @@ struct PChangedPlayerState : Packet
 struct PSpawnObject : Packet, PTransform
 {
 	EObject SpawnObject;
+	PVector ForwardVec;
+	BYTE SerialNum;
 
-	PSpawnObject() : Packet(COMP_OP::OP_OBJECTSPAWN), PTransform() { SpawnObject = EObject::BP_Cube; x = y = z = 0.f; PacketSize = sizeof(PSpawnObject); }
-	PSpawnObject(EObject EO, float x, float y, float z) : Packet(COMP_OP::OP_OBJECTSPAWN), PTransform(x, y, z)
-	{
-		this->SpawnObject = EO;
-		PacketSize = sizeof(PSpawnObject);
-	}
+	PSpawnObject() : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(), SerialNum(-1) { SpawnObject = EObject::BP_Cube; Location = PVector{}; PacketSize = sizeof(PSpawnObject); }
+	// PSpawnObject(EObject EO, PVector Location, PVector Forward) : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(Location.X, Location.Y, Location.Z)
+	// {
+	// 	this->SpawnObject = EO;
+	// 	PacketSize = sizeof(PSpawnObject);
+	// }
 };
 #pragma pack(pop)
 

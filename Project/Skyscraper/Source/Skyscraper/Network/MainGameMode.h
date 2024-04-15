@@ -22,8 +22,12 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void ProcessFunc() override;
+
 	void SetPlayerPosition(PPlayerPosition PlayerPosition);
+	void ProcessSpawnObject(PSpawnObject PSO);
+
 	void SendPlayerLocation();
+	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 
 	// UE5 Function Code
 	float CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation);

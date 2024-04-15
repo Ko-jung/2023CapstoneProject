@@ -26,6 +26,8 @@
 #include "Skyscraper/MainGame/Item/ItemFactory/ItemFactory.h"
 #include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
 
+#include "../../../Network/MainGameMode.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -197,6 +199,9 @@ void ASkyscraperCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	auto gamemode = UGameplayStatics::GetGameMode(this);
+	MainGameMode = Cast<AMainGameMode>(gamemode);
 }
 
 void ASkyscraperCharacter::Landed(const FHitResult& Hit)
@@ -310,6 +315,15 @@ bool ASkyscraperCharacter::IsCharacterGodMode()
 	}
 
 	return false;
+}
+
+void ASkyscraperCharacter::SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
+{
+	// bool IsTeamA;
+	// (Team == "TeamA") ? IsTeamA = true : IsTeamA = false;
+
+	if(MainGameMode)
+		MainGameMode->SendSkillActorSpawn(SkillActor, SpawnLocation, ForwardVec);
 }
 
 void ASkyscraperCharacter::ResetPowerBuffValue()

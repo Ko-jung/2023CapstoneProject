@@ -88,12 +88,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, clients[TargetPlayerId]->GetCurrnetHp());
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
 
-		// 클라 둘 다 보내기 때문에  -> O editor printstring이 각 클라 둘다 찍힘 --- 해결완료
-		// 알고보면 두 번 오는거다?  -> X printlog가 한 번만 찍힘. 체력은 결국 한 번만 깎이고 있다는거
-		// 왜 서버는 한 번만 받는가? -> 두 개가 연속으로와서 뒷 부분이 짤리나? X -> exp가 달라서 그럴일 없는듯
-		//							 -> Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다.
-		// Possess 하고 있는 클라이언트와 서버의 송수신이 안 되는거였다. WHY?
-		// 진짜 매우 가끔 된다. 매번 보내는 Position을 제거하면 정상 작동
+		// 2 번 오면 보내는 현상이 있는 듯 함
 
 		LogUtil::PrintLog("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
@@ -104,6 +99,12 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		}
 	}
 	break;
+	case (int)COMP_OP::OP_SPAWNOBJECT:
+	{
+		PSpawnObject PSO;
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PSO, sizeof(PSO));
+	break;
+	}
 	default:
 		LogUtil::PrintLog("abc");
 		break;

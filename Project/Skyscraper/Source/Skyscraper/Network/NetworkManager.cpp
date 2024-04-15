@@ -194,7 +194,7 @@ void NetworkManager::ProcessRecvFromMainGame(int packetType)
 		memcpy(PCPHP, m_sRecvBuffer, sizeof(*PCPHP));
 		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERHP, PCPHP);
 	}
-	break;
+	break; 
 	case (int)COMP_OP::OP_CHANGEDPLAYERSTATE:
 	{
 		PChangedPlayerState* PCPS = new PChangedPlayerState();
@@ -202,6 +202,13 @@ void NetworkManager::ProcessRecvFromMainGame(int packetType)
 		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERSTATE, PCPS);
 	}
 	break;
+	case (int)COMP_OP::OP_SPAWNOBJECT:
+	{
+		PSpawnObject* PSO = new PSpawnObject();
+		memcpy(PSO, m_sRecvBuffer, sizeof(*PSO));
+		Gamemode->PushQueue(EFunction::ESPAWNOBJECT, PSO);
+		break;
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;

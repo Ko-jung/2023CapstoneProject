@@ -121,6 +121,13 @@ void AMainGameMode::ProcessFunc()
 			m_Socket->Send(argu, sizeof(PDamagedPlayer));
 			break;
 		}
+		case ESPAWNOBJECT:
+		{
+			//PDamagedPlayer* PDP = static_cast<PDamagedPlayer*>(argu);
+			//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
+			m_Socket->Send(argu, sizeof(PDamagedPlayer));
+			break;
+		}
 		default:
 			break;
 		}
@@ -131,8 +138,8 @@ void AMainGameMode::ProcessFunc()
 void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 {
 	int32 Serial = PlayerPosition.PlayerSerial;
-	FVector Location{ PlayerPosition.x, PlayerPosition.y, PlayerPosition.z };
-	FRotator Rotate{ PlayerPosition.rx, PlayerPosition.ry, PlayerPosition.rz };
+	FVector Location{ PlayerPosition.Location.X, PlayerPosition.Location.Y, PlayerPosition.Location.Z };
+	FRotator Rotate{ PlayerPosition.Rotate.X, PlayerPosition.Rotate.Y, PlayerPosition.Rotate.Y };
 	EPlayerState state = PlayerPosition.PlayerState;
 	// EnumPlayerState ArguState;
 
@@ -142,6 +149,20 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	float XRotate = PlayerPosition.PlayerXDirection;
 
 	Characters[Serial]->SyncTransformAndAnim(transform, speed, XRotate);
+}
+
+void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
+{
+	switch (PSO.SpawnObject)
+	{
+	case EObject::BP_BoomerangGrab:
+	{
+
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 void AMainGameMode::SendPlayerLocation()
@@ -154,13 +175,13 @@ void AMainGameMode::SendPlayerLocation()
 	PPlayerPosition PlayerPosition;
 	PlayerPosition.PlayerSerial = SerialNum;
 
-	PlayerPosition.x = location.X;
-	PlayerPosition.y = location.Y;
-	PlayerPosition.z = location.Z;
+	PlayerPosition.Location.X = location.X;
+	PlayerPosition.Location.Y = location.Y;
+	PlayerPosition.Location.Z = location.Z;
 
-	PlayerPosition.rx = rotate.Pitch;
-	PlayerPosition.ry = rotate.Yaw;
-	PlayerPosition.rz = rotate.Roll;
+	PlayerPosition.Rotate.X = rotate.Pitch;
+	PlayerPosition.Rotate.Y = rotate.Yaw;
+	PlayerPosition.Rotate.Z = rotate.Roll;
 
 	PlayerPosition.PlayerSpeed = speed;
 
@@ -168,6 +189,25 @@ void AMainGameMode::SendPlayerLocation()
 	PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
 
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
+}
+
+void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
+{
+	PSpawnObject PSO;
+	switch (SkillActor)
+	{
+	case ESkillActor::BP_BoomerangGrab:
+		PSO.SpawnObject = EObject::BP_BoomerangGrab;
+		break;
+	default:
+		break;
+	}
+	PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
+	PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;
+	
+	PSO.SerialNum = SerialNum;
+
+	m_Socket->Send(&PSO, sizeof(PSO));
 }
 
 float AMainGameMode::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)

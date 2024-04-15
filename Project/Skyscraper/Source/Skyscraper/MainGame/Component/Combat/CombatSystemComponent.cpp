@@ -64,10 +64,6 @@ UCombatSystemComponent::UCombatSystemComponent()
 		RangeClass.Add(URPGComponent::StaticClass());
 	}
 
-	{ // load Anim Montage
-		StiffnessAnimMontageKey = ECharacterAnimMontage::ECAM_Stiffness;
-		DownAnimMontageKey = ECharacterAnimMontage::ECAM_Down;
-	}
 }
 
 void UCombatSystemComponent::SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeSelect eRangeSelect)
@@ -249,13 +245,16 @@ void UCombatSystemComponent::LockOn()
 
 }
 
-void UCombatSystemComponent::Stiffness(float StiffnessTime)
+void UCombatSystemComponent::Stiffness(float StiffnessTime, FVector StiffnessDirection)
 {
 	if (StiffnessTime <= FLT_EPSILON) return;
 	if (OwnerCharacter->IsCharacterGodMode()) return;	// 무적이면 경직 먹지 않도록
 
-	const float DamagedAnimPlayRate = OwnerCharacter->GetAnimMontage(StiffnessAnimMontageKey)->GetPlayLength() / StiffnessTime;
-	OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(StiffnessAnimMontageKey), DamagedAnimPlayRate);
+	const float DamagedAnimPlayRate = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness)->GetPlayLength() / StiffnessTime;
+	OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness), DamagedAnimPlayRate);
+
+	// 방향으로 800.0f 의 힘으로 경직
+	OwnerCharacter->LaunchCharacter(StiffnessDirection * 800.0f, true, false);
 }
 
 void UCombatSystemComponent::Down(FVector DownDirection)
@@ -264,30 +263,11 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 
 	{ // == Play Down Montage
 		OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
-		OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(DownAnimMontageKey));
+		OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down));
 	}
 
 	
-	//{ // == Set motion warp target
-	//	UMotionWarpingComponent* MotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
-	//
-	//	{ // == Set "FloatingPosition"
-	//		// == for floating, add FVector(0.0f, 0.0f, 100.0f);
-	//		// == DownDirection * DownDistance(120) <- can make to variable
-	//		FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 120 + FVector(0.0f, 0.0f, 100.0f);
-	//
-	//		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("FloatingPosition"), TargetLocation);
-	//	}
-	//
-	//	{ // == Set "LandingPosition"
-	//		// == for grounding, add FVector(0.0f, 0.0f, -100.0f);
-	//		// == DownDirection * DownDistance(240) <- can make to variable
-	//		FVector TargetLocation = OwnerCharacter->GetActorLocation() + DownDirection * 240 + FVector(0.0f, 0.0f, -100.0f);
-	//
-	//		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("LandingPosition"), TargetLocation);
-	//	}
-	//}
-
+	
 	// 다운 힘 = 1000.0f
 	DownDirection *= 1000.0f;
 	OwnerCharacter->LaunchCharacter(FVector(DownDirection.X,DownDirection.Y,750.0f), false, true);

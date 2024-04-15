@@ -200,7 +200,7 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		{
 			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
 			{
-				Cast<ASkyscraperCharacter>(HitActor)->DoStiffness(fStiffnessTime);
+				Cast<ASkyscraperCharacter>(HitActor)->DoStiffness(fStiffnessTime, OwnerCharacter->GetActorForwardVector());
 			}
 			
 		}

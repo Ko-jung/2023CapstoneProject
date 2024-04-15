@@ -26,7 +26,7 @@ public:
 
 	// == Do Stiffness / Down Function
 	UFUNCTION(BlueprintCallable)
-		void Stiffness(float StiffnessTime);
+		void Stiffness(float StiffnessTime, FVector StiffnessDirection);
 	UFUNCTION(BlueprintCallable)
 		void Down(FVector DownDirection);
 
@@ -53,10 +53,6 @@ protected:
 	//	UAnimMontage* AM_Damaged;
 	//UPROPERTY(EditAnywhere,Category = MotionWarping)
 	//	UAnimMontage* AM_Down;
-	UPROPERTY(EditAnywhere, Category = MotionWarping)
-		ECharacterAnimMontage StiffnessAnimMontageKey;
-	UPROPERTY(EditAnywhere,Category = MotionWarping)
-		ECharacterAnimMontage DownAnimMontageKey;
 
 	// == 무기 컴퍼넌트에 대한 변수
 	UPROPERTY()

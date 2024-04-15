@@ -1,0 +1,43 @@
+ChracterName_AniName_Direction
+
+Assassin
+Boomerang
+Electric
+Radar
+Shield
+Wind
+
+대쉬 4분할 -> 단순 루프화
+16~24 _dash_bwd
+48~56 _dash_fwd
+80~88 _dash_left
+112~120 _dash_right
+
+원거리
+_Fire
+_FireAndBack
+_Idle
+_ReadyFire
+_Reload
+
+근거리
+_1
+_2
+_3
+_4
+_5
+
+점프
+start
+loop
+end
+
+피격
+hit_fwd
+hit_bwd
+falling_fwd
+falling_bwd
+fallen_fwd
+fallen_bwd
+standing_fwd
+standing_bwd

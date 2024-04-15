@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "NetworkGameMode.h"
+#include "../Enum/ESkillActor.h"
+	
 #include "MainGameMode.generated.h"
 
 class ASkyscraperCharacter;
@@ -34,6 +36,9 @@ public:
 
 	//UFUNCTION(BlueprintNativeEvent)
 	//void SpawnCharactersUsingSelectInfo(TSubclassOf<class ASkyscraperCharacter> Class, FVector location);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SpawnSkillActor(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team);
 
 	UFUNCTION(BlueprintCallable)
 	void Test_TakeDamage(int DamageType);

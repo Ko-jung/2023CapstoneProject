@@ -29,6 +29,12 @@ void AMainGameMode::BeginPlay()
 	int i = 0;
 	for (const auto& p : PlayerSelectInfo)
 	{
+		bool CanAddTag = true;
+
+		FName Team;
+		if (i < MAXPLAYER / 2)	Team = FName{ "TeamA" };
+		else					Team = FName{ "TeamB" };
+
 		TSubclassOf<class ASkyscraperCharacter> Class;
 		spawnLocation.Y = i * 200;
 		switch (p->PickedCharacter)
@@ -54,11 +60,14 @@ void AMainGameMode::BeginPlay()
 			break;
 		case ECharacter::NullCharacter:
 			UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), i);
+			CanAddTag = false;
 			break;
 		default:
 			break;
 		}
 		Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(Class, spawnLocation, rotator, spawnParams));
+		if(CanAddTag) Characters[i]->Tags.Add(Team);
+		// Characters[i]->Tags.Init(Team, 0);
 		i++;
 	}
 	GetWorld()->GetFirstPlayerController()->Possess(Characters[SerialNum]);
@@ -123,9 +132,9 @@ void AMainGameMode::ProcessFunc()
 		}
 		case ESPAWNOBJECT:
 		{
-			//PDamagedPlayer* PDP = static_cast<PDamagedPlayer*>(argu);
-			//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
-			m_Socket->Send(argu, sizeof(PDamagedPlayer));
+			PSpawnObject PSO;
+			memcpy(&PSO, argu, sizeof(PSO));
+			ProcessSpawnObject(PSO);
 			break;
 		}
 		default:
@@ -139,7 +148,7 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 {
 	int32 Serial = PlayerPosition.PlayerSerial;
 	FVector Location{ PlayerPosition.Location.X, PlayerPosition.Location.Y, PlayerPosition.Location.Z };
-	FRotator Rotate{ PlayerPosition.Rotate.X, PlayerPosition.Rotate.Y, PlayerPosition.Rotate.Y };
+	FRotator Rotate{ PlayerPosition.Rotate.X, PlayerPosition.Rotate.Y, PlayerPosition.Rotate.Z };
 	EPlayerState state = PlayerPosition.PlayerState;
 	// EnumPlayerState ArguState;
 
@@ -157,7 +166,15 @@ void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 	{
 	case EObject::BP_BoomerangGrab:
 	{
+		FName Team;
+		if (PSO.SerialNum < MAXPLAYER / 2)	Team = FName{ "TeamA" };
+		else								Team = FName{ "TeamB" };
 
+		FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
+		FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
+
+		SpawnSkillActor(ESkillActor::BP_BoomerangGrab, Location, Forward, Characters[PSO.SerialNum], Team);
+		// GetWorld()->SpawnActor();
 		break;
 	}
 	default:
@@ -198,6 +215,30 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 	{
 	case ESkillActor::BP_BoomerangGrab:
 		PSO.SpawnObject = EObject::BP_BoomerangGrab;
+		break;
+	case ESkillActor::BP_BoomerangCenter:
+		PSO.SpawnObject = EObject::BP_BoomerangCenter;
+		break;
+	case ESkillActor::BP_DetectorMine:
+		PSO.SpawnObject = EObject::BP_DetectorMine;
+		break;
+	case ESkillActor::BP_Shield:
+		PSO.SpawnObject = EObject::BP_Shield;
+		break;
+	case ESkillActor::BP_ShieldSphere:
+		PSO.SpawnObject = EObject::BP_ShieldSphere;
+		break;
+	case ESkillActor::BP_ShieldSphereThrow:
+		PSO.SpawnObject = EObject::BP_ShieldSphereThrow;
+		break;
+	case ESkillActor::BP_WindTornado:
+		PSO.SpawnObject = EObject::BP_WindTornado;
+		break;
+	case ESkillActor::BP_ElectSphereBoom:
+		PSO.SpawnObject = EObject::BP_ElectSphereBoom;
+		break;
+	case ESkillActor::BP_ElectTrap:
+		PSO.SpawnObject = EObject::BP_ElectTrap;
 		break;
 	default:
 		break;
@@ -276,3 +317,5 @@ void AMainGameMode::Test_TakeDamage(int DamageType)
 	//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
 	PushQueue(ETAKEDAMAGE, PDP);
 }
+
+void AMainGameMode::SpawnSkillActor_Implementation(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team) {}

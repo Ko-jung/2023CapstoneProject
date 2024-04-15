@@ -7,6 +7,7 @@ using std::cout;
 using std::endl;
 
 // Using in Packet
+#pragma pack(push, 1)
 struct PVector
 {
 	float X;
@@ -15,6 +16,7 @@ struct PVector
 	PVector() { X = Y = Z = 0.f; }
 	PVector(float x, float y, float z) { X = x; Y = y; Z = z; }
 };
+#pragma pack(pop)
 
 #pragma pack(push, 1)
 struct Packet

@@ -40,6 +40,14 @@ enum class EObject : unsigned char
 	BP_Player,
 
 	BP_BoomerangGrab,
+	BP_BoomerangCenter,
+	BP_DetectorMine,
+	BP_Shield,
+	BP_ShieldSphere,
+	BP_ShieldSphereThrow,
+	BP_WindTornado,
+	BP_ElectSphereBoom,
+	BP_ElectTrap,
 };
 
 enum class EPlayerState : unsigned char

@@ -102,8 +102,9 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	case (int)COMP_OP::OP_SPAWNOBJECT:
 	{
 		PSpawnObject PSO;
+		MEMCPYBUFTOPACKET(PSO);
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PSO, sizeof(PSO));
-	break;
+		break;
 	}
 	default:
 		LogUtil::PrintLog("abc");

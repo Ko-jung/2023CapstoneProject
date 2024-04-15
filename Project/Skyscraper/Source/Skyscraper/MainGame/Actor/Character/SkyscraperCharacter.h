@@ -160,7 +160,7 @@ public:
 
 // === 2019180016 ===
 protected:
-	AMainGameMode* MainGameMode;
+	class AMainGameMode* MainGameMode;
 
 	UPROPERTY(BlueprintReadWrite)
 	float Speed;

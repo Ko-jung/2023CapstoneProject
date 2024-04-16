@@ -123,8 +123,8 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	{ // == Set Anim Montages
 		// Dagger
-		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DaggerRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_DaggerAttack.AM_DaggerAttack'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack, AM_DaggerRef.Object);*/
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DaggerRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Melee/Dagger/AM_Assassin_DaggerAttack.AM_Assassin_DaggerAttack'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack, AM_DaggerRef.Object);
 
 		// Katana
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_KatanaRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Melee/Katana/AM_Assassin_KatanaAttack.AM_Assassin_KatanaAttack'"));

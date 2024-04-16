@@ -92,7 +92,7 @@ public:
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 
 	// 무기 웨폰 skeletal mesh의 visible을 변경해주는 함수
-	void SetWeaponHiddenInGame(bool bNewHidden) const;
+	virtual void SetWeaponHiddenInGame(bool bNewHidden) const;
 	
 private:
 	// == Input Action And Input Mapping Context

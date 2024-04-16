@@ -13,9 +13,18 @@ UCLASS()
 class SKYSCRAPER_API UDaggerComponent : public UMainMeleeComponent
 {
 	GENERATED_BODY()
+
+	// 서브 무기에 대한 변수
+	UPROPERTY()
+		USkeletalMeshComponent* SubWeaponMeshComponent;
+	UPROPERTY()
+		FName SubWeaponSocketName;
 public:
 	UDaggerComponent();
 
 protected:
 	virtual void BeginPlay() override;
+
+	// 무기 웨폰 skeletal mesh의 visible을 변경해주는 함수
+	virtual void SetWeaponHiddenInGame(bool bNewHidden) const override;
 };

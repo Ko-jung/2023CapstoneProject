@@ -12,16 +12,24 @@ AMeleeEnemyCharacter::AMeleeEnemyCharacter()
 {
 	DoAttackDelay = 0.3f;
 	MeleeSelect = EMeleeSelect::EMS_GreatSword;
+	EnemyMaxHealth = 2000.0f;
 	
 }
 
 void AMeleeEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	CombatSystemComponent->SetInitialSelect(MeleeSelect, ERangeSelect::ERS_Rifle);
-	CombatSystemComponent->SwapToMeleeWeapon(FInputActionValue());
+
+	if(MeleeSelect != EMeleeSelect::EMS_NONE)
+	{
+		CombatSystemComponent->SetInitialSelect(MeleeSelect, ERangeSelect::ERS_Rifle);
+		CombatSystemComponent->SwapToMeleeWeapon(FInputActionValue());
+
+		HealthComponent->SetMaxHealth(EnemyMaxHealth);
+
+		GetWorld()->GetTimerManager().SetTimer(EnemyAttackTimerHandle, this, &AMeleeEnemyCharacter::MeleeEnemyAttack, DoAttackDelay, false, 2.0f);
+	}
 	
-	GetWorld()->GetTimerManager().SetTimer(EnemyAttackTimerHandle, this, &AMeleeEnemyCharacter::MeleeEnemyAttack, DoAttackDelay, false, 2.0f);
 }
 
 void AMeleeEnemyCharacter::MeleeEnemyAttack()

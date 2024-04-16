@@ -21,6 +21,9 @@ public:
 		float DoAttackDelay;
 	UPROPERTY(EditAnywhere)
 		EMeleeSelect MeleeSelect;
+
+	UPROPERTY(EditAnywhere)
+		float EnemyMaxHealth;
 	
 protected:
 	virtual void BeginPlay() override;

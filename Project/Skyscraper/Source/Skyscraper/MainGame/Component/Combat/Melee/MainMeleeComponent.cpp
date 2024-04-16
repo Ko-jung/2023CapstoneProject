@@ -10,6 +10,8 @@
 #include "Components/InputComponent.h"
 
 #include "MotionWarpingComponent.h"
+#include "PlayMontageCallbackProxy.h"
+#include "PlayMontageCallbackProxy.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -48,7 +50,7 @@ void UMainMeleeComponent::BeginPlay()
 	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 
 	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-	OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
+	//OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
 
 	// == TODO: Create Melee Widget
 }
@@ -133,25 +135,23 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 	}
 		
 	{ // == Play Montage
-		//UAnimMontage** PlayMontage = MeleeComboAnimMontage.Find(MeleeComboCount);
-		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKeys[MeleeComboCount]);
-			//MeleeComboAnimMontage.Find(MeleeComboCount);
-		UE_LOG(LogTemp, Warning, TEXT("콤보: %d"), MeleeComboCount);
-		float AttackAnimPlayRate = PlayMontage->GetPlayLength() / AttackTime[MeleeComboCount];
+		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
 
-		OwnerAnimInstance->Montage_Play(PlayMontage, AttackAnimPlayRate);
+		float AttackAnimPlayRate = PlayMontage->GetSectionLength(MeleeComboCount) / AttackTime[MeleeComboCount];
+		FName StartingSection = FName(*(FString("Attack") + FString::FromInt(MeleeComboCount+1)));
+
+		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage,AttackAnimPlayRate,0,StartingSection);
+		PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
 	}
 
 	{ // == Add MeleeComboCount 
-		//MeleeComboCount = (MeleeComboCount + 1) % MeleeComboAnimMontage.Num();
-		MeleeComboCount = (MeleeComboCount + 1) % AnimMontageKeys.Num();
-		UE_LOG(LogTemp, Warning, TEXT("콤보후: %d"), MeleeComboCount);
+		MeleeComboCount = (MeleeComboCount + 1) % AttackTime.Num();
 	}
 
 	
 }
 
-void UMainMeleeComponent::OnBlendOutMeleeAttack(UAnimMontage* Montage, bool bInterrupted)
+void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
 	CanAttack = true;
 	LastAttackClickTime = UGameplayStatics::GetTimeSeconds(GetWorld());

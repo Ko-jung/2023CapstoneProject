@@ -5,10 +5,7 @@
 
 UKatanaComponent::UKatanaComponent()
 {
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_KatanaAttack1);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_KatanaAttack2);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_KatanaAttack3);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_KatanaAttack4);
+	AnimMontageKey = ECharacterAnimMontage::ECAM_KatanaAttack;
 
 	AttackTime.Add(0.9f);
 	AttackTime.Add(0.9f);

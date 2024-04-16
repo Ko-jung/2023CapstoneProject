@@ -5,9 +5,7 @@
 
 UGreatSwordComponent::UGreatSwordComponent()
 {
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_GreatSwordAttack1);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_GreatSwordAttack2);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_GreatSwordAttack3);
+	AnimMontageKey = ECharacterAnimMontage::ECAM_GreatSwordAttack;
 	
 
 	AttackTime.Add(1.2f);

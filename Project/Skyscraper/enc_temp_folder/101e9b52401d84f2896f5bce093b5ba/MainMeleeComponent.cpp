@@ -10,6 +10,8 @@
 #include "Components/InputComponent.h"
 
 #include "MotionWarpingComponent.h"
+#include "PlayMontageCallbackProxy.h"
+#include "PlayMontageCallbackProxy.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -48,7 +50,7 @@ void UMainMeleeComponent::BeginPlay()
 	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 
 	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-	OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
+	//OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
 
 	// == TODO: Create Melee Widget
 }
@@ -134,24 +136,27 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 		
 	{ // == Play Montage
 		//UAnimMontage** PlayMontage = MeleeComboAnimMontage.Find(MeleeComboCount);
-		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKeys[MeleeComboCount]);
+		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
 			//MeleeComboAnimMontage.Find(MeleeComboCount);
 		UE_LOG(LogTemp, Warning, TEXT("콤보: %d"), MeleeComboCount);
+		
 		float AttackAnimPlayRate = PlayMontage->GetPlayLength() / AttackTime[MeleeComboCount];
-
-		OwnerAnimInstance->Montage_Play(PlayMontage, AttackAnimPlayRate);
+		FName StartPosition = FName(TEXT("Attack%d"), MeleeComboCount + 1);
+		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage);
+		PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
+		//UPlayMontageCallbackProxy::PlayMontage(OwnerCharacter->GetMesh(), PlayMontage, AttackAnimPlayRate, 0, StartPosition);
+		//OwnerAnimInstance->Montage_Play(PlayMontage, AttackAnimPlayRate);
 	}
 
 	{ // == Add MeleeComboCount 
 		//MeleeComboCount = (MeleeComboCount + 1) % MeleeComboAnimMontage.Num();
-		MeleeComboCount = (MeleeComboCount + 1) % AnimMontageKeys.Num();
-		UE_LOG(LogTemp, Warning, TEXT("콤보후: %d"), MeleeComboCount);
+		MeleeComboCount = (MeleeComboCount + 1) % AttackTime.Num();
 	}
 
 	
 }
 
-void UMainMeleeComponent::OnBlendOutMeleeAttack(UAnimMontage* Montage, bool bInterrupted)
+void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
 	CanAttack = true;
 	LastAttackClickTime = UGameplayStatics::GetTimeSeconds(GetWorld());
@@ -243,15 +248,16 @@ void UMainMeleeComponent::DoHitLag()
 		// 몽타쥬 멈추고
 		OwnerAnimInstance->Montage_Pause();
 
+		float HitLagDuration = 1.0f;
 		// 타이머 설정
 		if(!HitLagTimerHandle.IsValid())
 		{
-			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, 0.1f);
+			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, HitLagDuration);
 		}
 		else
 		{
 			GetWorld()->GetTimerManager().ClearTimer(HitLagTimerHandle);
-			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, 0.1f);
+			GetWorld()->GetTimerManager().SetTimer(HitLagTimerHandle, this, &ThisClass::StopHitLag, 1.0f, false, HitLagDuration);
 		}
 		
 	}

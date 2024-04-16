@@ -6,11 +6,7 @@
 
 UDaggerComponent::UDaggerComponent()
 {
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack1);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack2);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack3);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack4);
-	AnimMontageKeys.Add(ECharacterAnimMontage::ECAM_DaggerAttack5);
+	AnimMontageKey = ECharacterAnimMontage::ECAM_DaggerAttack;
 
 	AttackTime.Add(0.6f);
 	AttackTime.Add(0.6f);

@@ -56,13 +56,11 @@ protected:
 		FName WeaponSocketName;
 
 	// == OwnerCharacter's CharacterAnimMontages - key variable
-	TArray<ECharacterAnimMontage> AnimMontageKeys;
+	ECharacterAnimMontage AnimMontageKey;
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	
 
 
 	// == Play melee attack montage for attack
@@ -70,7 +68,7 @@ protected:
 
 	// == On Blend Out attack montage
 	UFUNCTION()		// To link delegate (OnMontageBlendingOut);
-	void OnBlendOutMeleeAttack(UAnimMontage* Montage, bool bInterrupted);
+	void OnBlendOutMeleeAttack(FName Notify_Name);
 
 	UPROPERTY(EditAnywhere, Category = AnimMontage)
 		TArray<float> AttackTime;

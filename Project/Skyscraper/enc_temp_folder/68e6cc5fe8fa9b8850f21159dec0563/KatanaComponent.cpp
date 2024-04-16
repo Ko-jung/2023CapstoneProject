@@ -9,7 +9,7 @@ UKatanaComponent::UKatanaComponent()
 
 	AttackTime.Add(0.6f);
 	AttackTime.Add(0.6f);
-	AttackTime.Add(0.8f);
+	AttackTime.Add(1.8f);
 	AttackTime.Add(0.6f);
 
 	WeaponSocketName = TEXT("KatanaSocket");

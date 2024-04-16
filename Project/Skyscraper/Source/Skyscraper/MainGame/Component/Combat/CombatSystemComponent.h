@@ -91,9 +91,13 @@ protected:
 	// == Action Function
 	void LockOn();
 
-
 	UFUNCTION()
 	void OnOutDownMontage(FName NotifyName);
+
+	// 디버깅을 위한 함수
+	// 캐릭터 무기 전환
+	UFUNCTION(BlueprintCallable)
+	void DEBUG_ChangeToNextWeapon();
 public:	
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 	FORCEINLINE UMainRangeComponent* GetRangeComponent() const { return Cast<UMainRangeComponent>(MainRangeWeaponComponent); }

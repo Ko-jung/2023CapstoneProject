@@ -285,7 +285,7 @@ void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 	{
 		float AttackAnimPlayRate = Montage->GetSectionLength(SectionNum) / StunTime;
 		const float DamagedAnimPlayRate = Montage->GetPlayLength();
-
+		
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, DamagedAnimPlayRate, 0, StartingSection);
 	}
 	
@@ -357,6 +357,16 @@ void UCombatSystemComponent::OnOutDownMontage(FName NotifyName)
 {
 	OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
+
+void UCombatSystemComponent::DEBUG_ChangeToNextWeapon()
+{
+	
+	EMeleeSelect NewMeleeSelect = (EMeleeSelect)(((uint8)(MeleeSelect) + 1) % ((uint8)(EMeleeSelect::EMS_NONE)));
+	ERangeSelect NewRangeSelect = (ERangeSelect)(((uint8)(RangeSelect)+1) % ((uint8)(ERangeSelect::ERS_NONE)));
+	SetInitialSelect(NewMeleeSelect, NewRangeSelect);
+	SwapToMeleeWeapon(FInputActionValue());
+}
+
 
 
 

@@ -71,19 +71,6 @@ void UCombatSystemComponent::SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeS
 {
 	MeleeSelect = eMeleeSelect;
 	RangeSelect = eRangeSelect;
-	if(MainMeleeWeaponComponent)
-	{
-		MainMeleeWeaponComponent->DestroyComponent();
-		MainMeleeWeaponComponent = OwnerCharacter->AddComponentByClass(MeleeClass[(uint8)MeleeSelect], false, FTransform(), true);
-		MainMeleeWeaponComponent->RegisterComponent();
-	}
-	if(MainRangeWeaponComponent)
-	{
-		MainRangeWeaponComponent->DestroyComponent();
-		MainRangeWeaponComponent = OwnerCharacter->AddComponentByClass(RangeClass[(uint8)RangeSelect], false, FTransform(), true);
-		MainRangeWeaponComponent->RegisterComponent();
-	}
-	
 }
 
 

@@ -154,14 +154,14 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPGReload, AM_RPGReloadRef.Object);*/
 
 		// Stun / Down
-		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StunRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_GetDamaged.AM_GetDamaged'"));
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StunRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Hit.AM_Assassin_Hit'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stun, AM_StunRef.Object);
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stun_Bwd, nullptr);*/
+		
 
-		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_KnockedDown.AM_KnockedDown'"));
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Down.AM_Assassin_Down'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down, AM_DownRef.Object);
 		
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down_Bwd, nullptr);*/
+		
 
 
 	}

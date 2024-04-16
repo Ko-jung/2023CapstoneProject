@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Melee/MainMeleeComponent.h"
 #include "Range/MainRangeComponent.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
@@ -97,7 +96,7 @@ protected:
 public:	
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 	FORCEINLINE UMainRangeComponent* GetRangeComponent() const { return Cast<UMainRangeComponent>(MainRangeWeaponComponent); }
-	FORCEINLINE UMainMeleeComponent* GetMeleeComponent() const { return Cast<UMainMeleeComponent>(MainMeleeWeaponComponent); }
+
 
 private:
 	// == Input Action And Input Mapping Context

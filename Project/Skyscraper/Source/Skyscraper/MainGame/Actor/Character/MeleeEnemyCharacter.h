@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float DoAttackDelay;
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<UMainMeleeComponent> MeleeClass;
+		EMeleeSelect MeleeSelect;
 	
 protected:
 	virtual void BeginPlay() override;

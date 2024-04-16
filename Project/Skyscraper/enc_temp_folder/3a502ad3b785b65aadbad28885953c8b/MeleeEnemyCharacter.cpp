@@ -18,7 +18,7 @@ AMeleeEnemyCharacter::AMeleeEnemyCharacter()
 void AMeleeEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	CombatSystemComponent->SetInitialSelect(MeleeSelect, ERangeSelect::ERS_Rifle);
+	CombatSystemComponent->SetInitialSelect(MeleeSelect,ERangeSelect::ERS_Rifle);
 	CombatSystemComponent->SwapToMeleeWeapon(FInputActionValue());
 	
 	GetWorld()->GetTimerManager().SetTimer(EnemyAttackTimerHandle, this, &AMeleeEnemyCharacter::MeleeEnemyAttack, DoAttackDelay, false, 2.0f);
@@ -27,9 +27,9 @@ void AMeleeEnemyCharacter::BeginPlay()
 void AMeleeEnemyCharacter::MeleeEnemyAttack()
 {
 	if (HealthComponent && HealthComponent->GetHealthPercent() <= 0.0f) return;
-	if(CombatSystemComponent)
+	if(MeleeComponent)
 	{
-		CombatSystemComponent->GetMeleeComponent()->Attack();
+		MeleeComponent->Attack();
 		GetWorld()->GetTimerManager().SetTimer(EnemyAttackTimerHandle, this, &AMeleeEnemyCharacter::MeleeEnemyAttack, DoAttackDelay, false, DoAttackDelay);
 	}
 }

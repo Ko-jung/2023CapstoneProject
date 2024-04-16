@@ -253,7 +253,7 @@ void UMainMeleeComponent::DoHitLag()
 		// 몽타쥬 멈추고
 		OwnerAnimInstance->Montage_Pause();
 
-		float HitLagDuration = 0.3f;
+		float HitLagDuration = 0.1f;
 		// 타이머 설정
 		if(!HitLagTimerHandle.IsValid())
 		{

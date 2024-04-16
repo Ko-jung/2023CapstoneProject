@@ -106,8 +106,6 @@ public:
 	void ChangeCurrentHp(float hp);
 	void ChangeState(ECharacterState s);
 
-	// 적군 전용 최대 체력 조절 함수
-	FORCEINLINE void SetMaxHealth(float NewMaxHealth) { MaxHealth = NewMaxHealth; CurrentHealth = MaxHealth; }
 	
 private:
 	void SetPlayerDie();

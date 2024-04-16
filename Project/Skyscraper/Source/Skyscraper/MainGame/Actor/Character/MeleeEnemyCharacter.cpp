@@ -25,8 +25,6 @@ void AMeleeEnemyCharacter::BeginPlay()
 		CombatSystemComponent->SetInitialSelect(MeleeSelect, ERangeSelect::ERS_Rifle);
 		CombatSystemComponent->SwapToMeleeWeapon(FInputActionValue());
 
-		HealthComponent->SetMaxHealth(EnemyMaxHealth);
-
 		GetWorld()->GetTimerManager().SetTimer(EnemyAttackTimerHandle, this, &AMeleeEnemyCharacter::MeleeEnemyAttack, DoAttackDelay, false, 2.0f);
 	}
 	

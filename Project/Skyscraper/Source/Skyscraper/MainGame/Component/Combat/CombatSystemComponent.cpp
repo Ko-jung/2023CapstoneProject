@@ -16,6 +16,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "MotionWarpingComponent.h"
+#include "PlayMontageCallbackProxy.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
@@ -31,7 +32,7 @@ UCombatSystemComponent::UCombatSystemComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	MeleeSelect = EMeleeSelect::EMS_Katana;
-	RangeSelect = ERangeSelect::ERS_Rifle;
+	RangeSelect = ERangeSelect::ERS_RPG;
 	OwnerCharacter = nullptr;
 	OwnerAnimInstance = nullptr;
 	MainMeleeWeaponComponent = nullptr;
@@ -70,6 +71,19 @@ void UCombatSystemComponent::SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeS
 {
 	MeleeSelect = eMeleeSelect;
 	RangeSelect = eRangeSelect;
+	if(MainMeleeWeaponComponent)
+	{
+		MainMeleeWeaponComponent->DestroyComponent();
+		MainMeleeWeaponComponent = OwnerCharacter->AddComponentByClass(MeleeClass[(uint8)MeleeSelect], false, FTransform(), true);
+		MainMeleeWeaponComponent->RegisterComponent();
+	}
+	if(MainRangeWeaponComponent)
+	{
+		MainRangeWeaponComponent->DestroyComponent();
+		MainRangeWeaponComponent = OwnerCharacter->AddComponentByClass(RangeClass[(uint8)RangeSelect], false, FTransform(), true);
+		MainRangeWeaponComponent->RegisterComponent();
+	}
+	
 }
 
 
@@ -81,8 +95,6 @@ void UCombatSystemComponent::BeginPlay()
 	{ // == Get Owner Character And Anim Instance
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-		OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnOutDownMontage);
-		OwnerAnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnOutDownMontage);
 	}
 
 	{ // 소유 캐릭터에 근접 및 원거리 무기 컴퍼넌트 생성
@@ -245,36 +257,41 @@ void UCombatSystemComponent::LockOn()
 
 }
 
-void UCombatSystemComponent::Stiffness(float StiffnessTime, FVector StiffnessDirection)
+void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 {
-	if (StiffnessTime <= FLT_EPSILON) return;
+	if (StunTime <= FLT_EPSILON) return;
 	if (OwnerCharacter->IsCharacterGodMode()) return;	// 무적이면 경직 먹지 않도록
 
 	// 캐릭터와 경직 방향의 각도 구하기
-	float AngleD = FMath::RadiansToDegrees(FMath::Acos(StiffnessDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
+	float AngleD = FMath::RadiansToDegrees(FMath::Acos(StunDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
 
-	UAnimMontage* Montage = nullptr;
+	UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stun);
+	FName StartingSection{};
+	int SectionNum = -1;
 	// 캐릭터가 뒤에서 공격받은 상황
 	if(AngleD < 90.0f)
 	{
-		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness_Bwd);
-		
+		StartingSection = FName(*(FString("Stun_Bwd")));
+		SectionNum = 0;
 	}
 	// 캐릭터가 앞에서 공격받은 상황
 	else
 	{
-		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness);
+		StartingSection = FName(*(FString("Stun_Fwd")));
+		SectionNum = 1;
 	}
 
 	if(Montage)
 	{
-		const float DamagedAnimPlayRate = Montage->GetPlayLength() / StiffnessTime;
-		OwnerAnimInstance->Montage_Play(Montage, DamagedAnimPlayRate);
+		float AttackAnimPlayRate = Montage->GetSectionLength(SectionNum) / StunTime;
+		const float DamagedAnimPlayRate = Montage->GetPlayLength();
+
+		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, DamagedAnimPlayRate, 0, StartingSection);
 	}
 	
 
 	// 방향으로 800.0f 의 힘으로 경직
-	OwnerCharacter->LaunchCharacter(StiffnessDirection * 800.0f, true, false);
+	OwnerCharacter->LaunchCharacter(StunDirection * 800.0f, true, false);
 }
 
 void UCombatSystemComponent::Down(FVector DownDirection)
@@ -286,24 +303,26 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 	float AngleD = FMath::RadiansToDegrees(FMath::Acos(DownDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
 
 
-	UAnimMontage* Montage = nullptr;
+	UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down);
+	FName StartingSection{};
 	// 캐릭터가 뒤에서 공격받은 상황
 	if (AngleD < 90.0f)
 	{
-		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down_Bwd);
-
+		StartingSection = FName(*(FString("Down_Bwd")));
 	}
 	// 캐릭터가 앞에서 공격받은 상황
 	else
 	{
-		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down);
+		StartingSection = FName(*(FString("Down_Fwd")));
 	}
 
 	if(Montage)
 	{
 		{ // == Play Down Montage
 			OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
-			OwnerAnimInstance->Montage_Play(Montage);
+			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0f, 0, StartingSection);
+			PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnOutDownMontage);
+			
 		}
 
 		// 다운 힘 = 1000.0f
@@ -334,7 +353,7 @@ void UCombatSystemComponent::GetWeaponEquipStateForAnimation(uint8& WeaponType, 
 	}
 }
 
-void UCombatSystemComponent::OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted)
+void UCombatSystemComponent::OnOutDownMontage(FName NotifyName)
 {
 	OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }

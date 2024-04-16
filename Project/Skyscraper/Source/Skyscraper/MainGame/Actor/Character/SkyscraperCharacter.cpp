@@ -80,12 +80,12 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	{ // == Set Mesh Charcter
 		// == Find and set USkeletalMesh from directory
-		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'"));
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/4_assassin/assassin.assassin'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
 		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
-		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/Character/PrototypeAnimation/ABP_GameTestChar_Test.ABP_GameTestChar_Test_C'"));
+		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Assassin/ABP_Assassin.ABP_Assassin_C'"));
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
@@ -123,58 +123,39 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	{ // == Set Anim Montages
 		// Dagger
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger1Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger1.AM_Dagger1'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack, AM_Dagger1Ref.Object);
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger2Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger2.AM_Dagger2'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack2, AM_Dagger2Ref.Object);
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger3Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger3.AM_Dagger3'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack3, AM_Dagger3Ref.Object);
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger4Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger4.AM_Dagger4'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack4, AM_Dagger4Ref.Object);
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Dagger5Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Dagger/AM_Dagger5.AM_Dagger5'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack5, AM_Dagger5Ref.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DaggerRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Melee/Dagger/AM_Assassin_DaggerAttack.AM_Assassin_DaggerAttack'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_DaggerAttack, AM_DaggerRef.Object);
 
 		// Katana
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Katana1Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Katana/AM_Katana1.AM_Katana1'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_KatanaAttack, AM_Katana1Ref.Object);
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Katana2Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Katana/AM_Katana2.AM_Katana2'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_KatanaAttack2, AM_Katana2Ref.Object);
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Katana3Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Katana/AM_Katana3.AM_Katana3'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_KatanaAttack3, AM_Katana3Ref.Object);
-		//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_Katana4Ref(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/Katana/AM_Katana4.AM_Katana4'"));
-		//CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_KatanaAttack4, AM_Katana4Ref.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_KatanaRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Melee/Katana/AM_Assassin_KatanaAttack.AM_Assassin_KatanaAttack'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_KatanaAttack, AM_KatanaRef.Object);
+
 		// GreatSword
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_GreatSwordRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/GreatSword/AM_GreatswordAttack.AM_GreatswordAttack'"));
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_GreatSwordRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Melee/Sword/AM_Assassin_SwordAttack.AM_Assassin_SwordAttack'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_GreatSwordAttack, AM_GreatSwordRef.Object);
 		
 
 		//SMG
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SMGFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGFire, AM_SMGFireRef.Object);
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SMGReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGReload, AM_SMGReloadRef.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SMGRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Range/SMG/AM_Assassin_SMG.AM_Assassin_SMG'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMG, AM_SMGRef.Object);
 
 		//Rifle
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RifleFire, AM_RifleFireRef.Object);
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RifleReload, AM_RifleReloadRef.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Range/Rifle/AM_Assassin_Rifle.AM_Assassin_Rifle'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Rifle, AM_RifleRef.Object);
 
 		//RPG
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RPGFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPGFire, AM_RPGFireRef.Object);
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RPGReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPGReload, AM_RPGReloadRef.Object);
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RPGFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Range/RPG/AM_Assassin_RPG.AM_Assassin_RPG'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPG, AM_RPGFireRef.Object);
 
-		// Stiffness / Down
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StiffnessRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_GetDamaged.AM_GetDamaged'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stiffness, AM_StiffnessRef.Object);
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stiffness_Bwd, nullptr);
+		// Stun / Down
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StunRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Hit.AM_Assassin_Hit'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stun, AM_StunRef.Object);
+		
 
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_KnockedDown.AM_KnockedDown'"));
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Down.AM_Assassin_Down'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down, AM_DownRef.Object);
 		
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down_Bwd, nullptr);
+		
 
 
 	}
@@ -220,11 +201,11 @@ float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 	return Damage;
 }
 
-void ASkyscraperCharacter::DoStiffness(const float StiffnessTime, const FVector StiffnessDirection) const
+void ASkyscraperCharacter::DoStun(const float StunTime, const FVector StunDirection) const
 {
 	if(CombatSystemComponent)
 	{
-		CombatSystemComponent->Stiffness(StiffnessTime, StiffnessDirection);
+		CombatSystemComponent->Stun(StunTime, StunDirection);
 	}
 	
 }

@@ -7,10 +7,9 @@ enum class ECharacterAnimMontage
 	ECAM_DaggerAttack,
 	ECAM_KatanaAttack,
 	ECAM_GreatSwordAttack,
-	ECAM_SMGReadyFire, ECAM_SMGFire, ECAM_SMGReload,
-	ECAM_RifleReadyFire, ECAM_RifleFire, ECAM_RifleReload,
-	ECAM_RPGReadyFire, ECAM_RPGFire, ECAM_RPGReload, 
-	ECAM_Stiffness, ECAM_Down,
-	ECAM_Stiffness_Bwd, ECAM_Down_Bwd
+	ECAM_SMG,
+	ECAM_Rifle,
+	ECAM_RPG,
+	ECAM_Stun, ECAM_Down,
 
 };

@@ -5,8 +5,8 @@
 
 URifleComponent::URifleComponent()
 {
-	FireAnimMontageKey = ECharacterAnimMontage::ECAM_RifleFire;
-	ReloadAnimMontageKey = ECharacterAnimMontage::ECAM_RifleReload;
+	AnimMontageKey = ECharacterAnimMontage::ECAM_Rifle;
+	
 
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 20;

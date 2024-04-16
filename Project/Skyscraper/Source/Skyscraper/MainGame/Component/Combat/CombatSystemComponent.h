@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Melee/MainMeleeComponent.h"
 #include "Range/MainRangeComponent.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
@@ -24,12 +25,17 @@ public:
 	// == Call right after construct
 	void SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeSelect eRangeSelect);
 
-	// == Do Stiffness / Down Function
+	// == Do Stun / Down Function
 	UFUNCTION(BlueprintCallable)
-		void Stiffness(float StiffnessTime, FVector StiffnessDirection);
+		void Stun(float StunTime, FVector StunDirection);
 	UFUNCTION(BlueprintCallable)
 		void Down(FVector DownDirection);
 
+	// == Input action function
+	UFUNCTION()
+		void SwapToMeleeWeapon(const FInputActionValue& Value);
+	UFUNCTION()
+		void SwapToRangeWeapon(const FInputActionValue& Value);
 
 	// AnimInstance에서 캐릭터의 Idle 상태 애니메이션을 위해 필요한 변수 getter
 	// WeaponType - 맨손(0), 근거리(1), 원거리(2)
@@ -78,25 +84,20 @@ protected:
 	UPROPERTY(EditAnywhere,Category = LockOn)
 	float InitTargetDistance;
 
-	// == Input action function
-	UFUNCTION()
-		void SwapToMeleeWeapon(const FInputActionValue& Value);
-	UFUNCTION()
-		void SwapToRangeWeapon(const FInputActionValue& Value);
+
 	UFUNCTION()
 		void LockOnKeyFunc(const FInputActionValue& Value);
-
 
 	// == Action Function
 	void LockOn();
 
 
 	UFUNCTION()
-	void OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted);
+	void OnOutDownMontage(FName NotifyName);
 public:	
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 	FORCEINLINE UMainRangeComponent* GetRangeComponent() const { return Cast<UMainRangeComponent>(MainRangeWeaponComponent); }
-
+	FORCEINLINE UMainMeleeComponent* GetMeleeComponent() const { return Cast<UMainMeleeComponent>(MainMeleeWeaponComponent); }
 
 private:
 	// == Input Action And Input Mapping Context

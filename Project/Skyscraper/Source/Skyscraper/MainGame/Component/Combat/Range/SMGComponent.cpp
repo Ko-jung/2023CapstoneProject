@@ -5,8 +5,7 @@
 
 USMGComponent::USMGComponent()
 {
-	FireAnimMontageKey = ECharacterAnimMontage::ECAM_SMGFire;
-	ReloadAnimMontageKey = ECharacterAnimMontage::ECAM_SMGReload;
+	AnimMontageKey = ECharacterAnimMontage::ECAM_SMG;
 	
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 50;

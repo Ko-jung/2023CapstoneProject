@@ -7,6 +7,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "PlayMontageCallbackProxy.h"
 #include "Components/InputComponent.h"
 
 #include "GameFramework/SpringArmComponent.h"
@@ -43,8 +44,7 @@ UMainRangeComponent::UMainRangeComponent()
 	//AM_Fire = AM_FireRef.Object;
 	//const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_ReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
 	//AM_Reload = AM_ReloadRef.Object;
-	FireAnimMontageKey = ECharacterAnimMontage::ECAM_Default;
-	ReloadAnimMontageKey = ECharacterAnimMontage::ECAM_Default;
+	AnimMontageKey = ECharacterAnimMontage::ECAM_Default;
 
 
 
@@ -148,7 +148,13 @@ void UMainRangeComponent::PlayFireAnim()
 	CurrentFireCoolTime = FireMaxCoolTime;
 
 	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
-	OwnerAnimInstance->Montage_Play(OwnerCharacter->GetAnimMontage(FireAnimMontageKey), 1.0f);
+	{ // == Play Montage
+		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
+		FName StartingSection = FName(*(FString("Fire")));
+
+		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, 1.0f, 0, StartingSection);
+	}
+	
 
 	if(!FireCoolTimerHandle.IsValid())
 	{
@@ -269,8 +275,14 @@ void UMainRangeComponent::PlayReloadAnim()
 {
 	if (!CanReload()) return;
 
-	float PlayRate = OwnerCharacter->GetAnimMontage(ReloadAnimMontageKey)->GetPlayLength() / ReloadSpeedTime;
-	OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(ReloadAnimMontageKey), PlayRate);
+	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
+	{ // == Play Montage
+		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
+		FName StartingSection = FName(*(FString("Reload")));
+		float PlayRate = PlayMontage->GetSectionLength(1) / ReloadSpeedTime;
+
+		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, PlayRate, 0, StartingSection);
+	}
 
 
 }

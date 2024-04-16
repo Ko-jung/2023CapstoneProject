@@ -47,11 +47,16 @@ void UMainMeleeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+	{ // 소유 캐릭터 정보 흭득
+		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+	}
 
-	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-	//OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
-
+	{ // 소유 캐릭터에게 무기 부착
+		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
+		WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
+		WeaponMeshComponent->SetHiddenInGame(true);
+	}
 	// == TODO: Create Melee Widget
 }
 
@@ -94,11 +99,13 @@ void UMainMeleeComponent::RemoveInputMappingContext()
 void UMainMeleeComponent::AddThisWeapon()
 {
 	AddInputMappingContext();
+	SetWeaponHiddenInGame(false);
 }
 
 void UMainMeleeComponent::RemoveThisWeapon()
 {
 	RemoveInputMappingContext();
+	SetWeaponHiddenInGame(true);
 }
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
@@ -171,7 +178,7 @@ void UMainMeleeComponent::Attack()
 }
 
 
-void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTime, float fBaseDamage, bool bDoDown)
+void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, float fBaseDamage, bool bDoDown)
 {
 	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
 	FVector Start = OwnerCharacter->GetActorLocation();
@@ -185,16 +192,15 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 	// == TODO: Delete Debug Later
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation(), UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors,EDrawDebugTrace::ForDuration,OutHits,true);
 
-	// 적중된 적이 있으므로 역경직
-	if(OutHits.Num() != 0)
-	{
-		DoHitLag();
-	}
-
+	
+	bool bDoHitLag = false;
 	for(FHitResult HitResult : OutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
-		// == TODO: Stiffness And Down Later
+		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
+
+		bDoHitLag = true;
+		// == TODO: Stun And Down Later
 		if(bDoDown)
 		{
 			if(ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
@@ -206,7 +212,7 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		{
 			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
 			{
-				Cast<ASkyscraperCharacter>(HitActor)->DoStiffness(fStiffnessTime, OwnerCharacter->GetActorForwardVector());
+				Cast<ASkyscraperCharacter>(HitActor)->DoStun(fStunTime, OwnerCharacter->GetActorForwardVector());
 			}
 			
 		}
@@ -233,7 +239,11 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		}
 		
 	}
-
+	// 적중된 적이 있으므로 역경직
+	if (bDoHitLag)
+	{
+		DoHitLag();
+	}
 }
 
 void UMainMeleeComponent::DoHitLag()
@@ -243,7 +253,7 @@ void UMainMeleeComponent::DoHitLag()
 		// 몽타쥬 멈추고
 		OwnerAnimInstance->Montage_Pause();
 
-		float HitLagDuration = 1.0f;
+		float HitLagDuration = 0.3f;
 		// 타이머 설정
 		if(!HitLagTimerHandle.IsValid())
 		{
@@ -272,5 +282,10 @@ void UMainMeleeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UMainMeleeComponent::SetWeaponHiddenInGame(bool bNewHidden) const
+{
+	WeaponMeshComponent->SetHiddenInGame(bNewHidden);
 }
 

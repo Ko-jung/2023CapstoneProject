@@ -49,9 +49,7 @@ protected:
 	// 착용 시 무기에 대한 변수
 	// 각 하위(자식) 컴퍼넌트 들에서 초기화 진행
 	UPROPERTY()
-		USkeletalMeshComponent* WeaponMesh;
-	UPROPERTY()
-		USkeletalMesh* WeaponObject;
+		USkeletalMeshComponent* WeaponMeshComponent;
 	UPROPERTY()
 		FName WeaponSocketName;
 
@@ -92,6 +90,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
+
+	// 무기 웨폰 skeletal mesh의 visible을 변경해주는 함수
+	void SetWeaponHiddenInGame(bool bNewHidden) const;
 	
 private:
 	// == Input Action And Input Mapping Context

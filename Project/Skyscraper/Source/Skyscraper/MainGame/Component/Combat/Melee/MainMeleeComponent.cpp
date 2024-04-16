@@ -47,11 +47,16 @@ void UMainMeleeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+	{ // 소유 캐릭터 정보 흭득
+		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+	}
 
-	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-	//OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
-
+	{ // 소유 캐릭터에게 무기 부착
+		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
+		WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
+		WeaponMeshComponent->SetHiddenInGame(true);
+	}
 	// == TODO: Create Melee Widget
 }
 
@@ -94,11 +99,13 @@ void UMainMeleeComponent::RemoveInputMappingContext()
 void UMainMeleeComponent::AddThisWeapon()
 {
 	AddInputMappingContext();
+	SetWeaponHiddenInGame(false);
 }
 
 void UMainMeleeComponent::RemoveThisWeapon()
 {
 	RemoveInputMappingContext();
+	SetWeaponHiddenInGame(true);
 }
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
@@ -272,5 +279,10 @@ void UMainMeleeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UMainMeleeComponent::SetWeaponHiddenInGame(bool bNewHidden) const
+{
+	WeaponMeshComponent->SetHiddenInGame(bNewHidden);
 }
 

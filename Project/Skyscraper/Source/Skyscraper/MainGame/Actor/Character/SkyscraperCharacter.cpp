@@ -131,8 +131,8 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_KatanaAttack, AM_KatanaRef.Object);
 
 		// GreatSword
-		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_GreatSwordRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Combat/Attacks/GreatSword/AM_GreatswordAttack.AM_GreatswordAttack'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_GreatSwordAttack, AM_GreatSwordRef.Object);*/
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_GreatSwordRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Melee/Sword/AM_Assassin_SwordAttack.AM_Assassin_SwordAttack'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_GreatSwordAttack, AM_GreatSwordRef.Object);
 		
 
 		//SMG

@@ -30,7 +30,7 @@ UCombatSystemComponent::UCombatSystemComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	MeleeSelect = EMeleeSelect::EMS_Katana;
+	MeleeSelect = EMeleeSelect::EMS_GreatSword;
 	RangeSelect = ERangeSelect::ERS_Rifle;
 	OwnerCharacter = nullptr;
 	OwnerAnimInstance = nullptr;

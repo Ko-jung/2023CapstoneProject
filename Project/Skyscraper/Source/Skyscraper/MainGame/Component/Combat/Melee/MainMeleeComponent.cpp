@@ -192,15 +192,14 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 	// == TODO: Delete Debug Later
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation(), UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors,EDrawDebugTrace::ForDuration,OutHits,true);
 
-	// 적중된 적이 있으므로 역경직
-	if(OutHits.Num() != 0)
-	{
-		DoHitLag();
-	}
-
+	
+	bool bDoHitLag = false;
 	for(FHitResult HitResult : OutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
+		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
+
+		bDoHitLag = true;
 		// == TODO: Stiffness And Down Later
 		if(bDoDown)
 		{
@@ -240,7 +239,11 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		}
 		
 	}
-
+	// 적중된 적이 있으므로 역경직
+	if (bDoHitLag)
+	{
+		DoHitLag();
+	}
 }
 
 void UMainMeleeComponent::DoHitLag()
@@ -250,7 +253,7 @@ void UMainMeleeComponent::DoHitLag()
 		// 몽타쥬 멈추고
 		OwnerAnimInstance->Montage_Pause();
 
-		float HitLagDuration = 1.0f;
+		float HitLagDuration = 0.3f;
 		// 타이머 설정
 		if(!HitLagTimerHandle.IsValid())
 		{

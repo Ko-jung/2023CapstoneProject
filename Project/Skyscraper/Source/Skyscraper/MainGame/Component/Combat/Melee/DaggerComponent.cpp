@@ -8,11 +8,11 @@ UDaggerComponent::UDaggerComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_DaggerAttack;
 
+	AttackTime.Add(0.4f);
+	AttackTime.Add(0.4f);
+	AttackTime.Add(0.4f);
 	AttackTime.Add(0.6f);
-	AttackTime.Add(0.6f);
-	AttackTime.Add(0.6f);
-	AttackTime.Add(0.9f);
-	AttackTime.Add(0.6f);
+	AttackTime.Add(0.4f);
 
 	
 }

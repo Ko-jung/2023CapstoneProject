@@ -31,7 +31,7 @@ UCombatSystemComponent::UCombatSystemComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	MeleeSelect = EMeleeSelect::EMS_Dagger;
+	MeleeSelect = EMeleeSelect::EMS_Katana;
 	RangeSelect = ERangeSelect::ERS_Rifle;
 	OwnerCharacter = nullptr;
 	OwnerAnimInstance = nullptr;
@@ -95,8 +95,6 @@ void UCombatSystemComponent::BeginPlay()
 	{ // == Get Owner Character And Anim Instance
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-		OwnerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnOutDownMontage);
-		OwnerAnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnOutDownMontage);
 	}
 
 	{ // 소유 캐릭터에 근접 및 원거리 무기 컴퍼넌트 생성
@@ -323,6 +321,8 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 		{ // == Play Down Montage
 			OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
 			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0f, 0, StartingSection);
+			PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnOutDownMontage);
+			
 		}
 
 		// 다운 힘 = 1000.0f
@@ -353,7 +353,7 @@ void UCombatSystemComponent::GetWeaponEquipStateForAnimation(uint8& WeaponType, 
 	}
 }
 
-void UCombatSystemComponent::OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted)
+void UCombatSystemComponent::OnOutDownMontage(FName NotifyName)
 {
 	OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }

@@ -142,10 +142,8 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGReload, AM_SMGReloadRef.Object);*/
 
 		//Rifle
-		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RifleFire, AM_RifleFireRef.Object);
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RifleReload, AM_RifleReloadRef.Object);*/
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Range/Rifle/AM_Assassin_Rifle.AM_Assassin_Rifle'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Rifle, AM_RifleRef.Object);
 
 		//RPG
 		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RPGFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));

@@ -8,8 +8,7 @@
 
 URPGComponent::URPGComponent()
 {
-	FireAnimMontageKey = ECharacterAnimMontage::ECAM_RPGFire;
-	ReloadAnimMontageKey = ECharacterAnimMontage::ECAM_RPGReload;
+	AnimMontageKey = ECharacterAnimMontage::ECAM_RPG;
 
 	
 

@@ -93,7 +93,7 @@ protected:
 
 
 	UFUNCTION()
-	void OnOutDownMontage(UAnimMontage* Montage, bool bInterrupted);
+	void OnOutDownMontage(FName NotifyName);
 public:	
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 	FORCEINLINE UMainRangeComponent* GetRangeComponent() const { return Cast<UMainRangeComponent>(MainRangeWeaponComponent); }

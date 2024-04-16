@@ -104,8 +104,7 @@ protected:
 	// 애니메이션 관련 변수
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
-	ECharacterAnimMontage FireAnimMontageKey;
-	ECharacterAnimMontage ReloadAnimMontageKey;
+	ECharacterAnimMontage AnimMontageKey;
 
 	// 발사 / 재장전 등의 쿨타임에 대한 타이머 핸들 변수
 	FTimerHandle FireCoolTimerHandle;

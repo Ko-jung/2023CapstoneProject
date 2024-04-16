@@ -162,24 +162,33 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 
 void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 {
+	if (PSO.SerialNum == SerialNum)
+	{
+		UE_LOG(LogClass, Warning, TEXT("Skill Actor Spawner Is this!"));
+		return;
+	}
+
+	FName Team;
+	if (PSO.SerialNum < MAXPLAYER / 2)	Team = FName{ "TeamA" };
+	else								Team = FName{ "TeamB" };
+
+	FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
+	FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
+	ESkillActor SkillActor;
+
 	switch (PSO.SpawnObject)
 	{
 	case EObject::BP_BoomerangGrab:
 	{
-		FName Team;
-		if (PSO.SerialNum < MAXPLAYER / 2)	Team = FName{ "TeamA" };
-		else								Team = FName{ "TeamB" };
-
-		FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
-		FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
-
-		SpawnSkillActor(ESkillActor::BP_BoomerangGrab, Location, Forward, Characters[PSO.SerialNum], Team);
-		// GetWorld()->SpawnActor();
+		SkillActor = ESkillActor::BP_BoomerangGrab;
 		break;
 	}
 	default:
+		SkillActor = ESkillActor::BP_BoomerangGrab;
 		break;
 	}
+
+	SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
 }
 
 void AMainGameMode::SendPlayerLocation()

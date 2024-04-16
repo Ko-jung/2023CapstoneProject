@@ -66,7 +66,16 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		int id = c->GetClientNum();
 
 		int SendPlayerRoomNum = id / 6;
-		ClientMgr::Instance()->GetClients()[id]->SetECharacter(PPS.PickedCharacter);
+		bool IsDuplicate = ClientMgr::Instance()->CheckSelectDuplication(id, PPS.PickedCharacter);
+
+		if (IsDuplicate)
+		{
+			PPS.PickedCharacter = c->GetECharacter();
+		}
+		else
+		{
+			c->SetECharacter(PPS.PickedCharacter);
+		}
 
 		// Send To Other Player Pick State
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));

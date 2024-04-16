@@ -136,10 +136,8 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		
 
 		//SMG
-		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SMGFireRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_FireRifle.AM_FireRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGFire, AM_SMGFireRef.Object);
-		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SMGReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMGReload, AM_SMGReloadRef.Object);*/
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SMGRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Range/SMG/AM_Assassin_SMG.AM_Assassin_SMG'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SMG, AM_SMGRef.Object);
 
 		//Rifle
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RifleRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Range/Rifle/AM_Assassin_Rifle.AM_Assassin_Rifle'"));

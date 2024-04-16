@@ -32,7 +32,7 @@ UCombatSystemComponent::UCombatSystemComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	MeleeSelect = EMeleeSelect::EMS_Katana;
-	RangeSelect = ERangeSelect::ERS_Rifle;
+	RangeSelect = ERangeSelect::ERS_SMG;
 	OwnerCharacter = nullptr;
 	OwnerAnimInstance = nullptr;
 	MainMeleeWeaponComponent = nullptr;

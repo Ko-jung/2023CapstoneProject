@@ -24,9 +24,9 @@ public:
 	// == Call right after construct
 	void SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeSelect eRangeSelect);
 
-	// == Do Stiffness / Down Function
+	// == Do Stun / Down Function
 	UFUNCTION(BlueprintCallable)
-		void Stiffness(float StiffnessTime, FVector StiffnessDirection);
+		void Stun(float StunTime, FVector StunDirection);
 	UFUNCTION(BlueprintCallable)
 		void Down(FVector DownDirection);
 

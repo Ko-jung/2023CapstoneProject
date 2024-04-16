@@ -245,36 +245,36 @@ void UCombatSystemComponent::LockOn()
 
 }
 
-void UCombatSystemComponent::Stiffness(float StiffnessTime, FVector StiffnessDirection)
+void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 {
-	if (StiffnessTime <= FLT_EPSILON) return;
+	if (StunTime <= FLT_EPSILON) return;
 	if (OwnerCharacter->IsCharacterGodMode()) return;	// 무적이면 경직 먹지 않도록
 
 	// 캐릭터와 경직 방향의 각도 구하기
-	float AngleD = FMath::RadiansToDegrees(FMath::Acos(StiffnessDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
+	float AngleD = FMath::RadiansToDegrees(FMath::Acos(StunDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
 
 	UAnimMontage* Montage = nullptr;
 	// 캐릭터가 뒤에서 공격받은 상황
 	if(AngleD < 90.0f)
 	{
-		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness_Bwd);
+		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stun_Bwd);
 		
 	}
 	// 캐릭터가 앞에서 공격받은 상황
 	else
 	{
-		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stiffness);
+		Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stun);
 	}
 
 	if(Montage)
 	{
-		const float DamagedAnimPlayRate = Montage->GetPlayLength() / StiffnessTime;
+		const float DamagedAnimPlayRate = Montage->GetPlayLength() / StunTime;
 		OwnerAnimInstance->Montage_Play(Montage, DamagedAnimPlayRate);
 	}
 	
 
 	// 방향으로 800.0f 의 힘으로 경직
-	OwnerCharacter->LaunchCharacter(StiffnessDirection * 800.0f, true, false);
+	OwnerCharacter->LaunchCharacter(StunDirection * 800.0f, true, false);
 }
 
 void UCombatSystemComponent::Down(FVector DownDirection)

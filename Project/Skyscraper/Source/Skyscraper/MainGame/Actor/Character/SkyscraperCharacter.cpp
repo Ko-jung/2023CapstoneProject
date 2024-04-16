@@ -153,10 +153,10 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_RPGReloadRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Rifle/AM_ReloadRifle.AM_ReloadRifle'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_RPGReload, AM_RPGReloadRef.Object);*/
 
-		// Stiffness / Down
-		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StiffnessRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_GetDamaged.AM_GetDamaged'"));
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stiffness, AM_StiffnessRef.Object);
-		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stiffness_Bwd, nullptr);*/
+		// Stun / Down
+		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StunRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_GetDamaged.AM_GetDamaged'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stun, AM_StunRef.Object);
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stun_Bwd, nullptr);*/
 
 		/*const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/Character/PrototypeAnimation/Damaged/AM_KnockedDown.AM_KnockedDown'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down, AM_DownRef.Object);
@@ -207,11 +207,11 @@ float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 	return Damage;
 }
 
-void ASkyscraperCharacter::DoStiffness(const float StiffnessTime, const FVector StiffnessDirection) const
+void ASkyscraperCharacter::DoStun(const float StunTime, const FVector StunDirection) const
 {
 	if(CombatSystemComponent)
 	{
-		CombatSystemComponent->Stiffness(StiffnessTime, StiffnessDirection);
+		CombatSystemComponent->Stun(StunTime, StunDirection);
 	}
 	
 }

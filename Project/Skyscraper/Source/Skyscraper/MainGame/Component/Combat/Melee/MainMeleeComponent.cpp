@@ -178,7 +178,7 @@ void UMainMeleeComponent::Attack()
 }
 
 
-void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTime, float fBaseDamage, bool bDoDown)
+void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, float fBaseDamage, bool bDoDown)
 {
 	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
 	FVector Start = OwnerCharacter->GetActorLocation();
@@ -200,7 +200,7 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 
 		bDoHitLag = true;
-		// == TODO: Stiffness And Down Later
+		// == TODO: Stun And Down Later
 		if(bDoDown)
 		{
 			if(ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
@@ -212,7 +212,7 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStiffnessTim
 		{
 			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
 			{
-				Cast<ASkyscraperCharacter>(HitActor)->DoStiffness(fStiffnessTime, OwnerCharacter->GetActorForwardVector());
+				Cast<ASkyscraperCharacter>(HitActor)->DoStun(fStunTime, OwnerCharacter->GetActorForwardVector());
 			}
 			
 		}

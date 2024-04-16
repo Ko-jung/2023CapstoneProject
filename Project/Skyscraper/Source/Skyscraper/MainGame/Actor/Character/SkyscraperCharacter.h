@@ -118,8 +118,8 @@ public:
 	// == Take Damage
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
-	// == Stiffness / Down
-	void DoStiffness(const float StiffnessTime, const FVector StiffnessDirection) const;
+	// == Stun / Down
+	void DoStun(const float StunTime, const FVector StunDirection) const;
 	void DoDown(const FVector& DownDirection) const;
 
 	// == Get Anim Montage

@@ -174,7 +174,6 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록
 	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - BufferedInput < 0.2f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("do input buffer attack"));
 		PlayAttackAnimMontage();
 		return;
 	}
@@ -203,7 +202,6 @@ void UMainMeleeComponent::Attack()
 	{
 		// 선입력에 대한 처리
 		BufferedInput = UGameplayStatics::GetTimeSeconds(GetWorld());
-		UE_LOG(LogTemp, Warning, TEXT("Buffered Input"));
 	}
 }
 

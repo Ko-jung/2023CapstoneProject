@@ -165,12 +165,6 @@ void UJetpackComponent::AddJetpackVelocity(FVector AddVelocity, float FuelReduct
 
 void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 {
-	// move 입력 제한(다운 시 등)중 입력 안되도록 추가
-	if(APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	{
-		if (PlayerController->IsMoveInputIgnored()) return;
-	}
-
 	if (JetpackFuel > 0.0f)
 	{
 		AddJetpackVelocity(FVector(0.0f, 0.0f, 50.0f), HoverGaugePerSec);
@@ -185,12 +179,6 @@ void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 
 void UJetpackComponent::HoverStop()
 {
-	// move 입력 제한(다운 시 등)중 입력 안되도록 추가
-	if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	{
-		if (PlayerController->IsMoveInputIgnored()) return;
-	}
-
 	UE_LOG(LogTemp, Warning, TEXT("stop hovering"));
 	ToGlidingSpeed();
 	if(!bHoverStoping)
@@ -208,12 +196,6 @@ void UJetpackComponent::ToGlidingSpeed()
 
 void UJetpackComponent::DashFast()
 {
-	// move 입력 제한(다운 시 등)중 입력 안되도록 추가
-	if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	{
-		if (PlayerController->IsMoveInputIgnored()) return;
-	}
-
 	if(JetpackFuel >0.0f)
 	{
 		SetHoveringMode(true);
@@ -229,12 +211,6 @@ void UJetpackComponent::DashFast()
 
 void UJetpackComponent::DashStop()
 {
-	// move 입력 제한(다운 시 등)중 입력 안되도록 추가
-	if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	{
-		if (PlayerController->IsMoveInputIgnored()) return;
-	}
-
 	ToGlidingSpeed();
 
 	bIsDashing = false;
@@ -263,12 +239,6 @@ void UJetpackComponent::SetCharacterMaxSpeed()
 
 void UJetpackComponent::Dodge(FVector2D InputValue)
 {
-	// move 입력 제한(다운 시 등)중 입력 안되도록 추가
-	if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	{
-		if (PlayerController->IsMoveInputIgnored()) return;
-	}
-
 	if (JetpackFuel < 0.1f) return;
 	UE_LOG(LogTemp, Warning, TEXT("%f,%f"), InputValue.X, InputValue.Y);
 	// 중력 없애기

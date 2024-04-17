@@ -332,7 +332,7 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 		}
 
 		{ // 캐릭터 공격 방향으로 시선 확 돌리기
-			OwnerCharacter->GetPlayerController()->SetControlRotation(NewRotator);
+			OwnerCharacter->GetController()->SetControlRotation(NewRotator);
 			//OwnerCharacter->SetActorRotation(NewRotator);
 		}
 

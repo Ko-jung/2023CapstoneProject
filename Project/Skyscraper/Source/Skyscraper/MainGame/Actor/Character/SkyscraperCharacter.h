@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
+#include "Skyscraper/Enum/ECharacterCameraMode.h"
 #include "Skyscraper/Enum/EItemEffect.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
@@ -157,6 +158,10 @@ public:
 	void SetCharacterGodMode(bool bNewGodMode);
 	UFUNCTION(BlueprintCallable)
 	bool IsCharacterGodMode();
+
+	// 캐릭터 카메라 모드 변경하는 함수
+	UFUNCTION(BlueprintCallable)
+	void SetCameraMode(ECharacterCameraMode CameraMode);
 
 // === 2019180016 ===
 protected:

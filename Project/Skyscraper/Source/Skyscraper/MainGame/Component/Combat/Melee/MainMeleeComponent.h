@@ -78,6 +78,9 @@ protected:
 		bool CanAttack;
 	UPROPERTY(VisibleAnywhere, Category = ComboSystem)
 		float LastAttackClickTime;
+	// 공격 중 선 입력 했을 경우 0.2초 내 입력이 이뤄졌을 시 바로 공격하도록 실행
+	UPROPERTY(VisibleAnywhere, Category = ComboSystem)
+		float BufferedInput;
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
 

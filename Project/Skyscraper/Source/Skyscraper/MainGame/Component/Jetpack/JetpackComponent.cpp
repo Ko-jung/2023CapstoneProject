@@ -165,6 +165,7 @@ void UJetpackComponent::AddJetpackVelocity(FVector AddVelocity, float FuelReduct
 
 void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 {
+
 	if (JetpackFuel > 0.0f)
 	{
 		AddJetpackVelocity(FVector(0.0f, 0.0f, 50.0f), HoverGaugePerSec);
@@ -179,6 +180,7 @@ void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 
 void UJetpackComponent::HoverStop()
 {
+
 	UE_LOG(LogTemp, Warning, TEXT("stop hovering"));
 	ToGlidingSpeed();
 	if(!bHoverStoping)
@@ -196,6 +198,7 @@ void UJetpackComponent::ToGlidingSpeed()
 
 void UJetpackComponent::DashFast()
 {
+
 	if(JetpackFuel >0.0f)
 	{
 		SetHoveringMode(true);
@@ -211,6 +214,7 @@ void UJetpackComponent::DashFast()
 
 void UJetpackComponent::DashStop()
 {
+
 	ToGlidingSpeed();
 
 	bIsDashing = false;
@@ -239,6 +243,7 @@ void UJetpackComponent::SetCharacterMaxSpeed()
 
 void UJetpackComponent::Dodge(FVector2D InputValue)
 {
+
 	if (JetpackFuel < 0.1f) return;
 	UE_LOG(LogTemp, Warning, TEXT("%f,%f"), InputValue.X, InputValue.Y);
 	// 중력 없애기

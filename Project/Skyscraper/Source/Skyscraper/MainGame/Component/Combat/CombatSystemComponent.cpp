@@ -304,25 +304,36 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 
 
 	UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down);
-	FName StartingSection{};
-	// 캐릭터가 뒤에서 공격받은 상황
-	if (AngleD < 90.0f)
-	{
-		StartingSection = FName(*(FString("Down_Bwd")));
-	}
-	// 캐릭터가 앞에서 공격받은 상황
-	else
-	{
-		StartingSection = FName(*(FString("Down_Fwd")));
-	}
+	
 
 	if(Montage)
 	{
+		FName StartingSection{};
+		FRotator NewRotator{};
+		// 캐릭터가 뒤에서 공격받은 상황
+		if (AngleD < 90.0f)
+		{
+			StartingSection = FName(*(FString("Down_Bwd")));
+			NewRotator = DownDirection.Rotation();
+		}
+		// 캐릭터가 앞에서 공격받은 상황
+		else
+		{
+			StartingSection = FName(*(FString("Down_Fwd")));
+			NewRotator = (DownDirection * -1.0f).Rotation();
+		}
+		NewRotator.Pitch = -45.0f;
+
 		{ // == Play Down Montage
 			OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
 			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0f, 0, StartingSection);
 			PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnOutDownMontage);
 			
+		}
+
+		{ // 캐릭터 공격 방향으로 시선 확 돌리기
+			OwnerCharacter->GetController()->SetControlRotation(NewRotator);
+			//OwnerCharacter->SetActorRotation(NewRotator);
 		}
 
 		// 다운 힘 = 1000.0f

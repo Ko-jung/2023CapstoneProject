@@ -150,12 +150,13 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		// Stun / Down
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_StunRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Hit.AM_Assassin_Hit'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Stun, AM_StunRef.Object);
-		
 
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DownRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Damaged/AM_Assassin_Down.AM_Assassin_Down'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Down, AM_DownRef.Object);
-		
-		
+
+		// Death
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DeathRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Death/AM_Assassin_Death.AM_Assassin_Death'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Death, AM_DeathRef.Object);
 
 
 	}
@@ -296,6 +297,21 @@ bool ASkyscraperCharacter::IsCharacterGodMode()
 	return false;
 }
 
+void ASkyscraperCharacter::SetCameraMode(ECharacterCameraMode CameraMode)
+{
+	switch (CameraMode)
+	{
+	case ECharacterCameraMode::ECCM_FollowController:
+		bUseControllerRotationYaw = true;
+		break;
+	case ECharacterCameraMode::ECCM_SeparateController:
+		bUseControllerRotationYaw = false;
+		break;
+	default:
+		break;
+	}
+}
+
 void ASkyscraperCharacter::SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
 	// bool IsTeamA;
@@ -390,6 +406,7 @@ void ASkyscraperCharacter::Look(const FInputActionValue& Value)
 
 void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
 {
+
 	if(JetpackComponent)
 	{
 		FVector2D value = InputActionValue.Get<FVector2D>();
@@ -399,6 +416,8 @@ void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
 
 void ASkyscraperCharacter::ItemInteraction()
 {
+
+
 	// 월드 내 오브젝트 중 아이템 액터 찾기
 	// 다만, 월드 내 모든 오브젝트에 대해서 탐색하는 것이므로 굳이 런타임중 0~3개 만 존재하는 액터에 대해서
 	// GetAllActorsOfClass 를 하는 것은 매우 비효율 적일 것으로 예상되므로
@@ -419,6 +438,8 @@ void ASkyscraperCharacter::ItemInteraction()
 
 void ASkyscraperCharacter::UseItem() 
 {
+
+
 	UE_LOG(LogTemp, Warning, TEXT("no item has"));
 	if(OwningItem.Key != EItemEffect::EIE_NONE)
 	{

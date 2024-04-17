@@ -12,6 +12,7 @@
 #include "MotionWarpingComponent.h"
 #include "PlayMontageCallbackProxy.h"
 #include "PlayMontageCallbackProxy.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -110,6 +111,7 @@ void UMainMeleeComponent::RemoveThisWeapon()
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
 {
+
 	CanAttack = false;
 
 	int AnimationMovementAxis = 1;
@@ -149,6 +151,9 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage,AttackAnimPlayRate,0,StartingSection);
 		PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
+		OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
+		OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
+		
 	}
 
 	{ // == Add MeleeComboCount 
@@ -160,9 +165,21 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
+	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록
+	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - BufferedInput < 0.2f)
+	{
+		PlayAttackAnimMontage();
+		return;
+	}
+
 	CanAttack = true;
+	OwnerCharacter->GetCharacterMovement()->GravityScale = 0.5f;
+	OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
 	LastAttackClickTime = UGameplayStatics::GetTimeSeconds(GetWorld());
+
+	
 }
+
 
 void UMainMeleeComponent::Attack()
 {
@@ -174,6 +191,11 @@ void UMainMeleeComponent::Attack()
 			MeleeComboCount = 0;
 		}
 		PlayAttackAnimMontage();
+	}
+	else
+	{
+		// 선입력에 대한 처리
+		BufferedInput = UGameplayStatics::GetTimeSeconds(GetWorld());
 	}
 }
 

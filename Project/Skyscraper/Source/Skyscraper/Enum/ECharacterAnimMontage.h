@@ -11,5 +11,6 @@ enum class ECharacterAnimMontage
 	ECAM_Rifle,
 	ECAM_RPG,
 	ECAM_Stun, ECAM_Down,
+	ECAM_Death
 
 };

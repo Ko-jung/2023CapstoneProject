@@ -3,11 +3,13 @@
 
 #include "HealthComponent.h"
 
+#include "PlayMontageCallbackProxy.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Skyscraper/MainGame/Widget/Health/HealthBar.h"
 
+class UPlayMontageCallbackProxy;
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
@@ -189,6 +191,12 @@ void UHealthComponent::SetPlayerDie()
 	{
 		// == For player (with player controller)
 		OwnerCharacter->DisableInput(OwnerPlayerController);
+		// »ç¸Á ¸ùÅ¸Áê ÇÃ·¹ÀÌ½ÃÅ°±â
+
+		if (UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Death))
+		{
+			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0, 0, FName(TEXT("Death_Bwd")));
+		}
 
 		// == TODO: Add DeadStateComponent
 
@@ -196,6 +204,7 @@ void UHealthComponent::SetPlayerDie()
 	{
 		// == For enemy(no player)
 		//OwnerCharacter->Destroy();
+		
 	}
 }
 

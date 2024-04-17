@@ -297,6 +297,21 @@ bool ASkyscraperCharacter::IsCharacterGodMode()
 	return false;
 }
 
+void ASkyscraperCharacter::SetCameraMode(ECharacterCameraMode CameraMode)
+{
+	switch (CameraMode)
+	{
+	case ECharacterCameraMode::ECCM_FollowController:
+		bUseControllerRotationYaw = true;
+		break;
+	case ECharacterCameraMode::ECCM_SeparateController:
+		bUseControllerRotationYaw = false;
+		break;
+	default:
+		break;
+	}
+}
+
 void ASkyscraperCharacter::SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
 	// bool IsTeamA;
@@ -391,6 +406,9 @@ void ASkyscraperCharacter::Look(const FInputActionValue& Value)
 
 void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
 {
+	// 움직임 이동 제약(넘어졌을 때 등) 중일때에는 작동 안하도록
+	if (GetPlayerController()->IsMoveInputIgnored()) return;
+
 	if(JetpackComponent)
 	{
 		FVector2D value = InputActionValue.Get<FVector2D>();
@@ -400,6 +418,10 @@ void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
 
 void ASkyscraperCharacter::ItemInteraction()
 {
+	// 움직임 이동 제약(넘어졌을 때 등) 중일때에는 작동 안하도록
+	if (GetPlayerController()->IsMoveInputIgnored()) return;
+
+
 	// 월드 내 오브젝트 중 아이템 액터 찾기
 	// 다만, 월드 내 모든 오브젝트에 대해서 탐색하는 것이므로 굳이 런타임중 0~3개 만 존재하는 액터에 대해서
 	// GetAllActorsOfClass 를 하는 것은 매우 비효율 적일 것으로 예상되므로
@@ -420,6 +442,10 @@ void ASkyscraperCharacter::ItemInteraction()
 
 void ASkyscraperCharacter::UseItem() 
 {
+	// 움직임 이동 제약(넘어졌을 때 등) 중일때에는 작동 안하도록
+	if (GetPlayerController()->IsMoveInputIgnored()) return;
+
+
 	UE_LOG(LogTemp, Warning, TEXT("no item has"));
 	if(OwningItem.Key != EItemEffect::EIE_NONE)
 	{

@@ -70,6 +70,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = AnimMontage)
 		TArray<float> AttackTime;
+	UPROPERTY(EditAnywhere, Category = AnimMontage)
+		TArray<float> AttackBlendOutTime;
 	UPROPERTY(EditAnywhere, Category = MotionWarping)
 		float AnimationMovementDistance;
 	UPROPERTY(VisibleAnywhere, Category = ComboSystem)

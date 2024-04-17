@@ -10,7 +10,12 @@ UKatanaComponent::UKatanaComponent()
 	AttackTime.Add(0.6f);
 	AttackTime.Add(0.6f);
 	AttackTime.Add(0.8f);
-	AttackTime.Add(0.6f);
+	AttackTime.Add(1.6f);
+
+	AttackBlendOutTime.Add(0.17f);
+	AttackBlendOutTime.Add(0.11f);
+	AttackBlendOutTime.Add(0.17f);
+	AttackBlendOutTime.Add(0.8f);
 
 	WeaponSocketName = TEXT("KatanaSocket");
 

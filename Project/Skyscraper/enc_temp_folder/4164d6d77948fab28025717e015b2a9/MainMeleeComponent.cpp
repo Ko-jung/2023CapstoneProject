@@ -172,18 +172,6 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
-	if(GetOwnerPlayerController())
-	{
-		// 이동을 하려 한다면,
-		if(GetOwnerPlayerController()->IsInputKeyDown(EKeys::W) ||
-			GetOwnerPlayerController()->IsInputKeyDown(EKeys::A) || 
-			GetOwnerPlayerController()->IsInputKeyDown(EKeys::S) || 
-			GetOwnerPlayerController()->IsInputKeyDown(EKeys::D) )
-		{
-			OwnerAnimInstance->StopAllMontages(0.2f);
-		}
-			
-	}
 	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록
 	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - BufferedInput < 0.2f)
 	{

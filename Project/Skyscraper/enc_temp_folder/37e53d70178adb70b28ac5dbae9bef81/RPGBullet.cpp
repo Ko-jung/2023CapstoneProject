@@ -43,34 +43,28 @@ void ARPGBullet::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
-void ARPGBullet::Initialize(AActor* getFireCharacter, FVector getInitVelocity, float getInitSpeed, float getDamage)
+void ARPGBullet::Initialize(FVector getInitVelocity, float getInitSpeed, float getDamage)
 {
-	FireCharacter = getFireCharacter;
 	InitVelocity = getInitVelocity;
 	InitSpeed = getInitSpeed;
 	Damage = getDamage;
 }
-
-
 
 // Called when the game starts or when spawned
 void ARPGBullet::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BulletStaticMesh->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OverlapExplode);
-	BulletStaticMesh->OnComponentHit.AddDynamic(this, &ThisClass::HitExplode);
+	BulletStaticMesh->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::Explode);
 
 	ProjectileMovementComponent->Velocity = InitVelocity * InitSpeed;
 }
 
-void ARPGBullet::BulletExplode()
+void ARPGBullet::Explode(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	TArray<AActor*> IgnoreActors;
+
 	// == TODO: Add Self And Team Characters
-
-	IgnoreActors.Add(FireCharacter);
-
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 100.0f, nullptr, IgnoreActors);
 
 	// == TODO: Spawn Damage Spawner 
@@ -79,19 +73,7 @@ void ARPGBullet::BulletExplode()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 100.0f, 10, FColor::Black, true, 3.0f, 0, 3);
 
 	Destroy();
-	
-	
-}
 
-void ARPGBullet::OverlapExplode(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	BulletExplode();
-}
-
-void ARPGBullet::HitExplode(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
-{
-	BulletExplode();
 }
 
 // Called every frame

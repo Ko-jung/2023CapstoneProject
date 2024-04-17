@@ -68,7 +68,7 @@ void URPGComponent::Fire(float fBaseDamage)
 	if(BulletActor)
 	{
 
-		BulletActor->Initialize(OwnerCharacter, Direction, 5000.0f, fBaseDamage);
+		BulletActor->Initialize(Direction, 5000.0f, fBaseDamage);
 		BulletActor->FinishSpawning(SpawnTransform);
 	}
 	//UBlueprint* BulletObject = Cast<UBlueprint>()

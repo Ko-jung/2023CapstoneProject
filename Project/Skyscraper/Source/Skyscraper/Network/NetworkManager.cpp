@@ -281,10 +281,19 @@ uint32 NetworkManager::Run()
 			break;
 		}
 
-		BYTE OP;
-		memcpy(&OP, m_sRecvBuffer, sizeof(BYTE));
+		int ReadLen = 0;
 
-		ProcessRecv(OP);
+		while (ReadLen < nRecvLen)
+		{
+			Packet p;
+			memcpy(&p, m_sRecvBuffer + ReadLen, sizeof(Packet));
+
+			ProcessRecv(p.PacketType);
+
+			ReadLen += p.PacketSize;
+		}
+
+		// 패킷 재조립?
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
 

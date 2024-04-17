@@ -157,8 +157,8 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage,AttackAnimPlayRate,0,StartingSection);
 		PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
-		PlayMontageCallbackProxy->OnNotifyEnd.AddDynamic(this, &ThisClass::OnNotifyEndMeleeAttack);
 		OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
+		OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
 		
 	}
 
@@ -171,15 +171,21 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
+	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록
+	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - LastAttackClickTime < 0.5f)
+	{
+		PlayAttackAnimMontage();
+		return;
+	}
+
 	CanAttack = true;
 	OwnerCharacter->GetCharacterMovement()->GravityScale = 0.5f;
+	OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
 	LastAttackClickTime = UGameplayStatics::GetTimeSeconds(GetWorld());
+
+	
 }
 
-void UMainMeleeComponent::OnNotifyEndMeleeAttack(FName NotifyName)
-{
-	OwnerCharacter->GetCharacterMovement()->GravityScale = 0.5f;
-}
 
 void UMainMeleeComponent::Attack()
 {
@@ -191,6 +197,12 @@ void UMainMeleeComponent::Attack()
 			MeleeComboCount = 0;
 		}
 		PlayAttackAnimMontage();
+	}
+	else
+	{
+		// 선입력에 대한 처리
+		BufferedInput = UGameplayStatics::GetTimeSeconds(GetWorld());
+		UE_LOG(LogTemp, Warning, TEXT("Buffered Input"));
 	}
 }
 

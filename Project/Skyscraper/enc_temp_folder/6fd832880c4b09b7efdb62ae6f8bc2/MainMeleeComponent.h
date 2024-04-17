@@ -67,6 +67,9 @@ protected:
 	// == On Blend Out attack montage
 	UFUNCTION()		// To link delegate (OnMontageBlendingOut);
 	void OnBlendOutMeleeAttack(FName Notify_Name);
+	// 몽타쥬 애니메이션 종료시 실행되는 함수
+	UFUNCTION()
+		void OnNotifyEndMeleeAttack(FName NotifyName);
 
 	UPROPERTY(EditAnywhere, Category = AnimMontage)
 		TArray<float> AttackTime;

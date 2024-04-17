@@ -12,6 +12,7 @@
 #include "MotionWarpingComponent.h"
 #include "PlayMontageCallbackProxy.h"
 #include "PlayMontageCallbackProxy.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -156,6 +157,9 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage,AttackAnimPlayRate,0,StartingSection);
 		PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
+		PlayMontageCallbackProxy->OnNotifyEnd.AddDynamic(this, &ThisClass::OnNotifyEndMeleeAttack);
+		OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
+		
 	}
 
 	{ // == Add MeleeComboCount 
@@ -168,7 +172,13 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
 	CanAttack = true;
+	OwnerCharacter->GetCharacterMovement()->GravityScale = 0.5f;
 	LastAttackClickTime = UGameplayStatics::GetTimeSeconds(GetWorld());
+}
+
+void UMainMeleeComponent::OnNotifyEndMeleeAttack(FName NotifyName)
+{
+	OwnerCharacter->GetCharacterMovement()->GravityScale = 0.5f;
 }
 
 void UMainMeleeComponent::Attack()

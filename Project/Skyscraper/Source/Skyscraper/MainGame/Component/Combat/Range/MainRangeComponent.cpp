@@ -143,9 +143,6 @@ void UMainRangeComponent::RemoveThisWeapon()
 
 void UMainRangeComponent::PlayFireAnim()
 {
-	// 움직임 제약 중(다운 시 등)일 때에는 작동하지 않도록 수정
-	if (OwnerCharacter->GetPlayerController()->IsMoveInputIgnored()) return;
-
 	if (!CanFire()) return;
 	UE_LOG(LogTemp, Warning, TEXT("총 발사"));
 	CurrentFireCoolTime = FireMaxCoolTime;
@@ -276,9 +273,6 @@ void UMainRangeComponent::BulletReloading()
 
 void UMainRangeComponent::PlayReloadAnim()
 {
-	// 움직임 제약 중(다운 시 등)일 때에는 작동하지 않도록 수정
-	if (OwnerCharacter->GetPlayerController()->IsMoveInputIgnored()) return;
-
 	if (!CanReload()) return;
 
 	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));

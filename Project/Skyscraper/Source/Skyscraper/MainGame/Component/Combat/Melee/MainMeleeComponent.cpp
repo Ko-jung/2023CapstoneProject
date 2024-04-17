@@ -111,12 +111,6 @@ void UMainMeleeComponent::RemoveThisWeapon()
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
 {
-	// 움직임 제약 중(다운 시 등)일 때에는 작동하지 않도록 수정
-	if(APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	{
-		if (PlayerController->IsMoveInputIgnored()) return;
-	}
-	
 
 	CanAttack = false;
 

@@ -406,8 +406,6 @@ void ASkyscraperCharacter::Look(const FInputActionValue& Value)
 
 void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
 {
-	// 움직임 이동 제약(넘어졌을 때 등) 중일때에는 작동 안하도록
-	if (GetPlayerController()->IsMoveInputIgnored()) return;
 
 	if(JetpackComponent)
 	{
@@ -418,8 +416,6 @@ void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
 
 void ASkyscraperCharacter::ItemInteraction()
 {
-	// 움직임 이동 제약(넘어졌을 때 등) 중일때에는 작동 안하도록
-	if (GetPlayerController()->IsMoveInputIgnored()) return;
 
 
 	// 월드 내 오브젝트 중 아이템 액터 찾기
@@ -442,8 +438,6 @@ void ASkyscraperCharacter::ItemInteraction()
 
 void ASkyscraperCharacter::UseItem() 
 {
-	// 움직임 이동 제약(넘어졌을 때 등) 중일때에는 작동 안하도록
-	if (GetPlayerController()->IsMoveInputIgnored()) return;
 
 
 	UE_LOG(LogTemp, Warning, TEXT("no item has"));

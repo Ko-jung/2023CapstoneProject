@@ -44,8 +44,14 @@ UJetpackComponent::UJetpackComponent()
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_DashFastRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_DashFast.IA_Jetpack_DashFast'"));
 		IA_Jetpack_DashFast = IA_Jetpack_DashFastRef.Object;
 
-		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_DodgeRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultMove.IA_GameDefaultMove'"));
-		IA_Jetpack_Dodge = IA_Jetpack_DodgeRef.Object;
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_Dodge_FwdRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Dodge_Fwd.IA_Jetpack_Dodge_Fwd'"));
+		IA_Jetpack_Dodge.Add(IA_Jetpack_Dodge_FwdRef.Object);
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_Dodge_BwdRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Dodge_Bwd.IA_Jetpack_Dodge_Bwd'"));
+		IA_Jetpack_Dodge.Add(IA_Jetpack_Dodge_BwdRef.Object);
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_Dodge_RightRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Dodge_Right.IA_Jetpack_Dodge_Right'"));
+		IA_Jetpack_Dodge.Add(IA_Jetpack_Dodge_RightRef.Object);
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_Dodge_LeftRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Dodge_Left.IA_Jetpack_Dodge_Left'"));
+		IA_Jetpack_Dodge.Add(IA_Jetpack_Dodge_LeftRef.Object);
 
 	}
 
@@ -86,8 +92,10 @@ void UJetpackComponent::BeginPlay()
 				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge, ETriggerEvent::Triggered, this, &ThisClass::CalcDodgeKeyDownTime);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge, ETriggerEvent::Completed, this, &ThisClass::CalcDodgeKeyUpTime);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_A], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
 				//EnhancedInputComponent->BindAction(IA_Jetpack_Dodge, ETriggerEvent::Triggered, this, &ThisClass::Dodge);
 			}
 		}
@@ -325,6 +333,26 @@ void UJetpackComponent::CalcDodgeKeyUpTime(const FInputActionValue& InputActionV
 		UE_LOG(LogTemp, Warning, TEXT("%d - key up time "), ArrayIndex);
 	}
 	
+}
+
+void UJetpackComponent::Dodge_Fwd()
+{
+	Dodge(FVector2D(1.0f, 0.0f));
+}
+
+void UJetpackComponent::Dodge_Bwd()
+{
+	Dodge(FVector2D(-1.0f, 0.0f));
+}
+
+void UJetpackComponent::Dodge_Right()
+{
+	Dodge(FVector2D(0.0f, 1.0f));
+}
+
+void UJetpackComponent::Dodge_Left()
+{
+	Dodge(FVector2D(0.0f, -1.0f));
 }
 
 

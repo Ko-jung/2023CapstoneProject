@@ -55,6 +55,10 @@ protected:
 	// 이전 Dodge Key 입력(Down/Up) 시간을 계산하는 함수
 	void CalcDodgeKeyDownTime(const FInputActionValue& InputActionValue);
 	void CalcDodgeKeyUpTime(const FInputActionValue& InputActionValue);
+	void Dodge_Fwd();
+	void Dodge_Bwd();
+	void Dodge_Right();
+	void Dodge_Left();
 	bool CalculateDodgeAxis(EDodgeKeys DodgeKey);
 
 
@@ -148,6 +152,7 @@ private:
 		UInputAction* IA_Jetpack_DashFast;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		UInputAction* IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_SIZE];
+		TArray<UInputAction*> IA_Jetpack_Dodge;
+	
 	
 };

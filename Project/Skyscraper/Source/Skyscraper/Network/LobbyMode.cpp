@@ -54,15 +54,12 @@ void ALobbyMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ALobbyMode::ProcessFunc()
 {
-
-	std::pair<EFunction, Packet*> EFunc;
-	while (FuncQueue.try_pop(EFunc))
+	Packet* packet;
+	while (FuncQueue.try_pop(packet))
 	{
-		EFunction func = EFunc.first;
-		Packet* argu = EFunc.second;
-		switch (func)
+		switch (packet->PacketType)
 		{
-		case ECONNECTTOGAMESERVER:
+		case (BYTE)COMP_OP::OP_CONNECTTOGAMESERVER:
 		{
 			//USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 			//instance->SetSelectInfo(PlayerSelectInfo);
@@ -78,7 +75,7 @@ void ALobbyMode::ProcessFunc()
 			break;
 		}
 
-		delete argu;
+		delete packet;
 	}
 }
 

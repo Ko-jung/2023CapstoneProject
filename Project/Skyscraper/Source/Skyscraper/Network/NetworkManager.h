@@ -42,10 +42,10 @@ public:
 	bool Connect(const char* pszIP, int nPort);
 	void Disconnect();
 
-	void ProcessRecv(int packetType);
-	void ProcessRecvFromLobby(int packetType);
-	void ProcessRecvFromSelectGame(int packetType);
-	void ProcessRecvFromMainGame(int packetType);
+	void ProcessRecv(Packet* p);
+	void ProcessRecvFromLobby(Packet* p);
+	void ProcessRecvFromSelectGame(Packet* p);
+	void ProcessRecvFromMainGame(Packet* p);
 	void Send(const Packet* packet, int packetsize);
 
 // FRunnable Function
@@ -66,6 +66,8 @@ public:
 	void SetGamemode(ANetworkGameMode* gamemode) { Gamemode = gamemode; };
 	const int& GetSerialNum() { return SerialNum; }
 	void SetState(NetworkState s) { State = s; }
+
+	bool TryPush(Packet* p);
 
 public:
 	// Singleton

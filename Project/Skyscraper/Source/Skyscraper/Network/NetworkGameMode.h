@@ -7,26 +7,9 @@
 
 #include "../../Common/Packet.h"
 #include <concurrent_queue.h>
+#include <atomic>
 
 #define MAXPLAYER 6
-
-enum EFunction
-{
-	ECONNECTTOGAMESERVER,
-	ESPAWNPLAYER,
-	EBPPOSSESS,
-	EPLAYERTRANSFORM,
-	EPLAYERSELECTINFO,
-	ESETTIMER,
-	ESTARTGAME,
-	ECHANGEDPLAYERHP,
-	ECHANGEDPLAYERSTATE,
-
-	ETAKEDAMAGE,
-	ESPAWNOBJECT,
-
-	//ESERVERCLOSE,
-};
 
 #include "NetworkGameMode.generated.h"
 /**
@@ -43,7 +26,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	// Called by NetworkManager thread
-	virtual void PushQueue(EFunction e, Packet* etc);
+	virtual void PushQueue(Packet* etc);
 
 	// Called by Gamemode thread
 	virtual void ProcessFunc() {};
@@ -56,7 +39,8 @@ public:
 	int GetSerialNum() { return SerialNum; }
 
 protected:
-	concurrency::concurrent_queue<std::pair<EFunction, Packet*>> FuncQueue;
+	concurrency::concurrent_queue<Packet*> FuncQueue;
+	//concurrency::concurrent_queue<Packet*> PositionQueue;
 	class NetworkManager* m_Socket;
 
 	bool bIsConnected;

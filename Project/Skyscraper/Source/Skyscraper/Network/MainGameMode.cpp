@@ -80,9 +80,8 @@ void AMainGameMode::Tick(float Deltatime)
 	//if (bIsConnected)
 	//{
 	//}
-		ProcessFunc();
-
-		SendPlayerLocation();
+	ProcessFunc();
+	SendPlayerLocation();
 
 }
 
@@ -93,56 +92,102 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMainGameMode::ProcessFunc()
 {
-	std::pair<EFunction, Packet*> EFunc;
-	while (FuncQueue.try_pop(EFunc))
+	Packet* packet;
+	while (FuncQueue.try_pop(packet))
 	{
-		EFunction func = EFunc.first;
-		Packet* argu = EFunc.second;
-
-		switch (func)
+		switch (packet->PacketType)
 		{
-		case EPLAYERTRANSFORM:
+		case (BYTE)COMP_OP::OP_PLAYERPOSITION:
 		{
-			//PPlayerPosition* PPP = static_cast<PPlayerPosition*>(argu);
 			PPlayerPosition PPP;
-			memcpy(&PPP, argu, sizeof(PPP));
+			memcpy(&PPP, packet, sizeof(PPP));
+			if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
+			{
+				UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
+				continue;
+			}
 			SetPlayerPosition(PPP);
 			break;
 		}
-		case ECHANGEDPLAYERHP:
+		case (BYTE)COMP_OP::OP_CHANGEDPLAYERHP:
 		{
-			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(argu);
-
+			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(packet);
+			if (PCPHP->ChangedPlayerSerial >= MAXPLAYER || PCPHP->ChangedPlayerSerial < 0)
+			{
+				UE_LOG(LogClass, Warning, TEXT("Array Error"));
+				continue;
+			}
 			Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
 			break;
 		}
-		case ECHANGEDPLAYERSTATE:
+		case (BYTE)COMP_OP::OP_CHANGEDPLAYERSTATE:
 		{
-			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(argu);
+			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(packet);
+
+			if (PCPS->ChangedPlayerSerial >= MAXPLAYER || PCPS->ChangedPlayerSerial < 0)
+			{
+				UE_LOG(LogClass, Warning, TEXT("Array Error"));
+				continue;
+			}
 
 			Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
 			break;
 		}
-		case ETAKEDAMAGE:
+		case (BYTE)COMP_OP::OP_DAMAGEDPLAYER:
 		{
-			//PDamagedPlayer* PDP = static_cast<PDamagedPlayer*>(argu);
+			//PDamagedPlayer* PDP = static_cast<PDamagedPlayer*>(packet);
 			//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
-			m_Socket->Send(argu, sizeof(PDamagedPlayer));
+			m_Socket->Send(packet, sizeof(PDamagedPlayer));
 			break;
 		}
-		case ESPAWNOBJECT:
+		case (BYTE)COMP_OP::OP_SPAWNOBJECT:
 		{
 			PSpawnObject PSO;
-			memcpy(&PSO, argu, sizeof(PSO));
+			memcpy(&PSO, packet, sizeof(PSO));
+
+			if (PSO.SerialNum>= MAXPLAYER || PSO.SerialNum < 0)
+			{
+				UE_LOG(LogClass, Warning, TEXT("Array Error"));
+				continue;
+			}
+
 			ProcessSpawnObject(PSO);
+			UE_LOG(LogTemp, Warning, TEXT("ProcessSpawnObject called!"));
 			break;
 		}
 		default:
+			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
 			break;
 		}
-		delete argu;
+		delete packet;
 	}
 }
+
+//void AMainGameMode::ProcessPosition()
+//{
+//	Packet* packet;
+//	while (not PositionQueue.empty())
+//	{
+//		if (PositionQueue.try_pop(packet))
+//		{
+//			switch (packet->PacketType)
+//			{
+//			case (BYTE)COMP_OP::OP_PLAYERPOSITION:
+//			{
+//				PPlayerPosition PPP;
+//				memcpy(&PPP, packet, sizeof(PPP));
+//				if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
+//				{
+//					UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
+//					continue;
+//				}
+//				SetPlayerPosition(PPP);
+//				break;
+//			}
+//			}
+//		}
+//	}
+//}
 
 void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 {
@@ -324,7 +369,7 @@ void AMainGameMode::Test_TakeDamage(int DamageType)
 	}
 
 	//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
-	PushQueue(ETAKEDAMAGE, PDP);
+	PushQueue(PDP);
 }
 
 void AMainGameMode::SpawnSkillActor_Implementation(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team) {}

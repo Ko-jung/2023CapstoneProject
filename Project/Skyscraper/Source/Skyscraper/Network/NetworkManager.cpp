@@ -80,7 +80,7 @@ void NetworkManager::Disconnect()
 	//Send(sizeof(PDisconnect), &disconnect);
 }
 
-void NetworkManager::ProcessRecv(int packetType)
+void NetworkManager::ProcessRecv(Packet* p)
 {
 	if (not IsValid(Gamemode))
 	{
@@ -90,29 +90,29 @@ void NetworkManager::ProcessRecv(int packetType)
 	switch (State)
 	{
 	case NetworkState::Lobby:
-		ProcessRecvFromLobby(packetType);
+		ProcessRecvFromLobby(p);
 		break;
 	case NetworkState::SelectGame:
-		ProcessRecvFromSelectGame(packetType);
+		ProcessRecvFromSelectGame(p);
 		break;
 	case NetworkState::MainGame:
-		ProcessRecvFromMainGame(packetType);
+		ProcessRecvFromMainGame(p);
 		break;
 	default:
 		break;
 	}
 }
 
-void NetworkManager::ProcessRecvFromLobby(int packetType)
+void NetworkManager::ProcessRecvFromLobby(Packet* p)
 {
-	switch (packetType)
+	switch (p->PacketType)
 	{
 	case(int)COMP_OP::OP_CONNECTTOGAMESERVER:
 	{
 		PConnectToGameserver* PCTG= new PConnectToGameserver();
-		memcpy(PCTG, m_sRecvBuffer, sizeof(*PCTG));
+		memcpy(PCTG, p, sizeof(*PCTG));
 
-		Gamemode->PushQueue(EFunction::ECONNECTTOGAMESERVER, PCTG);
+		Gamemode->PushQueue(PCTG);
 		StopListen();
 		State = NetworkState::Lobby;
 	}
@@ -123,27 +123,27 @@ void NetworkManager::ProcessRecvFromLobby(int packetType)
 	}
 }
 
-void NetworkManager::ProcessRecvFromSelectGame(int packetType)
+void NetworkManager::ProcessRecvFromSelectGame(Packet* p)
 {
 	// Select Game Mode
-	switch (packetType)
+	switch (p->PacketType)
 	{
 	case(int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
 		PPlayerSelectInfo* PPP = new PPlayerSelectInfo();
-		memcpy(PPP, m_sRecvBuffer, sizeof(PPlayerSelectInfo));
-		Gamemode->PushQueue(EFunction::EPLAYERSELECTINFO, PPP);
+		memcpy(PPP, p, sizeof(PPlayerSelectInfo));
+		Gamemode->PushQueue(PPP);
 	}
 	break;
 	case (int)COMP_OP::OP_PLAYERJOIN:
 	{
 		PPlayerJoin* PPJ = new PPlayerJoin();
-		memcpy(PPJ, m_sRecvBuffer, sizeof(*PPJ));
+		memcpy(PPJ, p, sizeof(*PPJ));
 
 		if (SerialNum == -1)
 		{
 			SerialNum = PPJ->PlayerSerial;
-			Gamemode->PushQueue(EFunction::EBPPOSSESS, PPJ);
+			Gamemode->PushQueue(PPJ);
 			UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
 		}
 		else
@@ -157,16 +157,16 @@ void NetworkManager::ProcessRecvFromSelectGame(int packetType)
 	case (int)COMP_OP::OP_SETTIMER:
 	{
 		PSetTimer* PST = new PSetTimer();
-		memcpy(PST, m_sRecvBuffer, sizeof(*PST));
+		memcpy(PST, p, sizeof(*PST));
 
-		Gamemode->PushQueue(EFunction::ESETTIMER, PST);
+		Gamemode->PushQueue(PST);
 		UE_LOG(LogTemp, Warning, TEXT("New Timer Push, Time is %f s"), PST->SecondsUntilActivation);
 	}
 	break;
 	case(int)COMP_OP::OP_STARTGAME:
 	{
 		PStartGame* PSG = new PStartGame();
-		Gamemode->PushQueue(EFunction::ESTARTGAME, PSG);
+		Gamemode->PushQueue(PSG);
 
 		State = NetworkState::MainGame;
 	}
@@ -177,37 +177,38 @@ void NetworkManager::ProcessRecvFromSelectGame(int packetType)
 	}
 }
 
-void NetworkManager::ProcessRecvFromMainGame(int packetType)
+void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 {
 	// Main Game Mode
-	switch (packetType)
+	switch (p->PacketType)
 	{
 	case (int)COMP_OP::OP_PLAYERPOSITION:
 	{
 		PPlayerPosition* PlayerPosition = new PPlayerPosition();
-		memcpy(PlayerPosition, m_sRecvBuffer, sizeof(PPlayerPosition));
-		Gamemode->PushQueue(EFunction::EPLAYERTRANSFORM, PlayerPosition);
+		memcpy(PlayerPosition, p, sizeof(PPlayerPosition));
+		TryPush(PlayerPosition);
 	}
 	break;
 	case (int)COMP_OP::OP_CHANGEDPLAYERHP:
 	{
 		PChangedPlayerHP* PCPHP = new PChangedPlayerHP();
-		memcpy(PCPHP, m_sRecvBuffer, sizeof(*PCPHP));
-		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERHP, PCPHP);
+		memcpy(PCPHP, p, sizeof(*PCPHP));
+		TryPush(PCPHP);
 	}
 	break; 
 	case (int)COMP_OP::OP_CHANGEDPLAYERSTATE:
 	{
 		PChangedPlayerState* PCPS = new PChangedPlayerState();
-		memcpy(PCPS, m_sRecvBuffer, sizeof(*PCPS));
-		Gamemode->PushQueue(EFunction::ECHANGEDPLAYERSTATE, PCPS);
+		memcpy(PCPS, p, sizeof(*PCPS));
+		TryPush(PCPS);
 	}
 	break;
 	case (int)COMP_OP::OP_SPAWNOBJECT:
 	{
 		PSpawnObject* PSO = new PSpawnObject();
-		memcpy(PSO, m_sRecvBuffer, sizeof(*PSO));
-		Gamemode->PushQueue(EFunction::ESPAWNOBJECT, PSO);
+		memcpy(PSO, p, sizeof(*PSO));
+		TryPush(PSO);
+		UE_LOG(LogTemp, Warning, TEXT("PSpawnObject Packet Pushed"));
 		break;
 	}
 	default:
@@ -268,7 +269,7 @@ uint32 NetworkManager::Run()
 	while (bStopSwich)
 	{
 		// 재조립을 위해 recv 인자 수정
-		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer + RemainDataLen, MAX_BUFFER - RemainDataLen, 0);
+		int nRecvLen = recv(m_ServerSocket, (CHAR*)(m_sRecvBuffer + RemainDataLen), MAX_BUFFER - RemainDataLen, 0);
 
 		if (nRecvLen == 0)
 		{
@@ -281,27 +282,28 @@ uint32 NetworkManager::Run()
 			StopListen();
 			break;
 		}
-
+		// SpawnObject Packet인데 내부 COMP_OP에는 OP_Position이 들어있다. 사이즈는OP_POSITION 사이즈다
 		// 패킷 재조립
 		int RemainLen = nRecvLen + RemainDataLen;
 		char* ReciveData = m_sRecvBuffer;
-
 		while (RemainLen > 0)
 		{
 			Packet* p = reinterpret_cast<Packet*>(ReciveData);
 
 			if (RemainLen >= p->PacketSize)
 			{
-				ProcessRecv(p->PacketType);
+				ProcessRecv(p);
 				ReciveData += p->PacketSize;
 				RemainLen -= p->PacketSize;
 			}
-			else
-				break;
+			else break;
 		}
 		RemainDataLen = RemainLen;
 		if (RemainLen > 0)
+		{
 			memmove(m_sRecvBuffer, ReciveData, RemainLen);
+			UE_LOG(LogTemp, Warning, TEXT("Called Memmove"));
+		}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
 
@@ -322,4 +324,14 @@ void NetworkManager::Stop()
 
 void NetworkManager::Exit()
 {
+}
+
+bool NetworkManager::TryPush(Packet* p)
+{
+	if(IsValid(Gamemode))
+	{
+		Gamemode->PushQueue(p);
+		return true;
+	}
+	return false;
 }

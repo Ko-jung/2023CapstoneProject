@@ -29,37 +29,31 @@ ASkyscraperGameMode::ASkyscraperGameMode()
 
 void ASkyscraperGameMode::ProcessFunc()
 {
-	std::pair<EFunction, Packet*> EFunc;
-	while (FuncQueue.try_pop(EFunc))
+	//std::pair<EFunction, Packet*> EFunc;
+	Packet* packet;
+	while (FuncQueue.try_pop(packet))
 	{
-		EFunction func = EFunc.first;
-		Packet* argu = EFunc.second;
-
-		switch (func)
+		switch (packet->PacketType)
 		{
-		case EBPPOSSESS:
+		case (BYTE)COMP_OP::OP_PLAYERJOIN:
 		{
 			PPlayerJoin PPJ;
-			memcpy(&PPJ, argu, sizeof(PPlayerJoin));
+			memcpy(&PPJ, packet, sizeof(PPlayerJoin));
 			Super::SetOwnSerialNum(PPJ.PlayerSerial);
 		}
 			break;
-		case EPLAYERSELECTINFO:
-			ProcessSelectInfo(argu);
+		case (BYTE)COMP_OP::OP_SELECTWEAPONINFO:
+			ProcessSelectInfo(packet);
 			break;
-		case ESETTIMER:
+		case (BYTE)COMP_OP::OP_SETTIMER:
 		{
 			PSetTimer PST;
-			memcpy(&PST, argu, sizeof(PST));
-
-			PSetTimer* PST2 = static_cast<PSetTimer*>(argu);
-			memcpy(PST2, argu, sizeof(*PST2));
+			memcpy(&PST, packet, sizeof(PST));
 
 			SelectTimer = PST.SecondsUntilActivation;
-			UE_LOG(LogTemp, Warning, TEXT("New Timer Set! Time is %d Sec"), SelectTimer);
 		}
 			break;
-		case ESTARTGAME:
+		case (BYTE)COMP_OP::OP_STARTGAME:
 		{
 			USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 			instance->SetSelectInfo(PlayerSelectInfo);
@@ -73,7 +67,7 @@ void ASkyscraperGameMode::ProcessFunc()
 			break;
 		}
 
-		delete argu;
+		delete packet;
 	}
 }
 
@@ -109,7 +103,6 @@ void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 		UE_LOG(LogClass, Warning, TEXT("PPlayerPickInfo Packet ClientNum == -1!"));
 	}
 
-	// Why 127?
 	ECharacter   Character   = PPP->PickedCharacter;
 	EMeleeWeapon MeleeWeapon = PPP->PickedMeleeWeapon;
 	ERangeWeapon RangeWeapon = PPP->PickedRangeWeapon;

@@ -95,4 +95,6 @@ private:
 	// std::queue<PSetTimer*> PSetTimerQueue;
 	// std::queue<PPlayerSelectInfo*> PSetTimerQueue;
 	// std::queue<PSetTimer*> PSetTimerQueue;
+
+	int RemainDataLen;
 };

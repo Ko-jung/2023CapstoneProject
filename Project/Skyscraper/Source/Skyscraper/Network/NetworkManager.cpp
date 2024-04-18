@@ -9,6 +9,7 @@ NetworkManager::NetworkManager() :
 	Thread(nullptr),
 	bIsConnected(false),
 	SerialNum(0),
+	RemainDataLen(0),
 	State(NetworkState::SelectGame)
 {
 }
@@ -266,8 +267,8 @@ uint32 NetworkManager::Run()
 	//while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
 	while (bStopSwich)
 	{
-		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer, MAX_BUFFER, 0);
-		//UE_LOG(LogTemp, Warning, TEXT("Something RECV"));
+		// 재조립을 위해 recv 인자 수정
+		int nRecvLen = recv(m_ServerSocket, (CHAR*)&m_sRecvBuffer + RemainDataLen, MAX_BUFFER - RemainDataLen, 0);
 
 		if (nRecvLen == 0)
 		{
@@ -281,19 +282,26 @@ uint32 NetworkManager::Run()
 			break;
 		}
 
-		int ReadLen = 0;
+		// 패킷 재조립
+		int RemainLen = nRecvLen + RemainDataLen;
+		char* ReciveData = m_sRecvBuffer;
 
-		while (ReadLen < nRecvLen)
+		while (RemainLen > 0)
 		{
-			Packet p;
-			memcpy(&p, m_sRecvBuffer + ReadLen, sizeof(Packet));
+			Packet* p = reinterpret_cast<Packet*>(ReciveData);
 
-			ProcessRecv(p.PacketType);
-
-			ReadLen += p.PacketSize;
+			if (RemainLen >= p->PacketSize)
+			{
+				ProcessRecv(p->PacketType);
+				ReciveData += p->PacketSize;
+				RemainLen -= p->PacketSize;
+			}
+			else
+				break;
 		}
-
-		// 패킷 재조립?
+		RemainDataLen = RemainLen;
+		if (RemainLen > 0)
+			memmove(m_sRecvBuffer, ReciveData, RemainLen);
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
 

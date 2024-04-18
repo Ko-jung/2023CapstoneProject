@@ -52,14 +52,11 @@ protected:
 	// 빠른 대쉬 종료 로직 함수
 	void DashStop();
 
-	// 이전 Dodge Key 입력(Down/Up) 시간을 계산하는 함수
-	void CalcDodgeKeyDownTime(const FInputActionValue& InputActionValue);
-	void CalcDodgeKeyUpTime(const FInputActionValue& InputActionValue);
+	// 회피 관련 함수
 	void Dodge_Fwd();
 	void Dodge_Bwd();
 	void Dodge_Right();
 	void Dodge_Left();
-	bool CalculateDodgeAxis(EDodgeKeys DodgeKey);
 
 
 	// 현재 제트팩의 속성 (bIsHovering / bIsDashing) 에 따라 캐릭터 최대 속도 조정
@@ -126,9 +123,6 @@ protected:
 	bool bIsHovering;
 	bool bIsDashing;
 
-	// 이전 회피 키 입력(Down/Up) 시간에 대한 변수
-	float DodgeKeyDownTime[(uint8)EDodgeKeys::EDK_SIZE];
-	float DodgeKeyUpTime[(uint8)EDodgeKeys::EDK_SIZE];
 
 	// 타이머 핸들
 	FTimerHandle SlowdownDodgeTimerHandle;

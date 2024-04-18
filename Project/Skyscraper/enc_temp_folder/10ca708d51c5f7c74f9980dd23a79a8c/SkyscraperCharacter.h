@@ -88,6 +88,9 @@ protected:
 	void Move(const FInputActionValue& Value);
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+	// 제트팩 컴퍼넌트 - 회피 기능 사용
+	void Dodge(const FInputActionValue& InputActionValue);
+	void CalcDodgeKeyUpTime();
 	// 아이템 상호작용 키 
 	void ItemInteraction();
 	// 아이템 사용

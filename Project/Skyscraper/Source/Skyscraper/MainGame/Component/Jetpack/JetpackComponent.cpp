@@ -55,11 +55,6 @@ UJetpackComponent::UJetpackComponent()
 
 	}
 
-	for(int i = 0 ; i<(uint8)EDodgeKeys::EDK_SIZE; ++i)
-	{
-		DodgeKeyDownTime[i] = -1.0f;
-		DodgeKeyUpTime[i] = -1.0f;
-	}
 }
 
 
@@ -88,15 +83,18 @@ void UJetpackComponent::BeginPlay()
 	
 			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 			{
+				// Hover InputAction 바인딩
 				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
 				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
+				// 대시 InputAction 바인딩
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
+				// 회피 InputAction 바인딩
 				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
 				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
 				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
 				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_A], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
-				//EnhancedInputComponent->BindAction(IA_Jetpack_Dodge, ETriggerEvent::Triggered, this, &ThisClass::Dodge);
+				
 			}
 		}
 	}
@@ -239,100 +237,6 @@ void UJetpackComponent::DashStop()
 	bIsDashing = false;
 	SetCharacterMaxSpeed();
 	//GetOwnerCharacterMovement()->Velocity = ClampToMaxWalkSpeed(GetOwnerCharacterMovement()->Velocity);
-}
-
-bool UJetpackComponent::CalculateDodgeAxis(EDodgeKeys DodgeKey)
-{
-	uint8 ArrayIndex = (uint8)DodgeKey;
-	
-	
-	// 이전 키 Input 시간과 계산하여 dodge가 가능한지 반환하기
-	{
-		// 이전 키 Down 시간이 현재 Down 시간 1.0f 내라면
-		if(GetWorld()->GetTimeSeconds() - DodgeKeyDownTime[ArrayIndex] < 1.0f)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("111"));
-			// 이전 키 Up 시간과 현재 Down 시간이 0.5초 내라면 회피 가능
-			if (GetWorld()->GetTimeSeconds() - DodgeKeyUpTime[ArrayIndex] < 0.5f)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("222"));
-				return true;
-			}
-		}
-		else //만약 회피를 할 수 있는 조건이 아니라면 시간을 갱신해준다.
-		{
-			DodgeKeyDownTime[ArrayIndex] = GetWorld()->GetTimeSeconds();
-			UE_LOG(LogTemp, Warning, TEXT("%d key down time cacl"), ArrayIndex);
-			return false;
-		}
-	}
-	return false;
-}
-
-void UJetpackComponent::CalcDodgeKeyDownTime(const FInputActionValue& InputActionValue)
-{
-	FVector2D InputValue = InputActionValue.Get<FVector2D>();
-	FVector2D DodgeAxis{};
-	{ // 입력 시간 적용 및 입력 시간이 있었을 경우 Up 시간과 계산하여 Dodge 가능한지 계산
-		// 우측 이동
-		if (InputValue.X > FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_D)) DodgeAxis.X += 1.0f;
-		// 좌측 이동
-		if (InputValue.X < -FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_A)) DodgeAxis.X -= 1.0f;
-		// 전방 이동
-		if (InputValue.Y > FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_W)) DodgeAxis.Y	 += 1.0f;
-		// 후방 이동
-		if (InputValue.Y < -FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_S)) DodgeAxis.Y += 1.0f;
-			
-				
-		
-
-		// 회피가 가능하다면
-		if(DodgeAxis.Length() > FLT_EPSILON)
-		{
-			// 회피
-			Dodge(DodgeAxis);
-
-			// 후 인풋 값을 초기화하고, 종료한다.
-			for(int i = 0; i< (uint8)EDodgeKeys::EDK_SIZE; ++i)
-			{
-				DodgeKeyDownTime[i] = -1.0f;
-				DodgeKeyUpTime[i] = -1.0f;
-			}
-			
-			return;
-		}
-	}
-
-	return;
-}
-
-void UJetpackComponent::CalcDodgeKeyUpTime(const FInputActionValue& InputActionValue)
-{
-	FVector2D InputValue = InputActionValue.Get<FVector2D>();
-	uint8 ArrayIndex = (uint8)EDodgeKeys::EDK_SIZE;
-	// 우측 이동
-	if (InputValue.X > FLT_EPSILON)
-		ArrayIndex = (uint8)EDodgeKeys::EDK_D;
-	// 좌측 이동
-	if (InputValue.X < -FLT_EPSILON)
-		ArrayIndex = (uint8)EDodgeKeys::EDK_A;
-	// 전방 이동
-	if (InputValue.Y > FLT_EPSILON)
-		ArrayIndex = (uint8)EDodgeKeys::EDK_W;
-	// 후방 이동
-	if (InputValue.Y	 < -FLT_EPSILON)
-		ArrayIndex = (uint8)EDodgeKeys::EDK_S;
-
-	if(ArrayIndex < (uint8) EDodgeKeys::EDK_SIZE)
-	{
-		DodgeKeyUpTime[ArrayIndex] = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%d - key up time "), ArrayIndex);
-	}
-	
 }
 
 void UJetpackComponent::Dodge_Fwd()

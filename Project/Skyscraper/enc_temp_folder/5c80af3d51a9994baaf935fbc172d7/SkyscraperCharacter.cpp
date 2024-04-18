@@ -339,6 +339,9 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Move);
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Look);
+		// (Jetpack) Dodge
+		//EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ASkyscraperCharacter::Dodge);
+		//EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ASkyscraperCharacter::CalcDodgeKeyUpTime);
 		// 아이템 상호작용
 		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
 		EnhancedInputComponent->BindAction(IA_ItemUsing, ETriggerEvent::Started, this, &ASkyscraperCharacter::UseItem);
@@ -402,6 +405,14 @@ void ASkyscraperCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void ASkyscraperCharacter::Dodge(const FInputActionValue& InputActionValue)
+{
+	if(JetpackComponent)
+	{
+		FVector2D value = InputActionValue.Get<FVector2D>();
+		JetpackComponent->Dodge(value);
+	}
+}
 
 
 void ASkyscraperCharacter::ItemInteraction()

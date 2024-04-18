@@ -148,6 +148,6 @@ private:
 		UInputAction* IA_Jetpack_DashFast;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		UInputAction* IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_SIZE];
+		UInputAction* IA_Jetpack_Dodge;
 	
 };

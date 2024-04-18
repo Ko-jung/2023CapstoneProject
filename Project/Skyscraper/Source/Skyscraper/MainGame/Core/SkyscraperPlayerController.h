@@ -14,6 +14,8 @@ UCLASS()
 class SKYSCRAPER_API ASkyscraperPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+
 public:
 	ASkyscraperPlayerController();
 

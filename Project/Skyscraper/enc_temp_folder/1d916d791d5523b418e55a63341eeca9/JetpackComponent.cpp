@@ -240,21 +240,18 @@ bool UJetpackComponent::CalculateDodgeAxis(EDodgeKeys DodgeKey)
 	
 	// 이전 키 Input 시간과 계산하여 dodge가 가능한지 반환하기
 	{
-		// 이전 키 Down 시간이 현재 Down 시간 1.0f 내라면
-		if(GetWorld()->GetTimeSeconds() - DodgeKeyDownTime[ArrayIndex] < 1.0f)
+		// 이전 키 Up 시간과 현재 Down 시간이 0.5초 내라면,
+		if(GetWorld()->GetTimeSeconds() - DodgeKeyUpTime[ArrayIndex] < 0.5f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("111"));
-			// 이전 키 Up 시간과 현재 Down 시간이 0.5초 내라면 회피 가능
-			if (GetWorld()->GetTimeSeconds() - DodgeKeyUpTime[ArrayIndex] < 0.5f)
+			// 추가적으로 이전 키 Down 시간이 현재 Down 시간 1.0f 내라면 회피 가능
+			if (GetWorld()->GetTimeSeconds() -DodgeKeyDownTime[ArrayIndex] < 1.0f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("222"));
 				return true;
 			}
 		}
 		else //만약 회피를 할 수 있는 조건이 아니라면 시간을 갱신해준다.
 		{
 			DodgeKeyDownTime[ArrayIndex] = GetWorld()->GetTimeSeconds();
-			UE_LOG(LogTemp, Warning, TEXT("%d key down time cacl"), ArrayIndex);
 			return false;
 		}
 	}
@@ -267,20 +264,17 @@ void UJetpackComponent::CalcDodgeKeyDownTime(const FInputActionValue& InputActio
 	FVector2D DodgeAxis{};
 	{ // 입력 시간 적용 및 입력 시간이 있었을 경우 Up 시간과 계산하여 Dodge 가능한지 계산
 		// 우측 이동
-		if (InputValue.X > FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_D)) DodgeAxis.X += 1.0f;
-		// 좌측 이동
-		if (InputValue.X < -FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_A)) DodgeAxis.X -= 1.0f;
-		// 전방 이동
 		if (InputValue.Y > FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_W)) DodgeAxis.Y	 += 1.0f;
-		// 후방 이동
+			if (CalculateDodgeAxis(EDodgeKeys::EDK_D)) DodgeAxis.Y += 1.0f;
+		// 좌측 이동
 		if (InputValue.Y < -FLT_EPSILON)
-			if (CalculateDodgeAxis(EDodgeKeys::EDK_S)) DodgeAxis.Y += 1.0f;
-			
-				
-		
+			if (CalculateDodgeAxis(EDodgeKeys::EDK_A)) DodgeAxis.Y -= 1.0f;
+		// 전방 이동
+		if (InputValue.X > FLT_EPSILON)
+			if (CalculateDodgeAxis(EDodgeKeys::EDK_W)) DodgeAxis.X	 += 1.0f;
+		// 후방 이동
+		if (InputValue.X < -FLT_EPSILON)
+			if (CalculateDodgeAxis(EDodgeKeys::EDK_S)) DodgeAxis.X += 1.0f;
 
 		// 회피가 가능하다면
 		if(DodgeAxis.Length() > FLT_EPSILON)
@@ -307,22 +301,21 @@ void UJetpackComponent::CalcDodgeKeyUpTime(const FInputActionValue& InputActionV
 	FVector2D InputValue = InputActionValue.Get<FVector2D>();
 	uint8 ArrayIndex = (uint8)EDodgeKeys::EDK_SIZE;
 	// 우측 이동
-	if (InputValue.X > FLT_EPSILON)
+	if (InputValue.Y > FLT_EPSILON)
 		ArrayIndex = (uint8)EDodgeKeys::EDK_D;
 	// 좌측 이동
-	if (InputValue.X < -FLT_EPSILON)
+	if (InputValue.Y < -FLT_EPSILON)
 		ArrayIndex = (uint8)EDodgeKeys::EDK_A;
 	// 전방 이동
-	if (InputValue.Y > FLT_EPSILON)
+	if (InputValue.X > FLT_EPSILON)
 		ArrayIndex = (uint8)EDodgeKeys::EDK_W;
 	// 후방 이동
-	if (InputValue.Y	 < -FLT_EPSILON)
+	if (InputValue.X < -FLT_EPSILON)
 		ArrayIndex = (uint8)EDodgeKeys::EDK_S;
 
 	if(ArrayIndex < (uint8) EDodgeKeys::EDK_SIZE)
 	{
 		DodgeKeyUpTime[ArrayIndex] = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%d - key up time "), ArrayIndex);
 	}
 	
 }

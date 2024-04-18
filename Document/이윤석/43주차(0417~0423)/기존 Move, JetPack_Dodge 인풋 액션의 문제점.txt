@@ -1,0 +1,29 @@
+기존의 InputAction은
+IMC_Default
+ㄴ IA_DefaultGame_Move
+ㄴ IA_DefaultGame_Look
+ㄴ ...
+ㄴ IA_Jetpack_Dodge
+ㄴ ...
+
+IMC_Jetpack
+ㄴ IA_Jetpack_Hover
+ㄴ IA_Jetpack_Dash
+의 구조로 되어있었다.
+
+"IA_Jetpack_Dodge" 가 IMC_Default에 있는 이유는
+IA_Jetpack_Dodge와 IA_DefaultGame_Move가 모두
+W / A / S / D 의 키 값으로 Input Action이 활성화 되는데,
+
+IA_Jetpack_Dodge를 IMC_Jetpack에 추가할 경우
+IMC_Default 내 IA_DefaultGame_Move 가 키를 소모하여 IA_Jetpack_Dodge의 액션이 활성화되지 않았기 때문이다.
+
+* 여기서 추가적으로 IMC_Jetpack의 우선순위를 0, IMC_Default의 우선순위를 1로 두어도
+직접 제작한 DoubleTab_InputTrigger의 작동 방식이 이전 키의 값이 정상적으로 들어와야 다음 키에서 Double Tab이 정상적으로 작동하는지 확인을 할 수 있는데,
+IMC_Default의 우선순위가 낮더라도, IMC_Jetpack에 처음 들어간 W/A/S/D 키는 return ETriggerState::None; 로 인하여 DoubleTab이 작동하지 않는다.
+(WASD 움직임 중 WW/AA/SS/DD의 회피가 작동하지 않는다는 의미)
+
+따라서 해당방식을 해결하기 위해
+InputTrigger를 활용한 InputAction을 활용하는 EnhancedInput 방식이 아닌,
+플레이어 컨트롤러에서 JetpackComponent 소유 유무에 따라
+W/A/S/D 키에 대한 직접적인 계산을 하여 함수를 실행시키는 방식으로 변경하기로 하였다.

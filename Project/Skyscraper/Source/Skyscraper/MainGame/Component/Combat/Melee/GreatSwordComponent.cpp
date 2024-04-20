@@ -12,9 +12,13 @@ UGreatSwordComponent::UGreatSwordComponent()
 	AttackTime.Add(0.8f);
 	AttackTime.Add(1.0f);
 	AttackTime.Add(0.8f);
+
+	AttackBlendOutTime.Add(0.2f);
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.1f);
 	
 	// Skeletal Mesh 소켓 이름 설정
-	WeaponSocketName = TEXT("KatanaSocket");
+	WeaponSocketName = TEXT("SwordSocket");
 
 	// Skeletal Mesh 로드
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SwordSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/sword.sword'"));

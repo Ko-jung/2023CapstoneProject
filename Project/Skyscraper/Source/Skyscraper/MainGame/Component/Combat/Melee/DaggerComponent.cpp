@@ -10,9 +10,16 @@ UDaggerComponent::UDaggerComponent()
 
 	AttackTime.Add(0.4f);
 	AttackTime.Add(0.4f);
-	AttackTime.Add(0.4f);
 	AttackTime.Add(0.6f);
 	AttackTime.Add(0.4f);
+	AttackTime.Add(0.6f);
+
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.2f);
+
 
 	// Skeletal Mesh 소켓 이름 설정
 	WeaponSocketName = TEXT("DaggerRightSocket");

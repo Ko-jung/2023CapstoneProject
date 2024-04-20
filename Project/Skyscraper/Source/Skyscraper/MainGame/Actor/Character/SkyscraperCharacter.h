@@ -124,13 +124,6 @@ public:
 	// == Get Anim Montage
 	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
 
-	void SyncTransformAndAnim(FTransform t, float s, float r);
-
-	void SetSpeed(float s) { Speed = s; }
-	void SetXRotate(float r) { XRotate = r; }
-	int  GetSpeed() { return Speed; }
-	float GetXRotate() { return XRotate; }
-
 	// bIsHover 값 setter / getter
 	FORCEINLINE void SetIsHover(bool NewIsHover) { bIsHover = NewIsHover; }
 	FORCEINLINE bool GetIsHover() const { return bIsHover; }
@@ -172,6 +165,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
+
+public:
+	void SyncTransformAndAnim(FTransform t, float s, float r);
+
+	void SetSpeed(float s) { Speed = s; }
+	void SetXRotate(float r) { XRotate = r; }
+	int  GetSpeed() { return Speed; }
+	float GetXRotate() { return XRotate; }
 // ==================
 private:
 	// Input 관련 변수

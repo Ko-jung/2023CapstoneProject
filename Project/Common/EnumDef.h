@@ -27,6 +27,7 @@ enum class COMP_OP : unsigned char
 	OP_PLAYERJOIN,
 	OP_DISCONNECT,
 	OP_TILEDROP,
+	OP_SPAWNITEM,
 
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,
@@ -105,4 +106,20 @@ enum class ECharacterState : BYTE
 	LIVING,
 	DYING,
 	DEAD
+};
+
+enum class EAnimMontage : BYTE
+{
+	Default,
+
+	DaggerAttack,
+	KatanaAttack,
+	GreatSwordAttack,
+	SMG,
+	Rifle,
+	RPG,
+
+	Stun,
+	Down,
+	Death
 };

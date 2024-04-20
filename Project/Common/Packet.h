@@ -23,10 +23,9 @@ struct Packet
 {
 	BYTE PacketType;
 	WORD PacketSize;
-	int RoomNum;
 
-	Packet() :PacketType((int)COMP_OP::OP_RECV), RoomNum(-1) { PacketSize = sizeof(Packet); }
-	Packet(COMP_OP op) : PacketType((int)op), RoomNum(-1) { PacketSize = sizeof(Packet); }
+	Packet() :PacketType((int)COMP_OP::OP_RECV) { PacketSize = sizeof(Packet); }
+	Packet(COMP_OP op) : PacketType((int)op) { PacketSize = sizeof(Packet); }
 };
 #pragma pack(pop)
 
@@ -36,7 +35,7 @@ struct PTransform
 
 	PVector Rotate;
 
-	PTransform() { Location.X = Location.Y = Location.Z = Rotate.X = Rotate.Y = Rotate.Z  = 0.f; }
+	PTransform() { Location.X = Location.Y = Location.Z = Rotate.X = Rotate.Y = Rotate.Z = 0.f; }
 	PTransform(float x, float y, float z) : Location{ x, y, z } { Rotate = PVector{}; }
 	PTransform(float x, float y, float z, float rx, float ry, float rz)
 		: Location{ x, y, z }, Rotate{ rx, ry, rz } {}
@@ -58,20 +57,24 @@ struct PPosition : Packet, PTransform
 #pragma pack(push, 1)
 struct PPlayerPosition : Packet, PTransform
 {
-	int PlayerSerial;
+	BYTE PlayerSerial;
 	float PlayerSpeed;
 	float PlayerXDirection;
 
 	EPlayerState PlayerState;
 
-	PPlayerPosition() : Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(), PlayerState(EPlayerState::Stay) { PacketSize = sizeof(PPlayerPosition); }
+	PPlayerPosition()
+		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(), PlayerSpeed(0.f), PlayerState(EPlayerState::Stay)
+	{
+		PacketSize = sizeof(PPlayerPosition);
+	}
 	PPlayerPosition(float x, float y, float z, float speed, EPlayerState state = EPlayerState::Stay)
-		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z), PlayerState(state), PlayerSpeed(speed)
+		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z), PlayerSpeed(speed), PlayerState(state)
 	{
 		PacketSize = sizeof(PPlayerPosition);
 	}
 	PPlayerPosition(float x, float y, float z, float rx, float ry, float rz, float speed, EPlayerState state = EPlayerState::Stay)
-		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z, rx, ry, rz), PlayerSpeed(speed)
+		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(x, y, z, rx, ry, rz), PlayerSpeed(speed), PlayerState(state)
 	{
 		PacketSize = sizeof(PPlayerPosition);
 	}
@@ -86,7 +89,9 @@ struct PDamagedPlayer : Packet
 
 	PDamagedPlayer() : Packet(COMP_OP::OP_DAMAGEDPLAYER), ChangedPlayerSerial(-1), IsMelee(true), WeaponEnum(-1) { PacketSize = sizeof(PDamagedPlayer); }
 	PDamagedPlayer(BYTE serial, bool isMelee, char weaponEnum) : Packet(COMP_OP::OP_DAMAGEDPLAYER),
-		ChangedPlayerSerial(serial), IsMelee(isMelee), WeaponEnum(weaponEnum) {	PacketSize = sizeof(PDamagedPlayer);	}
+		ChangedPlayerSerial(serial), IsMelee(isMelee), WeaponEnum(weaponEnum) {
+		PacketSize = sizeof(PDamagedPlayer);
+	}
 };
 
 // Send If Character Damaged
@@ -97,7 +102,9 @@ struct PChangedPlayerHP : Packet
 
 	PChangedPlayerHP() : Packet(COMP_OP::OP_CHANGEDPLAYERHP), ChangedPlayerSerial(-1), AfterHP(-1.f) { PacketSize = sizeof(PChangedPlayerHP); }
 	PChangedPlayerHP(int changedPlayerSerial, float afterHP) : Packet(COMP_OP::OP_CHANGEDPLAYERHP),
-		ChangedPlayerSerial(changedPlayerSerial), AfterHP(afterHP) { PacketSize = sizeof(PChangedPlayerHP); }
+		ChangedPlayerSerial(changedPlayerSerial), AfterHP(afterHP) {
+		PacketSize = sizeof(PChangedPlayerHP);
+	}
 };
 
 // Send If Character Dead or ReSpawn
@@ -108,7 +115,9 @@ struct PChangedPlayerState : Packet
 
 	PChangedPlayerState() : Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(-1), State(ECharacterState::LIVING) { PacketSize = sizeof(PChangedPlayerState); }
 	PChangedPlayerState(int serial, ECharacterState state) :
-		Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(serial), State(state) {	PacketSize = sizeof(PChangedPlayerState); }
+		Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(serial), State(state) {
+		PacketSize = sizeof(PChangedPlayerState);
+	}
 };
 
 #pragma pack(push, 1)
@@ -140,7 +149,8 @@ struct PDisconnect : Packet
 	WORD DisconnectPlayerSerial;
 
 	//PDisconnect() : Packet(COMP_OP::OP_DISCONNECT) { PlayerSerial = -1; }
-	PDisconnect(WORD serial) : Packet(COMP_OP::OP_DISCONNECT) { DisconnectPlayerSerial = serial; PacketSize = sizeof(PDisconnect);
+	PDisconnect(WORD serial) : Packet(COMP_OP::OP_DISCONNECT) {
+		DisconnectPlayerSerial = serial; PacketSize = sizeof(PDisconnect);
 	}
 };
 
@@ -200,6 +210,7 @@ struct PPlayerSelectInfo : Packet
 // contained empty room num in RoomNum
 struct PEmptyRoomNum : Packet
 {
+	int RoomNum;
 	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
 };
 
@@ -209,7 +220,25 @@ struct PSetTimer : Packet
 {
 	ETimer TimerType;
 	float SecondsUntilActivation;	// ex) 캐릭터 선택 창의 제한시간 (40s)
-	PSetTimer() :Packet(COMP_OP::OP_SETTIMER), SecondsUntilActivation(0.f), TimerType(ETimer::DefaultTimer) { PacketSize = sizeof(PSetTimer); }
-	PSetTimer(ETimer type, float secondTime) : Packet(COMP_OP::OP_SETTIMER), SecondsUntilActivation(secondTime), TimerType(type) { PacketSize = sizeof(PSetTimer); }
+	PSetTimer() :Packet(COMP_OP::OP_SETTIMER), TimerType(ETimer::DefaultTimer), SecondsUntilActivation(0.f) { PacketSize = sizeof(PSetTimer); }
+	PSetTimer(ETimer type, float secondTime) : Packet(COMP_OP::OP_SETTIMER), TimerType(type), SecondsUntilActivation(secondTime) { PacketSize = sizeof(PSetTimer); }
 };
 #pragma pack(pop)
+
+struct PSpawnItem : Packet, PTransform
+{
+	int RoomNum;
+
+	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), PTransform(), RoomNum(-1) { PacketSize = sizeof(PSpawnItem); }
+	PSpawnItem(PVector Location, PVector Rotate, int Roomnum)
+		: Packet(COMP_OP::OP_SPAWNITEM),
+		PTransform(Location.X, Location.Y, Location.Z, Rotate.X, Rotate.Y, Rotate.Z), RoomNum(Roomnum)
+	{
+		PacketSize = sizeof(PSpawnItem);
+	}
+};
+
+struct PCharacterAnimMontage : Packet
+{
+
+};

@@ -19,7 +19,7 @@ ABuilding::ABuilding()
 	SetRootComponent(Building_Ceiling);
 
 	// 건물 층에 대한 액터 클래스 로드
-	ConstructorHelpers::FClassFinder<AActor> SingleBuildingFloorRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/SingleBuildingFloor.SingleBuildingFloor_C'"));
+	static ConstructorHelpers::FClassFinder<AActor> SingleBuildingFloorRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/SingleBuildingFloor.SingleBuildingFloor_C'"));
 
 	if (!SingleBuildingFloorRef.Succeeded()) return;
 

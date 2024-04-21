@@ -22,7 +22,7 @@ AHexagonTile::AHexagonTile()
 
 	for (int i = 0; i < 37; ++i)
 		Tiles.AddDefaulted();
-
+	
 	{	//중앙 육각 타일 배치
 		Tiles[0] = CreateDefaultSubobject<UChildActorComponent>(TEXT("MiddleTile"));
 		Tiles[0]->SetChildActorClass(TileClass);
@@ -69,6 +69,15 @@ AHexagonTile::AHexagonTile()
 
 	}
 
+	// 붕괴 방향 설정
+	CollapseDirectionAngle = 60 * FMath::RandRange(0, 5);		// 0',60',120',180',240',300' 로 붕괴되는 방향에 대한 Angle 설정
+
+	{ // 붕괴 방향에 대한 건물 (팀 리스폰 건물) 먼저 설치
+
+		
+	}
+	
+
 	/*static ConstructorHelpers::FObjectFinder<UBlueprint> BuildingItem(TEXT("/Script/Engine.Blueprint'/Game/2019180031/Blueprints/Map/Building/CodeBuilding.CodeBuilding'"));
 	if (BuildingItem.Object)
 	{
@@ -108,6 +117,8 @@ void AHexagonTile::BeginPlay()
 void AHexagonTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	
 
 }
 

@@ -27,6 +27,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		TMap<UStaticMeshComponent*, AActor*> Tile_Actor;
 
+	/**/
+	UPROPERTY(EditAnywhere)
+		float CollapseDirectionAngle;
+
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AActor> BuildingBP;
 	UPROPERTY(EditAnywhere)
@@ -40,10 +44,6 @@ public:
 	/* 생성자에서 타일들의 위치 계산해주는 함수 */
 	UFUNCTION(BlueprintPure, Category = "Construct")
 		FVector CalculateRelativeLocation(int32 AngleCount, int32 Distance);
-
-	///* BeginPlay시 진행할 로직 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Init")
-	//	void InitialSettiongs();
 
 	///* 건물 및 부유타일 생성 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Init")

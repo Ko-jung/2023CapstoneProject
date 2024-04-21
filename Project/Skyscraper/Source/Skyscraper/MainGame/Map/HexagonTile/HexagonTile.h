@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "HexagonTile.generated.h"
 
+class ABuilding;
+
 UCLASS()
 class SKYSCRAPER_API AHexagonTile : public AActor
 {
@@ -25,18 +27,15 @@ protected:
 
 	/* 육각타일과 그 아래 건물/부유타일에 대한 map */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
-		TMap<UStaticMeshComponent*, AActor*> Tile_Actor;
+		TMap<UChildActorComponent*, AActor*> Tile_Actor;
 
 	/**/
 	UPROPERTY(EditAnywhere)
-		float CollapseDirectionAngle;
+		int CollapseDirectionAngle;
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AActor> BuildingBP;
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AActor> FloatingTileBP;
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AActor> GC_TileBP;
+		TSubclassOf<AActor> BuildingClass;
+
 public:	
 	// 생성자
 	AHexagonTile();
@@ -44,6 +43,9 @@ public:
 	/* 생성자에서 타일들의 위치 계산해주는 함수 */
 	UFUNCTION(BlueprintPure, Category = "Construct")
 		FVector CalculateRelativeLocation(int32 AngleCount, int32 Distance);
+
+	// BeginPlay시 실행할 함수
+	void InitialSettings();
 
 	///* 건물 및 부유타일 생성 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Init")

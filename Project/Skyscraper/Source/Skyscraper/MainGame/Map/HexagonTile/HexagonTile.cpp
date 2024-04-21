@@ -4,6 +4,7 @@
 #include "HexagonTile.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "Skyscraper/MainGame/Map/Building/Building.h"
 
 // Sets default values
 AHexagonTile::AHexagonTile()
@@ -70,29 +71,13 @@ AHexagonTile::AHexagonTile()
 	}
 
 	// 붕괴 방향 설정
-	CollapseDirectionAngle = 60 * FMath::RandRange(0, 5);		// 0',60',120',180',240',300' 로 붕괴되는 방향에 대한 Angle 설정
+	CollapseDirectionAngle = FMath::RandRange(0, 5);		// 0',60',120',180',240',300' 로 붕괴되는 방향에 대한 Angle 설정
 
-	{ // 붕괴 방향에 대한 건물 (팀 리스폰 건물) 먼저 설치
-
-		
-	}
+	// 건물 클래스 로드
+	static ConstructorHelpers::FClassFinder<AActor> BuildingClassRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/SingleBuildingFloor.SingleBuildingFloor_C'"));
+	BuildingClass = BuildingClassRef.Class;
 	
-
-	/*static ConstructorHelpers::FObjectFinder<UBlueprint> BuildingItem(TEXT("/Script/Engine.Blueprint'/Game/2019180031/Blueprints/Map/Building/CodeBuilding.CodeBuilding'"));
-	if (BuildingItem.Object)
-	{
-		BuildingBP = (UClass*)BuildingItem.Object->GeneratedClass;
-	}
-	static ConstructorHelpers::FObjectFinder<UBlueprint> FloatingTileItem(TEXT("/Script/Engine.Blueprint'/Game/2019180031/Blueprints/Map/FloatingTile/CodeFloatingTile.CodeFloatingTile'"));
-	if (FloatingTileItem.Object)
-	{
-		FloatingTileBP = (UClass*)FloatingTileItem.Object->GeneratedClass;
-	}
-	static ConstructorHelpers::FObjectFinder<UBlueprint> GCTileItem(TEXT("/Script/Engine.Blueprint'/Game/2019180031/Blueprints/Map/Tile/Tile_Geometry/GC_Tile.GC_Tile'"));
-	if (GCTileItem.Object)
-	{
-		GC_TileBP = (UClass*)GCTileItem.Object->GeneratedClass;
-	}*/
+	
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -106,11 +91,27 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 	return FVector(TileDistance * sin, TileDistance * cos, 0.0f);
 }
 
+void AHexagonTile::InitialSettings()
+{
+	ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
+	if (Building)
+	{
+		//Building->GetChildActor()->SetActorRelativeLocation(Tiles[0]->GetRelativeLocation());
+		Building->Initialize(7);
+		Building->FinishSpawning(FTransform{});
+
+	}
+	
+	Tile_Actor.Add(Tiles[0], Building);
+
+}
+
 // Called when the game starts or when spawned
 void AHexagonTile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InitialSettings();
 }
 
 // Called every frame

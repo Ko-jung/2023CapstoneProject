@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Building.generated.h"
 
+class ASingleBuildingFloor;
+
 UENUM(BlueprintType)
 enum class BuildingComposition
 {
@@ -58,7 +60,7 @@ public:
 		UStaticMeshComponent* Building_Ceiling;
 	/* 층 들에 대한 차일드 액터 컴퍼넌트 배열 */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
-		TArray<UChildActorComponent*> Building_Floors;
+		TArray<AActor*> Building_Floors;
 	
 	/* 게임진행중 현재 층 수에 대한 변수 */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
@@ -75,6 +77,9 @@ public:
 	//	TSubclassOf<AActor> GC_Wall03;
 	//UPROPERTY(EditDefaultsOnly)
 	//	TSubclassOf<AActor> GC_Wall04;
+
+	UPROPERTY()
+		TSubclassOf<ASingleBuildingFloor> SingleBuildingClass;
 
 public:
 	/* IMapCollapseInterface */

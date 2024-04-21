@@ -57,7 +57,9 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		{
 			FloorMesh->SetStaticMesh(FloorMeshRef.Object);
 		}
+		SetRootComponent(FloorMesh);
 		FloorStaticMeshes.Add(FloorMesh);
+		
 	}
 	// ±âµÕ 3°³
 	for (int i = 0; i < 3; ++i)

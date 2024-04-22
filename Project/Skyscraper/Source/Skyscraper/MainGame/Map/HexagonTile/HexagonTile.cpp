@@ -159,9 +159,6 @@ void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 			}
 		}
 	}
-
-
-	
 }
 
 void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector MovementOffset)

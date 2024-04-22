@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Skyscraper/MainGame/Interface/Destructible/Collapsible.h"
 #include "GameFramework/Actor.h"
 #include "Building.generated.h"
 
@@ -18,7 +19,7 @@ enum class BuildingComposition
 };
 
 UCLASS()
-class SKYSCRAPER_API ABuilding : public AActor
+class SKYSCRAPER_API ABuilding : public AActor, public ICollapsible
 {
 	GENERATED_BODY()
 	
@@ -82,6 +83,6 @@ public:
 		TSubclassOf<ASingleBuildingFloor> SingleBuildingClass;
 
 public:
-	/* IMapCollapseInterface */
-	//virtual void DoCollapse() override;
+	/* ICollapsible Interface */
+	virtual void DoCollapse() override;
 };

@@ -69,3 +69,7 @@ void ABuilding::Tick(float DeltaTime)
 
 }
 
+void ABuilding::DoCollapse()
+{
+}
+

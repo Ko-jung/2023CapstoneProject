@@ -27,7 +27,6 @@ struct Packet
 	Packet() :PacketType((int)COMP_OP::OP_RECV) { PacketSize = sizeof(Packet); }
 	Packet(COMP_OP op) : PacketType((int)op) { PacketSize = sizeof(Packet); }
 };
-#pragma pack(pop)
 
 struct PTransform
 {
@@ -54,7 +53,6 @@ struct PPosition : Packet, PTransform
 	}
 };
 
-#pragma pack(push, 1)
 struct PPlayerPosition : Packet, PTransform
 {
 	BYTE PlayerSerial;
@@ -79,7 +77,6 @@ struct PPlayerPosition : Packet, PTransform
 		PacketSize = sizeof(PPlayerPosition);
 	}
 };
-#pragma pack(pop)
 
 struct PDamagedPlayer : Packet
 {
@@ -97,7 +94,7 @@ struct PDamagedPlayer : Packet
 // Send If Character Damaged
 struct PChangedPlayerHP : Packet
 {
-	int ChangedPlayerSerial;
+	BYTE ChangedPlayerSerial;
 	float AfterHP;
 
 	PChangedPlayerHP() : Packet(COMP_OP::OP_CHANGEDPLAYERHP), ChangedPlayerSerial(-1), AfterHP(-1.f) { PacketSize = sizeof(PChangedPlayerHP); }
@@ -110,7 +107,7 @@ struct PChangedPlayerHP : Packet
 // Send If Character Dead or ReSpawn
 struct PChangedPlayerState : Packet
 {
-	int ChangedPlayerSerial;
+	BYTE ChangedPlayerSerial;
 	ECharacterState State;
 
 	PChangedPlayerState() : Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(-1), State(ECharacterState::LIVING) { PacketSize = sizeof(PChangedPlayerState); }
@@ -120,7 +117,6 @@ struct PChangedPlayerState : Packet
 	}
 };
 
-#pragma pack(push, 1)
 struct PSpawnObject : Packet, PTransform
 {
 	EObject SpawnObject;
@@ -134,7 +130,6 @@ struct PSpawnObject : Packet, PTransform
 	// 	PacketSize = sizeof(PSpawnObject);
 	// }
 };
-#pragma pack(pop)
 
 struct PPlayerJoin : Packet
 {
@@ -214,8 +209,6 @@ struct PEmptyRoomNum : Packet
 	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
 };
 
-#pragma pack(push, 1)
-// 
 struct PSetTimer : Packet
 {
 	ETimer TimerType;
@@ -223,7 +216,6 @@ struct PSetTimer : Packet
 	PSetTimer() :Packet(COMP_OP::OP_SETTIMER), TimerType(ETimer::DefaultTimer), SecondsUntilActivation(0.f) { PacketSize = sizeof(PSetTimer); }
 	PSetTimer(ETimer type, float secondTime) : Packet(COMP_OP::OP_SETTIMER), TimerType(type), SecondsUntilActivation(secondTime) { PacketSize = sizeof(PSetTimer); }
 };
-#pragma pack(pop)
 
 struct PSpawnItem : Packet, PTransform
 {
@@ -238,7 +230,14 @@ struct PSpawnItem : Packet, PTransform
 	}
 };
 
-struct PCharacterAnimMontage : Packet
+struct PChangeAnimMontage : Packet
 {
+	EAnimMontage eAnimMontage;
+	BYTE ChangedPlayerSerial;
 
+	PChangeAnimMontage() : Packet(COMP_OP::OP_CHANGEANIMMONTAGE), eAnimMontage(EAnimMontage::Default), ChangedPlayerSerial(-1)
+	{ PacketSize = sizeof(PChangeAnimMontage); }
 };
+
+
+#pragma pack(pop)

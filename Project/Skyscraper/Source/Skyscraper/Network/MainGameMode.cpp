@@ -9,7 +9,6 @@
 #include "../MainGame/Component/Health/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/GameUserSettings.h"
-#include "../Enum/ECharacterAnimMontage.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -107,22 +106,22 @@ void AMainGameMode::ProcessFunc()
 		{
 			PPlayerPosition PPP;
 			memcpy(&PPP, packet, sizeof(PPP));
-			if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
-			{
-				UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
-				continue;
-			}
+			//if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
+			//{
+			//	UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
+			//	continue;
+			//}
 			SetPlayerPosition(PPP);
 			break;
 		}
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERHP:
 		{
 			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(packet);
-			if (PCPHP->ChangedPlayerSerial >= MAXPLAYER || PCPHP->ChangedPlayerSerial < 0)
-			{
-				UE_LOG(LogClass, Warning, TEXT("Array Error"));
-				continue;
-			}
+			// if (PCPHP->ChangedPlayerSerial >= MAXPLAYER || PCPHP->ChangedPlayerSerial < 0)
+			// {
+			// 	UE_LOG(LogClass, Warning, TEXT("Array Error"));
+			// 	continue;
+			// }
 			Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
 			break;
 		}
@@ -130,11 +129,11 @@ void AMainGameMode::ProcessFunc()
 		{
 			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(packet);
 
-			if (PCPS->ChangedPlayerSerial >= MAXPLAYER || PCPS->ChangedPlayerSerial < 0)
-			{
-				UE_LOG(LogClass, Warning, TEXT("Array Error"));
-				continue;
-			}
+			// if (PCPS->ChangedPlayerSerial >= MAXPLAYER || PCPS->ChangedPlayerSerial < 0)
+			// {
+			// 	UE_LOG(LogClass, Warning, TEXT("Array Error"));
+			// 	continue;
+			// }
 
 			Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
 			break;
@@ -151,14 +150,20 @@ void AMainGameMode::ProcessFunc()
 			PSpawnObject PSO;
 			memcpy(&PSO, packet, sizeof(PSO));
 
-			if (PSO.SerialNum>= MAXPLAYER || PSO.SerialNum < 0)
-			{
-				UE_LOG(LogClass, Warning, TEXT("Array Error"));
-				continue;
-			}
+			// if (PSO.SerialNum>= MAXPLAYER || PSO.SerialNum < 0)
+			// {
+			// 	UE_LOG(LogClass, Warning, TEXT("Array Error"));
+			// 	continue;
+			// }
 
 			ProcessSpawnObject(PSO);
-			UE_LOG(LogTemp, Warning, TEXT("ProcessSpawnObject called!"));
+			break;
+		}
+		case (BYTE)COMP_OP::OP_CHANGEANIMMONTAGE:
+		{
+			PChangeAnimMontage PCAM;
+			memcpy(&PCAM, packet, sizeof(PCAM));
+			//Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage);
 			break;
 		}
 		default:
@@ -194,6 +199,26 @@ void AMainGameMode::ProcessFunc()
 //		}
 //	}
 //}
+
+ECharacterAnimMontage AMainGameMode::GetNonPacketAnimMontage(EAnimMontage eAnimMontage)
+{
+	ECharacterAnimMontage animMontage;
+	switch (eAnimMontage)
+	{
+	case EAnimMontage::Default:				animMontage = ECharacterAnimMontage::ECAM_Default;				break;
+	case EAnimMontage::DaggerAttack:		animMontage = ECharacterAnimMontage::ECAM_DaggerAttack;			break;
+	case EAnimMontage::KatanaAttack:		animMontage = ECharacterAnimMontage::ECAM_KatanaAttack;			break;
+	case EAnimMontage::GreatSwordAttack:	animMontage = ECharacterAnimMontage::ECAM_GreatSwordAttack;		break;
+	case EAnimMontage::SMG:					animMontage = ECharacterAnimMontage::ECAM_SMG;					break;
+	case EAnimMontage::Rifle:				animMontage = ECharacterAnimMontage::ECAM_Rifle;				break;
+	case EAnimMontage::RPG:					animMontage = ECharacterAnimMontage::ECAM_RPG;					break;
+	case EAnimMontage::Stun:				animMontage = ECharacterAnimMontage::ECAM_Stun;					break;
+	case EAnimMontage::Down:				animMontage = ECharacterAnimMontage::ECAM_Down;					break;
+	case EAnimMontage::Death:				animMontage = ECharacterAnimMontage::ECAM_Death;				break;
+	default:								animMontage = ECharacterAnimMontage::ECAM_Default;				break;
+	}
+	return animMontage;
+}
 
 void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 {
@@ -313,32 +338,27 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 
 void AMainGameMode::SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage)
 {
-	EAnimMontage eAnimMontage;
+	PChangeAnimMontage PCAM;
+	EAnimMontage eMontage;
 	switch (eAnimMontage)
 	{
-	case ECharacterAnimMontage::ECAM_Default:
-		break;
-	case ECharacterAnimMontage::ECAM_DaggerAttack:
-		break;
-	case ECharacterAnimMontage::ECAM_KatanaAttack:
-		break;
-	case ECharacterAnimMontage::ECAM_GreatSwordAttack:
-		break;
-	case ECharacterAnimMontage::ECAM_SMG:
-		break;
-	case ECharacterAnimMontage::ECAM_Rifle:
-		break;
-	case ECharacterAnimMontage::ECAM_RPG:
-		break;
-	case ECharacterAnimMontage::ECAM_Stun:
-		break;
-	case ECharacterAnimMontage::ECAM_Down:
-		break;
-	case ECharacterAnimMontage::ECAM_Death:
-		break;
-	default:
-		break;
+	case ECharacterAnimMontage::ECAM_Default:				eMontage = EAnimMontage::Default;			break;
+	case ECharacterAnimMontage::ECAM_DaggerAttack:			eMontage = EAnimMontage::DaggerAttack;		break;
+	case ECharacterAnimMontage::ECAM_KatanaAttack:			eMontage = EAnimMontage::KatanaAttack;		break;
+	case ECharacterAnimMontage::ECAM_GreatSwordAttack:		eMontage = EAnimMontage::GreatSwordAttack;	break;
+	case ECharacterAnimMontage::ECAM_SMG:					eMontage = EAnimMontage::SMG;				break;
+	case ECharacterAnimMontage::ECAM_Rifle:					eMontage = EAnimMontage::Rifle;				break;
+	case ECharacterAnimMontage::ECAM_RPG:					eMontage = EAnimMontage::RPG;				break;
+	case ECharacterAnimMontage::ECAM_Stun:					eMontage = EAnimMontage::Stun;				break;
+	case ECharacterAnimMontage::ECAM_Down:					eMontage = EAnimMontage::Down;				break;
+	case ECharacterAnimMontage::ECAM_Death:					eMontage = EAnimMontage::Death;				break;
+	default:												eMontage = EAnimMontage::Default;			break;
 	}
+
+	PCAM.ChangedPlayerSerial = SerialNum;
+	PCAM.eAnimMontage = eMontage;
+
+	Send(&PCAM, sizeof(PCAM));
 }
 
 float AMainGameMode::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)

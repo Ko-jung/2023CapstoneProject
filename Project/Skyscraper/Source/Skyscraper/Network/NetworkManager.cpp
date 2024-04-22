@@ -208,7 +208,13 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		PSpawnObject* PSO = new PSpawnObject();
 		memcpy(PSO, p, sizeof(*PSO));
 		TryPush(PSO);
-		UE_LOG(LogTemp, Warning, TEXT("PSpawnObject Packet Pushed"));
+		break;
+	}
+	case (int)COMP_OP::OP_CHANGEANIMMONTAGE:
+	{
+		PChangeAnimMontage* PCAM = new PChangeAnimMontage();
+		memcpy(PCAM, p, sizeof(*PCAM));
+		TryPush(PCAM);
 		break;
 	}
 	default:
@@ -282,7 +288,7 @@ uint32 NetworkManager::Run()
 			StopListen();
 			break;
 		}
-		// SpawnObject Packet인데 내부 COMP_OP에는 OP_Position이 들어있다. 사이즈는OP_POSITION 사이즈다
+
 		// 패킷 재조립
 		int RemainLen = nRecvLen + RemainDataLen;
 		char* ReciveData = m_sRecvBuffer;

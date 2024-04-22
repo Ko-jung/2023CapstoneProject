@@ -233,6 +233,12 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
 	SetXRotate(r);
 }
 
+void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage)
+{
+	const auto& AnimMontage = *CharacterAnimMontages.Find(eAnimMontage);
+	PlayAnimMontage(AnimMontage);
+}
+
 void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime)
 {
 	SpeedBuffValue = NewSpeedBuffValue;

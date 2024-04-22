@@ -6,6 +6,7 @@
 #include "NetworkGameMode.h"
 #include "../Enum/ESkillActor.h"
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
+#include "../Enum/ECharacterAnimMontage.h"
 
 #include "MainGameMode.generated.h"
 
@@ -26,6 +27,8 @@ public:
 
 	virtual void ProcessFunc() override;
 	// void ProcessPosition();
+
+	ECharacterAnimMontage GetNonPacketAnimMontage(EAnimMontage eAnimMontage);
 
 	void SetPlayerPosition(PPlayerPosition PlayerPosition);
 	void ProcessSpawnObject(PSpawnObject PSO);

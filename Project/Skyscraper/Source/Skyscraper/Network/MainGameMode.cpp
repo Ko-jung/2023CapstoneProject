@@ -9,6 +9,7 @@
 #include "../MainGame/Component/Health/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/GameUserSettings.h"
+#include "../Enum/ECharacterAnimMontage.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -312,6 +313,7 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 
 void AMainGameMode::SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage)
 {
+	EAnimMontage eAnimMontage;
 	switch (eAnimMontage)
 	{
 	case ECharacterAnimMontage::ECAM_Default:

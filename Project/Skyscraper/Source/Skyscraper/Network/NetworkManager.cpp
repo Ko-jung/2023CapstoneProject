@@ -5,12 +5,12 @@
 #include "NetworkGameMode.h"
 
 NetworkManager::NetworkManager() : 
-	Gamemode(nullptr),
 	Thread(nullptr),
+	Gamemode(nullptr),
 	bIsConnected(false),
 	SerialNum(0),
-	RemainDataLen(0),
-	State(NetworkState::SelectGame)
+	State(NetworkState::SelectGame),
+	RemainDataLen(0)
 {
 }
 

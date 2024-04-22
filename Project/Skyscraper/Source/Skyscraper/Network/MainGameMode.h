@@ -31,6 +31,7 @@ public:
 
 	void SendPlayerLocation();
 	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
+	void SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage);
 
 	// UE5 Function Code
 	float CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation);

@@ -222,6 +222,7 @@ void ASkyscraperCharacter::DoDown(const FVector& DownDirection) const
 
 UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharacterAnimMontage) const
 {
+	MainGameMode->SendAnimMontageStatus(eCharacterAnimMontage);
 	return *CharacterAnimMontages.Find(eCharacterAnimMontage);
 }
 

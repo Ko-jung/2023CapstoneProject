@@ -280,7 +280,8 @@ void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 
 		// Notify Room Num to Clients
 		PConnectToGameserver SPS;
-		SPS.RoomNum = PER.RoomNum;
+		SPS.RoomNum = 0;
+		//SPS.RoomNum = PER.RoomNum;
 
 		LobbyClientInfo* client;
 

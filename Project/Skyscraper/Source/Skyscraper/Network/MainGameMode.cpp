@@ -8,6 +8,7 @@
 #include "../MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "../MainGame/Component/Health/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/GameUserSettings.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -20,6 +21,10 @@ void AMainGameMode::BeginPlay()
 	m_Socket->StartListen();
 
 	Super::BeginPlay();
+
+	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+	UGameUserSettings::GetGameUserSettings()->SetFullscreenMode(EWindowMode::WindowedFullscreen);
+	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
 
 	// Spawn Characters
 	FActorSpawnParameters spawnParams;
@@ -303,6 +308,35 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 	PSO.SerialNum = SerialNum;
 
 	m_Socket->Send(&PSO, sizeof(PSO));
+}
+
+void AMainGameMode::SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage)
+{
+	switch (eAnimMontage)
+	{
+	case ECharacterAnimMontage::ECAM_Default:
+		break;
+	case ECharacterAnimMontage::ECAM_DaggerAttack:
+		break;
+	case ECharacterAnimMontage::ECAM_KatanaAttack:
+		break;
+	case ECharacterAnimMontage::ECAM_GreatSwordAttack:
+		break;
+	case ECharacterAnimMontage::ECAM_SMG:
+		break;
+	case ECharacterAnimMontage::ECAM_Rifle:
+		break;
+	case ECharacterAnimMontage::ECAM_RPG:
+		break;
+	case ECharacterAnimMontage::ECAM_Stun:
+		break;
+	case ECharacterAnimMontage::ECAM_Down:
+		break;
+	case ECharacterAnimMontage::ECAM_Death:
+		break;
+	default:
+		break;
+	}
 }
 
 float AMainGameMode::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)

@@ -140,7 +140,7 @@ void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 				if (Building)
 				{
 					Building->Initialize(Floor);
-					Building->FinishSpawning(FTransform{FRotator{0.0f,120.0f* FMath::RandRange(0, 2),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D()});
+					Building->FinishSpawning(FTransform{FRotator{0.0f,30.0f* FMath::RandRange(0, 12),0.0f},TargetTile->GetRelativeLocation()});
 					//Building->SetActorLocation();
 				}
 				Tile_Actor.Add(TargetTile, Building);

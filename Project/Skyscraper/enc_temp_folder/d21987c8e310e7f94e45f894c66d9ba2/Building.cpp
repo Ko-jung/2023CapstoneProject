@@ -55,7 +55,6 @@ void ABuilding::BeginPlay()
 		if(NewFloorActor)
 		{
 			NewFloorActor->SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y, -FloorDistance * i));
-			NewFloorActor->SetActorRotation(GetActorRotation());
 		}
 		Building_Floors.Add(NewFloorActor);
 	}

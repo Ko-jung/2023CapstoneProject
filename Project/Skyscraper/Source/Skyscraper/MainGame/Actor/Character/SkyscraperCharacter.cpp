@@ -54,6 +54,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
+	GetCharacterMovement()->MaxStepHeight = 100.0f;	// 계단에서 올라갈 수 있도록 높이 조정
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;

@@ -168,6 +168,7 @@ protected:
 
 public:
 	void SyncTransformAndAnim(FTransform t, float s, float r);
+	void SetMontage(ECharacterAnimMontage eAnimMontage);
 
 	void SetSpeed(float s) { Speed = s; }
 	void SetXRotate(float r) { XRotate = r; }

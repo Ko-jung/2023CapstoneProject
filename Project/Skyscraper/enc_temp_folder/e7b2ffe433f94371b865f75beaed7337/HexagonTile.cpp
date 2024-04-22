@@ -95,7 +95,7 @@ void AHexagonTile::InitialSettings()
 {
 	// 팀 리스폰 위치 빌딩 생성
 
-	// 각 구역별 빌딩 및 부유타일 생성
+	// 각 구역별 빌딩 생성
 	{
 		SpawnBuildings(8, FName("Section1"), 3);
 		SpawnBuildings(4, FName("Section2"), 5);
@@ -103,6 +103,12 @@ void AHexagonTile::InitialSettings()
 		SpawnBuildings(1, FName("MiddleTile"), 9);
 	}
 
+	// 각 구역별 부유 타일 생성
+	{
+		SpawnFloatingTiles(8, FName("Section1"), FVector(0.0f, 0.0f, -3000.0f));
+		SpawnFloatingTiles(4, FName("Section2"), FVector(0.0f, 0.0f, -5000.0f));
+		SpawnFloatingTiles(2, FName("Section3"), FVector(0.0f, 0.0f, -7000.0f));
+	}
 
 }
 
@@ -140,7 +146,7 @@ void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 				if (Building)
 				{
 					Building->Initialize(Floor);
-					Building->FinishSpawning(FTransform{FRotator{0.0f,30.0f* FMath::RandRange(0, 12),0.0f},TargetTile->GetRelativeLocation()});
+					Building->FinishSpawning(FTransform{FRotator{0.0f,120.0f* FMath::RandRange(0, 2),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D()});
 					//Building->SetActorLocation();
 				}
 				Tile_Actor.Add(TargetTile, Building);

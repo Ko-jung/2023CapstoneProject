@@ -40,7 +40,6 @@ ABuilding::ABuilding()
 void ABuilding::Initialize(int32 GetFloor)
 {
 	CurrentFloor = InitialFloor = GetFloor;
-	UE_LOG(LogTemp, Warning, TEXT("222"));
 }
 
 // Called when the game starts or when spawned
@@ -52,21 +51,11 @@ void ABuilding::BeginPlay()
 	for (int i = 0; i < InitialFloor; ++i)
 	{
 		FString title = "Floor" + FString::FromInt(i);
-		//UChildActorComponent* NewChildFloorActor = NewObject<UChildActorComponent>(this);
-		//	//CreateDefaultSubobject<UChildActorComponent>(FName(title));
-		//NewChildFloorActor->RegisterComponent();
-		//NewChildFloorActor->SetChildActorClass(SingleBuildingClass);
-		//NewChildFloorActor->SetupAttachment(GetRootComponent());
-		//NewChildFloorActor->SetRelativeLocation(FVector(0.0f, 0.0f, -FloorDistance * i));
 		AActor* NewFloorActor = GetWorld()->SpawnActor(SingleBuildingClass);
 		if(NewFloorActor)
 		{
 			NewFloorActor->SetActorLocation(FVector(0.0f, 0.0f, -FloorDistance * i));
-		}else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("???"));
 		}
-		
 		Building_Floors.Add(NewFloorActor);
 	}
 }

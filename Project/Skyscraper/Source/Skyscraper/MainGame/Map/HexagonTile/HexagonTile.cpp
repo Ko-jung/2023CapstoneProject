@@ -93,18 +93,73 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 
 void AHexagonTile::InitialSettings()
 {
-	ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
-	if (Building)
+	// 팀 리스폰 위치 빌딩 생성
+
+	// 각 구역별 빌딩 및 부유타일 생성
 	{
-		//Building->GetChildActor()->SetActorRelativeLocation(Tiles[0]->GetRelativeLocation());
-		Building->Initialize(7);
-		Building->FinishSpawning(FTransform{});
+		SpawnBuildings(8, FName("Section1"), 3);
 
 	}
+
 	
-	Tile_Actor.Add(Tiles[0], Building);
 
 }
+
+void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
+{
+	/*
+	 SpawnCount - 설치될 건물의 갯수 / TileTag - 설치될 타일 섹션 (Section1~3) / Floor - 설치될 건물의 층 수
+	 */
+	TArray<UChildActorComponent*> SectionTiles;	// 특정 섹션의 타일들이 저장되는 배열
+	TObjectPtr<UChildActorComponent> TargetTile; // 건물이 설치될 타일
+
+	{ // 해당 섹션 타일 구하기
+		for (const auto& pTile : Tiles)
+		{
+			// TileTag 태그를 가진 타일들을 추출한다.
+			if(pTile && pTile->ComponentHasTag(TileTag))
+			{
+				SectionTiles.Add(pTile);
+			}
+		}
+	}
+
+	{ // 빌딩 배치하기
+		int BuildingCount = 0;
+		while(BuildingCount < SpawnCount)
+		{
+			// 건물이 생성 될 타일 구하기
+			int index = FMath::RandRange(0, SectionTiles.Num() - 1);
+			TargetTile = SectionTiles[index];
+			// 해당 타일에 건물이 설치되지 않았다면, 건물을 생성하여 설치
+			if(!Tile_Actor.Contains(TargetTile))
+			{
+				// 빌딩 생성 및 추가
+				ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
+				if (Building)
+				{
+					Building->Initialize(Floor);
+					Building->FinishSpawning(FTransform{FRotator{}, TargetTile->GetRelativeLocation()});
+				}
+				Tile_Actor.Add(TargetTile, Building);
+
+				// 해당 섹션 타일을 사용했으니 선택지에서 제거
+				SectionTiles.Remove(TargetTile);
+
+				++BuildingCount;
+			}
+		}
+	}
+
+
+	
+}
+
+void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector MovementOffset)
+{
+}
+
+
 
 // Called when the game starts or when spawned
 void AHexagonTile::BeginPlay()

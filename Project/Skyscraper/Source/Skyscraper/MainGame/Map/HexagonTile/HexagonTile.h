@@ -44,12 +44,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Construct")
 		FVector CalculateRelativeLocation(int32 AngleCount, int32 Distance);
 
-	// BeginPlay시 실행할 함수
-	void InitialSettings();
 
-	///* 건물 및 부유타일 생성 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Init")
-	//	void SpawnBuildingsAndFloatingTiles(int32 SpawnCount, FName TileTag, int32 Floor, int32 FloatingTileCount, FVector MovementOffset);
+	
+
 
 	///* 붕괴 1단계/2단계 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
@@ -64,6 +61,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// BeginPlay시 실행할 함수
+	void InitialSettings();
+
+	///* 건물 및 부유타일 생성 함수 */
+	UFUNCTION(BlueprintCallable, Category = "Init")
+		void SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor);
+	UFUNCTION(BlueprintCallable, Category = "Init")
+		void SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector MovementOffset);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

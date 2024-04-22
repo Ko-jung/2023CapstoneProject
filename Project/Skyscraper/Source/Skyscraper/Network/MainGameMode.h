@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "NetworkGameMode.h"
 #include "../Enum/ESkillActor.h"
-	
+#include "Skyscraper/Enum/ECharacterAnimMontage.h"
+
 #include "MainGameMode.generated.h"
 
 class ASkyscraperCharacter;

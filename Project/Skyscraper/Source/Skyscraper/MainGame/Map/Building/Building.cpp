@@ -54,7 +54,7 @@ void ABuilding::BeginPlay()
 		AActor* NewFloorActor = GetWorld()->SpawnActor(SingleBuildingClass);
 		if(NewFloorActor)
 		{
-			NewFloorActor->SetActorLocation(FVector(0.0f, 0.0f, -FloorDistance * i));
+			NewFloorActor->SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y, -FloorDistance * i));
 		}
 		Building_Floors.Add(NewFloorActor);
 	}

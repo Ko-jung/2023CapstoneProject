@@ -17,7 +17,6 @@ ASingleHexagonTile::ASingleHexagonTile()
 	HexagonTileStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexagonTile"));
 	HexagonTileStaticMesh->SetStaticMesh(HexagonTileStaticMeshRef.Object);
 	SetRootComponent(HexagonTileStaticMesh);
-	
 }
 
 // Called when the game starts or when spawned

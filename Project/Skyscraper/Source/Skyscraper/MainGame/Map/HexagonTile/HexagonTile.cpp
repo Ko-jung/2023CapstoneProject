@@ -98,7 +98,9 @@ void AHexagonTile::InitialSettings()
 	// 각 구역별 빌딩 및 부유타일 생성
 	{
 		SpawnBuildings(8, FName("Section1"), 3);
-
+		SpawnBuildings(4, FName("Section2"), 5);
+		SpawnBuildings(2, FName("Section3"), 7);
+		SpawnBuildings(1, FName("MiddleTile"), 9);
 	}
 
 	
@@ -139,7 +141,8 @@ void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 				if (Building)
 				{
 					Building->Initialize(Floor);
-					Building->FinishSpawning(FTransform{FRotator{}, TargetTile->GetRelativeLocation()});
+					Building->FinishSpawning(FTransform{FRotator{},TargetTile->GetRelativeLocation() });
+					//Building->SetActorLocation();
 				}
 				Tile_Actor.Add(TargetTile, Building);
 

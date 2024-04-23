@@ -28,6 +28,7 @@ enum class COMP_OP : unsigned char
 	OP_DISCONNECT,
 	OP_TILEDROP,
 	OP_SPAWNITEM,
+	OP_CHANGEANIMMONTAGE,
 
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,

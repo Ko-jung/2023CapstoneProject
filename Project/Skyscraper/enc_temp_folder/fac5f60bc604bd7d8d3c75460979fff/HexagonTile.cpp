@@ -89,13 +89,6 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 {
-	float CollapseRemainDistance{};
-	// CollapseLevel에 따라 파괴되지 않는 영역 길이 설정
-	{
-		if (CollapseLevel == 1) CollapseRemainDistance = 2.5f;
-		else CollapseRemainDistance = 1.5f;
-	}
-
 	// 지형 파괴 후 남은 타일의 중앙 타일 구하기
 	{
 		FVector NewMiddleTileLocation = CurrentMiddleTile->GetRelativeLocation();
@@ -103,54 +96,10 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 		NewMiddleTileLocation.Y += (offset * UKismetMathLibrary::DegCos(CollapseDirectionAngle * 60 + 30));
 
 		CurrentMiddleTile = GetLineTileFromAngleAndDistance(0, 0, NewMiddleTileLocation);
+		DrawDebugBox(GetWorld(), NewMiddleTileLocation, FVector(10.0f, 10.0f, 1000.0f), FColor::Black, true, 10, 0, 10);
 	}
 
-	// 파괴 영역에 해당하는 육각타일 파괴 및 해당 육각타일 아래 건물 / 부유타일 삭제
-	// 삭제 후 GeometryComponent에 해당하는 타일 생성
-	{ 
-		for(UChildActorComponent* Tile : Tiles)
-		{
-			float TileDistance = UKismetMathLibrary::Vector_Distance(Tile->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
-			FVector GeometrySpawnLocation = Tile->GetRelativeLocation();
-
-			// 파괴 영역 체크
-			if(TileDistance > offset * CollapseRemainDistance)
-			{
-				if(Tile_Actor.Contains(Tile))
-				{
-					AActor* TargetActor = *(Tile_Actor.Find(Tile));
-					ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
-					if(Child_Actor)
-					{
-						Child_Actor->DoCollapse();
-						//TargetActor->SetLifeSpan(20.0f);
-						TargetActor->Destroy();
-					}
-					Tile_Actor.Remove(Tile);
-				}
-				Tile->DestroyComponent();
-				Tile = nullptr;
-				// 타일 부수기
-				//AActor* BrokenTile = 
-			}
-		}
-	}
-
-	{ // 배열 내 Invalid 값 제거
-		TArray<UChildActorComponent*> TempArray;
-		for(UChildActorComponent* Tile : Tiles)
-		{
-			if(Tile)
-			{
-				TempArray.Add(Tile);
-			}
-		}
-		Tiles.Empty();
-		for(UChildActorComponent* TempTile : TempArray)
-		{
-			Tiles.Add(TempTile);
-		}
-	}
+	
 
 }
 

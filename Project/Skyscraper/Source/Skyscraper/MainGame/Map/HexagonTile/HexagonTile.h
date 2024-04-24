@@ -55,8 +55,8 @@ public:
 
 
 	///* 붕괴 1단계/2단계 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Collapse")
-	//	void CollapseLevel1And2(int CollapseLevel);
+	UFUNCTION(BlueprintCallable, Category = "Collapse")
+		void CollapseTilesAndActors(int CollapseLevel);
 
 	///* 붕괴 3단계 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
@@ -71,7 +71,7 @@ protected:
 	void InitialSettings();
 
 	// Angle, Distance를 이용해 해당 거리 타일을 얻어오는 함수
-	UChildActorComponent* GetLineTileFromAngleAndDistance(int32 FindAngle, int32 FindDistance);
+	UChildActorComponent* GetLineTileFromAngleAndDistance(int32 FindAngle, int32 FindDistance, FVector FindTileLocation = FVector{});
 
 	///* 건물 및 부유타일 생성 함수 */
 	UFUNCTION(BlueprintCallable, Category = "Init")

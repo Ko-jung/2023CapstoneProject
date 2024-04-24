@@ -71,14 +71,9 @@ AHexagonTile::AHexagonTile()
 
 	}
 
-	// 붕괴 방향 설정
-	CollapseDirectionAngle = FMath::RandRange(0, 5);		// 0',60',120',180',240',300' 로 붕괴되는 방향에 대한 Angle 설정
-
 	// 건물 클래스 로드
 	static ConstructorHelpers::FClassFinder<AActor> BuildingClassRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/SingleBuildingFloor.SingleBuildingFloor_C'"));
 	BuildingClass = BuildingClassRef.Class;
-	
-	
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -95,12 +90,33 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 void AHexagonTile::InitialSettings()
 {
 	// 팀 리스폰 위치 빌딩 생성
+	{
+		// 붕괴 방향 설정 ( 0',60',120',180',240',300' )
+		CollapseDirectionAngle = FMath::RandRange(0, 5);
+
+		ATeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance((CollapseDirectionAngle + 3) % 6, 3),
+			3, FName("Section3"))) ;
+		ATeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance((CollapseDirectionAngle + 3) % 6, 1),
+			7, FName("Section1")));
+		ATeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance(CollapseDirectionAngle, 1),
+			7, FName("Section1")));
+		
+		BTeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance(CollapseDirectionAngle, 3),
+			3, FName("Section3")));
+		
+	}
 
 	// 각 구역별 빌딩 생성
 	{
-		SpawnBuildings(8, FName("Section1"), 3);
+		SpawnBuildings(6, FName("Section1"), 3);
 		SpawnBuildings(4, FName("Section2"), 5);
-		SpawnBuildings(2, FName("Section3"), 7);
+		
+		// 아래 기존 영역들은 팀 리스폰 위치 빌딩으로 생성됨
+		//SpawnBuildings(2, FName("Section3"), 7); 
 		SpawnBuildings(1, FName("MiddleTile"), 9);
 	}
 
@@ -111,6 +127,20 @@ void AHexagonTile::InitialSettings()
 		SpawnFloatingTiles(1, FName("Section3"), FVector(0.0f, 0.0f, -6500.0f));
 	}
 
+}
+
+UChildActorComponent* AHexagonTile::GetLineTileFromAngleAndDistance(int32 FindAngle, int32 FindDistance)
+{
+	for(UChildActorComponent* Tile : Tiles)
+	{
+		// 모든 타일 중 해당 타일과의 거리를 비교하여 찾기
+		if(UKismetMathLibrary::Vector_DistanceSquared(Tile->GetRelativeLocation(), CalculateRelativeLocation(FindAngle, FindDistance)) < 100.0f)
+		{
+			return Tile;
+		}
+	}
+
+	return nullptr;
 }
 
 void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
@@ -207,6 +237,27 @@ void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector M
 		}
 	}
 }
+
+AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 Floor, FName TileTag)
+{
+	{ // 빌딩 배치하기
+		if (!Tile_Actor.Contains(TargetTile))
+		{
+			// 빌딩 생성 및 추가
+			ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
+			if (Building)
+			{
+				Building->Initialize(Floor);
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * FMath::RandRange(0, 2),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
+			}
+			Tile_Actor.Add(TargetTile, Building);
+			return Building;
+		}
+	}
+
+	return nullptr;
+}
+
 
 
 

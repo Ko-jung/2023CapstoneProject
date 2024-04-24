@@ -1,26 +1,36 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
-#include <iostream>
-#include "EnumDef.h"
+//#include "CoreMinimal.h"
 
-using std::cout;
-using std::endl;
+#include "../Enum/EOperator.h"
+#include "../Enum/EHealthState.h"
+#include "../Enum/ESkillActor.h"
+#include "../Enum/ECharacterSelect.h"
+#include "../Enum/EMeleeSelect.h"
+#include "../Enum/ERangeSelect.h"
+#include "../Enum/ETimer.h"
+#include "../Enum/ECharacterAnimMontage.h"
 
-// Using in Packet
-#pragma pack(push, 1)
+// USTRUCT()
 struct PVector
 {
+	// GENERATED_BODY()
+
 	float X;
 	float Y;
 	float Z;
 	PVector() { X = Y = Z = 0.f; }
 	PVector(float x, float y, float z) { X = x; Y = y; Z = z; }
 };
-#pragma pack(pop)
 
 #pragma pack(push, 1)
+// USTRUCT()
 struct Packet
 {
+	// GENERATED_BODY()
+
 	BYTE PacketType;
 	WORD PacketSize;
 
@@ -28,8 +38,12 @@ struct Packet
 	Packet(COMP_OP op) : PacketType((int)op) { PacketSize = sizeof(Packet); }
 };
 
+// USTRUCT()
 struct PTransform
 {
+	// GENERATED_BODY()
+
+public:
 	PVector Location;
 
 	PVector Rotate;
@@ -40,26 +54,16 @@ struct PTransform
 		: Location{ x, y, z }, Rotate{ rx, ry, rz } {}
 };
 
-//struct PPosition : Packet, PTransform
-//{
-//	EObject ObjectType;
-//
-//	PPosition() : Packet(COMP_OP::OP_POSITION), ObjectType(EObject::BP_NULL) { Location = Rotate = PVector{}; PacketSize = sizeof(PPosition); }
-//	PPosition(float x, float y, float z) : Packet(COMP_OP::OP_POSITION), PTransform(x, y, z), ObjectType(EObject::BP_NULL) { PacketSize = sizeof(PPosition); }
-//	PPosition(float x, float y, float z, float rx, float ry, float rz)
-//		: Packet(COMP_OP::OP_POSITION), PTransform(x, y, z, rx, ry, rz), ObjectType(EObject::BP_NULL)
-//	{
-//		PacketSize = sizeof(PPosition);
-//	}
-//};
-
+// USTRUCT()
 struct PPlayerPosition : Packet, PTransform
 {
+	// GENERATED_BODY()
+
 	BYTE PlayerSerial;
 	float PlayerSpeed;
 	float PlayerXDirection;
 
-	//EPlayerState PlayerState;
+	// EPlayerState PlayerState;
 
 	PPlayerPosition()
 		: Packet(COMP_OP::OP_PLAYERPOSITION), PTransform(), PlayerSpeed(0.f)//, PlayerState(EPlayerState::Stay)
@@ -78,8 +82,11 @@ struct PPlayerPosition : Packet, PTransform
 	}
 };
 
+// USTRUCT()
 struct PDamagedPlayer : Packet
 {
+	// GENERATED_BODY()
+
 	BYTE ChangedPlayerSerial;
 	bool IsMelee;
 	char WeaponEnum;
@@ -92,8 +99,11 @@ struct PDamagedPlayer : Packet
 };
 
 // Send If Character Damaged
+// USTRUCT()
 struct PChangedPlayerHP : Packet
 {
+	// GENERATED_BODY()
+
 	BYTE ChangedPlayerSerial;
 	float AfterHP;
 
@@ -105,42 +115,54 @@ struct PChangedPlayerHP : Packet
 };
 
 // Send If Character Dead or ReSpawn
+// USTRUCT()
 struct PChangedPlayerState : Packet
 {
-	BYTE ChangedPlayerSerial;
-	ECharacterState State;
+	// GENERATED_BODY()
 
-	PChangedPlayerState() : Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(-1), State(ECharacterState::LIVING) { PacketSize = sizeof(PChangedPlayerState); }
-	PChangedPlayerState(int serial, ECharacterState state) :
+	BYTE ChangedPlayerSerial;
+	EHealthState State;
+
+	PChangedPlayerState() : Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(-1), State(EHealthState::EHS_LIVING) { PacketSize = sizeof(PChangedPlayerState); }
+	PChangedPlayerState(int serial, EHealthState state) :
 		Packet(COMP_OP::OP_CHANGEDPLAYERSTATE), ChangedPlayerSerial(serial), State(state) {
 		PacketSize = sizeof(PChangedPlayerState);
 	}
 };
 
+// USTRUCT()
 struct PSpawnObject : Packet, PTransform
 {
-	EObject SpawnObject;
+	// GENERATED_BODY()
+
+	ESkillActor SpawnObject;
 	PVector ForwardVec;
 	BYTE SerialNum;
 
-	PSpawnObject() : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(), SerialNum(-1) { SpawnObject = EObject::BP_NULL; Location = PVector{}; PacketSize = sizeof(PSpawnObject); }
-	// PSpawnObject(EObject EO, PVector Location, PVector Forward) : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(Location.X, Location.Y, Location.Z)
+	PSpawnObject() : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(), SerialNum(-1) { SpawnObject = ESkillActor::BP_NULL; Location = PVector{}; PacketSize = sizeof(PSpawnObject); }
+	// PSpawnObject(ESkillActor EO, PVector Location, PVector Forward) : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(Location.X, Location.Y, Location.Z)
 	// {
 	// 	this->SpawnObject = EO;
 	// 	PacketSize = sizeof(PSpawnObject);
 	// }
 };
 
+// USTRUCT()
 struct PPlayerJoin : Packet
 {
+	// GENERATED_BODY()
+
 	BYTE PlayerSerial;
 
 	PPlayerJoin() : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = -1; PacketSize = sizeof(PPlayerJoin); }
 	PPlayerJoin(BYTE serial) : Packet(COMP_OP::OP_PLAYERJOIN) { PlayerSerial = serial; PacketSize = sizeof(PPlayerJoin); }
 };
 
+// USTRUCT()
 struct PDisconnect : Packet
 {
+	// GENERATED_BODY()
+
 	WORD DisconnectPlayerSerial;
 
 	//PDisconnect() : Packet(COMP_OP::OP_DISCONNECT) { PlayerSerial = -1; }
@@ -149,40 +171,58 @@ struct PDisconnect : Packet
 	}
 };
 
+// USTRUCT()
 struct PStartMatching : Packet
 {
+	// GENERATED_BODY()
+
 	PStartMatching() : Packet(COMP_OP::OP_STARTMATCHING) { PacketSize = sizeof(PStartMatching); }
 };
 
+// USTRUCT()
 struct PCancleMatching : Packet
 {
+	// GENERATED_BODY()
+
 	PCancleMatching() : Packet(COMP_OP::OP_CANCLEMATCHING) { }
 };
 
+// USTRUCT()
 struct PStartGame : Packet
 {
+	// GENERATED_BODY()
+
 	PStartGame() : Packet(COMP_OP::OP_STARTGAME) { }
 };
 
+// USTRUCT()
 struct PTileDrop : Packet
 {
+	// GENERATED_BODY()
+
 	PTileDrop() : Packet(COMP_OP::OP_TILEDROP) { }
 };
 
 // contained room num in RoomNum
+// USTRUCT()
 struct PConnectToGameserver : Packet
 {
+	// GENERATED_BODY()
+
 	PConnectToGameserver() : Packet(COMP_OP::OP_CONNECTTOGAMESERVER) {  }
 };
 
+// USTRUCT()
 struct PPlayerSelectInfo : Packet
 {
-	ECharacter PickedCharacter;
-	EMeleeWeapon PickedMeleeWeapon;
-	ERangeWeapon PickedRangeWeapon;
+	// GENERATED_BODY()
+
+	ECharacterSelect PickedCharacter;
+	EMeleeSelect PickedMeleeWeapon;
+	ERangeSelect PickedRangeWeapon;
 	BYTE ClientNum;
 
-	PPlayerSelectInfo(ECharacter c, EMeleeWeapon meele, ERangeWeapon range, BYTE sendClientNum) :
+	PPlayerSelectInfo(ECharacterSelect c, EMeleeSelect meele, ERangeSelect range, BYTE sendClientNum) :
 		Packet(COMP_OP::OP_SELECTWEAPONINFO),
 		PickedCharacter(c),
 		PickedMeleeWeapon(meele),
@@ -193,32 +233,31 @@ struct PPlayerSelectInfo : Packet
 	}
 
 	PPlayerSelectInfo() : Packet(COMP_OP::OP_SELECTWEAPONINFO),
-		PickedCharacter(ECharacter::NullCharacter),
-		PickedMeleeWeapon(EMeleeWeapon::NullWeapon),
-		PickedRangeWeapon(ERangeWeapon::NullWeapon),
+		PickedCharacter(ECharacterSelect::ECS_Null),
+		PickedMeleeWeapon(EMeleeSelect::EMS_NONE),
+		PickedRangeWeapon(ERangeSelect::ERS_NONE),
 		ClientNum(-1)
 	{
 		PacketSize = sizeof(PPlayerSelectInfo);
 	}
 };
 
-// contained empty room num in RoomNum
-struct PEmptyRoomNum : Packet
-{
-	int RoomNum;
-	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
-};
-
+// USTRUCT()
 struct PSetTimer : Packet
 {
+	// GENERATED_BODY()
+
 	ETimer TimerType;
-	float SecondsUntilActivation;	// ex) Ï∫êÎ¶≠ÌÑ∞ ÏÑ†ÌÉù Ï∞ΩÏùò Ï†úÌïúÏãúÍ∞Ñ (40s)
+	float SecondsUntilActivation;	// ex) ƒ≥∏Ø≈Õ º±≈√ √¢¿« ¡¶«—Ω√∞£ (40s)
 	PSetTimer() :Packet(COMP_OP::OP_SETTIMER), TimerType(ETimer::DefaultTimer), SecondsUntilActivation(0.f) { PacketSize = sizeof(PSetTimer); }
 	PSetTimer(ETimer type, float secondTime) : Packet(COMP_OP::OP_SETTIMER), TimerType(type), SecondsUntilActivation(secondTime) { PacketSize = sizeof(PSetTimer); }
 };
 
+// USTRUCT()
 struct PSpawnItem : Packet, PTransform
 {
+	// GENERATED_BODY()
+
 	int RoomNum;
 
 	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), PTransform(), RoomNum(-1) { PacketSize = sizeof(PSpawnItem); }
@@ -230,14 +269,18 @@ struct PSpawnItem : Packet, PTransform
 	}
 };
 
+// USTRUCT()
 struct PChangeAnimMontage : Packet
 {
-	EAnimMontage eAnimMontage;
+	// GENERATED_BODY()
+
+	ECharacterAnimMontage eAnimMontage;
 	BYTE ChangedPlayerSerial;
 
-	PChangeAnimMontage() : Packet(COMP_OP::OP_CHANGEANIMMONTAGE), eAnimMontage(EAnimMontage::Default), ChangedPlayerSerial(-1)
-	{ PacketSize = sizeof(PChangeAnimMontage); }
+	PChangeAnimMontage() : Packet(COMP_OP::OP_CHANGEANIMMONTAGE), eAnimMontage(ECharacterAnimMontage::ECAM_Default), ChangedPlayerSerial(-1)
+	{
+		PacketSize = sizeof(PChangeAnimMontage);
+	}
 };
-
 
 #pragma pack(pop)

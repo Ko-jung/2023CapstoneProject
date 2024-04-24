@@ -2,13 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine/UserDefinedEnum.h"
-#include "ESkillActor.generated.h"
-
 UENUM(BlueprintType)
 enum class ESkillActor : uint8
 {
+	BP_NULL,
 	BP_BoomerangGrab,
 	BP_BoomerangCenter,
 	BP_DetectorMine,
@@ -19,13 +16,3 @@ enum class ESkillActor : uint8
 	BP_ElectSphereBoom,
 	BP_ElectTrap,
 };
-
-/**
- * 
- */
-//UCLASS()
-//class SKYSCRAPER_API UESkillActor : public UUserDefinedEnum
-//{
-//	GENERATED_BODY()
-//	
-//};

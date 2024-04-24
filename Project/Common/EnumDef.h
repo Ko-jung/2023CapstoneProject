@@ -38,9 +38,7 @@ enum class COMP_OP : unsigned char
 
 enum class EObject : unsigned char
 {
-	BP_Cube,
-	BP_Player,
-
+	BP_NULL,
 	BP_BoomerangGrab,
 	BP_BoomerangCenter,
 	BP_DetectorMine,
@@ -52,25 +50,17 @@ enum class EObject : unsigned char
 	BP_ElectTrap,
 };
 
-enum class EPlayerState : unsigned char
+enum class ECharacter : char
 {
-	Stay,
-	Walk,
-	Run,
-	Jump,
-};
-
-enum class ECharacter : unsigned char
-{
-	Assassin,
-	Boomerang,
-	Detector,
-	Elect,
-	Shield,
-	Wind,
-
 	// Express '?' on UI
-	NullCharacter,
+	NullCharacter = -1,
+
+	Shield = 0,
+	Wind,
+	Elect,
+	Boomerang,
+	Assassin,
+	Detector,
 };
 
 // 근거리
@@ -89,8 +79,8 @@ enum class ERangeWeapon : unsigned char
 {
 	SubmachineGun,			// 기관단총
 	AssaultRifle,			// 돌격소총
-	GrenadeLauncher,		// 유탄발사기
-	
+	RPG,		// 유탄발사기
+
 	// Express '?' on UI
 	NullWeapon,
 };

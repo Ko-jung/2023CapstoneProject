@@ -1,6 +1,8 @@
 #pragma once
+
 UENUM()
-enum class ERangeSelect {
+enum class ERangeSelect : uint8 
+{
 	ERS_SMG = 0,
 	ERS_Rifle,
 	ERS_RPG,

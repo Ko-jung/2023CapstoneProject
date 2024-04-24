@@ -33,9 +33,6 @@ void UCharacterDetail::NativeDestruct()
 void UCharacterDetail::Tick(FGeometry MyGeometry, float InDeltaTime)
 {
 	Super::Tick(MyGeometry, InDeltaTime);
-
-
-	UE_LOG(LogClass, Warning, TEXT("@@@@@@@@@@@@@@@@@@@@@@@"));
 }
 
 
@@ -56,40 +53,40 @@ void UCharacterDetail::OnClickSelectShieldButton()
 {
 	SetSwitcherValue(0);
 
-	Gamemode->UpdateSelectInfo(ECharacter::Shield);
+	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_ShieldCharacter);
 }
 
 void UCharacterDetail::OnClickSelectWindButton()
 {
 	SetSwitcherValue(1);
 
-	Gamemode->UpdateSelectInfo(ECharacter::Wind);
+	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_WindCharacter);
 }
 
 void UCharacterDetail::OnClickSelectElectricButton()
 {
 	SetSwitcherValue(2);
 
-	Gamemode->UpdateSelectInfo(ECharacter::Elect);
+	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_ElectricCharacter);
 }
 
 void UCharacterDetail::OnClickSelectThrowButton()
 {
 	SetSwitcherValue(3);
 
-	Gamemode->UpdateSelectInfo(ECharacter::Boomerang);
+	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_BoomerangCharacter);
 }
 
 void UCharacterDetail::OnClickSelectAssassinButton()
 {
 	SetSwitcherValue(4);
 
-	Gamemode->UpdateSelectInfo(ECharacter::Assassin);
+	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_AssassinCharacter);
 }
 
 void UCharacterDetail::OnClickSelectDetectionButton()
 {
 	SetSwitcherValue(5);
 
-	Gamemode->UpdateSelectInfo(ECharacter::Detector);
+	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_DetectionCharacter);
 }

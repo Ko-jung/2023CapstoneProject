@@ -40,39 +40,22 @@ void AMainGameMode::BeginPlay()
 		if (i < MAXPLAYER / 2)	Team = FName{ "TeamA" };
 		else					Team = FName{ "TeamB" };
 
-		TSubclassOf<class ASkyscraperCharacter> Class;
-		spawnLocation.Y = i * 200;
-		switch (p->PickedCharacter)
+		TSubclassOf<ASkyscraperCharacter>* Class = (i == SerialNum) ? 
+			CharacterClass.Find(p->PickedCharacter):
+			AiCharacterClass.Find(p->PickedCharacter);
+
+		if (!Class)
 		{
-		case ECharacter::Assassin:
-			(i == SerialNum) ? Class = AssassinCharacter : Class = AIAssassinCharacter;
-			break;
-		case ECharacter::Boomerang:
-			(i == SerialNum) ? Class = BoomerangCharacter : Class = AIBoomerangCharacter;
-			//Class = BoomerangCharacter;
-			break;
-		case ECharacter::Detector:
-			(i == SerialNum) ? Class = DetectionCharacter : Class = AIDetectionCharacter;
-			break;
-		case ECharacter::Elect:
-			(i == SerialNum) ? Class = ElectricCharacter : Class = AIElectricCharacter;
-			break;
-		case ECharacter::Shield:
-			(i == SerialNum) ? Class = ShieldCharacter : Class = AIShieldCharacter;
-			break;
-		case ECharacter::Wind:
-			(i == SerialNum) ? Class = WindCharacter : Class = AIWindCharacter;
-			break;
-		case ECharacter::NullCharacter:
-			UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), i);
 			CanAddTag = false;
-			break;
-		default:
-			break;
+			UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), i);
+			continue;
 		}
-		Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(Class, spawnLocation, rotator, spawnParams));
+
+		spawnLocation.Y = i * 200;
+
+		Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, spawnLocation, rotator, spawnParams));
 		if(CanAddTag) Characters[i]->Tags.Add(Team);
-		// Characters[i]->Tags.Init(Team, 0);
+
 		i++;
 	}
 	GetWorld()->GetFirstPlayerController()->Possess(Characters[SerialNum]);
@@ -200,32 +183,12 @@ void AMainGameMode::ProcessFunc()
 //	}
 //}
 
-ECharacterAnimMontage AMainGameMode::GetNonPacketAnimMontage(EAnimMontage eAnimMontage)
-{
-	ECharacterAnimMontage animMontage;
-	switch (eAnimMontage)
-	{
-	case EAnimMontage::Default:				animMontage = ECharacterAnimMontage::ECAM_Default;				break;
-	case EAnimMontage::DaggerAttack:		animMontage = ECharacterAnimMontage::ECAM_DaggerAttack;			break;
-	case EAnimMontage::KatanaAttack:		animMontage = ECharacterAnimMontage::ECAM_KatanaAttack;			break;
-	case EAnimMontage::GreatSwordAttack:	animMontage = ECharacterAnimMontage::ECAM_GreatSwordAttack;		break;
-	case EAnimMontage::SMG:					animMontage = ECharacterAnimMontage::ECAM_SMG;					break;
-	case EAnimMontage::Rifle:				animMontage = ECharacterAnimMontage::ECAM_Rifle;				break;
-	case EAnimMontage::RPG:					animMontage = ECharacterAnimMontage::ECAM_RPG;					break;
-	case EAnimMontage::Stun:				animMontage = ECharacterAnimMontage::ECAM_Stun;					break;
-	case EAnimMontage::Down:				animMontage = ECharacterAnimMontage::ECAM_Down;					break;
-	case EAnimMontage::Death:				animMontage = ECharacterAnimMontage::ECAM_Death;				break;
-	default:								animMontage = ECharacterAnimMontage::ECAM_Default;				break;
-	}
-	return animMontage;
-}
-
 void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 {
 	int32 Serial = PlayerPosition.PlayerSerial;
 	FVector Location{ PlayerPosition.Location.X, PlayerPosition.Location.Y, PlayerPosition.Location.Z };
 	FRotator Rotate{ PlayerPosition.Rotate.X, PlayerPosition.Rotate.Y, PlayerPosition.Rotate.Z };
-	EPlayerState state = PlayerPosition.PlayerState;
+	// EPlayerState state = PlayerPosition.PlayerState;
 	// EnumPlayerState ArguState;
 
 	FTransform transform{ Rotate, Location, FVector(1.f,1.f,1.f) };
@@ -250,19 +213,7 @@ void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 
 	FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
 	FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
-	ESkillActor SkillActor;
-
-	switch (PSO.SpawnObject)
-	{
-	case EObject::BP_BoomerangGrab:
-	{
-		SkillActor = ESkillActor::BP_BoomerangGrab;
-		break;
-	}
-	default:
-		SkillActor = ESkillActor::BP_BoomerangGrab;
-		break;
-	}
+	ESkillActor SkillActor = PSO.SpawnObject;
 
 	SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
 }
@@ -296,38 +247,8 @@ void AMainGameMode::SendPlayerLocation()
 void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
 	PSpawnObject PSO;
-	switch (SkillActor)
-	{
-	case ESkillActor::BP_BoomerangGrab:
-		PSO.SpawnObject = EObject::BP_BoomerangGrab;
-		break;
-	case ESkillActor::BP_BoomerangCenter:
-		PSO.SpawnObject = EObject::BP_BoomerangCenter;
-		break;
-	case ESkillActor::BP_DetectorMine:
-		PSO.SpawnObject = EObject::BP_DetectorMine;
-		break;
-	case ESkillActor::BP_Shield:
-		PSO.SpawnObject = EObject::BP_Shield;
-		break;
-	case ESkillActor::BP_ShieldSphere:
-		PSO.SpawnObject = EObject::BP_ShieldSphere;
-		break;
-	case ESkillActor::BP_ShieldSphereThrow:
-		PSO.SpawnObject = EObject::BP_ShieldSphereThrow;
-		break;
-	case ESkillActor::BP_WindTornado:
-		PSO.SpawnObject = EObject::BP_WindTornado;
-		break;
-	case ESkillActor::BP_ElectSphereBoom:
-		PSO.SpawnObject = EObject::BP_ElectSphereBoom;
-		break;
-	case ESkillActor::BP_ElectTrap:
-		PSO.SpawnObject = EObject::BP_ElectTrap;
-		break;
-	default:
-		break;
-	}
+
+	PSO.SpawnObject = SkillActor;
 	PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
 	PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;
 	
@@ -338,25 +259,13 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 
 void AMainGameMode::SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage)
 {
+	if (!bIsConnected)
+		return;
+
 	PChangeAnimMontage PCAM;
-	EAnimMontage eMontage;
-	switch (eAnimMontage)
-	{
-	case ECharacterAnimMontage::ECAM_Default:				eMontage = EAnimMontage::Default;			break;
-	case ECharacterAnimMontage::ECAM_DaggerAttack:			eMontage = EAnimMontage::DaggerAttack;		break;
-	case ECharacterAnimMontage::ECAM_KatanaAttack:			eMontage = EAnimMontage::KatanaAttack;		break;
-	case ECharacterAnimMontage::ECAM_GreatSwordAttack:		eMontage = EAnimMontage::GreatSwordAttack;	break;
-	case ECharacterAnimMontage::ECAM_SMG:					eMontage = EAnimMontage::SMG;				break;
-	case ECharacterAnimMontage::ECAM_Rifle:					eMontage = EAnimMontage::Rifle;				break;
-	case ECharacterAnimMontage::ECAM_RPG:					eMontage = EAnimMontage::RPG;				break;
-	case ECharacterAnimMontage::ECAM_Stun:					eMontage = EAnimMontage::Stun;				break;
-	case ECharacterAnimMontage::ECAM_Down:					eMontage = EAnimMontage::Down;				break;
-	case ECharacterAnimMontage::ECAM_Death:					eMontage = EAnimMontage::Death;				break;
-	default:												eMontage = EAnimMontage::Default;			break;
-	}
 
 	PCAM.ChangedPlayerSerial = SerialNum;
-	PCAM.eAnimMontage = eMontage;
+	PCAM.eAnimMontage = eAnimMontage;
 
 	Send(&PCAM, sizeof(PCAM));
 }

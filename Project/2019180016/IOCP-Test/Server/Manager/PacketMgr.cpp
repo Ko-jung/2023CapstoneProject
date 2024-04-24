@@ -171,7 +171,7 @@ const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)
 		{
 		case (int)ERangeWeapon::AssaultRifle:
 			return 100;
-		case (int)ERangeWeapon::GrenadeLauncher:
+		case (int)ERangeWeapon::RPG:
 			return 300;
 		case (int)ERangeWeapon::SubmachineGun:
 			return 50;

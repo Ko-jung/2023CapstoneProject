@@ -24,9 +24,9 @@ public:
 	void ProcessSelectInfo(Packet* argu);
 	void SendSelectInfo();
 
-	void UpdateSelectInfo(ECharacter	Character);
-	void UpdateSelectInfo(EMeleeWeapon	MeleeWeapon);
-	void UpdateSelectInfo(ERangeWeapon	RangeWeapon);
+	void UpdateSelectInfo(ECharacterSelect Character);
+	void UpdateSelectInfo(EMeleeSelect MeleeWeapon);
+	void UpdateSelectInfo(ERangeSelect RangeWeapon);
 
 	TArray<PPlayerSelectInfo*>& GetPlayerSelectInfo() { return PlayerSelectInfo; }
 

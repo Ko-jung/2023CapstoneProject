@@ -103,9 +103,9 @@ void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 		UE_LOG(LogClass, Warning, TEXT("PPlayerPickInfo Packet ClientNum == -1!"));
 	}
 
-	ECharacter   Character   = PPP->PickedCharacter;
-	EMeleeWeapon MeleeWeapon = PPP->PickedMeleeWeapon;
-	ERangeWeapon RangeWeapon = PPP->PickedRangeWeapon;
+	ECharacterSelect   Character   = PPP->PickedCharacter;
+	EMeleeSelect MeleeWeapon = PPP->PickedMeleeWeapon;
+	ERangeSelect RangeWeapon = PPP->PickedRangeWeapon;
 
 	PlayerSelectInfo[ClientNum]->PickedCharacter	 = Character  ;
 	PlayerSelectInfo[ClientNum]->PickedMeleeWeapon	 = MeleeWeapon;
@@ -124,19 +124,19 @@ void ASkyscraperGameMode::SendSelectInfo()
 	Send(&PPS, sizeof(PPS));
 }
 
-void ASkyscraperGameMode::UpdateSelectInfo(ECharacter Character)
+void ASkyscraperGameMode::UpdateSelectInfo(ECharacterSelect Character)
 {
 	PlayerSelectInfo[SerialNum]->PickedCharacter = Character;
 	SendSelectInfo();
 }
 
-void ASkyscraperGameMode::UpdateSelectInfo(EMeleeWeapon MeleeWeapon)
+void ASkyscraperGameMode::UpdateSelectInfo(EMeleeSelect MeleeWeapon)
 {
 	PlayerSelectInfo[SerialNum]->PickedMeleeWeapon = MeleeWeapon;
 	SendSelectInfo();
 }
 
-void ASkyscraperGameMode::UpdateSelectInfo(ERangeWeapon RangeWeapon)
+void ASkyscraperGameMode::UpdateSelectInfo(ERangeSelect RangeWeapon)
 {
 	PlayerSelectInfo[SerialNum]->PickedRangeWeapon = RangeWeapon;
 	SendSelectInfo();

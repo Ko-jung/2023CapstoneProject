@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 
-#include "../../Common/Packet.h"
+#include "Packet.h"
 #include <concurrent_queue.h>
 #include <atomic>
 

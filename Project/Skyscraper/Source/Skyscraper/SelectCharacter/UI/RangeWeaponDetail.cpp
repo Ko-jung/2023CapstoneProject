@@ -44,19 +44,19 @@ void URangeWeaponDetail::OnClickSMGSelectButton()
 {
 	SetSwitcherValue(0);
 
-	Gamemode->UpdateSelectInfo(ERangeWeapon::SubmachineGun);
+	Gamemode->UpdateSelectInfo(ERangeSelect::ERS_SMG);
 }
 
 void URangeWeaponDetail::OnClickRifleSelectButton() 
 {
 	SetSwitcherValue(1);
 
-	Gamemode->UpdateSelectInfo(ERangeWeapon::AssaultRifle);
+	Gamemode->UpdateSelectInfo(ERangeSelect::ERS_Rifle);
 }
 
 void URangeWeaponDetail::OnClickRPGSelectButton()
 {
 	SetSwitcherValue(2);
 
-	Gamemode->UpdateSelectInfo(ERangeWeapon::GrenadeLauncher);
+	Gamemode->UpdateSelectInfo(ERangeSelect::ERS_RPG);
 }

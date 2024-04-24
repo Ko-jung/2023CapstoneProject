@@ -5,6 +5,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
+#include "../../Enum/ECharacterSelect.h"
+#include "../../Enum/EMeleeSelect.h"
+#include "../../Enum/ERangeSelect.h"
+
 #include "CharacterPickState.generated.h"
 
 class UButton;
@@ -37,11 +41,11 @@ public:
 	void GoToDetail();
 
 	UPROPERTY(EditAnywhere, Category="SelectedImage")
-	TArray<UTexture2D*> CharacterImages;
+	TMap<ECharacterSelect, UTexture2D*> CharacterImages;
 	UPROPERTY(EditAnywhere, Category = "SelectedImage")
-	TArray<UTexture2D*> MeleeImages;
+	TMap<EMeleeSelect, UTexture2D*> MeleeImages;
 	UPROPERTY(EditAnywhere, Category = "SelectedImage")
-	TArray<UTexture2D*> RangeImages;
+	TMap<ERangeSelect, UTexture2D*> RangeImages;
 	UPROPERTY(EditAnywhere, Category = "SelectedImage")
 	UTexture2D* QuestionImages;
 

@@ -7,6 +7,7 @@
 #include "../Enum/ESkillActor.h"
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
 #include "../Enum/ECharacterAnimMontage.h"
+#include "../Enum/ECharacterSelect.h"
 
 #include "MainGameMode.generated.h"
 
@@ -28,8 +29,6 @@ public:
 	virtual void ProcessFunc() override;
 	// void ProcessPosition();
 
-	ECharacterAnimMontage GetNonPacketAnimMontage(EAnimMontage eAnimMontage);
-
 	void SetPlayerPosition(PPlayerPosition PlayerPosition);
 	void ProcessSpawnObject(PSpawnObject PSO);
 
@@ -49,31 +48,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Test_TakeDamage(int DamageType);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<ASkyscraperCharacter> AssassinCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<ASkyscraperCharacter> BoomerangCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<ASkyscraperCharacter> DetectionCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<ASkyscraperCharacter> ElectricCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<ASkyscraperCharacter> ShieldCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	TSubclassOf<ASkyscraperCharacter> WindCharacter;
-
-	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
-	TSubclassOf<ASkyscraperCharacter> AIAssassinCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
-	TSubclassOf<ASkyscraperCharacter> AIBoomerangCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
-	TSubclassOf<ASkyscraperCharacter> AIDetectionCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
-	TSubclassOf<ASkyscraperCharacter> AIElectricCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
-	TSubclassOf<ASkyscraperCharacter> AIShieldCharacter;
-	UPROPERTY(EditDefaultsOnly, Category = "AICharacters")
-	TSubclassOf<ASkyscraperCharacter> AIWindCharacter;
+	 UPROPERTY(EditDefaultsOnly, Category = "Characters")
+	 TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> CharacterClass;
+	 
+	 UPROPERTY(EditDefaultsOnly, Category = "Characters")
+	 TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> AiCharacterClass;
 
 private:
 	//ASkyscraperCharacter* PossessCharacter;

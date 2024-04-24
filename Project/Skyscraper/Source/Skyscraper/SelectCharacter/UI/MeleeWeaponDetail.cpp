@@ -45,20 +45,20 @@ void UMeleeWeaponDetail::OnClickDaggerButton()
 {
 	SetSwitcherValue(0);
 
-	Gamemode->UpdateSelectInfo(EMeleeWeapon::Dagger);
+	Gamemode->UpdateSelectInfo(EMeleeSelect::EMS_Dagger);
 }
 
 void UMeleeWeaponDetail::OnClickKatanaButton() 
 {
 	SetSwitcherValue(1);
 
-	Gamemode->UpdateSelectInfo(EMeleeWeapon::Katana);
+	Gamemode->UpdateSelectInfo(EMeleeSelect::EMS_Katana);
 }
 
 void UMeleeWeaponDetail::OnClickGreatSwordButton() 
 {
 	SetSwitcherValue(2);
 
-	Gamemode->UpdateSelectInfo(EMeleeWeapon::Greatsword);
+	Gamemode->UpdateSelectInfo(EMeleeSelect::EMS_GreatSword);
 }
 

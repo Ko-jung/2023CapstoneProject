@@ -1,7 +1,7 @@
 #pragma once
 
 UENUM()
-enum class ECharacterAnimMontage
+enum class ECharacterAnimMontage : int8
 {
 	ECAM_Default = 0,
 	ECAM_DaggerAttack,

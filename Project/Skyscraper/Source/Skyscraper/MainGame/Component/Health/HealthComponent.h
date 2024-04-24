@@ -6,7 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 
-#include "../../Common/EnumDef.h"
+//#include "../../Common/EnumDef.h"
+#include "../../../Enum/EHealthState.h"
 
 #include "HealthComponent.generated.h"
 
@@ -15,11 +16,6 @@ class UProgressBar;
 class UWidgetComponent;
 class UHealthBar;
 class ASkyscraperCharacter;
-
-enum class EHealthState
-{
-	EHS_LIVING, EHS_DYING, EHS_DEAD
-};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SKYSCRAPER_API UHealthComponent : public UActorComponent
@@ -102,10 +98,11 @@ public:
 	FORCEINLINE bool IsGodMode() const { return bIsGodMode; }
 	FORCEINLINE void SetGodMode(bool bNewGodMode) { bIsGodMode = bNewGodMode; }
 
+	// === 2019180016 ===
 	// Process Packet From Server
 	void ChangeCurrentHp(float hp);
-	void ChangeState(ECharacterState s);
-
+	void ChangeState(EHealthState s);
+	// ==================
 	
 private:
 	void SetPlayerDie();

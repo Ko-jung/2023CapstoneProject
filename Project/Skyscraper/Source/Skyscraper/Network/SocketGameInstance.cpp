@@ -2,7 +2,7 @@
 
 
 #include "SocketGameInstance.h"
-#include "../../../../Common/Packet.h"
+#include "Packet.h"
 
 
 void USocketGameInstance::Init()
@@ -17,13 +17,13 @@ void USocketGameInstance::Init()
 	SerialNum = 0;
 	if (SelectInfo.IsEmpty())
 	{
-		PPlayerSelectInfo* PPS1 = new PPlayerSelectInfo{ ECharacter::Assassin, EMeleeWeapon::Dagger, ERangeWeapon::AssaultRifle, 0 };
-		PPlayerSelectInfo* PPS2 = new PPlayerSelectInfo{ ECharacter::Boomerang, EMeleeWeapon::Greatsword, ERangeWeapon::SubmachineGun, 1 };
-		PPlayerSelectInfo* PPS3 = new PPlayerSelectInfo{ ECharacter::Detector, EMeleeWeapon::Katana, ERangeWeapon::GrenadeLauncher, 2 };
+		PPlayerSelectInfo* PPS1 = new PPlayerSelectInfo{ ECharacterSelect::ECS_AssassinCharacter, EMeleeSelect::EMS_Dagger, ERangeSelect::ERS_Rifle, 0 };
+		PPlayerSelectInfo* PPS2 = new PPlayerSelectInfo{ ECharacterSelect::ECS_BoomerangCharacter, EMeleeSelect::EMS_GreatSword, ERangeSelect::ERS_SMG, 1 };
+		PPlayerSelectInfo* PPS3 = new PPlayerSelectInfo{ ECharacterSelect::ECS_DetectionCharacter, EMeleeSelect::EMS_Katana, ERangeSelect::ERS_RPG, 2 };
 	
-		PPlayerSelectInfo* PPS4 = new PPlayerSelectInfo{ ECharacter::Elect, EMeleeWeapon::Dagger, ERangeWeapon::AssaultRifle, 3 };
-		PPlayerSelectInfo* PPS5 = new PPlayerSelectInfo{ ECharacter::Shield, EMeleeWeapon::Greatsword, ERangeWeapon::GrenadeLauncher, 4 };
-		PPlayerSelectInfo* PPS6 = new PPlayerSelectInfo{ ECharacter::Wind, EMeleeWeapon::Katana, ERangeWeapon::SubmachineGun, 5 };
+		PPlayerSelectInfo* PPS4 = new PPlayerSelectInfo{ ECharacterSelect::ECS_ElectricCharacter, EMeleeSelect::EMS_Dagger, ERangeSelect::ERS_Rifle, 3 };
+		PPlayerSelectInfo* PPS5 = new PPlayerSelectInfo{ ECharacterSelect::ECS_ShieldCharacter, EMeleeSelect::EMS_GreatSword, ERangeSelect::ERS_RPG, 4 };
+		PPlayerSelectInfo* PPS6 = new PPlayerSelectInfo{ ECharacterSelect::ECS_WindCharacter, EMeleeSelect::EMS_Katana, ERangeSelect::ERS_SMG, 5 };
 
 		SelectInfo.Add(PPS1);
 		SelectInfo.Add(PPS2);
@@ -32,6 +32,13 @@ void USocketGameInstance::Init()
 		SelectInfo.Add(PPS4);
 		SelectInfo.Add(PPS5);
 		SelectInfo.Add(PPS6);
+	}
+	else
+	{
+			for (int i = 0; i < 6; i++)
+			{
+				SelectInfo.Add(new PPlayerSelectInfo());
+			}
 	}
 }
 

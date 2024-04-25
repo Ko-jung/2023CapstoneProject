@@ -42,6 +42,8 @@ void ABuilding::Initialize(int32 GetFloor)
 	CurrentFloor = InitialFloor = GetFloor;
 }
 
+
+
 // Called when the game starts or when spawned
 void ABuilding::BeginPlay()
 {
@@ -61,6 +63,14 @@ void ABuilding::BeginPlay()
 	}
 }
 
+void ABuilding::CollapseBuilding(int CollapseStartFloor)
+{
+	for (int i = CollapseStartFloor; i < CurrentFloor; ++i)
+	{
+		Cast<ASingleBuildingFloor>(Building_Floors[i])->DoCollapse();
+	}
+	CurrentFloor = CollapseStartFloor - 1;
+}
 
 // Called every frame
 void ABuilding::Tick(float DeltaTime)
@@ -71,5 +81,6 @@ void ABuilding::Tick(float DeltaTime)
 
 void ABuilding::DoCollapse()
 {
+	CollapseBuilding(0);
 }
 

@@ -3,6 +3,9 @@
 
 #include "FloatingTile.h"
 
+#include "Animation/AnimPhysicsSolver.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
+#include "GeometryCollection/GeometryCollectionObject.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -17,7 +20,8 @@ AFloatingTile::AFloatingTile()
 	SetRootComponent(StaticMesh);
 	StaticMesh->SetStaticMesh(TileAsset.Object);
 
-	
+	ConstructorHelpers::FClassFinder<AActor> GC_TileRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/HexagonTile/BP_GC_Tile.BP_GC_Tile_C'"));
+	GC_Tile = GC_TileRef.Class;
 }
 
 void AFloatingTile::Initialize(FVector GetMovementOffset)
@@ -69,5 +73,23 @@ void AFloatingTile::Tick(float DeltaTime)
 		MoveToEnd = !MoveToEnd;
 	}
 
+}
+
+void AFloatingTile::DoCollapse()
+{
+	// 1. tick 이벤트 끄기
+	SetActorTickEnabled(false);
+
+	// 2. 기존 타일 StaticMesh 없애기
+	StaticMesh->SetHiddenInGame(true);
+	StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// 3. GCComp 액터 생성
+	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
+	NewGCTileActor->SetActorLocation(GetActorLocation());
+
+	
+	
+	
 }
 

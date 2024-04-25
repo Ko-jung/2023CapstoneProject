@@ -123,8 +123,8 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 					if(Child_Actor)
 					{
 						Child_Actor->DoCollapse();
-						//TargetActor->SetLifeSpan(20.0f);
-						TargetActor->Destroy();
+						TargetActor->SetLifeSpan(20.0f);
+						
 					}
 					Tile_Actor.Remove(Tile);
 				}

@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Skyscraper/MainGame/Interface/Destructible/Collapsible.h"
 #include "FloatingTile.generated.h"
 
+class UGeometryCollection;
+
 UCLASS()
-class SKYSCRAPER_API AFloatingTile : public AActor
+class SKYSCRAPER_API AFloatingTile : public AActor, public ICollapsible
 {
 	GENERATED_BODY()
 	
@@ -56,9 +59,15 @@ protected:
 	//임시 타이머 핸들
 	FTimerHandle TimerHandle;
 
+	/* 붕괴 후 생길 Geometry Collection */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Geometry")
+		UClass* GC_Tile;
+
 
 public:	
 	// Tick
 	virtual void Tick(float DeltaTime) override;
 
+	// ICollapsible
+	virtual void DoCollapse() override;
 };

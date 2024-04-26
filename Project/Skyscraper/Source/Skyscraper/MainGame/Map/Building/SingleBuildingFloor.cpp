@@ -15,6 +15,9 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 	{
 		CreateFloorStaticMeshes();
 	}
+
+	ConstructorHelpers::FClassFinder<AActor> GC_BuildingRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/BP_GC_Building.BP_GC_Building_C'"));
+	GC_BuildingClass = GC_BuildingRef.Class;
 }
 
 
@@ -30,6 +33,15 @@ void ASingleBuildingFloor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASingleBuildingFloor::DoCollapse()
+{
+	// 3. GCComp 액터 생성
+	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_BuildingClass);
+	NewGCTileActor->SetActorLocation(GetActorLocation());
+
+	Destroy();
 }
 
 

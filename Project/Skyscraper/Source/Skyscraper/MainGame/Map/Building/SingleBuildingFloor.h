@@ -18,6 +18,10 @@ class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 	// 유리창에 대한 스태틱 메시 배열
 	UPROPERTY(EditAnywhere)
 		TArray<UStaticMeshComponent*> WindowStaticMeshes;
+
+	/* 붕괴 후 생길 Geometry Collection */
+	UPROPERTY()
+		UClass* GC_BuildingClass;
 public:
 	void CreateFloorStaticMeshes();
 	// Sets default values for this actor's properties
@@ -31,4 +35,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void DoCollapse();
 };

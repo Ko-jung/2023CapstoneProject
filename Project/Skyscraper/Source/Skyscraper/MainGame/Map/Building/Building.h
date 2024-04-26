@@ -27,7 +27,12 @@ public:
 	// Sets default values for this actor's properties
 	ABuilding();
 
+	// SpawnActorDeferred 이후 실행 함수
 	void Initialize(int32 GetFloor);
+
+	// 건물 붕괴시키는 함수
+	void CollapseBuilding(int CollapseStartFloor);
+
 
 protected:
 	// Called when the game starts or when spawned

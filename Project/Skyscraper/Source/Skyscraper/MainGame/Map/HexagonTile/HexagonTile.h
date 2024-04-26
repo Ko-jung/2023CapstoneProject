@@ -36,6 +36,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> BuildingClass;
 
+	/* 각 팀별 리스폰 빌딩 후보 에 대한 변수 */
+	UPROPERTY()
+	TArray<AActor*> ATeamBuildings;
+	UPROPERTY()
+	TArray<AActor*> BTeamBuildings;
+
 public:	
 	// 생성자
 	AHexagonTile();
@@ -49,8 +55,8 @@ public:
 
 
 	///* 붕괴 1단계/2단계 함수 */
-	//UFUNCTION(BlueprintCallable, Category = "Collapse")
-	//	void CollapseLevel1And2(int CollapseLevel);
+	UFUNCTION(BlueprintCallable, Category = "Collapse")
+		void CollapseTilesAndActors(int CollapseLevel);
 
 	///* 붕괴 3단계 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
@@ -64,11 +70,17 @@ protected:
 	// BeginPlay시 실행할 함수
 	void InitialSettings();
 
+	// Angle, Distance를 이용해 해당 거리 타일을 얻어오는 함수
+	UChildActorComponent* GetLineTileFromAngleAndDistance(int32 FindAngle, int32 FindDistance, FVector FindTileLocation = FVector{});
+
 	///* 건물 및 부유타일 생성 함수 */
 	UFUNCTION(BlueprintCallable, Category = "Init")
 		void SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor);
 	UFUNCTION(BlueprintCallable, Category = "Init")
 		void SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector MovementOffset);
+	/* 타일을 지정하여 해당 타일 아래에 건물을 생성할 수 있도록 하는 함수 */
+	UFUNCTION(BlueprintCallable, Category = "Init")
+		AActor* SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 Floor, FName TileTag);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

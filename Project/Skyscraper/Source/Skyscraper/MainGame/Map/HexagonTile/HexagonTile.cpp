@@ -71,14 +71,9 @@ AHexagonTile::AHexagonTile()
 
 	}
 
-	// 붕괴 방향 설정
-	CollapseDirectionAngle = FMath::RandRange(0, 5);		// 0',60',120',180',240',300' 로 붕괴되는 방향에 대한 Angle 설정
-
 	// 건물 클래스 로드
 	static ConstructorHelpers::FClassFinder<AActor> BuildingClassRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/SingleBuildingFloor.SingleBuildingFloor_C'"));
 	BuildingClass = BuildingClassRef.Class;
-	
-	
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -92,15 +87,103 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 	return FVector(TileDistance * sin, TileDistance * cos, 0.0f);
 }
 
+void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
+{
+	float CollapseRemainDistance{};
+	// CollapseLevel에 따라 파괴되지 않는 영역 길이 설정
+	{
+		if (CollapseLevel == 1) CollapseRemainDistance = 2.5f;
+		else CollapseRemainDistance = 1.5f;
+	}
+
+	// 지형 파괴 후 남은 타일의 중앙 타일 구하기
+	{
+		FVector NewMiddleTileLocation = CurrentMiddleTile->GetRelativeLocation();
+		NewMiddleTileLocation.X += (offset * UKismetMathLibrary::DegSin(CollapseDirectionAngle * 60 + 30));
+		NewMiddleTileLocation.Y += (offset * UKismetMathLibrary::DegCos(CollapseDirectionAngle * 60 + 30));
+
+		CurrentMiddleTile = GetLineTileFromAngleAndDistance(0, 0, NewMiddleTileLocation);
+	}
+
+	// 파괴 영역에 해당하는 육각타일 파괴 및 해당 육각타일 아래 건물 / 부유타일 삭제
+	// 삭제 후 GeometryComponent에 해당하는 타일 생성
+	{ 
+		for(UChildActorComponent* Tile : Tiles)
+		{
+			float TileDistance = UKismetMathLibrary::Vector_Distance(Tile->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
+			FVector GeometrySpawnLocation = Tile->GetRelativeLocation();
+
+			// 파괴 영역 체크
+			if(TileDistance > offset * CollapseRemainDistance)
+			{
+				if(Tile_Actor.Contains(Tile))
+				{
+					AActor* TargetActor = *(Tile_Actor.Find(Tile));
+					ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
+					if(Child_Actor)
+					{
+						Child_Actor->DoCollapse();
+						TargetActor->SetLifeSpan(20.0f);
+						
+					}
+					Tile_Actor.Remove(Tile);
+				}
+				Tile->DestroyComponent();
+				Tile = nullptr;
+				// 타일 부수기
+				//AActor* BrokenTile = 
+			}
+		}
+	}
+
+	{ // 배열 내 Invalid 값 제거
+		TArray<UChildActorComponent*> TempArray;
+		for(UChildActorComponent* Tile : Tiles)
+		{
+			if(Tile)
+			{
+				TempArray.Add(Tile);
+			}
+		}
+		Tiles.Empty();
+		for(UChildActorComponent* TempTile : TempArray)
+		{
+			Tiles.Add(TempTile);
+		}
+	}
+
+}
+
 void AHexagonTile::InitialSettings()
 {
 	// 팀 리스폰 위치 빌딩 생성
+	{
+		// 붕괴 방향 설정 ( 0',60',120',180',240',300' )
+		CollapseDirectionAngle = FMath::RandRange(0, 5);
+
+		ATeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance((CollapseDirectionAngle + 3) % 6, 3),
+			3, FName("Section3"))) ;
+		ATeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance((CollapseDirectionAngle + 3) % 6, 1),
+			7, FName("Section1")));
+		ATeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance(CollapseDirectionAngle, 1),
+			7, FName("Section1")));
+		
+		BTeamBuildings.Add(SpawnTeamBuilding(
+			GetLineTileFromAngleAndDistance(CollapseDirectionAngle, 3),
+			3, FName("Section3")));
+		
+	}
 
 	// 각 구역별 빌딩 생성
 	{
-		SpawnBuildings(8, FName("Section1"), 3);
+		SpawnBuildings(6, FName("Section1"), 3);
 		SpawnBuildings(4, FName("Section2"), 5);
-		SpawnBuildings(2, FName("Section3"), 7);
+		
+		// 아래 기존 영역들은 팀 리스폰 위치 빌딩으로 생성됨
+		//SpawnBuildings(2, FName("Section3"), 7); 
 		SpawnBuildings(1, FName("MiddleTile"), 9);
 	}
 
@@ -111,6 +194,27 @@ void AHexagonTile::InitialSettings()
 		SpawnFloatingTiles(1, FName("Section3"), FVector(0.0f, 0.0f, -6500.0f));
 	}
 
+}
+
+UChildActorComponent* AHexagonTile::GetLineTileFromAngleAndDistance(int32 FindAngle, int32 FindDistance, FVector FindTileLocation)
+{
+	// (0, 0, 좌표) 입력시 해당 좌표의 타일 반환
+	// (1, 3) 입력시 60도 방면의 Section1 타일 반환
+	for(UChildActorComponent* Tile : Tiles)
+	{
+		// 
+		if (FindDistance != 0 && FindAngle != 0) 
+		{
+			FindTileLocation = CalculateRelativeLocation(FindAngle, FindDistance);
+		}
+		// 모든 타일 중 해당 타일과의 거리를 비교하여 찾기
+		if(UKismetMathLibrary::Vector_DistanceSquared(Tile->GetRelativeLocation(), FindTileLocation) < 100.0f)
+		{
+			return Tile;
+		}
+	}
+
+	return nullptr;
 }
 
 void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
@@ -207,6 +311,27 @@ void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector M
 		}
 	}
 }
+
+AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 Floor, FName TileTag)
+{
+	{ // 빌딩 배치하기
+		if (!Tile_Actor.Contains(TargetTile))
+		{
+			// 빌딩 생성 및 추가
+			ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
+			if (Building)
+			{
+				Building->Initialize(Floor);
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * FMath::RandRange(0, 2),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
+			}
+			Tile_Actor.Add(TargetTile, Building);
+			return Building;
+		}
+	}
+
+	return nullptr;
+}
+
 
 
 

@@ -11,14 +11,14 @@ class SKYSCRAPER_API ASingleHexagonTile : public AActor
 {
 	GENERATED_BODY()
 
-	/* ¡ﬂæ” ¿∞∞¢≈∏¿œø° ¥Î«— static mesh */
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* HexagonTileStaticMesh;
 
 public:	
 	// Sets default values for this actor's properties
 	ASingleHexagonTile();
 
+	/* ¡ﬂæ” ¿∞∞¢≈∏¿œø° ¥Î«— static mesh */
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* HexagonTileStaticMesh;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -40,6 +40,7 @@ void ASingleBuildingFloor::DoCollapse()
 	// 3. GCComp 액터 생성
 	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_BuildingClass);
 	NewGCTileActor->SetActorLocation(GetActorLocation());
+	NewGCTileActor->SetActorRotation(GetActorRotation());
 
 	Destroy();
 }

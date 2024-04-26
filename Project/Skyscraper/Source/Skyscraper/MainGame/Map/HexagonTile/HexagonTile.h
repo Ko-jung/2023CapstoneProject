@@ -29,12 +29,16 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		TMap<UChildActorComponent*, AActor*> Tile_Actor;
 
-	/**/
+	/* 붕괴 방향에 대한 각도 변수 */
 	UPROPERTY(EditAnywhere)
 		int CollapseDirectionAngle;
 
+	// 건물에 대한 클래스
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> BuildingClass;
+	// 붕괴 진행 후 붕괴되는 타일에 대한 클래스
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> GC_Tile;
 
 	/* 각 팀별 리스폰 빌딩 후보 에 대한 변수 */
 	UPROPERTY()

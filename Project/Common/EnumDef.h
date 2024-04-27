@@ -1,6 +1,6 @@
 #pragma once
 
-enum class COMP_OP : unsigned char
+enum class COMP_OP : BYTE
 {
 	// Default
 	OP_RECV,
@@ -29,6 +29,7 @@ enum class COMP_OP : unsigned char
 	OP_TILEDROP,
 	OP_SPAWNITEM,
 	OP_CHANGEANIMMONTAGE,
+	OP_SWAPWEAPON,
 
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,
@@ -36,7 +37,7 @@ enum class COMP_OP : unsigned char
 	//OP_SERVERCLOSE,
 };
 
-enum class EObject : unsigned char
+enum class EObject : BYTE
 {
 	BP_NULL,
 	BP_BoomerangGrab,
@@ -64,7 +65,7 @@ enum class ECharacter : char
 };
 
 // 근거리
-enum class EMeleeWeapon : unsigned char
+enum class EMeleeWeapon : BYTE
 {
 	Dagger,		// 단검
 	Katana,		// 카타나
@@ -75,7 +76,7 @@ enum class EMeleeWeapon : unsigned char
 }; 
 
 //원거리
-enum class ERangeWeapon : unsigned char
+enum class ERangeWeapon : BYTE
 {
 	SubmachineGun,			// 기관단총
 	AssaultRifle,			// 돌격소총
@@ -83,6 +84,14 @@ enum class ERangeWeapon : unsigned char
 
 	// Express '?' on UI
 	NullWeapon,
+};
+
+// 무기교체
+enum class ESwapWeapon : BYTE
+{
+	NullWeapon,	// 맨손
+	MeleeWeapon,
+	RangeWeapon,
 };
 
 // 타이머 이벤트 종류 정의

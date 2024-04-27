@@ -229,6 +229,47 @@ UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharac
 	return *CharacterAnimMontages.Find(eCharacterAnimMontage);
 }
 
+bool ASkyscraperCharacter::CheckSwapWeapon(ESwapWeapon& weaponType)
+{
+	uint8 WeaponType;
+	uint8 EquippedWeapon;
+
+	CombatSystemComponent->GetWeaponEquipStateForAnimation(WeaponType, EquippedWeapon);
+
+	if (PrevWeaponType == WeaponType)
+	{
+		return false;
+	}
+
+	PrevWeaponType = WeaponType;
+	switch (WeaponType)
+	{
+	case 0:		weaponType = ESwapWeapon::NullWeapon;	break;
+	case 1:		weaponType = ESwapWeapon::MeleeWeapon;	break;
+	case 2:		weaponType = ESwapWeapon::RangeWeapon;	break;
+	default:	weaponType = ESwapWeapon::NullWeapon;	break;
+		
+	}
+	return true;
+}
+
+void ASkyscraperCharacter::SwapWeapon(ESwapWeapon WeaponType)
+{
+	switch (WeaponType)
+	{
+	case ESwapWeapon::MeleeWeapon:
+		CombatSystemComponent->SwapToMeleeWeapon(true);
+		break;
+	case ESwapWeapon::RangeWeapon:
+		CombatSystemComponent->SwapToRangeWeapon(true);
+		break;
+	case ESwapWeapon::NullWeapon:
+		break;
+	default:
+		break;
+	}
+}
+
 void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
 {
 	SetActorTransform(t);

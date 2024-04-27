@@ -16,7 +16,7 @@ public:
 	void Disconnect(int SerialNum);
 	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
 	void RecvProcess(int id, const DWORD& bytes, EXP_OVER* exp);
-	void ProcessPlayerPosition(PPlayerPosition p);
+	void SendPacketToAllExceptSelf(int id, Packet* p, int packetSize);
 
 	bool CheckSelectDuplication(int id, ECharacter c);
 

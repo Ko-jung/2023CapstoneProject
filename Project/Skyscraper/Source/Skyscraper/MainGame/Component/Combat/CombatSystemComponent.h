@@ -9,6 +9,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
 #include "Skyscraper/Enum/ERangeSelect.h"
+#include "Skyscraper/Enum/ESwapWeapon.h"
 #include "CombatSystemComponent.generated.h"
 
 
@@ -117,4 +118,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_LockOn;
 
+
+// === 2019180016 ===
+public:
+	void AddInputMappingContext();
 };

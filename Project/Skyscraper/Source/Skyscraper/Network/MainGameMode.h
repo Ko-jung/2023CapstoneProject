@@ -33,6 +33,7 @@ public:
 	void ProcessSpawnObject(PSpawnObject PSO);
 
 	void SendPlayerLocation();
+	void SendPlayerSwapWeaponInfo();
 	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 	void SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage);
 

@@ -10,6 +10,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/GameUserSettings.h"
 
+#include "../MainGame/Component/Combat/CombatSystemComponent.h"
+
 void AMainGameMode::BeginPlay()
 {
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
@@ -59,6 +61,7 @@ void AMainGameMode::BeginPlay()
 		i++;
 	}
 	GetWorld()->GetFirstPlayerController()->Possess(Characters[SerialNum]);
+	Characters[SerialNum]->CombatSystemComponent->AddInputMappingContext();
 }
 
 void AMainGameMode::Tick(float Deltatime)
@@ -69,8 +72,9 @@ void AMainGameMode::Tick(float Deltatime)
 	//{
 	//}
 	ProcessFunc();
-	SendPlayerLocation();
 
+	SendPlayerSwapWeaponInfo();
+	SendPlayerLocation();
 }
 
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -146,7 +150,15 @@ void AMainGameMode::ProcessFunc()
 		{
 			PChangeAnimMontage PCAM;
 			memcpy(&PCAM, packet, sizeof(PCAM));
-			//Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage);
+			Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage);
+			break;
+		}
+		case (BYTE)COMP_OP::OP_SWAPWEAPON:
+		{
+			PSwapWeapon PSW;
+			memcpy(&PSW, packet, sizeof(PSW));
+			Characters[PSW.SwapingPlayer]->SwapWeapon(PSW.SwapWeapon);
+			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_SWAPWEAPON"));
 			break;
 		}
 		default:
@@ -244,6 +256,21 @@ void AMainGameMode::SendPlayerLocation()
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
 }
 
+void AMainGameMode::SendPlayerSwapWeaponInfo()
+{
+	ASkyscraperCharacter* PossessCharacter = Characters[SerialNum];
+
+	ESwapWeapon WeaponType;
+
+	if (PossessCharacter->CheckSwapWeapon(WeaponType))
+	{
+		PSwapWeapon PSW(SerialNum, WeaponType);
+		m_Socket->Send(&PSW, sizeof(PSW));
+
+		UE_LOG(LogClass, Warning, TEXT("Sending Swap Weapon!"));
+	}
+}
+
 void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
 	PSpawnObject PSO;
@@ -261,6 +288,8 @@ void AMainGameMode::SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage)
 {
 	if (!bIsConnected)
 		return;
+
+	UE_LOG(LogClass, Warning, TEXT("Sending Anim Motage Status"));
 
 	PChangeAnimMontage PCAM;
 

@@ -108,13 +108,21 @@ void UCombatSystemComponent::BeginPlay()
 	}
 
 	//Add Input Mapping Context
+	AddInputMappingContext();
+
+	// ...
+	
+}
+
+void UCombatSystemComponent::AddInputMappingContext()
+{
 	if (APlayerController* PlayerController = GetOwnerPlayerController())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(IMC_CombatSystem, 0);
 
-			if(UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 			{
 				EnhancedInputComponent->BindAction(IA_MeleeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToMeleeWeapon);
 				EnhancedInputComponent->BindAction(IA_RangeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToRangeWeapon);
@@ -124,8 +132,6 @@ void UCombatSystemComponent::BeginPlay()
 			}
 		}
 	}
-	// ...
-	
 }
 
 void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)

@@ -12,6 +12,7 @@
 #include "Skyscraper/Enum/EMeleeSelect.h"
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "Skyscraper/Enum/ESkillActor.h"
+#include "Skyscraper/Enum/ESwapWeapon.h"
 #include "SkyscraperCharacter.generated.h"
 
 class UJetpackComponent;
@@ -158,6 +159,8 @@ public:
 protected:
 	class AMainGameMode* MainGameMode;
 
+	uint8 PrevWeaponType;
+
 	UPROPERTY(BlueprintReadWrite)
 	float Speed;
 	UPROPERTY(BlueprintReadWrite)
@@ -167,6 +170,9 @@ protected:
 	void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 
 public:
+	bool CheckSwapWeapon(ESwapWeapon& weaponType);
+	void SwapWeapon(ESwapWeapon WeaponType);
+
 	void SyncTransformAndAnim(FTransform t, float s, float r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage);
 

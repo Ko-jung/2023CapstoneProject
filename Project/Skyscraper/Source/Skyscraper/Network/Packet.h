@@ -12,6 +12,7 @@
 #include "../Enum/ERangeSelect.h"
 #include "../Enum/ETimer.h"
 #include "../Enum/ECharacterAnimMontage.h"
+#include "../Enum/ESwapWeapon.h"
 
 // USTRUCT()
 struct PVector
@@ -31,8 +32,8 @@ struct Packet
 {
 	// GENERATED_BODY()
 
+	BYTE PacketSize;
 	BYTE PacketType;
-	WORD PacketSize;
 
 	Packet() :PacketType((int)COMP_OP::OP_RECV) { PacketSize = sizeof(Packet); }
 	Packet(COMP_OP op) : PacketType((int)op) { PacketSize = sizeof(Packet); }
@@ -282,5 +283,15 @@ struct PChangeAnimMontage : Packet
 		PacketSize = sizeof(PChangeAnimMontage);
 	}
 };
+
+struct PSwapWeapon : Packet
+{
+	BYTE SwapingPlayer;
+	ESwapWeapon SwapWeapon;
+
+	PSwapWeapon() : Packet(COMP_OP::OP_SWAPWEAPON), SwapingPlayer(-1), SwapWeapon(ESwapWeapon::NullWeapon) { PacketSize = sizeof(PSwapWeapon); }
+	PSwapWeapon(BYTE id, ESwapWeapon weapon) : Packet(COMP_OP::OP_SWAPWEAPON), SwapingPlayer(id), SwapWeapon(weapon) { PacketSize = sizeof(PSwapWeapon); }
+};
+
 
 #pragma pack(pop)

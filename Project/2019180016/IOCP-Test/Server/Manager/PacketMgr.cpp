@@ -47,7 +47,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PPlayerPosition PPP;
 		//memcpy(&PPP, c->GetExp()->_wsa_buf.buf, sizeof(PPP));
 		MEMCPYBUFTOPACKET(PPP);
-		ClientMgr::Instance()->ProcessPlayerPosition(PPP);
+		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PPP, sizeof(PPP));
 		//ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PPP, sizeof(PPP));
 	}
 	break;
@@ -97,10 +97,6 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, clients[TargetPlayerId]->GetCurrnetHp());
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
 
-		// 2 번 오면 보내는 현상이 있는 듯 함
-
-		LogUtil::PrintLog("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
 		if (IsDead)
 		{
 			PChangedPlayerState PCPS(TargetPlayerSerialNum, ECharacterState::DEAD);
@@ -113,6 +109,20 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PSpawnObject PSO;
 		MEMCPYBUFTOPACKET(PSO);
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PSO, sizeof(PSO));
+		break;
+	}
+	case (int)COMP_OP::OP_CHANGEANIMMONTAGE:
+	{
+		// PChangeAnimMontage PCAM;
+		// MEMCPYBUFTOPACKET(PCAM);
+		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), p, sizeof(PChangeAnimMontage));
+		break;
+	}
+	case (int)COMP_OP::OP_SWAPWEAPON:
+	{
+		// PSwapWeapon PSW;
+		// MEMCPYBUFTOPACKET(PSW);
+		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), p, sizeof(PSwapWeapon));
 		break;
 	}
 	default:
@@ -131,10 +141,10 @@ void PacketMgr::GameBeginProcessing(int NowClientNum)
 {
 	// 너무 빨리 보내면 못 받는다
 	TimerEvent TE1(std::chrono::seconds(1),
-		std::bind(&PacketMgr::SendSelectTime, this, NowClientNum, 40.f));
+		std::bind(&PacketMgr::SendSelectTime, this, NowClientNum, 20.f));
 	TimerMgr::Instance()->Insert(TE1);
 
-	TimerEvent TE2(std::chrono::seconds(40),
+	TimerEvent TE2(std::chrono::seconds(20),
 		std::bind(&PacketMgr::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
 	TimerMgr::Instance()->Insert(TE2);
 

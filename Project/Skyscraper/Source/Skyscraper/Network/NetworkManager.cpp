@@ -217,6 +217,13 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		TryPush(PCAM);
 		break;
 	}
+	case (int)COMP_OP::OP_SWAPWEAPON:
+	{
+		PSwapWeapon* PSW = new PSwapWeapon();
+		memcpy(PSW, p, sizeof(*PSW));
+		TryPush(PSW);
+		break;
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;

@@ -63,21 +63,15 @@ ClientInfo* ClientMgr::GetEmptyClient(int& clientNum)
 	return nullptr;
 }
 
-void ClientMgr::ProcessPlayerPosition(PPlayerPosition p)
+void ClientMgr::SendPacketToAllExceptSelf(int id, Packet* p, int packetSize)
 {
-	int serial = p.PlayerSerial;
-	auto Client = m_Clients[serial];
-	int RoomNum = Client->GetRoomNum();
-
-	//Client->SetPos(p.x, p.y, p.z);
-
-	for (const auto& c : m_Clients)
+	int RoomNum = id / MAXPLAYER;
+	for (int i = 0; i < MAXPLAYER; i++)
 	{
-		int CNum = c->GetClientNum();
-		if (CNum != -1 && CNum != serial)
-		{
-			c->SendProcess(sizeof(PPlayerPosition), &p);
-		}
+		if (m_Clients[RoomNum * MAXPLAYER + i]->GetSocket() == INVALID_SOCKET
+			|| RoomNum * MAXPLAYER + i == id) continue;
+
+		m_Clients[RoomNum * MAXPLAYER + i]->SendProcess(packetSize, p);
 	}
 }
 

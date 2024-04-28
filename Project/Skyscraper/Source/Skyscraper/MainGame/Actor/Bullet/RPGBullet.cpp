@@ -7,6 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
+#include "GameFramework/Character.h"
+#include "Skyscraper/Network/MainGameMode.h"
+
 // Sets default values
 ARPGBullet::ARPGBullet()
 {
@@ -71,7 +74,23 @@ void ARPGBullet::BulletExplode()
 
 	IgnoreActors.Add(FireCharacter);
 
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 100.0f, nullptr, IgnoreActors);
+	// UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 100.0f, nullptr, IgnoreActors);
+
+	TArray<FHitResult> Hits;
+	bool IsHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 100.f,
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
+
+	for (const auto& HitResult : Hits)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
+
+		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+		if (GameMode)
+		{
+			GameMode->SendTakeDamage(FireCharacter, HitActor);
+		}
+	}
 
 	// == TODO: Spawn Damage Spawner 
 

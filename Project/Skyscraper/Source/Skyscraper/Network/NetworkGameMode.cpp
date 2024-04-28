@@ -64,14 +64,7 @@ void ANetworkGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ANetworkGameMode::PushQueue(Packet* etc)
 {
-	//if (etc->PacketType == (int)COMP_OP::OP_PLAYERPOSITION)
-	//{
-	//	PositionQueue.push(etc);
-	//}
-	//else
-	//{
-		FuncQueue.push(etc);
-	//}
+	FuncQueue.push(etc);
 }
 
 void ANetworkGameMode::Send(const Packet* p, const int pSize)

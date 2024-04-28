@@ -42,7 +42,7 @@ public:
 	// WeaponType - 맨손(0), 근거리(1), 원거리(2)
 	// EquippedWeapon - EMeleeSelect/ERangeSelect 값과 동일
 	UFUNCTION(BlueprintCallable)
-		void GetWeaponEquipStateForAnimation(uint8& WeaponType, uint8& EquippedWeapon);
+		void GetWeaponEquipStateForAnimation(ESwapWeapon& WeaponType, uint8& EquippedWeapon);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

@@ -18,6 +18,8 @@
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 
+#include "Skyscraper/Network/MainGameMode.h"
+
 // Sets default values for this component's properties
 UMainRangeComponent::UMainRangeComponent()
 {
@@ -203,7 +205,15 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		if (HitResult)
 		{
 			AActor* HitActor = OutHit.GetActor();
-			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+
+			// Execute on Sever
+			AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+			if (GameMode)
+			{
+				GameMode->SendTakeDamage(OwnerCharacter, HitActor);
+			}
+			//UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+
 			if (OutHit.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
 			{
 				{ // 대미지 소환 액터 소환

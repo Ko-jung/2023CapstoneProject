@@ -187,22 +187,22 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		PPlayerPosition* PlayerPosition = new PPlayerPosition();
 		memcpy(PlayerPosition, p, sizeof(PPlayerPosition));
 		TryPush(PlayerPosition);
+		break;
 	}
-	break;
 	case (int)COMP_OP::OP_CHANGEDPLAYERHP:
 	{
 		PChangedPlayerHP* PCPHP = new PChangedPlayerHP();
 		memcpy(PCPHP, p, sizeof(*PCPHP));
 		TryPush(PCPHP);
+		break;
 	}
-	break; 
 	case (int)COMP_OP::OP_CHANGEDPLAYERSTATE:
 	{
 		PChangedPlayerState* PCPS = new PChangedPlayerState();
 		memcpy(PCPS, p, sizeof(*PCPS));
 		TryPush(PCPS);
+		break;
 	}
-	break;
 	case (int)COMP_OP::OP_SPAWNOBJECT:
 	{
 		PSpawnObject* PSO = new PSpawnObject();

@@ -36,6 +36,7 @@ public:
 	void SendPlayerSwapWeaponInfo();
 	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 	void SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage);
+	void SendTakeDamage(AActor* Sender, AActor* Target);
 
 	// UE5 Function Code
 	float CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation);

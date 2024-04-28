@@ -11,6 +11,7 @@
 #include "GameFramework/GameUserSettings.h"
 
 #include "../MainGame/Component/Combat/CombatSystemComponent.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -56,7 +57,16 @@ void AMainGameMode::BeginPlay()
 		spawnLocation.Y = i * 200;
 
 		Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, spawnLocation, rotator, spawnParams));
-		if(CanAddTag) Characters[i]->Tags.Add(Team);
+		if (CanAddTag)
+		{
+			Characters[i]->Tags.Add(Team);
+
+			if (i == SerialNum) continue;
+
+			ASkyscraperPlayerController* controller =
+				GetWorld()->SpawnActor<ASkyscraperPlayerController>(ASkyscraperPlayerController::StaticClass(), FVector(), FRotator());
+			controller->Possess(Characters[i]);
+		}
 
 		i++;
 	}
@@ -104,34 +114,22 @@ void AMainGameMode::ProcessFunc()
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERHP:
 		{
 			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(packet);
-			// if (PCPHP->ChangedPlayerSerial >= MAXPLAYER || PCPHP->ChangedPlayerSerial < 0)
-			// {
-			// 	UE_LOG(LogClass, Warning, TEXT("Array Error"));
-			// 	continue;
-			// }
 			Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
 			break;
 		}
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERSTATE:
 		{
 			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(packet);
-
-			// if (PCPS->ChangedPlayerSerial >= MAXPLAYER || PCPS->ChangedPlayerSerial < 0)
-			// {
-			// 	UE_LOG(LogClass, Warning, TEXT("Array Error"));
-			// 	continue;
-			// }
-
 			Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
 			break;
 		}
-		case (BYTE)COMP_OP::OP_DAMAGEDPLAYER:
-		{
-			//PDamagedPlayer* PDP = static_cast<PDamagedPlayer*>(packet);
-			//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
-			m_Socket->Send(packet, sizeof(PDamagedPlayer));
-			break;
-		}
+		//case (BYTE)COMP_OP::OP_DAMAGEDPLAYER:
+		//{
+		//	//PDamagedPlayer* PDP = static_cast<PDamagedPlayer*>(packet);
+		//	//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
+		//	m_Socket->Send(packet, sizeof(PDamagedPlayer));
+		//	break;
+		//}
 		case (BYTE)COMP_OP::OP_SPAWNOBJECT:
 		{
 			PSpawnObject PSO;
@@ -261,8 +259,9 @@ void AMainGameMode::SendPlayerSwapWeaponInfo()
 	ASkyscraperCharacter* PossessCharacter = Characters[SerialNum];
 
 	ESwapWeapon WeaponType;
+	uint8 EquippedWeapon;
 
-	if (PossessCharacter->CheckSwapWeapon(WeaponType))
+	if (PossessCharacter->CheckHoldWeapon(WeaponType, EquippedWeapon))
 	{
 		PSwapWeapon PSW(SerialNum, WeaponType);
 		m_Socket->Send(&PSW, sizeof(PSW));
@@ -297,6 +296,41 @@ void AMainGameMode::SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage)
 	PCAM.eAnimMontage = eAnimMontage;
 
 	Send(&PCAM, sizeof(PCAM));
+}
+
+void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
+{
+	if (Sender != Characters[SerialNum])
+	{
+		UE_LOG(LogClass, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
+		return;
+	}
+
+	int i = 0;
+	{ // Find Target Id
+		for (const auto& c : Characters)
+		{
+			if (c == Target) break;
+			i++;
+		}
+		// Can't Find
+		if (i >= MAXPLAYER)
+		{
+			UE_LOG(LogClass, Warning, TEXT("AMainGameMode::SendTakeDamage Cant find Target Actor ID"));
+			return;
+		}
+	}
+
+	ESwapWeapon weaponType;
+	uint8 equippedWeapon;
+	Characters[SerialNum]->CheckHoldWeapon(weaponType, equippedWeapon);
+
+	PDamagedPlayer PDP;
+	PDP.ChangedPlayerSerial = i;
+	PDP.IsMelee = ((weaponType == ESwapWeapon::MeleeWeapon) ? true : false);
+	PDP.WeaponEnum = equippedWeapon;
+
+	m_Socket->Send(&PDP, sizeof(PDP));
 }
 
 float AMainGameMode::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)
@@ -362,8 +396,8 @@ void AMainGameMode::Test_TakeDamage(int DamageType)
 		break;
 	}
 
-	//m_Socket->Send(PDP, sizeof(PDamagedPlayer));
-	PushQueue(PDP);
+	m_Socket->Send(PDP, sizeof(PDamagedPlayer));
+	//PushQueue(PDP);
 }
 
 void AMainGameMode::SpawnSkillActor_Implementation(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team) {}

@@ -188,7 +188,7 @@ void ASkyscraperCharacter::BeginPlay()
 void ASkyscraperCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-
+	 
 	JetpackComponent->OnLandJetpack();
 }
 
@@ -229,27 +229,30 @@ UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharac
 	return *CharacterAnimMontages.Find(eCharacterAnimMontage);
 }
 
-bool ASkyscraperCharacter::CheckSwapWeapon(ESwapWeapon& weaponType)
+bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)
 {
-	uint8 WeaponType;
-	uint8 EquippedWeapon;
+	// CheckHoldWeapon(ESwapWeapon&) -> CheckHoldWeapon(ESwapWeapon&, uint8&)
+	//ESwapWeapon WeaponType;
+	//uint8 EquippedWeapon;
 
-	CombatSystemComponent->GetWeaponEquipStateForAnimation(WeaponType, EquippedWeapon);
+	CombatSystemComponent->GetWeaponEquipStateForAnimation(weaponType, equippedWeapon);
 
-	if (PrevWeaponType == WeaponType)
+	if (PrevWeaponType == weaponType)
 	{
 		return false;
 	}
 
-	PrevWeaponType = WeaponType;
-	switch (WeaponType)
-	{
-	case 0:		weaponType = ESwapWeapon::NullWeapon;	break;
-	case 1:		weaponType = ESwapWeapon::MeleeWeapon;	break;
-	case 2:		weaponType = ESwapWeapon::RangeWeapon;	break;
-	default:	weaponType = ESwapWeapon::NullWeapon;	break;
-		
-	}
+	PrevWeaponType = weaponType;
+
+	// GetWeaponEquipStateForAnimation(uint8, uint8) -> GetWeaponEquipStateForAnimation(ESwapWeapon, uint8)
+	//switch (WeaponType)
+	//{
+	//case 0:		weaponType = ESwapWeapon::NullWeapon;	break;
+	//case 1:		weaponType = ESwapWeapon::MeleeWeapon;	break;
+	//case 2:		weaponType = ESwapWeapon::RangeWeapon;	break;
+	//default:	weaponType = ESwapWeapon::NullWeapon;	break;
+	//}
+
 	return true;
 }
 

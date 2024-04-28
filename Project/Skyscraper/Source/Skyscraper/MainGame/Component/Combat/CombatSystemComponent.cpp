@@ -349,24 +349,27 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 	
 }
 
-void UCombatSystemComponent::GetWeaponEquipStateForAnimation(uint8& WeaponType, uint8& EquippedWeapon)
+void UCombatSystemComponent::GetWeaponEquipStateForAnimation(ESwapWeapon& WeaponType, uint8& EquippedWeapon)
 {
 	if(MainWeaponComponent)
 	{
 		if(MainWeaponComponent == MainMeleeWeaponComponent)
 		{
-			WeaponType = 1;	//근거리 장비 착용중
+			// (uint8& WeaponType) -> (ESwapWeapon& WeaponType)
+			//WeaponType = (uint8)ESwapWeapon::MeleeWeapon;	//근거리 장비 착용중
+
+			WeaponType = ESwapWeapon::MeleeWeapon;	//근거리 장비 착용중
 			EquippedWeapon = (uint8)MeleeSelect;
 		}
 		else if (MainWeaponComponent == MainRangeWeaponComponent)
 		{
-			WeaponType = 2; // 원거리 장비 착용중
+			WeaponType = ESwapWeapon::RangeWeapon; // 원거리 장비 착용중
 			EquippedWeapon = (uint8)RangeSelect;
 		}
 	}
 	else
 	{
-		WeaponType = 0;		// 맨손
+		WeaponType = ESwapWeapon::NullWeapon;		// 맨손
 	}
 }
 

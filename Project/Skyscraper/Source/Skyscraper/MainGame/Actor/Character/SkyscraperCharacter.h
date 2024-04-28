@@ -159,7 +159,7 @@ public:
 protected:
 	class AMainGameMode* MainGameMode;
 
-	uint8 PrevWeaponType;
+	ESwapWeapon PrevWeaponType;
 
 	UPROPERTY(BlueprintReadWrite)
 	float Speed;
@@ -170,7 +170,11 @@ protected:
 	void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 
 public:
-	bool CheckSwapWeapon(ESwapWeapon& weaponType);
+	/// <returns>
+	/// If Weapon Changed return true
+	/// </returns>
+	bool CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon);
+
 	void SwapWeapon(ESwapWeapon WeaponType);
 
 	void SyncTransformAndAnim(FTransform t, float s, float r);

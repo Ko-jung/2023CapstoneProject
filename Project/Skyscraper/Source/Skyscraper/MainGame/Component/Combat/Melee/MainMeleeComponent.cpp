@@ -20,6 +20,8 @@
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 
+#include "Skyscraper/Network/MainGameMode.h"
+
 // Sets default values for this component's properties
 UMainMeleeComponent::UMainMeleeComponent()
 {
@@ -276,7 +278,14 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 		}
 		
 		// == "This function will only execute on the server" <<= now, just client level
-		UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+		//UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+		
+		// Execute on Sever
+		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+		if (GameMode)
+		{
+			GameMode->SendTakeDamage(OwnerCharacter, HitActor);
+		}
 
 		if(HitResult.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
 		{

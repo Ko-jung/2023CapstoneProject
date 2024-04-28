@@ -98,7 +98,6 @@ void AHexagonTile::InitialSettings()
 	{
 		// ºØ±« ¹æÇâ ¼³Á¤ ( 0',60',120',180',240',300' )
 		CollapseDirectionAngle = FMath::RandRange(0, 5);
-		UE_LOG(LogTemp, Warning, TEXT("%d"), CollapseDirectionAngle);
 
 		ATeamBuildings.Add(SpawnTeamBuilding(
 			GetLineTileFromAngleAndDistance((CollapseDirectionAngle + 3) % 6, 3),
@@ -255,7 +254,7 @@ AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 
 	if(!TargetTile->ComponentHasTag(TileTag))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s %d"), *TargetTile->GetName(),CollapseDirectionAngle);
-
+		
 	}
 	{ // ºôµù ¹èÄ¡ÇÏ±â
 		if (!Tile_Actor.Contains(TargetTile))

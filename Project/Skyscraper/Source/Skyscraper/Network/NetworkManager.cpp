@@ -62,7 +62,7 @@ bool NetworkManager::Connect(const char* pszIP, int nPort)
 	int nRet = connect(m_ServerSocket, (sockaddr*)&stServerAddr, sizeof(sockaddr));
 	if (nRet == SOCKET_ERROR)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Socket Connect Fail"));
+		UE_LOG(LogTemp, Warning, TEXT("Socket Connect Fail Error code: %d"), WSAGetLastError());
 		return false;
 	}
 

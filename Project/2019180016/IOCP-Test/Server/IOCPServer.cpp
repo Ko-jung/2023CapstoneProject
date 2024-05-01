@@ -138,6 +138,12 @@ void IOCPServer::Worker()
 			continue;
 		}
 
+		if (0 == num_byte)
+		{
+			if (exp_over->_comp_op == COMP_OP::OP_SEND || exp_over->_comp_op == COMP_OP::OP_RECV)
+				ClientMgr::Instance()->Disconnect(client_id);
+		}
+
 		auto FuncIt = m_IocpFunctionMap.find(exp_over->_comp_op);
 		if (FuncIt != m_IocpFunctionMap.end())
 		{

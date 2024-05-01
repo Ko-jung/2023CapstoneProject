@@ -20,6 +20,7 @@ public:
 
 	bool CheckSelectDuplication(int id, ECharacter c);
 
+	void Heal(int id, float damage);
 
 	ClientInfo* GetEmptyClient();
 	ClientInfo* GetEmptyClient(int& clientNum);

@@ -3,6 +3,7 @@
 #include "PacketMgr.h"
 #include "ClientMgr.h"
 #include "TimerMgr.h"
+#include "RoomMgr.h"
 
 #include "../ClientInfo.h"
 #include "../TimerEvent.h"
@@ -99,8 +100,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 
 		if (IsDead)
 		{
-			PChangedPlayerState PCPS(TargetPlayerSerialNum, ECharacterState::DEAD);
-			ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / 6, &PCPS, sizeof(PCPS));
+			PlayerDeadProcessing(TargetPlayerId);
 		}
 	}
 	break;
@@ -131,7 +131,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	}
 }
 
-void PacketMgr::StartGame(int RoomNum, int ClientNum, void* etc)
+void PacketMgr::SendStartGame(int RoomNum, int ClientNum, void* etc)
 {
 	PStartGame PSG;
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PSG, sizeof(PSG));
@@ -145,7 +145,7 @@ void PacketMgr::GameBeginProcessing(int NowClientNum)
 	TimerMgr::Instance()->Insert(TE1);
 
 	TimerEvent TE2(std::chrono::seconds(20),
-		std::bind(&PacketMgr::StartGame, this, NowClientNum / 6, NowClientNum % 6, nullptr));
+		std::bind(&PacketMgr::SendStartGame, this, NowClientNum / MAXPLAYER, NowClientNum % MAXPLAYER, nullptr));
 	TimerMgr::Instance()->Insert(TE2);
 
 	// ===Tile Drop Timers========
@@ -153,10 +153,27 @@ void PacketMgr::GameBeginProcessing(int NowClientNum)
 	//============================
 
 	// ===new Room's Kill Count===
-
+	RoomMgr::Instance()->AddRoom(NowClientNum / MAXPLAYER);
 	//============================
 
 	// collision Group
+}
+
+void PacketMgr::PlayerDeadProcessing(int ClientId)
+{
+	// Add Kill
+	RoomMgr::Instance()->AddKillCount(ClientId);
+
+	// Respawn Timer 10s, GodMode 3s
+	TimerEvent RespawnTimer(std::chrono::seconds(10), std::bind(&PacketMgr::SendSpawn, this, ClientId));
+	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::StartGame, this, ClientId));
+
+	TimerMgr::Instance()->Insert(RespawnTimer);
+	TimerMgr::Instance()->Insert(GodmodeTimer);
+
+	// Send Dead state
+	PChangedPlayerState PCPS(ClientId % MAXPLAYER, ECharacterState::DEAD);
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / 6, &PCPS, sizeof(PCPS));
 }
 
 const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)
@@ -215,4 +232,13 @@ void PacketMgr::SendSelectTime(int NowClientNum, float time)
 {
 	PSetTimer PST = PSetTimer(ETimer::SelectTimer, time);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
+}
+
+void PacketMgr::SendSpawn(int TargetClientID)
+{
+	// Set Full HP
+	ClientMgr::Instance()->Heal(TargetClientID, -1);
+
+	PChangedPlayerState PCPS(TargetClientID, ECharacterState::LIVING);
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / 6, &PCPS, sizeof(PCPS));
 }

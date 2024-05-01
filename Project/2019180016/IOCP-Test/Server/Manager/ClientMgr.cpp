@@ -105,3 +105,8 @@ bool ClientMgr::CheckSelectDuplication(int id, ECharacter c)
 
 	return false;
 }
+
+void ClientMgr::Heal(int id, float HealAmount)
+{
+	m_Clients[id]->Heal(HealAmount);
+}

@@ -16,12 +16,15 @@ public:
 
 public:
 	void ProcessPacket(Packet* p, class ClientInfo* c);
-	void StartGame(int RoomNum, int ClientNum, void* etc);
 
 	void GameBeginProcessing(int NowClientNum);
+	void PlayerDeadProcessing(int ClientId);
 
 private:
+	// Timer Func
 	void SendSelectTime(int NowClientNum, float time);
+	void SendSpawn(int TargetClientID);
+	void SendStartGame(int RoomNum, int ClientNum, void* etc);
 
 	const int GetWeaponDamage(const bool& isMelee, const int& weaponEnum);
 };

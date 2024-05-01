@@ -21,6 +21,7 @@ public:
 public:
 	// Return True if Dead
 	bool TakeDamage(float damage);
+	void Heal(float HealAmount);
 
 
 	SOCKET& GetSocket()							{ return m_sClientSocket; }

@@ -57,6 +57,8 @@ public:
 	 TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> AiCharacterClass;
 
 private:
-	//ASkyscraperCharacter* PossessCharacter;
 	TArray<ASkyscraperCharacter*> Characters;
+
+	enum class ETEAM {A, B};
+	int KillCount[2] = { 0, };
 };

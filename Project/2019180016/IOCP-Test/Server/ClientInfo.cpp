@@ -70,6 +70,21 @@ bool ClientInfo::TakeDamage(float damage)
 	return false;
 }
 
+void ClientInfo::Heal(float HealAmount)
+{
+	if (HealAmount <= 0.f)
+	{
+		CurrentHp = MaxHP;
+		return;
+	}
+
+	CurrentHp = CurrentHp + HealAmount;
+	if (CurrentHp > MaxHP)
+	{
+		CurrentHp = MaxHP;
+	}
+}
+
 void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 {
 	int remaindata = bytes + m_iRemainDataLen;

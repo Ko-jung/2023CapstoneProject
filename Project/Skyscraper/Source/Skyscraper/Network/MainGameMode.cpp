@@ -121,6 +121,12 @@ void AMainGameMode::ProcessFunc()
 		{
 			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(packet);
 			Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
+			if (PCPS->State == EHealthState::EHS_DEAD)
+			{
+				// Add Kill Count
+				if (PCPS->ChangedPlayerSerial < MAXPLAYER / 2)	++KillCount[(int)ETEAM::A];
+				else											++KillCount[(int)ETEAM::B];
+			}
 			break;
 		}
 		//case (BYTE)COMP_OP::OP_DAMAGEDPLAYER:

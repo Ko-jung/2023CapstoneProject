@@ -244,15 +244,6 @@ bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equip
 
 	PrevWeaponType = weaponType;
 
-	// GetWeaponEquipStateForAnimation(uint8, uint8) -> GetWeaponEquipStateForAnimation(ESwapWeapon, uint8)
-	//switch (WeaponType)
-	//{
-	//case 0:		weaponType = ESwapWeapon::NullWeapon;	break;
-	//case 1:		weaponType = ESwapWeapon::MeleeWeapon;	break;
-	//case 2:		weaponType = ESwapWeapon::RangeWeapon;	break;
-	//default:	weaponType = ESwapWeapon::NullWeapon;	break;
-	//}
-
 	return true;
 }
 

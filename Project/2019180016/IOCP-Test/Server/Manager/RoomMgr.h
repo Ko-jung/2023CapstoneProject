@@ -3,19 +3,23 @@
 #include "../../Common/Define.h"
 #include <array>
 
-class ClientInfo;
+class Room;
 
+// Room 생성 및 파괴 시 Data Race 없게 코딩 필요
 class RoomMgr
 {
-public:
-	RoomMgr() : m_iMemberCount(0) {}
-	RoomMgr(std::array<ClientInfo*, MAXPLAYER> member) : m_iMemberCount(6) { m_RoomMembers = member; }
-	~RoomMgr() {}
+	SingleTon(RoomMgr);
 
-	void AddMember(ClientInfo* c);
+public:
+	RoomMgr();
+	~RoomMgr();
+
+	void AddRoom(int roomId);
+	void DeleteRoom(int roomId);
+
+	void AddKillCount(int DeathTargetId);
 
 private:
-	std::array<ClientInfo*, MAXPLAYER> m_RoomMembers;
-	BYTE m_iMemberCount;
+	std::array<Room*, MAXPLAYER> Rooms{ nullptr, };
 };
 

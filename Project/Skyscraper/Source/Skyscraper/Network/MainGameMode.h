@@ -29,8 +29,11 @@ public:
 	virtual void ProcessFunc() override;
 	// void ProcessPosition();
 
+	void SpawnCharacter(int TargetSerialNum);
+
 	void SetPlayerPosition(PPlayerPosition PlayerPosition);
 	void ProcessSpawnObject(PSpawnObject PSO);
+	void ProcessChangedCharacterState(PChangedPlayerState* PCPS);
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();
@@ -56,9 +59,15 @@ public:
 	 UPROPERTY(EditDefaultsOnly, Category = "Characters")
 	 TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> AiCharacterClass;
 
+	 UPROPERTY(EditAnywhere)
+	 FVector TempSpawnLocation[5];
+
 private:
 	TArray<ASkyscraperCharacter*> Characters;
+	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
 
 	enum class ETEAM {A, B};
 	int KillCount[2] = { 0, };
+	FVector SpawnLoction[2];
+	FName TeamName[2];
 };

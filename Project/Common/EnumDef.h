@@ -105,7 +105,8 @@ enum class ECharacterState : BYTE
 {
 	LIVING,
 	DYING,
-	DEAD
+	DEAD,
+	INVINCIBILITY, // GODMODE
 };
 
 enum class EAnimMontage : BYTE

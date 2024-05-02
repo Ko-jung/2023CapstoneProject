@@ -20,7 +20,7 @@
 
 class ANetworkGameMode;
 
-enum class NetworkState
+enum class ENetworkState
 {
 	Lobby,
 	SelectGame,
@@ -63,9 +63,11 @@ public:
 	virtual void Exit() override;
 
 public:
-	void SetGamemode(ANetworkGameMode* gamemode) { Gamemode = gamemode; };
+	//void SetGamemode(ANetworkGameMode* gamemode, ENetworkState state);
+	void SetGamemode(ANetworkGameMode* gamemode);
+	void SetState(ENetworkState s) { State = s; }
+
 	const int& GetSerialNum() { return SerialNum; }
-	void SetState(NetworkState s) { State = s; }
 
 	bool TryPush(Packet* p);
 
@@ -85,7 +87,9 @@ private:
 	ANetworkGameMode* Gamemode;
 	bool bIsConnected;
 
-	NetworkState State;
+	ENetworkState State;
+
+	bool IsChangingGameMode;
 
 	/// <summary>
 	/// [0, 5]

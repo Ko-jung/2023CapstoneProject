@@ -66,7 +66,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 
 		int id = c->GetClientNum();
 
-		int SendPlayerRoomNum = id / 6;
+		int SendPlayerRoomNum = id / MAXPLAYER;
 		bool IsDuplicate = ClientMgr::Instance()->CheckSelectDuplication(id, PPS.PickedCharacter);
 
 		if (IsDuplicate)
@@ -91,12 +91,12 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		auto& clients = ClientMgr::Instance()->GetClients();
 
 		int id = c->GetClientNum();
-		int SendPlayerRoomNum = id / 6;
+		int SendPlayerRoomNum = id / MAXPLAYER;
 		int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
 
 		bool IsDead = clients[TargetPlayerId]->TakeDamage(Damage);
 		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, clients[TargetPlayerId]->GetCurrnetHp());
-		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / 6, &PCPHP, sizeof(PCPHP));
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / MAXPLAYER, &PCPHP, sizeof(PCPHP));
 
 		if (IsDead)
 		{
@@ -108,7 +108,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	{
 		PSpawnObject PSO;
 		MEMCPYBUFTOPACKET(PSO);
-		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PSO, sizeof(PSO));
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSO, sizeof(PSO));
 		break;
 	}
 	case (int)COMP_OP::OP_CHANGEANIMMONTAGE:
@@ -164,16 +164,19 @@ void PacketMgr::PlayerDeadProcessing(int ClientId)
 	// Add Kill
 	RoomMgr::Instance()->AddKillCount(ClientId);
 
+	// Check Game End
+
+
 	// Respawn Timer 10s, GodMode 3s
 	TimerEvent RespawnTimer(std::chrono::seconds(10), std::bind(&PacketMgr::SendSpawn, this, ClientId));
-	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::StartGame, this, ClientId));
+	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
 
 	TimerMgr::Instance()->Insert(RespawnTimer);
 	TimerMgr::Instance()->Insert(GodmodeTimer);
 
 	// Send Dead state
 	PChangedPlayerState PCPS(ClientId % MAXPLAYER, ECharacterState::DEAD);
-	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / 6, &PCPS, sizeof(PCPS));
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / MAXPLAYER, &PCPS, sizeof(PCPS));
 }
 
 const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)
@@ -231,7 +234,7 @@ const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)
 void PacketMgr::SendSelectTime(int NowClientNum, float time)
 {
 	PSetTimer PST = PSetTimer(ETimer::SelectTimer, time);
-	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(NowClientNum / 6, &PST, sizeof(PST));
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(NowClientNum / MAXPLAYER, &PST, sizeof(PST));
 }
 
 void PacketMgr::SendSpawn(int TargetClientID)
@@ -239,6 +242,12 @@ void PacketMgr::SendSpawn(int TargetClientID)
 	// Set Full HP
 	ClientMgr::Instance()->Heal(TargetClientID, -1);
 
+	PChangedPlayerState PCPS(TargetClientID, ECharacterState::INVINCIBILITY);
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / MAXPLAYER, &PCPS, sizeof(PCPS));
+}
+
+void PacketMgr::SendOffInvincibility(int TargetClientID)
+{
 	PChangedPlayerState PCPS(TargetClientID, ECharacterState::LIVING);
-	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / 6, &PCPS, sizeof(PCPS));
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / MAXPLAYER, &PCPS, sizeof(PCPS));
 }

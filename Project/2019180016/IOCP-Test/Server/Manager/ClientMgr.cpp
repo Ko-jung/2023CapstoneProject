@@ -22,11 +22,11 @@ void ClientMgr::SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSi
 {
 	for (int i = 0; i < MAXPLAYER; i++)
 	{
-		SOCKET s = m_Clients[roomId * 6 + i]->GetSocket();
+		SOCKET s = m_Clients[roomId * MAXPLAYER + i]->GetSocket();
 
 		if (s != INVALID_SOCKET)
 		{
-			m_Clients[roomId * 6 + i]->SendProcess(packetSize, p);
+			m_Clients[roomId * MAXPLAYER + i]->SendProcess(packetSize, p);
 		}
 	}
 }

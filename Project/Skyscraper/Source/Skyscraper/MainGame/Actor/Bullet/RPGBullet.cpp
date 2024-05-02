@@ -80,15 +80,27 @@ void ARPGBullet::BulletExplode()
 	bool IsHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 100.f,
 		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
 
+	TArray<AActor*> UniqueActors;
 	for (const auto& HitResult : Hits)
 	{
 		AActor* HitActor = HitResult.GetActor();
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 
-		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-		if (GameMode)
+		if (!UniqueActors.Contains(HitActor))
 		{
-			GameMode->SendTakeDamage(FireCharacter, HitActor);
+			UniqueActors.Add(HitActor);
+		}
+	}
+
+	int i = 0;
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+	if (GameMode)
+	{
+		for (const auto& a : UniqueActors)
+		{
+			GameMode->SendTakeDamage(FireCharacter, a);
+			UE_LOG(LogTemp, Warning, TEXT("SendTakeDamage called. i = %d"), i);
+			i++;
 		}
 	}
 

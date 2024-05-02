@@ -9,7 +9,8 @@ NetworkManager::NetworkManager() :
 	Gamemode(nullptr),
 	bIsConnected(false),
 	SerialNum(0),
-	State(NetworkState::SelectGame),
+	State(ENetworkState::SelectGame),
+	IsChangingGameMode(false),
 	RemainDataLen(0)
 {
 }
@@ -82,20 +83,20 @@ void NetworkManager::Disconnect()
 
 void NetworkManager::ProcessRecv(Packet* p)
 {
-	if (not IsValid(Gamemode))
+	if (IsChangingGameMode || not IsValid(Gamemode))
 	{
 		return;
 	}
 
 	switch (State)
 	{
-	case NetworkState::Lobby:
+	case ENetworkState::Lobby:
 		ProcessRecvFromLobby(p);
 		break;
-	case NetworkState::SelectGame:
+	case ENetworkState::SelectGame:
 		ProcessRecvFromSelectGame(p);
 		break;
-	case NetworkState::MainGame:
+	case ENetworkState::MainGame:
 		ProcessRecvFromMainGame(p);
 		break;
 	default:
@@ -114,7 +115,9 @@ void NetworkManager::ProcessRecvFromLobby(Packet* p)
 
 		Gamemode->PushQueue(PCTG);
 		StopListen();
-		State = NetworkState::Lobby;
+
+		State = ENetworkState::SelectGame;
+		IsChangingGameMode = true;
 	}
 	break;
 	default:
@@ -167,8 +170,9 @@ void NetworkManager::ProcessRecvFromSelectGame(Packet* p)
 	{
 		PStartGame* PSG = new PStartGame();
 		Gamemode->PushQueue(PSG);
+		IsChangingGameMode = true;
 
-		State = NetworkState::MainGame;
+		State = ENetworkState::MainGame;
 	}
 	break;
 	default:
@@ -186,42 +190,48 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 	{
 		PPlayerPosition* PlayerPosition = new PPlayerPosition();
 		memcpy(PlayerPosition, p, sizeof(PPlayerPosition));
-		TryPush(PlayerPosition);
+		//TryPush(PlayerPosition);
+		Gamemode->PushQueue(PlayerPosition);
 		break;
 	}
 	case (int)COMP_OP::OP_CHANGEDPLAYERHP:
 	{
 		PChangedPlayerHP* PCPHP = new PChangedPlayerHP();
 		memcpy(PCPHP, p, sizeof(*PCPHP));
-		TryPush(PCPHP);
+		// TryPush(PCPHP);
+		Gamemode->PushQueue(PCPHP);
 		break;
 	}
 	case (int)COMP_OP::OP_CHANGEDPLAYERSTATE:
 	{
 		PChangedPlayerState* PCPS = new PChangedPlayerState();
 		memcpy(PCPS, p, sizeof(*PCPS));
-		TryPush(PCPS);
+		// TryPush(PCPS);
+		Gamemode->PushQueue(PCPS);
 		break;
 	}
 	case (int)COMP_OP::OP_SPAWNOBJECT:
 	{
 		PSpawnObject* PSO = new PSpawnObject();
 		memcpy(PSO, p, sizeof(*PSO));
-		TryPush(PSO);
+		// TryPush(PSO);
+		Gamemode->PushQueue(PSO);
 		break;
 	}
 	case (int)COMP_OP::OP_CHANGEANIMMONTAGE:
 	{
 		PChangeAnimMontage* PCAM = new PChangeAnimMontage();
 		memcpy(PCAM, p, sizeof(*PCAM));
-		TryPush(PCAM);
+		// TryPush(PCAM);
+		Gamemode->PushQueue(PCAM);
 		break;
 	}
 	case (int)COMP_OP::OP_SWAPWEAPON:
 	{
 		PSwapWeapon* PSW = new PSwapWeapon();
 		memcpy(PSW, p, sizeof(*PSW));
-		TryPush(PSW);
+		// TryPush(PSW);
+		Gamemode->PushQueue(PSW);
 		break;
 	}
 	default:
@@ -337,6 +347,20 @@ void NetworkManager::Stop()
 
 void NetworkManager::Exit()
 {
+}
+
+//void NetworkManager::SetGamemode(ANetworkGameMode* gamemode, ENetworkState state)
+//{
+//	Gamemode = gamemode;
+//	State = state;
+//	IsChangingGameMode = false;
+//	UE_LOG(LogTemp, Warning, TEXT("Change Gamemode State is %d"), state);
+//}
+
+void NetworkManager::SetGamemode(ANetworkGameMode* gamemode)
+{ 
+	Gamemode = gamemode; 
+	IsChangingGameMode = false;
 }
 
 bool NetworkManager::TryPush(Packet* p)

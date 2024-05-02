@@ -24,6 +24,7 @@ private:
 	// Timer Func
 	void SendSelectTime(int NowClientNum, float time);
 	void SendSpawn(int TargetClientID);
+	void SendOffInvincibility(int TargetClientID);
 	void SendStartGame(int RoomNum, int ClientNum, void* etc);
 
 	const int GetWeaponDamage(const bool& isMelee, const int& weaponEnum);

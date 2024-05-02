@@ -26,7 +26,7 @@ void ALobbyMode::BeginPlay()
 
 	if (bIsConnected)
 	{
-		m_Socket->SetState(NetworkState::Lobby);
+		m_Socket->SetState(ENetworkState::Lobby);
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
 		SerialNum = m_Socket->GetSerialNum();

@@ -15,8 +15,9 @@
 
 void AMainGameMode::BeginPlay()
 {
+	// Get Socket Instance
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
-	TArray<PPlayerSelectInfo*> PlayerSelectInfo = instance->GetSelectInfo();
+	PlayerSelectInfo = instance->GetSelectInfo();
 	bIsConnected = instance->GetIsConnect();
 	m_Socket = instance->GetSocket();
 	SerialNum = instance->GetSerialNum();
@@ -25,53 +26,19 @@ void AMainGameMode::BeginPlay()
 
 	Super::BeginPlay();
 
+	// Set FullScreen Mode
 	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
 	UGameUserSettings::GetGameUserSettings()->SetFullscreenMode(EWindowMode::WindowedFullscreen);
 	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
 
-	// Spawn Characters
-	FActorSpawnParameters spawnParams;
-	FRotator rotator;
-	FVector spawnLocation{ 0.f,0.f,100.f };
+	// Define Team Name
+	TeamName[(int)ETEAM::A] = FName("TeamA");
+	TeamName[(int)ETEAM::B] = FName("TeamB");
 
-	int i = 0;
-	for (const auto& p : PlayerSelectInfo)
+	for (int i = 0; i < PlayerSelectInfo.Num(); i++)
 	{
-		bool CanAddTag = true;
-
-		FName Team;
-		if (i < MAXPLAYER / 2)	Team = FName{ "TeamA" };
-		else					Team = FName{ "TeamB" };
-
-		TSubclassOf<ASkyscraperCharacter>* Class = (i == SerialNum) ? 
-			CharacterClass.Find(p->PickedCharacter):
-			AiCharacterClass.Find(p->PickedCharacter);
-
-		if (!Class)
-		{
-			CanAddTag = false;
-			UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), i);
-			continue;
-		}
-
-		spawnLocation.Y = i * 200;
-
-		Characters.Add(GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, spawnLocation, rotator, spawnParams));
-		if (CanAddTag)
-		{
-			Characters[i]->Tags.Add(Team);
-
-			if (i == SerialNum) continue;
-
-			ASkyscraperPlayerController* controller =
-				GetWorld()->SpawnActor<ASkyscraperPlayerController>(ASkyscraperPlayerController::StaticClass(), FVector(), FRotator());
-			controller->Possess(Characters[i]);
-		}
-
-		i++;
+		SpawnCharacter(i);
 	}
-	GetWorld()->GetFirstPlayerController()->Possess(Characters[SerialNum]);
-	Characters[SerialNum]->CombatSystemComponent->AddInputMappingContext();
 }
 
 void AMainGameMode::Tick(float Deltatime)
@@ -120,13 +87,7 @@ void AMainGameMode::ProcessFunc()
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERSTATE:
 		{
 			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(packet);
-			Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
-			if (PCPS->State == EHealthState::EHS_DEAD)
-			{
-				// Add Kill Count
-				if (PCPS->ChangedPlayerSerial < MAXPLAYER / 2)	++KillCount[(int)ETEAM::A];
-				else											++KillCount[(int)ETEAM::B];
-			}
+			ProcessChangedCharacterState(PCPS);
 			break;
 		}
 		//case (BYTE)COMP_OP::OP_DAMAGEDPLAYER:
@@ -199,6 +160,65 @@ void AMainGameMode::ProcessFunc()
 //	}
 //}
 
+void AMainGameMode::SpawnCharacter(int TargetSerialNum)
+{
+	const auto& p = PlayerSelectInfo[TargetSerialNum];
+
+	TSubclassOf<ASkyscraperCharacter>* Class = (TargetSerialNum == SerialNum) ?
+		CharacterClass.Find(p->PickedCharacter) :
+		AiCharacterClass.Find(p->PickedCharacter);
+
+	// Check Null Character
+	if (!Class)
+	{
+		UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), TargetSerialNum);
+		return;
+	}
+
+	// Set Team Tag and Spawn Location
+	FName Team;
+	FVector Location;
+	FActorSpawnParameters spawnParams;
+
+	if (TargetSerialNum < MAXPLAYER / 2)
+	{
+		Team = TeamName[(int)ETEAM::A];
+		Location = SpawnLoction[(int)ETEAM::A];
+	}
+	else
+	{
+		Team = TeamName[(int)ETEAM::B];
+		Location = SpawnLoction[(int)ETEAM::B];
+	}
+
+	ASkyscraperCharacter* character = nullptr;
+	while (true)
+	{
+		// Temp Code
+		Location = TempSpawnLocation[FMath::RandRange(0, 4)];
+		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, Location, FRotator{}, spawnParams);
+
+		if (!character) continue;
+
+		character->Tags.Add(Team);
+		break;
+	}
+
+	if (TargetSerialNum == SerialNum)
+	{
+		GetWorld()->GetFirstPlayerController()->Possess(character);
+		character->CombatSystemComponent->AddInputMappingContext();
+	}
+	else
+	{
+		ASkyscraperPlayerController* controller =
+			GetWorld()->SpawnActor<ASkyscraperPlayerController>(ASkyscraperPlayerController::StaticClass(), FVector(), FRotator());
+		controller->Possess(character);
+	}
+
+	Characters.Add(character);
+}
+
 void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 {
 	int32 Serial = PlayerPosition.PlayerSerial;
@@ -224,14 +244,48 @@ void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 	}
 
 	FName Team;
-	if (PSO.SerialNum < MAXPLAYER / 2)	Team = FName{ "TeamA" };
-	else								Team = FName{ "TeamB" };
+	if (PSO.SerialNum < MAXPLAYER / 2)	Team = TeamName[(int)ETEAM::A];
+	else								Team = TeamName[(int)ETEAM::B];
 
 	FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
 	FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
 	ESkillActor SkillActor = PSO.SpawnObject;
 
 	SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
+}
+
+void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
+{
+	if (PCPS->State == EHealthState::EHS_DEAD)
+	{
+		// Add Kill Count
+		if (PCPS->ChangedPlayerSerial < MAXPLAYER / 2)	++KillCount[(int)ETEAM::A];
+		else											++KillCount[(int)ETEAM::B];
+
+		if (PCPS->ChangedPlayerSerial == SerialNum)
+		{
+			// Disable Input
+
+		}
+	}
+	else if (PCPS->State == EHealthState::EHS_INVINCIBILITY)
+	{
+		// Destroy Character
+		if (Characters[PCPS->ChangedPlayerSerial])
+		{
+			Characters[PCPS->ChangedPlayerSerial]->Destroy();
+		}
+
+		// ReSpawn and On INVINCIBILITY
+		SpawnCharacter(PCPS->ChangedPlayerSerial);
+	}
+	//else if (PCPS->State == EHealthState::EHS_LIVING)
+	//{
+	//	// Off INVINCIBILITY
+
+	//}
+
+	Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
 }
 
 void AMainGameMode::SendPlayerLocation()
@@ -337,6 +391,7 @@ void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 	PDP.WeaponEnum = equippedWeapon;
 
 	m_Socket->Send(&PDP, sizeof(PDP));
+	UE_LOG(LogClass, Warning, TEXT("Send Weapon Damage"));
 }
 
 float AMainGameMode::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)

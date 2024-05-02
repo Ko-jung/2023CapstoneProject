@@ -35,6 +35,8 @@ void AMainGameMode::BeginPlay()
 	TeamName[(int)ETEAM::A] = FName("TeamA");
 	TeamName[(int)ETEAM::B] = FName("TeamB");
 
+	Characters.Init(nullptr, MAXPLAYER);
+
 	for (int i = 0; i < PlayerSelectInfo.Num(); i++)
 	{
 		SpawnCharacter(i);
@@ -216,7 +218,7 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 		controller->Possess(character);
 	}
 
-	Characters.Add(character);
+	Characters[TargetSerialNum] = character;
 }
 
 void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)

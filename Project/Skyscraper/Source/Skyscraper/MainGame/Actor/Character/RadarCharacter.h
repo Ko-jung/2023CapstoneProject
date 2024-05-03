@@ -13,5 +13,6 @@ UCLASS()
 class SKYSCRAPER_API ARadarCharacter : public ASkyscraperCharacter
 {
 	GENERATED_BODY()
-	
+public:
+	ARadarCharacter();
 };

@@ -140,6 +140,7 @@
     <ClCompile Include="Manager\RoomMgr.cpp" />
     <ClCompile Include="Manager\TimerMgr.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="RandomUtil.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="TimerEvent.cpp" />
   </ItemGroup>
@@ -155,6 +156,7 @@
     <ClInclude Include="Manager\RoomMgr.h" />
     <ClInclude Include="Manager\TimerMgr.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="RandomUtil.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="TimerEvent.h" />
   </ItemGroup>

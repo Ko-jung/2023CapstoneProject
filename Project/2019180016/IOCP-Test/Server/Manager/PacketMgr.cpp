@@ -148,9 +148,9 @@ void PacketMgr::GameBeginProcessing(int NowClientNum)
 		std::bind(&PacketMgr::SendStartGame, this, NowClientNum / MAXPLAYER, NowClientNum % MAXPLAYER, nullptr));
 	TimerMgr::Instance()->Insert(TE2);
 
-	// ===Tile Drop Timers========
+	// ===Tile Drop========
 
-	//============================
+	//=====================
 
 	// ===new Room's Kill Count===
 	RoomMgr::Instance()->AddRoom(NowClientNum / MAXPLAYER);

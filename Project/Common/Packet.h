@@ -247,4 +247,11 @@ struct PSwapWeapon : Packet
 	PSwapWeapon() : Packet(COMP_OP::OP_SWAPWEAPON), SwapingPlayer(-1), SwapWeapon(ESwapWeapon::NullWeapon) { PacketSize = sizeof(PSwapWeapon); }
 	PSwapWeapon(BYTE id, ESwapWeapon weapon) : Packet(COMP_OP::OP_SWAPWEAPON), SwapingPlayer(id), SwapWeapon(weapon) { PacketSize = sizeof(PSwapWeapon); }
 };
+
+struct PBuildingInfo : Packet
+{
+	BYTE BuildInfo[37];
+
+	PBuildingInfo() : Packet(COMP_OP::OP_BUILDINGINFO) { PacketSize = sizeof(PBuildingInfo); }
+};
 #pragma pack(pop)

@@ -13,5 +13,6 @@ UCLASS()
 class SKYSCRAPER_API AElectricCharacter : public ASkyscraperCharacter
 {
 	GENERATED_BODY()
-	
+public:
+	AElectricCharacter();
 };

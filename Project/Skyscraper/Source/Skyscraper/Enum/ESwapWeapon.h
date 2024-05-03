@@ -3,7 +3,7 @@
 UENUM()
 enum class ESwapWeapon : uint8
 {
+	NullWeapon,	// 맨손
 	MeleeWeapon,
 	RangeWeapon,
-	NullWeapon,	// 맨손
 };

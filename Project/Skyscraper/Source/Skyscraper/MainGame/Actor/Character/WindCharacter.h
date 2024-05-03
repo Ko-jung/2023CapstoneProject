@@ -13,5 +13,6 @@ UCLASS()
 class SKYSCRAPER_API AWindCharacter : public ASkyscraperCharacter
 {
 	GENERATED_BODY()
-	
+public:
+	AWindCharacter();
 };

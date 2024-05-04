@@ -7,6 +7,8 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "JetpackComponent.generated.h"
 
+class UJetpackGaugeBar;
+
 enum class EDodgeKeys
 {
 	EDK_W = 0 , EDK_S, EDK_D, EDK_A, EDK_SIZE
@@ -127,6 +129,11 @@ protected:
 	// 타이머 핸들
 	FTimerHandle SlowdownDodgeTimerHandle;
 	FTimerHandle BoostGaugeInfinityTimerHandle;
+
+	// 제트팩 위젯에 대한 클래스 및 변수
+	TSubclassOf<UUserWidget> JetpackWidgetClass;
+	UPROPERTY()
+	UJetpackGaugeBar* JetpackWidget;
 
 protected:
 	UFUNCTION()

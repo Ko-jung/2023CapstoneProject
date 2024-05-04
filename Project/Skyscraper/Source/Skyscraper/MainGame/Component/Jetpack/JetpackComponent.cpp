@@ -9,9 +9,11 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/MainGame/Widget/Jetpack/JetpackGaugeBar.h"
 
 // Sets default values for this component's properties
 UJetpackComponent::UJetpackComponent()
@@ -55,6 +57,10 @@ UJetpackComponent::UJetpackComponent()
 
 	}
 
+	{ // 제트팩 위젯 클래스 로드
+		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_JetpackClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Jetpack/WBP_JetpackGaugeBar.WBP_JetpackGaugeBar_C'"));
+		JetpackWidgetClass = WBP_JetpackClass.Class;
+	}
 }
 
 
@@ -66,11 +72,19 @@ void UJetpackComponent::BeginPlay()
 
 	{ // == Get Owner Character
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
-
-		
 	}
 
-	// == TODO: UI 연결하기
+	{// == UI 연결하기
+		if(GetOwnerPlayerController())
+		{
+			JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(GetOwnerPlayerController(), JetpackWidgetClass));
+			JetpackWidget->AddToViewport();
+		}
+		
+	}
+	
+
+
 
 	JetpackFuel = MaxJetpackFuel;
 
@@ -137,7 +151,12 @@ void UJetpackComponent::SetFuel(double NewFuel)
 		return;
 	}
 	JetpackFuel = FMath::Max(0.0f, NewFuel);
-	// == TODO: UI 내 제트팩 연료 설정
+
+	{
+		// == TODO: UI 내 제트팩 연료 설정
+		JetpackWidget->SetJetpackGaugePercent(JetpackFuel / MaxJetpackFuel);
+	}
+
 }
 
 void UJetpackComponent::SetHoveringMode(bool bHover)
@@ -283,7 +302,6 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 {
 
 	if (JetpackFuel < 0.1f) return;
-	UE_LOG(LogTemp, Warning, TEXT("%f,%f"), InputValue.X, InputValue.Y);
 	// 중력 없애기
 	GetOwnerCharacterMovement()->GravityScale = 0.0f;
 
@@ -310,7 +328,6 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 		GetWorld()->GetTimerManager().SetTimer(SlowdownDodgeTimerHandle, this, &ThisClass::SlowdownDodge, 0.2f, false,0.2f);
 	}
 
-	//UE_LOG(LogTemp, Warning, TEXT("%f %f"), InputValue.X, InputValue.Y);
 }
 
 

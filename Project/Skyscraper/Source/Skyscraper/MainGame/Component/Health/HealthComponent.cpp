@@ -8,6 +8,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Skyscraper/MainGame/Widget/Health/HealthBar.h"
+#include "Skyscraper/MainGame/Widget/Health/MyHealthWidget.h"
 
 class UPlayMontageCallbackProxy;
 // Sets default values for this component's properties
@@ -36,7 +37,10 @@ UHealthComponent::UHealthComponent()
 		HealthBarWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	
-	// ...
+	{ // 제트팩 위젯 클래스 로드
+		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MyHealthClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Health/WBP_Health.WBP_Health_C'"));
+		MyHealthWidgetClass = WBP_MyHealthClass.Class;
+	}
 }
 
 
@@ -59,13 +63,15 @@ void UHealthComponent::BeginPlay()
 		HealthBarWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
 		
 		HealthProgressBar = Cast<UHealthBar>(HealthBarWidgetComponent->GetUserWidgetObject());
-		
-		
-		
-		
 	}
 
-	
+	{// == My Health UI 연결하기
+		if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
+		{
+			MyHealthWidget= Cast<UMyHealthWidget>(CreateWidget(PlayerController, MyHealthWidgetClass));
+			MyHealthWidget->AddToViewport();
+		}
+	}
 	
 }
 
@@ -88,7 +94,8 @@ void UHealthComponent::GetDamaged(float fBaseDamage)
 		SetPlayerDie();
 	}
 
-	HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth/MaxHealth);
+	//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth/MaxHealth);
+	ChangeCurrentHp(CurrentHealth);
 	
 }
 
@@ -133,7 +140,8 @@ void UHealthComponent::ActivatePlusHealthBuff(float PlusHealthPercent, float Plu
 	MaxHealth += PlusHealthValue;
 	CurrentHealth += PlusHealthValue;
 	UE_LOG(LogTemp, Warning, TEXT("health %f / %f Plus - %f"), CurrentHealth, MaxHealth, PlusHealthValue);
-	HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+	//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+	ChangeCurrentHp(CurrentHealth);
 
 	if (!PlusHealthBuffTimerHandle.IsValid())
 	{
@@ -155,7 +163,8 @@ void UHealthComponent::DeactivatePlusHealth()
 		MaxHealth = OriginMaxHealth;
 		CurrentHealth = FMath::Max(CurrentHealth - PlusHealthValue, 1.0f);
 		UE_LOG(LogTemp, Warning, TEXT("health plus end, %f / %f"), CurrentHealth,MaxHealth);
-		HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+		//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+		ChangeCurrentHp(CurrentHealth);
 		GetWorld()->GetTimerManager().ClearTimer(PlusHealthBuffTimerHandle);
 	}
 }
@@ -165,6 +174,11 @@ void UHealthComponent::ChangeCurrentHp(float hp)
 	CurrentHealth = hp;
 
 	HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+
+	if(MyHealthWidget)
+	{
+		MyHealthWidget->SetHealthPercent(CurrentHealth / MaxHealth);
+	}
 }
 
 void UHealthComponent::ChangeState(EHealthState s)

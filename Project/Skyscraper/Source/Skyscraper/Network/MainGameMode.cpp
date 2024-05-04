@@ -327,7 +327,7 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 			break;
 		}
 
-		Hexgon->InitialSettings(PBI->BuildInfo);
+		//Hexgon->InitialSettings();
 	}
 }
 

@@ -11,6 +11,7 @@
 
 #include "HealthComponent.generated.h"
 
+class UMyHealthWidget;
 class UTextRenderComponent;
 class UProgressBar;
 class UWidgetComponent;
@@ -61,6 +62,11 @@ private:
 	// 체력 증가 타이머 핸들
 	UPROPERTY()
 		FTimerHandle PlusHealthBuffTimerHandle;
+
+	// MyHealth 위젯에 대한 클래스 및 변수
+	TSubclassOf<UUserWidget> MyHealthWidgetClass;
+	UPROPERTY()
+		UMyHealthWidget* MyHealthWidget;
 
 protected:
 	// Called when the game starts

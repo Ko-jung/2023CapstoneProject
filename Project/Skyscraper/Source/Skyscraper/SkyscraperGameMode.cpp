@@ -60,6 +60,10 @@ void ASkyscraperGameMode::ProcessFunc()
 			instance->SetSocket(m_Socket);
 			instance->SetIsConnect(bIsConnected);
 			instance->SetSerialNum(SerialNum);
+
+			//FString Level = L"/Game/MainGame/Level/MapCreateLevel";
+			//UGameplayStatics::OpenLevel(this, *Level);
+
 			UGameplayStatics::OpenLevel(this, FName("MapCreateLevel"));
 		}
 			break;

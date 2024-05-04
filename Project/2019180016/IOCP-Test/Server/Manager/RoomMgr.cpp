@@ -37,3 +37,8 @@ void RoomMgr::AddKillCount(int DeathTargetId)
 
 	Rooms[roomId]->AddKillCount(isTeamA);
 }
+
+BYTE* RoomMgr::GetBuildingExist(int roomId, int& size)
+{
+	return Rooms[roomId]->GetBuildingExist(size);;
+}

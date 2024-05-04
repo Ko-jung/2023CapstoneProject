@@ -14,13 +14,15 @@ public:
 	ClientMgr();
 
 	void Disconnect(int SerialNum);
-	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
 	void RecvProcess(int id, const DWORD& bytes, EXP_OVER* exp);
-	void SendPacketToAllExceptSelf(int id, Packet* p, int packetSize);
 
 	bool CheckSelectDuplication(int id, ECharacter c);
 
 	void Heal(int id, float damage);
+
+	void Send(int id, Packet* p, int size);
+	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
+	void SendPacketToAllExceptSelf(int id, Packet* p, int packetSize);
 
 	ClientInfo* GetEmptyClient();
 	ClientInfo* GetEmptyClient(int& clientNum);

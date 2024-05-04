@@ -19,6 +19,8 @@ public:
 
 	void AddKillCount(int DeathTargetId);
 
+	BYTE* GetBuildingExist(int roomId, int& size);
+
 private:
 	std::array<Room*, MAXPLAYER> Rooms{ nullptr, };
 };

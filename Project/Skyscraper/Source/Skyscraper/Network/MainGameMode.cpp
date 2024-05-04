@@ -10,15 +10,25 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/GameUserSettings.h"
 
+// Montage Sync
 #include "../MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+
+// Processing Building Info From Server
+#include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
+#include "Kismet/GameplayStatics.h"
 
 void AMainGameMode::BeginPlay()
 {
 	// Get Socket Instance
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
-	PlayerSelectInfo = instance->GetSelectInfo();
 	bIsConnected = instance->GetIsConnect();
+	if (!bIsConnected)
+	{
+		Super::BeginPlay();
+		return;
+	}
+	PlayerSelectInfo = instance->GetSelectInfo();
 	m_Socket = instance->GetSocket();
 	SerialNum = instance->GetSerialNum();
 	m_Socket->SetGamemode(this);
@@ -41,17 +51,22 @@ void AMainGameMode::BeginPlay()
 	{
 		SpawnCharacter(i);
 	}
+
+	// For Get Building Info
+	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
+	m_Socket->Send(&PRP, PRP.PacketSize);
 }
 
 void AMainGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 
-	//if (bIsConnected)
-	//{
-	//}
-	ProcessFunc();
+	if (!bIsConnected)
+	{
+		return;
+	}
 
+	ProcessFunc();
 	SendPlayerSwapWeaponInfo();
 	SendPlayerLocation();
 }
@@ -68,6 +83,14 @@ void AMainGameMode::ProcessFunc()
 	{
 		switch (packet->PacketType)
 		{
+		case (int)COMP_OP::OP_BUILDINGINFO:
+		{
+			PBuildingInfo PBI;
+			memcpy(&PBI, packet, sizeof(PBI));
+			ProcessBuildingInfo(&PBI);
+			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_BUILDINGINFO"));
+			break;
+		}
 		case (BYTE)COMP_OP::OP_PLAYERPOSITION:
 		{
 			PPlayerPosition PPP;
@@ -288,6 +311,24 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 	//}
 
 	Characters[PCPS->ChangedPlayerSerial]->HealthComponent->ChangeState(PCPS->State);
+}
+
+void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
+{
+	TArray<AActor*> HexagonTile;
+	UGameplayStatics::GetAllActorsOfClass(this, AHexagonTile::StaticClass(), HexagonTile);
+
+	for (auto& h : HexagonTile)
+	{
+		AHexagonTile* Hexgon = Cast<AHexagonTile>(h);
+		if (!Hexgon)
+		{
+			UE_LOG(LogClass, Warning, TEXT("AHexagonTIle Cast FAILED!"));
+			break;
+		}
+
+		Hexgon->InitialSettings(PBI->BuildInfo);
+	}
 }
 
 void AMainGameMode::SendPlayerLocation()

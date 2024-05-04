@@ -125,8 +125,34 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), p, sizeof(PSwapWeapon));
 		break;
 	}
+	case (int)COMP_OP::OP_REQUESTPACKET:
+	{
+		PRequestPacket PRP;
+		MEMCPYBUFTOPACKET(PRP);
+		ProcessRequest(PRP, c->GetClientNum());
+		break;
+	}
 	default:
 		LogUtil::PrintLog("abc");
+		break;
+	}
+}
+
+void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
+{
+	switch (PRP.RequestOp)
+	{
+	case COMP_OP::OP_BUILDINGINFO:
+	{
+		int ArraySize;
+		BYTE* BuildingExist = RoomMgr::Instance()->GetBuildingExist(id / MAXPLAYER, ArraySize);
+
+		PBuildingInfo PBI;
+		memcpy(PBI.BuildInfo, BuildingExist, ArraySize);
+		ClientMgr::Instance()->Send(id, &PBI, PBI.PacketSize);
+		break;
+	}
+	default:
 		break;
 	}
 }
@@ -137,23 +163,23 @@ void PacketMgr::SendStartGame(int RoomNum, int ClientNum, void* etc)
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PSG, sizeof(PSG));
 }
 
-void PacketMgr::GameBeginProcessing(int NowClientNum)
+void PacketMgr::GameBeginProcessing(int NowClientId)
 {
 	// 너무 빨리 보내면 못 받는다
 	TimerEvent TE1(std::chrono::seconds(1),
-		std::bind(&PacketMgr::SendSelectTime, this, NowClientNum, 20.f));
+		std::bind(&PacketMgr::SendSelectTime, this, NowClientId, 20.f));
 	TimerMgr::Instance()->Insert(TE1);
 
 	TimerEvent TE2(std::chrono::seconds(20),
-		std::bind(&PacketMgr::SendStartGame, this, NowClientNum / MAXPLAYER, NowClientNum % MAXPLAYER, nullptr));
+		std::bind(&PacketMgr::SendStartGame, this, NowClientId / MAXPLAYER, NowClientId % MAXPLAYER, nullptr));
 	TimerMgr::Instance()->Insert(TE2);
 
-	// ===Tile Drop========
+	// ======== Tile Drop ========
 
-	//=====================
+	//============================
 
-	// ===new Room's Kill Count===
-	RoomMgr::Instance()->AddRoom(NowClientNum / MAXPLAYER);
+	// ======== new Room =========
+	RoomMgr::Instance()->AddRoom(NowClientId / MAXPLAYER);
 	//============================
 
 	// collision Group

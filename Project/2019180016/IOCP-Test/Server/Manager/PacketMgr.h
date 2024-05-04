@@ -16,6 +16,7 @@ public:
 
 public:
 	void ProcessPacket(Packet* p, class ClientInfo* c);
+	void ProcessRequest(PRequestPacket PRP, int id);
 
 	void GameBeginProcessing(int NowClientNum);
 	void PlayerDeadProcessing(int ClientId);

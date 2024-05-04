@@ -42,6 +42,7 @@ public:
 	~Room() {}
 
 	void AddKillCount(bool IsTeamA);
+	BYTE* GetBuildingExist(int& size);
 
 private:
 	std::array<std::atomic<int>, 2> KillScore;

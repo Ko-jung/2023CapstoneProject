@@ -34,6 +34,7 @@ public:
 	void SetPlayerPosition(PPlayerPosition PlayerPosition);
 	void ProcessSpawnObject(PSpawnObject PSO);
 	void ProcessChangedCharacterState(PChangedPlayerState* PCPS);
+	void ProcessBuildingInfo(PBuildingInfo* PBI);
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();

@@ -3,7 +3,7 @@
 #pragma once
 
 UENUM()
-enum class COMP_OP : int8
+enum class COMP_OP : uint8
 {
 	// Default
 	OP_RECV,
@@ -33,4 +33,6 @@ enum class COMP_OP : int8
 	OP_SPAWNITEM,
 	OP_CHANGEANIMMONTAGE,
 	OP_SWAPWEAPON,
+	OP_BUILDINGINFO,
+	OP_REQUESTPACKET,
 };

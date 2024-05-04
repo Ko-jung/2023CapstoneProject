@@ -184,8 +184,19 @@ void NetworkManager::ProcessRecvFromSelectGame(Packet* p)
 void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 {
 	// Main Game Mode
+	
+	// p는 RecvBuf의 포인터. Packet의 변수를 만들어야한다.
+	//Gamemode->PushQueue(p);
+
 	switch (p->PacketType)
 	{
+	case (int)COMP_OP::OP_BUILDINGINFO:
+	{
+		PBuildingInfo* PBI = new PBuildingInfo();
+		memcpy(PBI, p, sizeof(*PBI));
+		Gamemode->PushQueue(PBI);
+		break;
+	}
 	case (int)COMP_OP::OP_PLAYERPOSITION:
 	{
 		PPlayerPosition* PlayerPosition = new PPlayerPosition();

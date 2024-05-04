@@ -12,10 +12,15 @@ ClientMgr::ClientMgr() :
 	}
 }
 
-void ClientMgr::Disconnect(int SerialNum)
+void ClientMgr::Disconnect(int id)
 {
-	m_Clients[SerialNum]->Init();
+	m_Clients[id]->Init();
 	m_iClientCount--;
+}
+
+void ClientMgr::Send(int id, Packet* p, int size)
+{
+	m_Clients[id]->SendProcess(size, p);
 }
 
 void ClientMgr::SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize)

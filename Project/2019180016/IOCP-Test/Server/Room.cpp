@@ -102,3 +102,9 @@ void Room::AddKillCount(bool IsTeamA)
 		}
 	}
 }
+
+BYTE* Room::GetBuildingExist(int& size)
+{
+	size = TILE_MIDDLE_COUNT + TILE_SECTION1_COUNT + TILE_SECTION2_COUNT + TILE_SECTION3_COUNT;
+	return BuildingExist;
+}

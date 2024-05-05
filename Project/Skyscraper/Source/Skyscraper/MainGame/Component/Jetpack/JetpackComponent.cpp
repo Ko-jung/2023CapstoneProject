@@ -153,8 +153,12 @@ void UJetpackComponent::SetFuel(double NewFuel)
 	JetpackFuel = FMath::Max(0.0f, NewFuel);
 
 	{
-		// == TODO: UI 내 제트팩 연료 설정
-		JetpackWidget->SetJetpackGaugePercent(JetpackFuel / MaxJetpackFuel);
+		// UI 내 제트팩 연료 설정
+		if(JetpackWidget)
+		{
+			JetpackWidget->SetJetpackGaugePercent(JetpackFuel / MaxJetpackFuel);
+		}
+		
 	}
 
 }

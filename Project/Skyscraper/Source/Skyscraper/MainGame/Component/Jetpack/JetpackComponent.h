@@ -84,6 +84,9 @@ public:
 	UFUNCTION()
 		void DeactivateBoostGaugeInfinity();
 
+	//========== 2019180016 ==========
+		void AddInputMappingContext();
+	//================================
 
 protected:
 	// == Owner 캐릭터 관련

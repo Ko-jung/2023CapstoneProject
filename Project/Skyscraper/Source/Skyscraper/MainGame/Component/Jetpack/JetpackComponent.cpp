@@ -73,45 +73,49 @@ void UJetpackComponent::BeginPlay()
 	{ // == Get Owner Character
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 	}
-
-	{// == UI 연결하기
-		if(GetOwnerPlayerController())
-		{
-			JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(GetOwnerPlayerController(), JetpackWidgetClass));
-			JetpackWidget->AddToViewport();
-		}
-		
-	}
 	
+	AddInputMappingContext();
 
-
-
-	JetpackFuel = MaxJetpackFuel;
-
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(IMC_Jetpack, 1);
+	// Move to AddInputMappingContext()
 	
-			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-			{
-				// Hover InputAction 바인딩
-				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
-				// 대시 InputAction 바인딩
-				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
-				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
-				// 회피 InputAction 바인딩
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_A], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
-				
-			}
-		}
-	}
+	//{// == UI 연결하기
+	//	if(GetOwnerPlayerController())
+	//	{
+	//		JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(GetOwnerPlayerController(), JetpackWidgetClass));
+	//		JetpackWidget->AddToViewport();
+	//	}
+	//	
+	//}
+	//
+	//
+	//
+	//
+	//JetpackFuel = MaxJetpackFuel;
+	//
+	////Add Input Mapping Context
+	//if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
+	//{
+	//	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	//	{
+	//		Subsystem->AddMappingContext(IMC_Jetpack, 1);
+	//
+	//		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+	//		{
+	//			// Hover InputAction 바인딩
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
+	//			// 대시 InputAction 바인딩
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
+	//			// 회피 InputAction 바인딩
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
+	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_A], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
+	//			
+	//		}
+	//	}
+	//}
 }
 
 
@@ -374,4 +378,43 @@ void UJetpackComponent::DeactivateBoostGaugeInfinity()
 	GetWorld()->GetTimerManager().ClearTimer(BoostGaugeInfinityTimerHandle);
 	bIsBoostGaugeInfinity = false;
 	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Deactivate"));
+}
+
+void UJetpackComponent::AddInputMappingContext()
+{
+	{// == UI 연결하기
+		if (GetOwnerPlayerController())
+		{
+			JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(GetOwnerPlayerController(), JetpackWidgetClass));
+			JetpackWidget->AddToViewport();
+		}
+
+	}
+
+	JetpackFuel = MaxJetpackFuel;
+
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(IMC_Jetpack, 1);
+
+			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+			{
+				// Hover InputAction 바인딩
+				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
+				// 대시 InputAction 바인딩
+				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
+				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
+				// 회피 InputAction 바인딩
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_A], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
+
+			}
+		}
+	}
 }

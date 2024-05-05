@@ -264,6 +264,12 @@ void ASkyscraperCharacter::SwapWeapon(ESwapWeapon WeaponType)
 	}
 }
 
+void ASkyscraperCharacter::AddInputMappingContext()
+{
+	CombatSystemComponent->AddInputMappingContext();
+	JetpackComponent->AddInputMappingContext();
+}
+
 void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
 {
 	SetActorTransform(t);

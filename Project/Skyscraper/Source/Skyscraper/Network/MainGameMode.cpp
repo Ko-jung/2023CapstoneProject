@@ -232,7 +232,7 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	if (TargetSerialNum == SerialNum)
 	{
 		GetWorld()->GetFirstPlayerController()->Possess(character);
-		character->CombatSystemComponent->AddInputMappingContext();
+		character->AddInputMappingContext();
 	}
 	else
 	{

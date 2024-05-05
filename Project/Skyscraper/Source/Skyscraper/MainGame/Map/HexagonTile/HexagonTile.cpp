@@ -285,7 +285,9 @@ void AHexagonTile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//InitialSettings();
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+	if(!GameMode->GetIsConnected())
+		InitialSettings();
 }
 
 // Called every frame

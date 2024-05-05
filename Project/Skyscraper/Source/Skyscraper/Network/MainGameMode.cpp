@@ -25,7 +25,7 @@ void AMainGameMode::BeginPlay()
 	bIsConnected = instance->GetIsConnect();
 	if (!bIsConnected)
 	{
-		Super::BeginPlay();
+		// Super::BeginPlay();
 		return;
 	}
 	PlayerSelectInfo = instance->GetSelectInfo();

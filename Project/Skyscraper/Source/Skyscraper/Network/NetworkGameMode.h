@@ -37,6 +37,7 @@ public:
 public:
 	void SetOwnSerialNum(int serial);
 	int GetSerialNum() { return SerialNum; }
+	bool GetIsConnected() { return bIsConnected; }
 
 protected:
 	concurrency::concurrent_queue<Packet*> FuncQueue;

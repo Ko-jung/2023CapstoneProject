@@ -43,6 +43,8 @@ void URPGComponent::Fire(float fBaseDamage)
 {
 	if (!GetOwnerPlayerController()) return;
 
+	UseBullet();
+
 	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
 
 	FVector SpawnLocation = OwnerCharacter->GetActorLocation();

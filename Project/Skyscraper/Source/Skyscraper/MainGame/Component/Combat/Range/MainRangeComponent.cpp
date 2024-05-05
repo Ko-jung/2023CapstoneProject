@@ -17,6 +17,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
+#include "Skyscraper/MainGame/Widget/Ammo/MyAmmoWidget.h"
 
 #include "Skyscraper/Network/MainGameMode.h"
 
@@ -60,6 +61,11 @@ UMainRangeComponent::UMainRangeComponent()
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ReloadRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Combat/Range/IA_Reload.IA_Reload'"));
 		IA_Reload = IA_ReloadRef.Object;
 	}
+
+	{ // 제트팩 위젯 클래스 로드
+		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MyAmmoClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Ammo/WBP_MyAmmo.WBP_MyAmmo_C'"));
+		MyAmmoClass = WBP_MyAmmoClass.Class;
+	}
 }
 
 
@@ -82,7 +88,15 @@ void UMainRangeComponent::BeginPlay()
 
 	
 
-	// == TODO: UI BulletCount set
+	
+	{// == UI 연결하기 // UI BulletCount set
+		if (GetOwnerPlayerController())
+		{
+			MyAmmoWidget= Cast<UMyAmmoWidget>(CreateWidget(GetOwnerPlayerController(), MyAmmoClass));
+			MyAmmoWidget->AddToViewport();
+		}
+
+	}
 
 	// == TODO: Create Range Widget
 	
@@ -146,7 +160,6 @@ void UMainRangeComponent::RemoveThisWeapon()
 void UMainRangeComponent::PlayFireAnim()
 {
 	if (!CanFire()) return;
-	UE_LOG(LogTemp, Warning, TEXT("총 발사"));
 	CurrentFireCoolTime = FireMaxCoolTime;
 
 	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
@@ -174,8 +187,12 @@ void UMainRangeComponent::UseBullet()
 	}
 
 	CurrentBulletCount -= 1;
-	UE_LOG(LogTemp, Warning, TEXT("BulletCount : %d"), CurrentBulletCount);
-	// == TODO: Set UI BulletCount text
+	
+	if(MyAmmoWidget)
+	{
+		MyAmmoWidget->SetAmmoPercent(CurrentBulletCount, BulletMaxCount);
+	}
+	
 }
 
 void UMainRangeComponent::Fire(float fBaseDamage)
@@ -272,6 +289,10 @@ void UMainRangeComponent::BulletReloading()
 	CurrentBulletCount = BulletMaxCount;
 
 	// == TODO: UI Text set
+	if (MyAmmoWidget)
+	{
+		MyAmmoWidget->SetAmmoPercent(CurrentBulletCount, BulletMaxCount);
+	}
 
 	// == TODO: Reload Cool time down
 	if (!ReloadCoolTimerHandle.IsValid())

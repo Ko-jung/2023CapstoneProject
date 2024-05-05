@@ -8,6 +8,8 @@
 #include "MainRangeComponent.generated.h"
 
 
+class UMyAmmoWidget;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
 class SKYSCRAPER_API UMainRangeComponent : public UActorComponent
 {
@@ -111,6 +113,12 @@ protected:
 	FTimerHandle ReloadCoolTimerHandle;
 	FTimerHandle BulletInfinityTimerHandle;
 
+
+	// 총알 탄수에 대한 UI의 클래스와 변수
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> MyAmmoClass;
+	UPROPERTY()
+		UMyAmmoWidget* MyAmmoWidget;
 
 protected:
 	//FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }

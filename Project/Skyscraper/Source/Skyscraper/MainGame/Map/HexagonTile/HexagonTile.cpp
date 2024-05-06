@@ -268,7 +268,8 @@ AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 
 			if (Building)
 			{
 				Building->Initialize(Floor);
-				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * FMath::RandRange(0, 2),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (Floor % 3),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
+				//Building->SetActorLabel(FString(L"SpawnBuilding"));
 			}
 			Tile_Actor.Add(TargetTile, Building);
 			return Building;
@@ -304,6 +305,8 @@ void AHexagonTile::Tick(float DeltaTime)
 
 void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 {
+	memcpy(BuildInfo, BuildingInfo, sizeof(BuildInfo));
+
 	BYTE Middle = BuildingInfo[0];
 	BYTE Section3[(BYTE)ESectionCount::SECTION3];
 	BYTE Section2[(BYTE)ESectionCount::SECTION2];
@@ -322,20 +325,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 	{
 		switch (Section3[i])
 		{
-		case 1:	// BUILDING
-		{
-			//// 빌딩 생성 및 추가
-			//ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
-			//if (Building)
-			//{
-			//	Building->Initialize(Floor);
-			//	Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * FMath::RandRange(0, 2),0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
-			//	//Building->SetActorLocation();
-			//}
-			//Tile_Actor.Add(SectionTiles[i], Building);
-			//break;
-		}
-		case 2: // FLOATING TILE
+		case (BYTE)ETILETYPE::FLOATINGTILE: // FLOATING TILE
 		{
 			// 부유타일 생성 및 추가
 			AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
@@ -345,6 +335,16 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 				FloatingTile->FinishSpawning(FTransform{ FRotator{},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
 			}
 			Tile_Actor.Add(SectionTiles[i], FloatingTile);
+			break;
+		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
+		{
+			ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 1), 7, FName("Section3")));
+			break;
+		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
+		{
+			BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 1), 7, FName("Section3")));
 			break;
 		}
 		default:
@@ -392,7 +392,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 	{
 		switch (Section1[i])
 		{
-		case 1:	// BUILDING
+		case (BYTE)ETILETYPE::BUILDING:	// BUILDING
 		{
 			// 빌딩 생성 및 추가
 			ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
@@ -405,7 +405,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 			Tile_Actor.Add(SectionTiles[i], Building);
 			break;
 		}
-		case 2: // FLOATING TILE
+		case (BYTE)ETILETYPE::FLOATINGTILE: // FLOATING TILE
 		{
 			// 부유타일 생성 및 추가
 			AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
@@ -415,6 +415,16 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 				FloatingTile->FinishSpawning(FTransform{ FRotator{},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D() });
 			}
 			Tile_Actor.Add(SectionTiles[i], FloatingTile);
+			break;
+		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
+		{
+			ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 7, FName("Section3")));
+			break;
+		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
+		{
+			BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 7, FName("Section3")));
 			break;
 		}
 		default:

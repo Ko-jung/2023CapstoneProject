@@ -20,12 +20,15 @@
 
 void AMainGameMode::BeginPlay()
 {
+	GetHexagonTileOnLevel();
+
 	// Get Socket Instance
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 	bIsConnected = instance->GetIsConnect();
 	if (!bIsConnected)
 	{
 		// Super::BeginPlay();
+		HexagonTile->Init();
 		return;
 	}
 	PlayerSelectInfo = instance->GetSelectInfo();
@@ -51,8 +54,6 @@ void AMainGameMode::BeginPlay()
 	{
 		SpawnCharacter(i);
 	}
-
-	GetHexagonTileOnLevel();
 
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);

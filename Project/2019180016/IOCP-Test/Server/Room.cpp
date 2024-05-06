@@ -39,8 +39,18 @@ Room::Room()
 	//	}
 	//}
 
+	// SpawnBuilding의 한 위치를 잡아서 그 위치를 기준으로 4개 빌딩을 제작
+	auto SpawnRand = RandomUtil::RandUniqueInt(0, TILE_SECTION3_COUNT - 1, 1);
+	int APos = SpawnRand[0];
+	int BPos;		// APos의 반대편
+
 	// Section3
-	auto RandInt = RandomUtil::RandUniqueInt(0, TILE_SECTION3_COUNT - 1, BUILDING_SECTION3_COUNT + FLOATING_TILE_SECTION3_COUNT);
+	BPos = (SpawnRand[0] + TILE_SECTION3_COUNT / 2) % TILE_SECTION3_COUNT;
+	BuildingExist[TILE_MIDDLE_COUNT + APos] = (BYTE)ETILETYPE::SPAWNBUILDING_A;
+	BuildingExist[TILE_MIDDLE_COUNT + BPos] = (BYTE)ETILETYPE::SPAWNBUILDING_B;
+
+	auto RandInt = RandomUtil::RandUniqueInt(0, TILE_SECTION3_COUNT - 1, BUILDING_SECTION3_COUNT + FLOATING_TILE_SECTION3_COUNT,
+												std::vector<int>{APos, BPos});
 	int i = 0;
 	for (; i < BUILDING_SECTION3_COUNT; i++)	// Set BUILDING
 	{
@@ -64,7 +74,11 @@ Room::Room()
 	}
 
 	// Section1
-	RandInt = RandomUtil::RandUniqueInt(0, TILE_SECTION1_COUNT - 1, BUILDING_SECTION1_COUNT + FLOATING_TILE_SECTION1_COUNT);
+	BPos = (SpawnRand[0] + TILE_SECTION1_COUNT / 2) % TILE_SECTION1_COUNT;
+	BuildingExist[TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT + TILE_SECTION2_COUNT + APos] = (BYTE)ETILETYPE::SPAWNBUILDING_A;
+	BuildingExist[TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT + TILE_SECTION2_COUNT + BPos] = (BYTE)ETILETYPE::SPAWNBUILDING_B;
+	RandInt = RandomUtil::RandUniqueInt(0, TILE_SECTION1_COUNT - 1, BUILDING_SECTION1_COUNT + FLOATING_TILE_SECTION1_COUNT,
+								std::vector<int>{APos, BPos});
 	i = 0;
 	for (; i < BUILDING_SECTION1_COUNT; i++)	// Set BUILDING
 	{
@@ -82,23 +96,25 @@ void Room::AddKillCount(bool IsTeamA)
 	{
 		if (IsTeamA)
 		{
-			int score = KillScore[(int)ETEAM::A];
-			bool IsSucc = std::atomic_compare_exchange_strong(
-				&KillScore[(int)ETEAM::A],
-				&score,
-				score + 1);
+			++KillScore[(int)ETEAM::A];
+			//int score = KillScore[(int)ETEAM::A];
+			//bool IsSucc = std::atomic_compare_exchange_strong(
+			//	&KillScore[(int)ETEAM::A],
+			//	&score,
+			//	score + 1);
 
-			if (IsSucc) return;
+			//if (IsSucc) return;
 		}
 		else
 		{
-			int score = KillScore[(int)ETEAM::B];
-			bool IsSucc = std::atomic_compare_exchange_strong(
-				&KillScore[(int)ETEAM::B],
-				&score,
-				score + 1);
+			++KillScore[(int)ETEAM::B];
+			//int score = KillScore[(int)ETEAM::B];
+			//bool IsSucc = std::atomic_compare_exchange_strong(
+			//	&KillScore[(int)ETEAM::B],
+			//	&score,
+			//	score + 1);
 
-			if (IsSucc) return;
+			//if (IsSucc) return;
 		}
 	}
 }
@@ -107,4 +123,9 @@ BYTE* Room::GetBuildingExist(int& size)
 {
 	size = TILE_MIDDLE_COUNT + TILE_SECTION1_COUNT + TILE_SECTION2_COUNT + TILE_SECTION3_COUNT;
 	return BuildingExist;
+}
+
+void Room::SpawnItem(int ItemCount)
+{
+
 }

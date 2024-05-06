@@ -8,9 +8,9 @@ NetworkManager::NetworkManager() :
 	Thread(nullptr),
 	Gamemode(nullptr),
 	bIsConnected(false),
-	SerialNum(0),
 	State(ENetworkState::SelectGame),
 	IsChangingGameMode(false),
+	SerialNum(0),
 	RemainDataLen(0)
 {
 }

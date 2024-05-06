@@ -268,6 +268,7 @@ void ASkyscraperCharacter::AddInputMappingContext()
 {
 	CombatSystemComponent->AddInputMappingContext();
 	JetpackComponent->AddInputMappingContext();
+	HealthComponent->AddWidget();
 }
 
 void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)

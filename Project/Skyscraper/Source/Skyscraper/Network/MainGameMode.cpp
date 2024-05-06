@@ -204,7 +204,6 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	FName Team;
 	FVector Location;
 	FActorSpawnParameters spawnParams;
-
 	if (TargetSerialNum < MAXPLAYER / 2)
 	{
 		Team = TeamName[(int)ETEAM::A];
@@ -240,6 +239,9 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 			GetWorld()->SpawnActor<ASkyscraperPlayerController>(ASkyscraperPlayerController::StaticClass(), FVector(), FRotator());
 		controller->Possess(character);
 	}
+
+	// Set Weapon
+	character->CombatSystemComponent->SetInitialSelect(PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon, PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon);
 
 	Characters[TargetSerialNum] = character;
 }

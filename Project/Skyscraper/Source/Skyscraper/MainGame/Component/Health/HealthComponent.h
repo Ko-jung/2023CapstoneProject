@@ -108,6 +108,8 @@ public:
 	// Process Packet From Server
 	void ChangeCurrentHp(float hp);
 	void ChangeState(EHealthState s);
+
+	void AddWidget();
 	// ==================
 	
 private:

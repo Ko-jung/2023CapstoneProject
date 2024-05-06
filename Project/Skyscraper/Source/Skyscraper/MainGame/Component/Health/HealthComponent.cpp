@@ -65,13 +65,8 @@ void UHealthComponent::BeginPlay()
 		HealthProgressBar = Cast<UHealthBar>(HealthBarWidgetComponent->GetUserWidgetObject());
 	}
 
-	{// == My Health UI 연결하기
-		if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-		{
-			MyHealthWidget= Cast<UMyHealthWidget>(CreateWidget(PlayerController, MyHealthWidgetClass));
-			MyHealthWidget->AddToViewport();
-		}
-	}
+	// 생성 시 Player엔 controller가 없다. 후에 불러줄 예정
+	AddWidget();
 	
 }
 
@@ -194,6 +189,17 @@ void UHealthComponent::ChangeState(EHealthState s)
 		break;
 	default:
 		break;
+	}
+}
+
+void UHealthComponent::AddWidget()
+{
+	{// == My Health UI 연결하기
+		if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
+		{
+			MyHealthWidget = Cast<UMyHealthWidget>(CreateWidget(PlayerController, MyHealthWidgetClass));
+			MyHealthWidget->AddToViewport();
+		}
 	}
 }
 

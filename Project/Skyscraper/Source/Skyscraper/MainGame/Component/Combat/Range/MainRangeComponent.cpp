@@ -92,8 +92,12 @@ void UMainRangeComponent::BeginPlay()
 	{// == UI 연결하기 // UI BulletCount set
 		if (GetOwnerPlayerController())
 		{
-			MyAmmoWidget= Cast<UMyAmmoWidget>(CreateWidget(GetOwnerPlayerController(), MyAmmoClass));
-			MyAmmoWidget->AddToViewport();
+			auto Widget = CreateWidget(GetOwnerPlayerController(), MyAmmoClass);
+			if (Widget)
+			{
+				MyAmmoWidget = Cast<UMyAmmoWidget>(Widget);
+				MyAmmoWidget->AddToViewport();
+			}
 		}
 
 	}

@@ -92,6 +92,7 @@ public:
 	// ======= 2019180016 ========	
 	enum class ESectionCount : uint8 {MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };
 	void InitialSettings(BYTE* BuildingInfo);	// Setting Building From Server
+	void Init();								// Call InitialSettings(BYTE* BuildingInfo) or InitialSettings()
 
 	TArray<UChildActorComponent*> GetTilesWithTag(FName tag);
 	// ===========================

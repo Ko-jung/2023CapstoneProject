@@ -52,6 +52,8 @@ void AMainGameMode::BeginPlay()
 		SpawnCharacter(i);
 	}
 
+	GetHexagonTileOnLevel();
+
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
 	m_Socket->Send(&PRP, PRP.PacketSize);
@@ -317,19 +319,25 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 
 void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 {
-	TArray<AActor*> HexagonTile;
-	UGameplayStatics::GetAllActorsOfClass(this, AHexagonTile::StaticClass(), HexagonTile);
+	HexagonTile->InitialSettings(PBI->BuildInfo);
+}
 
-	for (auto& h : HexagonTile)
+void AMainGameMode::GetHexagonTileOnLevel()
+{
+	TArray<AActor*> HexagonTiles;
+	UGameplayStatics::GetAllActorsOfClass(this, AHexagonTile::StaticClass(), HexagonTiles);
+
+	for (auto& h : HexagonTiles)
 	{
-		AHexagonTile* Hexgon = Cast<AHexagonTile>(h);
-		if (!Hexgon)
+		AHexagonTile* Hexagon = Cast<AHexagonTile>(h);
+		if (!Hexagon)
 		{
 			UE_LOG(LogClass, Warning, TEXT("AHexagonTIle Cast FAILED!"));
 			break;
 		}
 
-		//Hexgon->InitialSettings();
+		HexagonTile = Hexagon;
+		break;
 	}
 }
 

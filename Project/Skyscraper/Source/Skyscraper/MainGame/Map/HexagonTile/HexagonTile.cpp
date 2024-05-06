@@ -97,6 +97,7 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 
 void AHexagonTile::InitialSettings()
 {
+	UE_LOG(LogClass, Warning, TEXT("AHexagonTile::InitialSettings()"));
 	// ÆÀ ¸®½ºÆù À§Ä¡ ºôµù »ý¼º
 	{
 		// ºØ±« ¹æÇâ ¼³Á¤ ( 0',60',120',180',240',300' )
@@ -285,9 +286,8 @@ void AHexagonTile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-	if(!GameMode->GetIsConnected())
-		InitialSettings();
+	// Move to Init()
+	//InitialSettings();
 }
 
 // Called every frame
@@ -298,6 +298,9 @@ void AHexagonTile::Tick(float DeltaTime)
 
 
 }
+
+#include "Kismet/KismetSystemLibrary.h"
+#include "Containers/UnrealString.h"
 
 void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 {
@@ -361,7 +364,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 			if (Building)
 			{
 				Building->Initialize(5);
-				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f/* * FMath::RandRange(0, 2)*/,0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (i % 3),0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
 				//Building->SetActorLocation();
 			}
 			Tile_Actor.Add(SectionTiles[i], Building);
@@ -396,7 +399,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 			if (Building)
 			{
 				Building->Initialize(5);
-				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f/* * FMath::RandRange(0, 2)*/,0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D() });
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (i % 3),0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D() });
 				//Building->SetActorLocation();
 			}
 			Tile_Actor.Add(SectionTiles[i], Building);
@@ -418,6 +421,13 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 			break;
 		}
 	}
+}
+
+void AHexagonTile::Init()
+{	
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+	if(!GameMode->GetIsConnected())
+		InitialSettings();
 }
 
 TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)

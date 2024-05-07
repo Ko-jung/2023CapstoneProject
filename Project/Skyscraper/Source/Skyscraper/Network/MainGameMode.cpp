@@ -407,9 +407,12 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 	m_Socket->Send(&PSO, sizeof(PSO));
 }
 
-void AMainGameMode::SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage)
+void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage)
 {
 	if (!bIsConnected)
+		return;
+
+	if (Sender != Characters[SerialNum])
 		return;
 
 	UE_LOG(LogClass, Warning, TEXT("Sending Anim Motage Status"));

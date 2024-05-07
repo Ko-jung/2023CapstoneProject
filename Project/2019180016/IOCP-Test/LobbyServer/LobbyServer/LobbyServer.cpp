@@ -251,7 +251,9 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 	}
 	const int PacketType = *(BYTE*)exp->_wsa_buf.buf;
 
-	switch (PacketType)
+	Packet* packet = reinterpret_cast<Packet*>(exp);
+
+	switch (packet->PacketType)
 	{
 	case (int)COMP_OP::OP_STARTMATCHING:
 		m_MatchingQueue.push(m_Clients[id]);

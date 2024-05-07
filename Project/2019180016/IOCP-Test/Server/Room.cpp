@@ -92,8 +92,8 @@ Room::Room()
 
 void Room::AddKillCount(bool IsTeamA)
 {
-	while (true)
-	{
+	//while (true)
+	//{
 		if (IsTeamA)
 		{
 			++KillScore[(int)ETEAM::A];
@@ -116,7 +116,7 @@ void Room::AddKillCount(bool IsTeamA)
 
 			//if (IsSucc) return;
 		}
-	}
+	//}
 }
 
 BYTE* Room::GetBuildingExist(int& size)

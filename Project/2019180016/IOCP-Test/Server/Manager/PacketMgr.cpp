@@ -187,6 +187,8 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 
 void PacketMgr::PlayerDeadProcessing(int ClientId)
 {
+	cout << ClientId << "Is Dead" << endl;
+
 	// Add Kill
 	RoomMgr::Instance()->AddKillCount(ClientId);
 

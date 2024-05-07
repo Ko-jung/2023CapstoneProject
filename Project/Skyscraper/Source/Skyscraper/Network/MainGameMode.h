@@ -40,7 +40,7 @@ public:
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();
 	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
-	void SendAnimMontageStatus(ECharacterAnimMontage eAnimMontage);
+	void SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage);
 	void SendTakeDamage(AActor* Sender, AActor* Target);
 
 	// UE5 Function Code

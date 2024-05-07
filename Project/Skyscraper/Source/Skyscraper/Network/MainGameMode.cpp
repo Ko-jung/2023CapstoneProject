@@ -50,11 +50,12 @@ void AMainGameMode::BeginPlay()
 
 	Characters.Init(nullptr, MAXPLAYER);
 
-	for (int i = 0; i < PlayerSelectInfo.Num(); i++)
+	// Move to ProcessBuildingInfo
+	/*for (int i = 0; i < PlayerSelectInfo.Num(); i++)
 	{
 		SpawnCharacter(i);
-	}
-
+	}*/
+	
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
 	m_Socket->Send(&PRP, PRP.PacketSize);
@@ -208,23 +209,18 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	FName Team;
 	FVector Location = HexagonTile->GetSpawnLocation(IsTeamA);
 	FActorSpawnParameters spawnParams;
-	if (IsTeamA)
-	{
-		Team = TeamName[(int)ETEAM::A];
-		Location = SpawnLoction[(int)ETEAM::A];
-	}
-	else
-	{
-		Team = TeamName[(int)ETEAM::B];
-		Location = SpawnLoction[(int)ETEAM::B];
-	}
+
+	if (IsTeamA)	Team = TeamName[(int)ETEAM::A];
+	else			Team = TeamName[(int)ETEAM::B];
+	//Location = SpawnLoction[(int)ETEAM::A];
 
 	ASkyscraperCharacter* character = nullptr;
 	while (true)
 	{
-		// Temp Code
-		//Location = TempSpawnLocation[FMath::RandRange(0, 4)];
-		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, Location, FRotator{}, spawnParams);
+		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 100.f, Location.X + 100.f),
+										FMath::RandRange(Location.Y - 100.f, Location.Y + 100.f),
+										Location.Z};
+		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, SpawnLocation, FRotator{}, spawnParams);
 
 		if (!character) continue;
 
@@ -263,7 +259,8 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	float speed = PlayerPosition.PlayerSpeed;
 	float XRotate = PlayerPosition.PlayerXDirection;
 
-	Characters[Serial]->SyncTransformAndAnim(transform, speed, XRotate);
+	if(Characters[Serial])
+		Characters[Serial]->SyncTransformAndAnim(transform, speed, XRotate);
 }
 
 void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
@@ -322,6 +319,11 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 {
 	HexagonTile->InitialSettings(PBI->BuildInfo);
+
+	for (int i = 0; i < PlayerSelectInfo.Num(); i++)
+	{
+		SpawnCharacter(i);
+	}
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()
@@ -345,6 +347,8 @@ void AMainGameMode::GetHexagonTileOnLevel()
 
 void AMainGameMode::SendPlayerLocation()
 {
+	if (!Characters[SerialNum]) return;
+
 	FVector location = Characters[SerialNum]->GetActorLocation();
 	FRotator rotate = Characters[SerialNum]->GetActorRotation();
 	int speed = Characters[SerialNum]->GetVelocity().Length();
@@ -376,7 +380,7 @@ void AMainGameMode::SendPlayerSwapWeaponInfo()
 	ESwapWeapon WeaponType;
 	uint8 EquippedWeapon;
 
-	if (PossessCharacter->CheckHoldWeapon(WeaponType, EquippedWeapon))
+	if (PossessCharacter && PossessCharacter->CheckHoldWeapon(WeaponType, EquippedWeapon))
 	{
 		PSwapWeapon PSW(SerialNum, WeaponType);
 		m_Socket->Send(&PSW, sizeof(PSW));

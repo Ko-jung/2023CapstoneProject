@@ -302,9 +302,6 @@ void AHexagonTile::Tick(float DeltaTime)
 
 }
 
-#include "Kismet/KismetSystemLibrary.h"
-#include "Containers/UnrealString.h"
-
 void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 {
 	memcpy(BuildInfo, BuildingInfo, sizeof(BuildInfo));
@@ -421,12 +418,12 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 		}
 		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
 		{
-			ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 7, FName("Section3")));
+			ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 3, FName("Section1")));
 			break;
 		}
 		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
 		{
-			BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 7, FName("Section3")));
+			BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 3, FName("Section1")));
 			break;
 		}
 		default:
@@ -458,24 +455,24 @@ TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)
 
 FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 {
+	if (ATeamBuildings.IsEmpty() || BTeamBuildings.IsEmpty()) return FVector();
+
 	int TileDropIndex = TileDropLevel == 0 ? 0 : 1;
+	ABuilding* Building = nullptr;
 	if(IsTeamA)
 	{
-		ABuilding* Building = Cast<ABuilding>(ATeamBuildings[TileDropIndex]);
-		if (Building)
-		{
-			
-		}
-		return ATeamBuildings[TileDropIndex]->GetActorLocation();
+		Building = Cast<ABuilding>(ATeamBuildings[TileDropIndex]);
 	}
 	else
 	{
-		ABuilding* Building = Cast<ABuilding>(BTeamBuildings[TileDropIndex]);
-		if (Building)
-		{
+		Building = Cast<ABuilding>(BTeamBuildings[TileDropIndex]);
+	}
 
-		}
-		return BTeamBuildings[TileDropIndex]->GetActorLocation();
+	if (Building)
+	{
+		FVector ReturnVector = (*Building->Building_Floors.rbegin())->GetActorLocation();
+		ReturnVector.Z -= Building->FloorDistance * 0.8f;
+		return ReturnVector;
 	}
 
 	return FVector();

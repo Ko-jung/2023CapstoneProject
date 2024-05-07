@@ -110,7 +110,8 @@ void AMainGameMode::ProcessFunc()
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERHP:
 		{
 			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(packet);
-			Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
+			if (Characters[PCPHP->ChangedPlayerSerial])
+				Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
 			break;
 		}
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERSTATE:
@@ -144,14 +145,16 @@ void AMainGameMode::ProcessFunc()
 		{
 			PChangeAnimMontage PCAM;
 			memcpy(&PCAM, packet, sizeof(PCAM));
-			Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage);
+			if(Characters[PCAM.ChangedPlayerSerial])
+				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage);
 			break;
 		}
 		case (BYTE)COMP_OP::OP_SWAPWEAPON:
 		{
 			PSwapWeapon PSW;
 			memcpy(&PSW, packet, sizeof(PSW));
-			Characters[PSW.SwapingPlayer]->SwapWeapon(PSW.SwapWeapon);
+			if (Characters[PSW.SwapingPlayer])
+				Characters[PSW.SwapingPlayer]->SwapWeapon(PSW.SwapWeapon);
 			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_SWAPWEAPON"));
 			break;
 		}
@@ -284,6 +287,8 @@ void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 
 void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 {
+	if (!Characters[PCPS->ChangedPlayerSerial]) return;
+
 	if (PCPS->State == EHealthState::EHS_DEAD)
 	{
 		// Add Kill Count

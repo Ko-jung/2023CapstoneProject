@@ -35,6 +35,7 @@ public:
 	void ProcessSpawnObject(PSpawnObject PSO);
 	void ProcessChangedCharacterState(PChangedPlayerState* PCPS);
 	void ProcessBuildingInfo(PBuildingInfo* PBI);
+	void GetHexagonTileOnLevel();
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();
@@ -66,6 +67,8 @@ public:
 private:
 	TArray<ASkyscraperCharacter*> Characters;
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
+
+	class AHexagonTile* HexagonTile;
 
 	enum class ETEAM {A, B};
 	int KillCount[2] = { 0, };

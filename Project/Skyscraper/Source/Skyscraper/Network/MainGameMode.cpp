@@ -20,12 +20,15 @@
 
 void AMainGameMode::BeginPlay()
 {
+	GetHexagonTileOnLevel();
+
 	// Get Socket Instance
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 	bIsConnected = instance->GetIsConnect();
 	if (!bIsConnected)
 	{
 		// Super::BeginPlay();
+		HexagonTile->Init();
 		return;
 	}
 	PlayerSelectInfo = instance->GetSelectInfo();
@@ -201,10 +204,11 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	}
 
 	// Set Team Tag and Spawn Location
+	bool IsTeamA = TargetSerialNum < MAXPLAYER / 2;
 	FName Team;
-	FVector Location;
+	FVector Location = HexagonTile->GetSpawnLocation(IsTeamA);
 	FActorSpawnParameters spawnParams;
-	if (TargetSerialNum < MAXPLAYER / 2)
+	if (IsTeamA)
 	{
 		Team = TeamName[(int)ETEAM::A];
 		Location = SpawnLoction[(int)ETEAM::A];
@@ -219,7 +223,7 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	while (true)
 	{
 		// Temp Code
-		Location = TempSpawnLocation[FMath::RandRange(0, 4)];
+		//Location = TempSpawnLocation[FMath::RandRange(0, 4)];
 		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, Location, FRotator{}, spawnParams);
 
 		if (!character) continue;
@@ -317,19 +321,25 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 
 void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 {
-	TArray<AActor*> HexagonTile;
-	UGameplayStatics::GetAllActorsOfClass(this, AHexagonTile::StaticClass(), HexagonTile);
+	HexagonTile->InitialSettings(PBI->BuildInfo);
+}
 
-	for (auto& h : HexagonTile)
+void AMainGameMode::GetHexagonTileOnLevel()
+{
+	TArray<AActor*> HexagonTiles;
+	UGameplayStatics::GetAllActorsOfClass(this, AHexagonTile::StaticClass(), HexagonTiles);
+
+	for (auto& h : HexagonTiles)
 	{
-		AHexagonTile* Hexgon = Cast<AHexagonTile>(h);
-		if (!Hexgon)
+		AHexagonTile* Hexagon = Cast<AHexagonTile>(h);
+		if (!Hexagon)
 		{
 			UE_LOG(LogClass, Warning, TEXT("AHexagonTIle Cast FAILED!"));
 			break;
 		}
 
-		//Hexgon->InitialSettings();
+		HexagonTile = Hexagon;
+		break;
 	}
 }
 

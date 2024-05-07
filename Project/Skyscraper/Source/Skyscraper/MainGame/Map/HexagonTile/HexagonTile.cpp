@@ -82,6 +82,8 @@ AHexagonTile::AHexagonTile()
 	// 붕괴 타일 클래스 로드
 	ConstructorHelpers::FClassFinder<AActor> GC_TileRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/HexagonTile/BP_GC_Tile.BP_GC_Tile_C'"));
 	GC_Tile = GC_TileRef.Class;
+
+	TileDropLevel = 0;
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -97,6 +99,7 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 
 void AHexagonTile::InitialSettings()
 {
+	UE_LOG(LogClass, Warning, TEXT("AHexagonTile::InitialSettings()"));
 	// 팀 리스폰 위치 빌딩 생성
 	{
 		// 붕괴 방향 설정 ( 0',60',120',180',240',300' )
@@ -267,7 +270,8 @@ AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 
 			if (Building)
 			{
 				Building->Initialize(Floor);
-				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * FMath::RandRange(0, 2),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (Floor % 3),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
+				//Building->SetActorLabel(FString(L"SpawnBuilding"));
 			}
 			Tile_Actor.Add(TargetTile, Building);
 			return Building;
@@ -285,9 +289,8 @@ void AHexagonTile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-	if(!GameMode->GetIsConnected())
-		InitialSettings();
+	// Move to Init()
+	//InitialSettings();
 }
 
 // Called every frame
@@ -299,8 +302,13 @@ void AHexagonTile::Tick(float DeltaTime)
 
 }
 
+#include "Kismet/KismetSystemLibrary.h"
+#include "Containers/UnrealString.h"
+
 void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 {
+	memcpy(BuildInfo, BuildingInfo, sizeof(BuildInfo));
+
 	BYTE Middle = BuildingInfo[0];
 	BYTE Section3[(BYTE)ESectionCount::SECTION3];
 	BYTE Section2[(BYTE)ESectionCount::SECTION2];
@@ -319,20 +327,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 	{
 		switch (Section3[i])
 		{
-		case 1:	// BUILDING
-		{
-			//// 빌딩 생성 및 추가
-			//ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
-			//if (Building)
-			//{
-			//	Building->Initialize(Floor);
-			//	Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * FMath::RandRange(0, 2),0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
-			//	//Building->SetActorLocation();
-			//}
-			//Tile_Actor.Add(SectionTiles[i], Building);
-			//break;
-		}
-		case 2: // FLOATING TILE
+		case (BYTE)ETILETYPE::FLOATINGTILE: // FLOATING TILE
 		{
 			// 부유타일 생성 및 추가
 			AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
@@ -342,6 +337,16 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 				FloatingTile->FinishSpawning(FTransform{ FRotator{},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
 			}
 			Tile_Actor.Add(SectionTiles[i], FloatingTile);
+			break;
+		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
+		{
+			ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 1), 7, FName("Section3")));
+			break;
+		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
+		{
+			BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 1), 7, FName("Section3")));
 			break;
 		}
 		default:
@@ -361,7 +366,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 			if (Building)
 			{
 				Building->Initialize(5);
-				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f/* * FMath::RandRange(0, 2)*/,0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (i % 3),0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D()});
 				//Building->SetActorLocation();
 			}
 			Tile_Actor.Add(SectionTiles[i], Building);
@@ -389,20 +394,20 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 	{
 		switch (Section1[i])
 		{
-		case 1:	// BUILDING
+		case (BYTE)ETILETYPE::BUILDING:	// BUILDING
 		{
 			// 빌딩 생성 및 추가
 			ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
 			if (Building)
 			{
 				Building->Initialize(5);
-				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f/* * FMath::RandRange(0, 2)*/,0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D() });
+				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (i % 3),0.0f},SectionTiles[i]->GetRelativeLocation() * GetActorScale3D() });
 				//Building->SetActorLocation();
 			}
 			Tile_Actor.Add(SectionTiles[i], Building);
 			break;
 		}
-		case 2: // FLOATING TILE
+		case (BYTE)ETILETYPE::FLOATINGTILE: // FLOATING TILE
 		{
 			// 부유타일 생성 및 추가
 			AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
@@ -414,10 +419,27 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 			Tile_Actor.Add(SectionTiles[i], FloatingTile);
 			break;
 		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
+		{
+			ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 7, FName("Section3")));
+			break;
+		}
+		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
+		{
+			BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance(i, 3), 7, FName("Section3")));
+			break;
+		}
 		default:
 			break;
 		}
 	}
+}
+
+void AHexagonTile::Init()
+{	
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+	if(!GameMode->GetIsConnected())
+		InitialSettings();
 }
 
 TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)
@@ -432,6 +454,31 @@ TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)
 		}
 	}
 	return SectionTiles;
+}
+
+FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
+{
+	int TileDropIndex = TileDropLevel == 0 ? 0 : 1;
+	if(IsTeamA)
+	{
+		ABuilding* Building = Cast<ABuilding>(ATeamBuildings[TileDropIndex]);
+		if (Building)
+		{
+			
+		}
+		return ATeamBuildings[TileDropIndex]->GetActorLocation();
+	}
+	else
+	{
+		ABuilding* Building = Cast<ABuilding>(BTeamBuildings[TileDropIndex]);
+		if (Building)
+		{
+
+		}
+		return BTeamBuildings[TileDropIndex]->GetActorLocation();
+	}
+
+	return FVector();
 }
 
 

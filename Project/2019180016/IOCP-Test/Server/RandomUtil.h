@@ -11,7 +11,8 @@ public:
 
 	static int RandRange(int minInt, int maxInt);
 
-	static std::vector<int> RandUniqueInt(int minInt, int maxInt, int count);
+	static std::vector<int> RandUniqueInt(const int& minInt, const int& maxInt, const int& count);
+	static std::vector<int> RandUniqueInt(const int& minInt, const int& maxInt, const int& count, const std::vector<int>& IncludeInt);
 
 private:
 	std::uniform_int_distribution<int> IntUid;

@@ -90,12 +90,21 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// ======= 2019180016 ========	
-	enum class ESectionCount : uint8 {MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };
-	enum class ETILETYPE : uint8 { NONTILE, BUILDING, FLOATINGTILE, SPAWNBUILDING_A, SPAWNBUILDING_B };
-	BYTE BuildInfo[(uint8)ESectionCount::MIDDLE + (uint8)ESectionCount::SECTION3 + (uint8)ESectionCount::SECTION2 + (uint8)ESectionCount::SECTION1];
 	void InitialSettings(BYTE* BuildingInfo);	// Setting Building From Server
 	void Init();								// Call InitialSettings(BYTE* BuildingInfo) or InitialSettings()
 
 	TArray<UChildActorComponent*> GetTilesWithTag(FName tag);
+
+	int GetTileDropLevel() { return TileDropLevel; }
+	void IncreaseTileDropLevel() { ++TileDropLevel; }
+
+	FVector GetSpawnLocation(bool IsTeamA);
+
+protected:
+	enum class ESectionCount : uint8 { MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };
+	enum class ETILETYPE : uint8 { NONTILE, BUILDING, FLOATINGTILE, SPAWNBUILDING_A, SPAWNBUILDING_B, };
+
+	BYTE BuildInfo[(uint8)ESectionCount::MIDDLE + (uint8)ESectionCount::SECTION3 + (uint8)ESectionCount::SECTION2 + (uint8)ESectionCount::SECTION1];
+	int TileDropLevel;
 	// ===========================
 };

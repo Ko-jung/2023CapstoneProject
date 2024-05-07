@@ -204,10 +204,11 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	}
 
 	// Set Team Tag and Spawn Location
+	bool IsTeamA = TargetSerialNum < MAXPLAYER / 2;
 	FName Team;
-	FVector Location;
+	FVector Location = HexagonTile->GetSpawnLocation(IsTeamA);
 	FActorSpawnParameters spawnParams;
-	if (TargetSerialNum < MAXPLAYER / 2)
+	if (IsTeamA)
 	{
 		Team = TeamName[(int)ETEAM::A];
 		Location = SpawnLoction[(int)ETEAM::A];
@@ -222,7 +223,7 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	while (true)
 	{
 		// Temp Code
-		Location = TempSpawnLocation[FMath::RandRange(0, 4)];
+		//Location = TempSpawnLocation[FMath::RandRange(0, 4)];
 		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, Location, FRotator{}, spawnParams);
 
 		if (!character) continue;

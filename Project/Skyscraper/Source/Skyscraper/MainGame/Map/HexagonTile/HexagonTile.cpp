@@ -82,6 +82,8 @@ AHexagonTile::AHexagonTile()
 	// ºØ±« Å¸ÀÏ Å¬·¡½º ·Îµå
 	ConstructorHelpers::FClassFinder<AActor> GC_TileRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/HexagonTile/BP_GC_Tile.BP_GC_Tile_C'"));
 	GC_Tile = GC_TileRef.Class;
+
+	TileDropLevel = 0;
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -452,6 +454,31 @@ TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)
 		}
 	}
 	return SectionTiles;
+}
+
+FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
+{
+	int TileDropIndex = TileDropLevel == 0 ? 0 : 1;
+	if(IsTeamA)
+	{
+		ABuilding* Building = Cast<ABuilding>(ATeamBuildings[TileDropIndex]);
+		if (Building)
+		{
+			
+		}
+		return ATeamBuildings[TileDropIndex]->GetActorLocation();
+	}
+	else
+	{
+		ABuilding* Building = Cast<ABuilding>(BTeamBuildings[TileDropIndex]);
+		if (Building)
+		{
+
+		}
+		return BTeamBuildings[TileDropIndex]->GetActorLocation();
+	}
+
+	return FVector();
 }
 
 

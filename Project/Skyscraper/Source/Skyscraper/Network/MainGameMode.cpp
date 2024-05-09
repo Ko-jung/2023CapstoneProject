@@ -158,6 +158,24 @@ void AMainGameMode::ProcessFunc()
 			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_SWAPWEAPON"));
 			break;
 		}
+		case (BYTE)COMP_OP::OP_STUNDOWNSTATE:
+		{
+			PStunDownState PSDS;
+			memcpy(&PSDS, packet, sizeof(PSDS));
+			if (Characters[PSDS.TargetSerialNum])
+			{
+				FVector Dirction{ PSDS.Direction.X, PSDS.Direction.Y, PSDS.Direction.Z };
+				if (PSDS.IsStun)
+				{
+					Characters[PSDS.TargetSerialNum]->ApplyStun(PSDS.StunTime, Dirction);
+				}
+				else
+				{
+					Characters[PSDS.TargetSerialNum]->ApplyDown(Dirction);
+				}
+			}
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
 			break;
@@ -433,20 +451,8 @@ void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 		return;
 	}
 
-	int i = 0;
-	{ // Find Target Id
-		for (const auto& c : Characters)
-		{
-			if (c == Target) break;
-			i++;
-		}
-		// Can't Find
-		if (i >= MAXPLAYER)
-		{
-			UE_LOG(LogClass, Warning, TEXT("AMainGameMode::SendTakeDamage Cant find Target Actor ID"));
-			return;
-		}
-	}
+	int i = GetIndex(Target);
+	if (i == -1) return;
 
 	ESwapWeapon weaponType;
 	uint8 equippedWeapon;
@@ -459,6 +465,35 @@ void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 
 	m_Socket->Send(&PDP, sizeof(PDP));
 	UE_LOG(LogClass, Warning, TEXT("Send Weapon Damage"));
+}
+
+void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)
+{
+	int TargetSerialNum = GetIndex(Target);
+	if (TargetSerialNum == -1) return;
+	if (Attacker == Characters[SerialNum])
+	{
+		PStunDownState PSDS{ (BYTE)TargetSerialNum, Dirction, StunTime, IsStun };
+		m_Socket->Send(&PSDS, sizeof(PSDS));
+	}
+}
+
+int AMainGameMode::GetIndex(const AActor* target)
+{
+	int Index = 0;
+	for (const auto& c : Characters)
+	{
+		if (c == target) break;
+		Index++;
+	}
+	// Can't Find
+	if (Index >= MAXPLAYER)
+	{
+		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::GetIndex Cant find Target Actor ID"));
+		return -1;
+	}
+
+	return Index;
 }
 
 float AMainGameMode::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)

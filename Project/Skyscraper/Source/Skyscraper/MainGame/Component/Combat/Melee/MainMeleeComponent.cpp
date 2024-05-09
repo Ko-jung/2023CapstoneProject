@@ -259,14 +259,14 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 		{
 			if(ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
 			{
-				TargetCharacter->DoDown(OwnerCharacter->GetActorForwardVector());
+				TargetCharacter->DoDown(OwnerCharacter, OwnerCharacter->GetActorForwardVector());
 			}
 			
 		}else
 		{
 			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
 			{
-				Cast<ASkyscraperCharacter>(HitActor)->DoStun(fStunTime, OwnerCharacter->GetActorForwardVector());
+				Cast<ASkyscraperCharacter>(HitActor)->DoStun(OwnerCharacter, fStunTime, OwnerCharacter->GetActorForwardVector());
 			}
 			
 		}

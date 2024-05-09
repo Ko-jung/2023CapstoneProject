@@ -119,8 +119,8 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	// == Stun / Down
-	void DoStun(const float StunTime, const FVector StunDirection) const;
-	void DoDown(const FVector& DownDirection) const;
+	void DoStun(const AActor* Attacker, const float StunTime, const FVector StunDirection) const;
+	void DoDown(const AActor* Attacker, const FVector& DownDirection) const;
 
 	// == Get Anim Montage
 	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
@@ -176,6 +176,10 @@ public:
 	bool CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon);
 
 	void SwapWeapon(ESwapWeapon WeaponType);
+
+	// == Stun / Down
+	void ApplyStun(const float StunTime, const FVector StunDirection) const;
+	void ApplyDown(const FVector& DownDirection) const;
 
 	// 서버에서 캐릭터 생성시 Controller가 없다. BeginPlay에서 AddInput할 수 없다.
 	void AddInputMappingContext();

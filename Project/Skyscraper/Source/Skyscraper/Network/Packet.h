@@ -131,6 +131,24 @@ struct PChangedPlayerState : Packet
 	}
 };
 
+struct PStunDownState : Packet
+{
+	BYTE TargetSerialNum;
+	PVector Direction;
+	float StunTime;
+	bool IsStun;
+
+	PStunDownState() : Packet(COMP_OP::OP_STUNDOWNSTATE), TargetSerialNum(0), Direction{ PVector{} }, StunTime(0.f), IsStun(true) { PacketSize = sizeof(PStunDownState); }
+	PStunDownState(BYTE targetNum, FVector direction, float stunTime, bool isStun)
+		: Packet(COMP_OP::OP_STUNDOWNSTATE), TargetSerialNum(targetNum), StunTime(stunTime), IsStun(isStun)
+	{
+		Direction.X = (float)direction.X; 
+		Direction.Y = (float)direction.Y; 
+		Direction.Z = (float)direction.Z;
+		PacketSize = sizeof(PStunDownState);
+	}
+};
+
 // USTRUCT()
 struct PSpawnObject : Packet, PTransform
 {

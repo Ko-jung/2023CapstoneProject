@@ -50,15 +50,15 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		MEMCPYBUFTOPACKET(PPP);
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PPP, sizeof(PPP));
 		//ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PPP, sizeof(PPP));
-	}
 	break;
+	}
 	case (int)COMP_OP::OP_DISCONNECT:
 	{
 		PDisconnect disconnect(-1);
 		MEMCPYBUFTOPACKET(disconnect);
 		ClientMgr::Instance()->Disconnect(disconnect.DisconnectPlayerSerial);
-	}
 	break;
+	}
 	case (int)COMP_OP::OP_SELECTWEAPONINFO:
 	{
 		PPlayerSelectInfo PPS;
@@ -80,8 +80,8 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 
 		// Send To Other Player Pick State
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(SendPlayerRoomNum, &PPS, sizeof(PPS));
-	}
 	break;
+	}
 	case (int)COMP_OP::OP_DAMAGEDPLAYER:
 	{
 		PDamagedPlayer PDP;
@@ -102,8 +102,8 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		{
 			PlayerDeadProcessing(TargetPlayerId);
 		}
-	}
 	break;
+	}
 	case (int)COMP_OP::OP_SPAWNOBJECT:
 	{
 		PSpawnObject PSO;
@@ -130,6 +130,13 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PRequestPacket PRP;
 		MEMCPYBUFTOPACKET(PRP);
 		ProcessRequest(PRP, c->GetClientNum());
+		break;
+	}
+	case (int)COMP_OP::OP_STUNDOWNSTATE:
+	{
+		PStunDownState PSDS;
+		MEMCPYBUFTOPACKET(PSDS);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSDS, sizeof(PSDS));
 		break;
 	}
 	default:

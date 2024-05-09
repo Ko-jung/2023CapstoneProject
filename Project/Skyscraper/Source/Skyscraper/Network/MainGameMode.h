@@ -42,6 +42,9 @@ public:
 	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 	void SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage);
 	void SendTakeDamage(AActor* Sender, AActor* Target);
+	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
+
+	int GetIndex(const AActor* target);
 
 	// UE5 Function Code
 	float CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation);

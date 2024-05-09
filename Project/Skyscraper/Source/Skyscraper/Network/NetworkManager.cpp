@@ -209,7 +209,6 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 	{
 		PChangedPlayerHP* PCPHP = new PChangedPlayerHP();
 		memcpy(PCPHP, p, sizeof(*PCPHP));
-		// TryPush(PCPHP);
 		Gamemode->PushQueue(PCPHP);
 		break;
 	}
@@ -217,7 +216,6 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 	{
 		PChangedPlayerState* PCPS = new PChangedPlayerState();
 		memcpy(PCPS, p, sizeof(*PCPS));
-		// TryPush(PCPS);
 		Gamemode->PushQueue(PCPS);
 		break;
 	}
@@ -225,7 +223,6 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 	{
 		PSpawnObject* PSO = new PSpawnObject();
 		memcpy(PSO, p, sizeof(*PSO));
-		// TryPush(PSO);
 		Gamemode->PushQueue(PSO);
 		break;
 	}
@@ -233,16 +230,21 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 	{
 		PChangeAnimMontage* PCAM = new PChangeAnimMontage();
 		memcpy(PCAM, p, sizeof(*PCAM));
-		// TryPush(PCAM);
 		Gamemode->PushQueue(PCAM);
-		break;
+		break; 
 	}
 	case (int)COMP_OP::OP_SWAPWEAPON:
 	{
 		PSwapWeapon* PSW = new PSwapWeapon();
 		memcpy(PSW, p, sizeof(*PSW));
-		// TryPush(PSW);
 		Gamemode->PushQueue(PSW);
+		break;
+	}
+	case (int)COMP_OP::OP_STUNDOWNSTATE:
+	{
+		PStunDownState* PSDS = new PStunDownState();
+		memcpy(PSDS, p, sizeof(*PSDS));
+		Gamemode->PushQueue(PSDS);
 		break;
 	}
 	default:

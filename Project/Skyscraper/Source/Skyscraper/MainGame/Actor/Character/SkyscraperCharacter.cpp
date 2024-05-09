@@ -203,22 +203,28 @@ float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 	return Damage;
 }
 
-void ASkyscraperCharacter::DoStun(const float StunTime, const FVector StunDirection) const
+void ASkyscraperCharacter::DoStun(const AActor* Attacker, const float StunTime, const FVector StunDirection) const
 {
-	if(CombatSystemComponent)
+	if (MainGameMode->GetIsConnected())
 	{
-		CombatSystemComponent->Stun(StunTime, StunDirection);
+		MainGameMode->SendStunDown(Attacker, this, StunDirection, true, StunTime);
 	}
-	
+	else
+	{
+		ApplyStun(StunTime, StunDirection);
+	}
 }
 
-void ASkyscraperCharacter::DoDown(const FVector& DownDirection) const
+void ASkyscraperCharacter::DoDown(const AActor* Attacker, const FVector& DownDirection) const
 {
-	if(CombatSystemComponent)
+	if (MainGameMode->GetIsConnected())
 	{
-		CombatSystemComponent->Down(DownDirection);
+		MainGameMode->SendStunDown(Attacker, this, DownDirection);
 	}
-	
+	else
+	{
+		ApplyDown(DownDirection);
+	}	
 }
 
 UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharacterAnimMontage) const
@@ -261,6 +267,22 @@ void ASkyscraperCharacter::SwapWeapon(ESwapWeapon WeaponType)
 		break;
 	default:
 		break;
+	}
+}
+
+void ASkyscraperCharacter::ApplyStun(const float StunTime, const FVector StunDirection) const
+{
+	if (CombatSystemComponent)
+	{
+		CombatSystemComponent->Stun(StunTime, StunDirection);
+	}
+}
+
+void ASkyscraperCharacter::ApplyDown(const FVector& DownDirection) const
+{
+	if (CombatSystemComponent)
+	{
+		CombatSystemComponent->Down(DownDirection);
 	}
 }
 

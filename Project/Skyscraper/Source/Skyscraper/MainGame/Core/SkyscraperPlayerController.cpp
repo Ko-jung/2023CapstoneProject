@@ -4,15 +4,26 @@
 #include "SkyscraperPlayerController.h"
 
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
 ASkyscraperPlayerController::ASkyscraperPlayerController()
 {
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_TimeAndKillCountRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/TimeAndKillCount/WBP_TimeAndKillCount.WBP_TimeAndKillCount_C'"));
+	TimeAndKillCountWidgetClass = WBP_TimeAndKillCountRef.Class;
 }
 
 void ASkyscraperPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	PossessingPawn = Cast<ASkyscraperCharacter>(GetPawn());
+
+	TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
+	if(TimeAndKillCountWidget)
+	{
+		TimeAndKillCountWidget->AddToViewport();
+	}
+	
 }
 
 void ASkyscraperPlayerController::Tick(float DeltaSeconds)

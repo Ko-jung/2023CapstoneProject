@@ -16,41 +16,41 @@ class SKYSCRAPER_API UMainRangeComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	UMainRangeComponent();
 
-	// InputMappingContext Ãß°¡ ¹× »èÁ¦ ÇÔ¼ö
+	// InputMappingContext ì¶”ê°€ ë° ì‚­ì œ í•¨ìˆ˜
 	void AddInputMappingContext();
 	void RemoveInputMappingContext();
 
-	// ¹«±â ¿şÆù skeletal meshÀÇ visibleÀ» º¯°æÇØÁÖ´Â ÇÔ¼ö
+	// ë¬´ê¸° ì›¨í° skeletal meshì˜ visibleì„ ë³€ê²½í•´ì£¼ëŠ” í•¨ìˆ˜
 	void SetWeaponHiddenInGame(bool bNewHidden) const;
 
-	// ´Ù½Ã ¹«±â¸¦ ÀåÂø ÇÏ¿´À» ¶§ Å° ÀÎÇ² Ãß°¡ ¹× ¹«±â Ãß°¡ÇÏ´Â ÇÔ¼ö
+	// ë‹¤ì‹œ ë¬´ê¸°ë¥¼ ì¥ì°© í•˜ì˜€ì„ ë•Œ í‚¤ ì¸í’‹ ì¶”ê°€ ë° ë¬´ê¸° ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
 	void AddThisWeapon();
-	// ¹«±â ÄÄÆÛ³ÍÆ® Á¦°ÅÇÒ ¶§, Å° ÀÎÇ² Á¦°Å ¹× ¹«±â Á¦°ÅÇÏ´Â ÇÔ¼ö
+	// ë¬´ê¸° ì»´í¼ë„ŒíŠ¸ ì œê±°í•  ë•Œ, í‚¤ ì¸í’‹ ì œê±° ë° ë¬´ê¸° ì œê±°í•˜ëŠ” í•¨ìˆ˜
 	void RemoveThisWeapon();
 	
 
-	// ÃÑ¹ß»ç¸¦ À§ÇÑ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» Àç»ıÇÏ´Â ÇÔ¼ö
+	// ì´ë°œì‚¬ë¥¼ ìœ„í•œ ì• ë‹ˆë©”ì´ì…˜ì„ ì¬ìƒí•˜ëŠ” í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 	void PlayFireAnim();
 
-	// Åº ¹ß»ç ·ÎÁ÷ ÇÔ¼ö
+	// íƒ„ ë°œì‚¬ ë¡œì§ í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 	virtual void Fire(float fBaseDamage);
-	// Àû±º Åº ¹ß»ç ·ÎÁ÷ ÇÔ¼ö
+	// ì êµ° íƒ„ ë°œì‚¬ ë¡œì§ í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 		void EnemyFire(float fBaseDamage);
 
-	// ÀçÀåÀüÀ» À§ÇÑ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» Àç»ıÇÏ´Â ÇÔ¼ö
+	// ì¬ì¥ì „ì„ ìœ„í•œ ì• ë‹ˆë©”ì´ì…˜ì„ ì¬ìƒí•˜ëŠ” í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 		void PlayReloadAnim();
-	// ÀçÀåÀü ·ÎÁ÷ ÇÔ¼ö
+	// ì¬ì¥ì „ ë¡œì§ í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 		void BulletReloading();
 
-	// ¹ß»ç °¡´ÉÇÑÁö »óÅÂ¸¦ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+	// ë°œì‚¬ ê°€ëŠ¥í•œì§€ ìƒíƒœë¥¼ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
 
@@ -60,30 +60,30 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	
-	// ¼ÒÀ¯ Ä³¸¯ÅÍ º¯¼ö
+	// ì†Œìœ  ìºë¦­í„° ë³€ìˆ˜
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
 
-	// Âø¿ë ½Ã ¹«±â¿¡ ´ëÇÑ º¯¼ö
-	// °¢ ÇÏÀ§(ÀÚ½Ä) ÄÄÆÛ³ÍÆ® µé¿¡¼­ ÃÊ±âÈ­ ÁøÇà
+	// ì°©ìš© ì‹œ ë¬´ê¸°ì— ëŒ€í•œ ë³€ìˆ˜
+	// ê° í•˜ìœ„(ìì‹) ì»´í¼ë„ŒíŠ¸ ë“¤ì—ì„œ ì´ˆê¸°í™” ì§„í–‰
 	UPROPERTY()
 		USkeletalMeshComponent* WeaponMeshComponent;
 	UPROPERTY()
 		FName WeaponSocketName;
 
-	// ¹ß»ç °ü·Ã º¯¼ö
+	// ë°œì‚¬ ê´€ë ¨ ë³€ìˆ˜
 	UPROPERTY(VisibleAnywhere, Category = Fire)
 		float CurrentFireCoolTime;
 	UPROPERTY(EditAnywhere,Category = Fire)
 		float FireMaxCoolTime;
-	// ÀçÀåÀü °ü·Ã º¯¼ö
+	// ì¬ì¥ì „ ê´€ë ¨ ë³€ìˆ˜
 	UPROPERTY(VisibleAnywhere, Category = Reload)
 		float CurrentReloadCoolTime;
 	UPROPERTY(EditAnywhere, Category = Reload)
 		float ReloadMaxCoolTime;
 	UPROPERTY(EditAnywhere, Category = Reload)
 		float ReloadSpeedTime;
-	// ÃÑ¾Ë °ü·Ã º¯¼ö
+	// ì´ì•Œ ê´€ë ¨ ë³€ìˆ˜
 	UPROPERTY(VisibleAnywhere, Category = Bullet)
 		int32 CurrentBulletCount;
 	UPROPERTY(EditAnywhere, Category = Bullet)
@@ -91,7 +91,7 @@ protected:
 	UPROPERTY()
 		bool bIsBulletInfinity;
 
-	// ÃÑ±â ¹İµ¿ °ü·Ã º¯¼ö
+	// ì´ê¸° ë°˜ë™ ê´€ë ¨ ë³€ìˆ˜
 	UPROPERTY(EditAnywhere, Category = Recoil)
 		float RecoilAboveAmount;
 	UPROPERTY(EditAnywhere, Category = Recoil)
@@ -103,22 +103,28 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Recoil)
 		float RecoilSpeed;
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç °ü·Ã º¯¼ö
+	// ì• ë‹ˆë©”ì´ì…˜ ê´€ë ¨ ë³€ìˆ˜
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
 	ECharacterAnimMontage AnimMontageKey;
 
-	// ¹ß»ç / ÀçÀåÀü µîÀÇ ÄğÅ¸ÀÓ¿¡ ´ëÇÑ Å¸ÀÌ¸Ó ÇÚµé º¯¼ö
+	// ë°œì‚¬ / ì¬ì¥ì „ ë“±ì˜ ì¿¨íƒ€ì„ì— ëŒ€í•œ íƒ€ì´ë¨¸ í•¸ë“¤ ë³€ìˆ˜
 	FTimerHandle FireCoolTimerHandle;
 	FTimerHandle ReloadCoolTimerHandle;
 	FTimerHandle BulletInfinityTimerHandle;
 
 
-	// ÃÑ¾Ë Åº¼ö¿¡ ´ëÇÑ UIÀÇ Å¬·¡½º¿Í º¯¼ö
+	// ì´ì•Œ íƒ„ìˆ˜ì— ëŒ€í•œ UIì˜ í´ë˜ìŠ¤ì™€ ë³€ìˆ˜
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> MyAmmoClass;
 	UPROPERTY()
 		UMyAmmoWidget* MyAmmoWidget;
+
+	// ì›ê±°ë¦¬ ë¬´ê¸°ì— ëŒ€í•œ UIì˜ í´ë˜ìŠ¤ì™€ ë³€ìˆ˜
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> MainRangeWidgetClass;
+	UPROPERTY()
+		UUserWidget* MainRangeWidget;
 
 protected:
 	//FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }

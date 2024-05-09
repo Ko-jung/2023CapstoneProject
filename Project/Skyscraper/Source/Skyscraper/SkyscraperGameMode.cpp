@@ -23,7 +23,7 @@ ASkyscraperGameMode::ASkyscraperGameMode()
 	for (auto& P : PlayerSelectInfo)
 	{
 		P = new PPlayerSelectInfo();
-		P->ClientNum = i++;
+		P->ClientNum = i++; 
 	}
 }
 

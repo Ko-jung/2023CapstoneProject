@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "SkyscraperPlayerController.generated.h"
 
+class UTimeAndKillCountWidget;
 class ASkyscraperCharacter;
 /**
  * 
@@ -15,26 +16,36 @@ class SKYSCRAPER_API ASkyscraperPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-
 public:
 	ASkyscraperPlayerController();
 
+	UFUNCTION(BlueprintCallable)
+		FORCEINLINE void SetCanLookInput(bool NewCanLookInput) { bCanLookInput = NewCanLookInput; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE UTimeAndKillCountWidget* GetTimeAndKillCountWidget() const { return TimeAndKillCountWidget; }
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+private:
+
 public:
-	UFUNCTION(BlueprintCallable)
-		FORCEINLINE void SetCanLookInput(bool NewCanLookInput) { bCanLookInput = NewCanLookInput; }
-	
 
 protected:
-	// ¼ÒÀ¯ÇÑ GetPawn() ¿¡ ´ëÇÏ¿© Çüº¯È¯
+	// ì†Œìœ í•œ GetPawn() ì— ëŒ€í•˜ì—¬ í˜•ë³€í™˜
 	UPROPERTY()
 	ASkyscraperCharacter* PossessingPawn;
 
-	// Ä³¸¯ÅÍ¿Í ÄÁÆ®·Ñ·¯¸¦ ºĞ¸®ÇÑ ECharacterCameraMode::ECCM_SeparateController ½Ã bool °ª º¯°æÀ» ÅëÇØ »ç¿ë
+	// TimeAndKillCount Widget í´ë˜ìŠ¤ ë° ë³€ìˆ˜
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> TimeAndKillCountWidgetClass;
+	UPROPERTY()
+		TObjectPtr<UTimeAndKillCountWidget> TimeAndKillCountWidget;
+
+	// ìºë¦­í„°ì™€ ì»¨íŠ¸ë¡¤ëŸ¬ë¥¼ ë¶„ë¦¬í•œ ECharacterCameraMode::ECCM_SeparateController ì‹œ bool ê°’ ë³€ê²½ì„ í†µí•´ ì‚¬ìš©
 	UPROPERTY(EditAnywhere)
 		bool bCanLookInput = false;
 
+private:
 };

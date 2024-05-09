@@ -34,7 +34,6 @@ UMainMeleeComponent::UMainMeleeComponent()
 	OwnerAnimInstance = nullptr;
 	OwnerCharacter = nullptr;
 	AnimationMovementDistance = 100.0f;
-	CanAttack = true;
 
 	{ // == Set Input Asset
 		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_MeleeInputRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Combat/Melee/IMC_MainMeleeInput.IMC_MainMeleeInput'"));
@@ -113,9 +112,6 @@ void UMainMeleeComponent::RemoveThisWeapon()
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
 {
-
-	CanAttack = false;
-
 	int AnimationMovementAxis = 1;
 
 	{ // == Set Animation movement axis by key input
@@ -209,8 +205,6 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 		PlayAttackAnimMontage();
 		return;
 	}
-
-	CanAttack = true;
 	OwnerCharacter->GetCharacterMovement()->GravityScale = 0.5f;
 	OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
 	LastAttackClickTime = UGameplayStatics::GetTimeSeconds(GetWorld());
@@ -221,7 +215,7 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 
 void UMainMeleeComponent::Attack()
 {
-	if(CanAttack)
+	if(!OwnerAnimInstance->IsAnyMontagePlaying())
 	{
 		// == if attack in 0.5s after last attack, play combo attack // else play 0 attack
 		if (!(UGameplayStatics::GetTimeSeconds(GetWorld()) - LastAttackClickTime < 0.5f))

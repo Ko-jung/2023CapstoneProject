@@ -62,9 +62,12 @@ UMainRangeComponent::UMainRangeComponent()
 		IA_Reload = IA_ReloadRef.Object;
 	}
 
-	{ // 제트팩 위젯 클래스 로드
+	{ // 탄창 위젯 클래스 로드
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MyAmmoClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Ammo/WBP_MyAmmo.WBP_MyAmmo_C'"));
 		MyAmmoClass = WBP_MyAmmoClass.Class;
+
+		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MainRangeWidgetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Combat/Range/MainRangeWidget.MainRangeWidget_C'"));
+		MainRangeWidgetClass = WBP_MainRangeWidgetRef.Class;
 	}
 }
 
@@ -92,17 +95,21 @@ void UMainRangeComponent::BeginPlay()
 	{// == UI 연결하기 // UI BulletCount set
 		if (GetOwnerPlayerController())
 		{
-			auto Widget = CreateWidget(GetOwnerPlayerController(), MyAmmoClass);
+			UUserWidget* Widget = CreateWidget(GetOwnerPlayerController(), MyAmmoClass);
 			if (Widget)
 			{
 				MyAmmoWidget = Cast<UMyAmmoWidget>(Widget);
 				MyAmmoWidget->AddToViewport();
 			}
+
+			MainRangeWidget = CreateWidget(GetOwnerPlayerController(), MainRangeWidgetClass);
+			if(MainRangeWidget)
+			{
+				MainRangeWidget->AddToViewport();
+			}
 		}
 
 	}
-
-	// == TODO: Create Range Widget
 	
 }
 
@@ -152,12 +159,14 @@ void UMainRangeComponent::AddThisWeapon()
 {
 	AddInputMappingContext();
 	SetWeaponHiddenInGame(false);
+	if (MainRangeWidget) MainRangeWidget->AddToViewport();
 }
 
 void UMainRangeComponent::RemoveThisWeapon()
 {
 	RemoveInputMappingContext();
 	SetWeaponHiddenInGame(true);
+	if (MainRangeWidget) MainRangeWidget->RemoveFromParent();
 }
 
 

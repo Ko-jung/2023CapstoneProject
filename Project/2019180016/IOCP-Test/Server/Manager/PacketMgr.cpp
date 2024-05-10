@@ -46,10 +46,14 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	case (int)COMP_OP::OP_PLAYERPOSITION:
 	{
 		PPlayerPosition PPP;
-		//memcpy(&PPP, c->GetExp()->_wsa_buf.buf, sizeof(PPP));
 		MEMCPYBUFTOPACKET(PPP);
+		//ClientMgr::Instance()->ProcessMove(c->GetClientNum(), PPP);
+
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PPP, sizeof(PPP));
-		//ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / 6, &PPP, sizeof(PPP));
+		if (ClientMgr::Instance()->CheckFallDie(c->GetClientNum(), PPP))
+		{
+			ProcessingPlayerDead(c->GetClientNum());
+		}
 	break;
 	}
 	case (int)COMP_OP::OP_DISCONNECT:
@@ -100,7 +104,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 
 		if (IsDead)
 		{
-			PlayerDeadProcessing(TargetPlayerId);
+			ProcessingPlayerDead(TargetPlayerId);
 		}
 	break;
 	}
@@ -240,7 +244,7 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 	// collision Group
 }
 
-void PacketMgr::PlayerDeadProcessing(int ClientId)
+void PacketMgr::ProcessingPlayerDead(int ClientId)
 {
 	cout << ClientId << "Is Dead" << endl;
 
@@ -258,6 +262,7 @@ void PacketMgr::PlayerDeadProcessing(int ClientId)
 	TimerMgr::Instance()->Insert(GodmodeTimer);
 
 	// Send Dead state
+	ClientMgr::Instance()->ChangeState(ClientId, ECharacterState::DEAD);
 	PChangedPlayerState PCPS(ClientId % MAXPLAYER, ECharacterState::DEAD);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / MAXPLAYER, &PCPS, sizeof(PCPS));
 }
@@ -325,6 +330,7 @@ void PacketMgr::SendSpawn(int TargetClientID)
 	// Set Full HP
 	ClientMgr::Instance()->Heal(TargetClientID, -1);
 
+	ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::INVINCIBILITY);
 	PChangedPlayerState PCPS(TargetClientID, ECharacterState::INVINCIBILITY);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / MAXPLAYER, &PCPS, sizeof(PCPS));
 }

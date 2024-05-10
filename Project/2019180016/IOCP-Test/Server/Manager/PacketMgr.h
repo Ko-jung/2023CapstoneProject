@@ -19,7 +19,7 @@ public:
 	void ProcessRequest(PRequestPacket PRP, int id);
 
 	void GameBeginProcessing(int NowClientNum);
-	void PlayerDeadProcessing(int ClientId);
+	void ProcessingPlayerDead(int ClientId);
 
 private:
 	// Timer Func

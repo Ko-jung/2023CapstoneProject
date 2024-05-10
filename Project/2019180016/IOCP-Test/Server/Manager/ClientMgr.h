@@ -17,6 +17,9 @@ public:
 	void RecvProcess(int id, const DWORD& bytes, EXP_OVER* exp);
 
 	bool CheckSelectDuplication(int id, ECharacter c);
+	bool CheckFallDie(int id, PPlayerPosition PPP);
+	void ProcessMove(int id, PPlayerPosition PPP);
+	void ChangeState(int id, ECharacterState state);
 
 	void Heal(int id, float damage);
 

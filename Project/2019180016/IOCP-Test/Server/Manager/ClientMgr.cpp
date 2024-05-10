@@ -111,6 +111,26 @@ bool ClientMgr::CheckSelectDuplication(int id, ECharacter c)
 	return false;
 }
 
+bool ClientMgr::CheckFallDie(int id, PPlayerPosition PPP)
+{
+	if ((m_Clients[id]->GetState() == ECharacterState::LIVING) && (PPP.Location.Z < -(9000.f + 500.f)))
+	{
+		return true;
+	}
+	return false;
+}
+
+void ClientMgr::ProcessMove(int id, PPlayerPosition PPP)
+{
+	SendPacketToAllExceptSelf(id, &PPP, sizeof(PPP));
+	//CheckFallDie(id, PPP);
+}
+
+void ClientMgr::ChangeState(int id, ECharacterState state)
+{
+	m_Clients[id]->SetState(state);
+}
+
 void ClientMgr::Heal(int id, float HealAmount)
 {
 	m_Clients[id]->Heal(HealAmount);

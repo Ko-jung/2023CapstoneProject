@@ -40,8 +40,10 @@ public:
 	// Gaming data, later separated
 	ECharacter GetECharacter() { return SelectInfo; }
 	float GetCurrnetHp() { return CurrentHp; }
+	ECharacterState GetState() { return State; }
 
 	void SetECharacter(ECharacter c) { SelectInfo = c; }
+	void SetState(ECharacterState state)	{ State = state; }
 private:
 	void Send();
 
@@ -59,5 +61,6 @@ protected:
 	float MaxHP;
 	std::atomic<float> CurrentHp;
 	ECharacter SelectInfo;
+	ECharacterState State;
 };
 

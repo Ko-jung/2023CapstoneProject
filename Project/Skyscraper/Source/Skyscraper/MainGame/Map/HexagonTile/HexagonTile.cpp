@@ -519,10 +519,7 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 						TargetActor->SetLifeSpan(20.0f);
 
 					}
-					UE_LOG(LogTemp, Warning, TEXT("Tile_Actor Remove() 1 %d "), Tile_Actor.Num());
 					Tile_Actor.Remove(Tiles[i]);
-					
-					UE_LOG(LogTemp, Warning, TEXT("Tile_Actor Remove() 2 %d "), Tile_Actor.Num());
 				}
 				Tiles[i]->DestroyComponent();
 				Tiles.RemoveAt(i);
@@ -533,6 +530,7 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 				// 타일 GeometryCollection 생성
 				AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
 				NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
+				NewGCTileActor->SetLifeSpan(30.0f);
 			}
 		}
 	}
@@ -541,5 +539,26 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 
 void AHexagonTile::CollapseLevel3()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%d"), Tiles.Num());
+	int index = UKismetMathLibrary::RandomIntegerInRange(0, Tiles.Num() - 1);
+
+	FVector GeometrySpawnLocation = Tiles[index]->GetRelativeLocation();
+	if (Tile_Actor.Contains(Tiles[index]))
+	{
+		AActor* TargetActor = *(Tile_Actor.Find(Tiles[index]));
+		ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
+		if (Child_Actor)
+		{
+			Child_Actor->DoCollapse();
+			TargetActor->SetLifeSpan(20.0f);
+
+		}
+		Tile_Actor.Remove(Tiles[index]);
+	}
+	Tiles[index]->DestroyComponent();
+	Tiles.RemoveAt(index);
+
+	// 타일 GeometryCollection 생성
+	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
+	NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
+	NewGCTileActor->SetLifeSpan(30.0f);
 }

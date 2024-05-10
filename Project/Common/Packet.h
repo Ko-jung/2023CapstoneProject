@@ -179,8 +179,10 @@ struct PStartGame : Packet
 struct PTileDrop : Packet
 {
 	BYTE TileDropLevel;
-	PTileDrop() : Packet(COMP_OP::OP_TILEDROP), TileDropLevel(0) { PacketSize = sizeof(PTileDrop); }
-	PTileDrop(BYTE TileDropLevel) : Packet(COMP_OP::OP_TILEDROP), TileDropLevel(TileDropLevel) { PacketSize = sizeof(PTileDrop); }
+	BYTE CenterIndex;
+	PTileDrop() : Packet(COMP_OP::OP_TILEDROP), TileDropLevel(0), CenterIndex(0) { PacketSize = sizeof(PTileDrop); }
+	PTileDrop(BYTE TileDropLevel, BYTE CenterIndex) : Packet(COMP_OP::OP_TILEDROP), TileDropLevel(TileDropLevel), CenterIndex(CenterIndex)
+	{ PacketSize = sizeof(PTileDrop); }
 };
 
 // contained room num in RoomNum

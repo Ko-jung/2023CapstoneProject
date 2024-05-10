@@ -209,6 +209,13 @@ void AMainGameMode::ProcessFunc()
 			}
 			break;
 		}
+		case (BYTE)COMP_OP::OP_TILEDROP:
+		{
+			PTileDrop PTD;
+			memcpy(&PTD, packet, sizeof(PTD));
+			ProcessTileDrop(PTD);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
 			break;
@@ -406,6 +413,11 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 	{
 		SpawnCharacter(i);
 	}
+}
+
+void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
+{
+	HexagonTile->CollapseTilesAndActors(PTD.TileDropLevel, PTD.CenterIndex);
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()

@@ -1,5 +1,6 @@
 #include "Room.h"
 #include "RandomUtil.h"
+#include <cmath>
 
 //TileInfo Room::Tiles[4] = { 
 //	TileInfo(TILE_MIDDLE_COUNT,
@@ -21,7 +22,7 @@ Room::Room()
 	KillScore[0] = KillScore[1] = 0;
 	TileDropLevel = 0;
 
-	memset(BuildingExist, (BYTE)ETILETYPE::NONTILE, sizeof(BuildingExist));
+	memset(BuildingExist, (BYTE)ETILETYPE::NONBUILDING, sizeof(BuildingExist));
 
 	// Middle Section
 	BuildingExist[0] = (BYTE)(BYTE)ETILETYPE::BUILDING;
@@ -136,6 +137,150 @@ float Room::GetRoomElapsedTime()
 	auto Now = std::chrono::system_clock::now();
 
 	return std::chrono::duration<float>(Now - RoomStartTime).count();
+}
+
+int Room::GetTileDropCenterIndex(int& CenterIndex)
+{
+	if (TileDropLevel == 0)
+	{
+		CenterIndex = RandomUtil::RandRange(0, 6);
+		float CenterX, CenterY;
+		GetTilePos(CenterIndex, CenterX, CenterY);
+
+		// 깨진타일 -1 처리 중앙, 3구역은 절대로 걸릴일이 없다
+		for (int i = 0; i < TILE_SECTION2_COUNT; i++)
+		{
+			float TargetX, TargetY;
+			int TargetIndex = i + TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT;
+			GetTilePos(TargetIndex, TargetX, TargetY);
+
+			double Dist = Distance(TargetX, TargetY, CenterX, CenterY);
+			if (Dist > 6.25)
+			{
+				BuildingExist[TargetIndex] = (BYTE)ETILETYPE::BREAKTILE;
+			}
+		}
+		for (int i = 0; i < TILE_SECTION1_COUNT; i++)
+		{
+			float TargetX, TargetY;
+			int TargetIndex = i + TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT + TILE_SECTION2_COUNT;
+			GetTilePos(TargetIndex, TargetX, TargetY);
+
+			double Dist = Distance(TargetX, TargetY, CenterX, CenterY);
+			if (Dist > 6.25)
+			{
+				BuildingExist[TargetIndex] = (BYTE)ETILETYPE::BREAKTILE;
+			}
+		}
+	}
+	else if(TileDropLevel == 1)
+	{
+		std::vector<int> CenterCandidateTile;
+		CenterCandidateTile.reserve(TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT);
+		float CenterX, CenterY;
+		// Prev Center Pos
+		GetTilePos(CenterTileIndex[TileDropLevel - 1], CenterX, CenterY);
+
+		// Push Candidate Index
+		for (int i = 0; i < TileCount; i++)
+		{
+			if (BuildingExist[i] == (BYTE)ETILETYPE::BREAKTILE) continue;
+
+			float TargetX, TargetY;
+			GetTilePos(i, TargetX, TargetY);
+
+			double Dist = Distance(TargetX, TargetY, CenterX, CenterY);
+			if (Dist < 2.25)
+			{
+				CenterCandidateTile.push_back(i);
+			}
+		}
+
+		CenterIndex = RandomUtil::RandVector(CenterCandidateTile);
+		// Current Center Pos
+		GetTilePos(CenterIndex, CenterX, CenterY);
+		for (int i = 0; i < TileCount; i++)
+		{
+			if (BuildingExist[i] == (BYTE)ETILETYPE::BREAKTILE) continue;
+
+			float TargetX, TargetY;
+			GetTilePos(i, TargetX, TargetY);
+
+			double Dist = Distance(TargetX, TargetY, CenterX, CenterY);
+			if (Dist > 2.25)
+			{
+				BuildingExist[i] = (BYTE)ETILETYPE::BREAKTILE;
+			}
+		}
+	}
+	else
+	{
+		std::vector<int> CenterCandidateTile;
+		CenterCandidateTile.reserve(TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT);
+		for (int i = 0; i < TileCount; i++)
+		{
+			if (BuildingExist[i] == (BYTE)ETILETYPE::BREAKTILE) continue;
+
+			CenterCandidateTile.push_back(i);
+		}
+		CenterIndex = RandomUtil::RandVector(CenterCandidateTile);
+		for (int i : CenterCandidateTile)
+		{
+			BuildingExist[i] = (BYTE)ETILETYPE::BREAKTILE;
+		}
+	}
+
+	CenterTileIndex[TileDropLevel] = CenterIndex;
+	IncreaseTileDropLevel();
+	return TileDropLevel;
+}
+
+void Room::GetTilePos(const int Index, float& X, float& Y)
+{
+	int Distance;
+	int TileCount;
+	int IndexInSection;
+
+	// Get SectionLevel Use Index
+	int SectionLevel;
+	if (Index == 0)																		SectionLevel = 0;
+	else if (Index < TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT)							SectionLevel = 3;
+	else if (Index < TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT + TILE_SECTION2_COUNT)		SectionLevel = 2;
+	else																				SectionLevel = 1;
+
+	if (SectionLevel == 3)
+	{
+		Distance = 1;
+		IndexInSection = Index - TILE_MIDDLE_COUNT;
+		TileCount = TILE_SECTION3_COUNT;
+	}
+	else if (SectionLevel == 2)
+	{
+		Distance = 2;
+		IndexInSection = Index - (TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT);
+		TileCount = TILE_SECTION2_COUNT;
+	}
+	else if (SectionLevel == 1)
+	{
+		Distance = 3;
+		IndexInSection = Index - (TILE_MIDDLE_COUNT + TILE_SECTION3_COUNT + TILE_SECTION2_COUNT);
+		TileCount = TILE_SECTION1_COUNT;
+	}
+	else
+	{
+		// MIDDLE SECTION
+		X = 0.f;
+		Y = 0.f;
+		return;
+	}
+
+	X = Distance * cos((2 * 3.1415 / TileCount) * IndexInSection);
+	Y = Distance * sin((2 * 3.1415 / TileCount) * IndexInSection);
+}
+
+double Room::Distance(float x1, float y1, float x2, float y2)
+{
+	return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 }
 
 void Room::SpawnItem(int ItemCount)

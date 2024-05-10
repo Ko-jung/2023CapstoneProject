@@ -25,6 +25,7 @@ public:
 	int GetTileDropLevelAndIncrease(int roomId);
 	int GetTileDropLevel(int roomId);
 	float GetRoomElapsedTime(int roomId);
+	int GetTileDropCenterIndex(const int roomId, int& CenterIndex);
 
 private:
 	std::array<Room*, MAXROOM> Rooms{ nullptr, };

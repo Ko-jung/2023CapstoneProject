@@ -18,6 +18,10 @@
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
 #include "Kismet/GameplayStatics.h"
 
+// Setting Game UI On Controller
+#include "../MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
+
 void AMainGameMode::BeginPlay()
 {
 	GetHexagonTileOnLevel();
@@ -40,7 +44,11 @@ void AMainGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	// Set FullScreen Mode
-	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+	PlayerController = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController)
+	{
+		PlayerController->SetShowMouseCursor(false);
+	}
 	UGameUserSettings::GetGameUserSettings()->SetFullscreenMode(EWindowMode::WindowedFullscreen);
 	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
 
@@ -62,6 +70,9 @@ void AMainGameMode::BeginPlay()
 	// For Get Building Info
 	PRequestPacket PRP2(COMP_OP::OP_SETTIMER);
 	m_Socket->Send(&PRP2, PRP2.PacketSize);
+
+	TileDropTimer = 0.f;
+	TileDropLevel = 0;
 }
 
 void AMainGameMode::Tick(float Deltatime)
@@ -73,13 +84,11 @@ void AMainGameMode::Tick(float Deltatime)
 		return;
 	}
 
-	if(TileDropTimer > 0.f)
-		TileDropTimer -= Deltatime;
-	// UI Setting
-
 	ProcessFunc();
 	SendPlayerSwapWeaponInfo();
 	SendPlayerLocation();
+
+	UpdateUI(Deltatime);
 }
 
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -187,7 +196,17 @@ void AMainGameMode::ProcessFunc()
 		{
 			PSetTimer PST;
 			memcpy(&PST, packet, sizeof(PST));
-			TileDropTimer = PST.SecondsUntilActivation;
+			switch (PST.TimerType)
+			{
+			case ETimer::TileDropTiler:
+			{
+				TileDropTimer = PST.SecondsUntilActivation;
+				++TileDropLevel;
+				break;
+			}
+			default:
+				break;
+			}
 			break;
 		}
 		default:
@@ -279,6 +298,32 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	character->CombatSystemComponent->SetInitialSelect(PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon, PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon);
 
 	Characters[TargetSerialNum] = character;
+}
+
+void AMainGameMode::UpdateUI(float Deltatime)
+{
+	if (TileDropTimer > 0.f)
+		TileDropTimer -= Deltatime;
+	if (PlayerController)
+	{
+		PlayerController->GetTimeAndKillCountWidget()->SetTimeText(	((int)TileDropTimer) / 60,
+																	((int)TileDropTimer) % 60);
+		PlayerController->GetTimeAndKillCountWidget()->SetCollapseLevelText(TileDropLevel);
+		if (SerialNum < MAXPLAYER / 2)
+		{
+			PlayerController->GetTimeAndKillCountWidget()->SetFriendlyKillCountText(KillCount[(int)ETEAM::A]);
+			PlayerController->GetTimeAndKillCountWidget()->SetEnemyKillCountText(KillCount[(int)ETEAM::B]);
+		}
+		else
+		{
+			PlayerController->GetTimeAndKillCountWidget()->SetFriendlyKillCountText(KillCount[(int)ETEAM::B]);
+			PlayerController->GetTimeAndKillCountWidget()->SetEnemyKillCountText(KillCount[(int)ETEAM::A]);
+		}
+	}
+	else
+	{
+		PlayerController = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
+	}
 }
 
 void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)

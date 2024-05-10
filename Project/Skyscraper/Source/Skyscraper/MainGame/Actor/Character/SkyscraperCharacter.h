@@ -183,6 +183,7 @@ public:
 
 	// 서버에서 캐릭터 생성시 Controller가 없다. BeginPlay에서 AddInput할 수 없다.
 	void AddInputMappingContext();
+	void AddCharacterMappingContext();
 
 	void SyncTransformAndAnim(FTransform t, float s, float r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage);

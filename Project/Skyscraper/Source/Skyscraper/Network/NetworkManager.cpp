@@ -247,6 +247,15 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		Gamemode->PushQueue(PSDS);
 		break;
 	}
+	case (int)COMP_OP::OP_SETTIMER:
+	{
+		PSetTimer* PST = new PSetTimer();
+		memcpy(PST, p, sizeof(*PST));
+
+		Gamemode->PushQueue(PST);
+		UE_LOG(LogTemp, Warning, TEXT("New Timer Push, Time is %f s"), PST->SecondsUntilActivation);
+		break;
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;
@@ -257,7 +266,6 @@ void NetworkManager::Send(const Packet* packet, int packetsize)
 {
 	memcpy(m_sSendBuffer, packet, packetsize);
 	int nSendLen = send(m_ServerSocket, m_sSendBuffer, packetsize, 0);
-	UE_LOG(LogTemp, Warning, TEXT("send nSendLen is %d"), nSendLen);
 	if (nSendLen == -1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("send Error PacketType is %d"), packet->PacketType);

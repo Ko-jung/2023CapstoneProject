@@ -5,4 +5,5 @@ enum class ETimer : uint8
 {
 	DefaultTimer,
 	SelectTimer,
+	TileDropTiler,
 };

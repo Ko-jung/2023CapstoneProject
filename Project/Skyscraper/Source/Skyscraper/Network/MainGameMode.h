@@ -30,6 +30,7 @@ public:
 	// void ProcessPosition();
 
 	void SpawnCharacter(int TargetSerialNum);
+	void UpdateUI(float Deltatime);
 
 	void SetPlayerPosition(PPlayerPosition PlayerPosition);
 	void ProcessSpawnObject(PSpawnObject PSO);
@@ -82,4 +83,7 @@ private:
 	FName TeamName[2];
 
 	float TileDropTimer;
+	int TileDropLevel;
+
+	class ASkyscraperPlayerController* PlayerController;
 };

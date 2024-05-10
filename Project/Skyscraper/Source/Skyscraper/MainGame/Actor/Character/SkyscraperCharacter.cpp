@@ -172,14 +172,8 @@ void ASkyscraperCharacter::BeginPlay()
 		GetCharacterMovement()->SetCrouchedHalfHeight(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight());
 	}
 	
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+	//Add Input Mapping Context Move To ASkyscraperCharacter::AddCharacterMappingContext()
+	AddCharacterMappingContext();
 
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	MainGameMode = Cast<AMainGameMode>(gamemode);
@@ -288,10 +282,23 @@ void ASkyscraperCharacter::ApplyDown(const FVector& DownDirection) const
 
 void ASkyscraperCharacter::AddInputMappingContext()
 {
+	AddCharacterMappingContext();
+
 	CombatSystemComponent->AddInputMappingContext();
 	JetpackComponent->AddInputMappingContext();
 
 	HealthComponent->AddWidget();
+}
+
+void ASkyscraperCharacter::AddCharacterMappingContext()
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 }
 
 void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)

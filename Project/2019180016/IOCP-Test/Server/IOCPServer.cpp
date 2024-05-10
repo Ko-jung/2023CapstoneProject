@@ -299,8 +299,8 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 
 void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)
 {
-	const int PacketType = *(BYTE*)exp->_wsa_buf.buf;
-	switch (PacketType)
+	Packet* packet = reinterpret_cast<Packet*>(exp->_wsa_buf.buf);
+	switch (packet->PacketType)
 	{
 	case(int)COMP_OP::OP_SS_EMPTYROOMNUM:
 	{

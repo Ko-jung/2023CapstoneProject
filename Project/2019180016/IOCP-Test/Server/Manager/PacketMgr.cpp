@@ -208,7 +208,7 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 {
 	// 너무 빨리 보내면 못 받는다
 	TimerEvent TE1(std::chrono::seconds(1),
-		std::bind(&PacketMgr::SendSelectTime, this, NowClientId, 20.f));
+		std::bind(&PacketMgr::SendSelectTime, this, NowClientId, 40.f));
 	TimerMgr::Instance()->Insert(TE1);
 
 	TimerEvent TE2(std::chrono::seconds(20),

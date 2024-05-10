@@ -249,9 +249,7 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessRecvFromGame(id, bytes, exp);
 		return;
 	}
-	const int PacketType = *(BYTE*)exp->_wsa_buf.buf;
-
-	Packet* packet = reinterpret_cast<Packet*>(exp);
+	Packet* packet = reinterpret_cast<Packet*>(exp->_wsa_buf.buf);
 
 	switch (packet->PacketType)
 	{
@@ -271,8 +269,8 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 
 void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 {
-	const BYTE PacketType = *(int*)exp->_wsa_buf.buf;
-	switch (PacketType)
+	Packet* packet = reinterpret_cast<Packet*>(exp->_wsa_buf.buf);
+	switch (packet->PacketType)
 	{
 	case(int)COMP_OP::OP_SS_EMPTYROOMNUM:
 	{

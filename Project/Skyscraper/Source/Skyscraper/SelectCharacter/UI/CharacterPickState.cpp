@@ -54,7 +54,10 @@ void UCharacterPickState::SelectInfoUpdate()
 {
 	TArray<PPlayerSelectInfo*>& PlayerSelectInfos = Gamemode->GetPlayerSelectInfo();
 
-	bool IsRight = Gamemode->GetSerialNum() > MAXPLAYER / 2;
+	// 자신이 TeamA인지 TeamB인지 판단
+	bool IsRight = Gamemode->GetSerialNum() >= MAXPLAYER / 2;
+
+
 	for (int i = 0; i < PlayerSelectInfos.Num() / 2; i++)
 	{
 		int num = i + IsRight * MAXPLAYER / 2;
@@ -65,31 +68,31 @@ void UCharacterPickState::SelectInfoUpdate()
 		// Set Character portrait
 		if (CharacterNum == ECharacterSelect::ECS_Null)
 		{
-			FriendlyChracters[num]->SetBrushFromTexture(QuestionImages);
+			FriendlyChracters[i]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			FriendlyChracters[num]->SetBrushFromTexture(*CharacterImages.Find(CharacterNum));
+			FriendlyChracters[i]->SetBrushFromTexture(*CharacterImages.Find(CharacterNum));
 		}
 
 		// Set Melee Weapon portrait
 		if (MeleeWeaponNum == EMeleeSelect::EMS_NONE)
 		{
-			FriendlyMelee[num]->SetBrushFromTexture(QuestionImages);
+			FriendlyMelee[i]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			FriendlyMelee[num]->SetBrushFromTexture(*MeleeImages.Find(MeleeWeaponNum));
+			FriendlyMelee[i]->SetBrushFromTexture(*MeleeImages.Find(MeleeWeaponNum));
 		}
 
 		// Set Melee Weapon portrait
 		if (RangeWeaponNum == ERangeSelect::ERS_NONE)
 		{
-			FriendlyRange[num]->SetBrushFromTexture(QuestionImages);
+			FriendlyRange[i]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			FriendlyRange[num]->SetBrushFromTexture(*RangeImages.Find(RangeWeaponNum));
+			FriendlyRange[i]->SetBrushFromTexture(*RangeImages.Find(RangeWeaponNum));
 		}
 	}
 }

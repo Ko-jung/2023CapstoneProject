@@ -13,44 +13,44 @@ class SKYSCRAPER_API AHexagonTile : public AActor
 {
 	GENERATED_BODY()
 protected:
-	/* À°°¢ Å¸ÀÏ Áö¸§ ±æÀÌ */
+	/* ìœ¡ê° íƒ€ì¼ ì§€ë¦„ ê¸¸ì´ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		double offset;
 
-	/* ÇöÀç Áß°£ Å¸ÀÏ static mesh component */
+	/* í˜„ì¬ ì¤‘ê°„ íƒ€ì¼ static mesh component */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		TObjectPtr<UChildActorComponent> CurrentMiddleTile;
 
-	/* ÀüÃ¼ À°°¢ Å¸ÀÏ ¹è¿­ */
+	/* ì „ì²´ ìœ¡ê° íƒ€ì¼ ë°°ì—´ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		TArray<UChildActorComponent*> Tiles;
 
-	/* À°°¢Å¸ÀÏ°ú ±× ¾Æ·¡ °Ç¹°/ºÎÀ¯Å¸ÀÏ¿¡ ´ëÇÑ map */
+	/* ìœ¡ê°íƒ€ì¼ê³¼ ê·¸ ì•„ë˜ ê±´ë¬¼/ë¶€ìœ íƒ€ì¼ì— ëŒ€í•œ map */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		TMap<UChildActorComponent*, AActor*> Tile_Actor;
 
-	/* ºØ±« ¹æÇâ¿¡ ´ëÇÑ °¢µµ º¯¼ö */
+	/* ë¶•ê´´ ë°©í–¥ì— ëŒ€í•œ ê°ë„ ë³€ìˆ˜ */
 	UPROPERTY(EditAnywhere)
 		int CollapseDirectionAngle;
 
-	// °Ç¹°¿¡ ´ëÇÑ Å¬·¡½º
+	// ê±´ë¬¼ì— ëŒ€í•œ í´ë˜ìŠ¤
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> BuildingClass;
-	// ºØ±« ÁøÇà ÈÄ ºØ±«µÇ´Â Å¸ÀÏ¿¡ ´ëÇÑ Å¬·¡½º
+	// ë¶•ê´´ ì§„í–‰ í›„ ë¶•ê´´ë˜ëŠ” íƒ€ì¼ì— ëŒ€í•œ í´ë˜ìŠ¤
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> GC_Tile;
 
-	/* °¢ ÆÀº° ¸®½ºÆù ºôµù ÈÄº¸ ¿¡ ´ëÇÑ º¯¼ö */
+	/* ê° íŒ€ë³„ ë¦¬ìŠ¤í° ë¹Œë”© í›„ë³´ ì— ëŒ€í•œ ë³€ìˆ˜ */
 	UPROPERTY()
 	TArray<AActor*> ATeamBuildings;
 	UPROPERTY()
 	TArray<AActor*> BTeamBuildings;
 
 public:	
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	AHexagonTile();
 
-	/* »ı¼ºÀÚ¿¡¼­ Å¸ÀÏµéÀÇ À§Ä¡ °è»êÇØÁÖ´Â ÇÔ¼ö */
+	/* ìƒì„±ìì—ì„œ íƒ€ì¼ë“¤ì˜ ìœ„ì¹˜ ê³„ì‚°í•´ì£¼ëŠ” í•¨ìˆ˜ */
 	UFUNCTION(BlueprintPure, Category = "Construct")
 		FVector CalculateRelativeLocation(int32 AngleCount, int32 Distance);
 
@@ -58,11 +58,13 @@ public:
 	
 
 
-	///* ºØ±« 1´Ü°è/2´Ü°è ÇÔ¼ö */
+	///* ë¶•ê´´ 1ë‹¨ê³„/2ë‹¨ê³„ í•¨ìˆ˜ */
 	UFUNCTION(BlueprintCallable, Category = "Collapse")
 		void CollapseTilesAndActors(int CollapseLevel);
+	UFUNCTION(BlueprintCallable, Category = "Collapse")
+		void CollapseLevel3();
 
-	///* ºØ±« 3´Ü°è ÇÔ¼ö */
+	///* ë¶•ê´´ 3ë‹¨ê³„ í•¨ìˆ˜ */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
 	//	void CollapseLevel3();
 
@@ -71,18 +73,18 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// BeginPlay½Ã ½ÇÇàÇÒ ÇÔ¼ö
+	// BeginPlayì‹œ ì‹¤í–‰í•  í•¨ìˆ˜
 	void InitialSettings();
 
-	// Angle, Distance¸¦ ÀÌ¿ëÇØ ÇØ´ç °Å¸® Å¸ÀÏÀ» ¾ò¾î¿À´Â ÇÔ¼ö
+	// Angle, Distanceë¥¼ ì´ìš©í•´ í•´ë‹¹ ê±°ë¦¬ íƒ€ì¼ì„ ì–»ì–´ì˜¤ëŠ” í•¨ìˆ˜
 	UChildActorComponent* GetLineTileFromAngleAndDistance(int32 FindAngle, int32 FindDistance, FVector FindTileLocation = FVector{});
 
-	///* °Ç¹° ¹× ºÎÀ¯Å¸ÀÏ »ı¼º ÇÔ¼ö */
+	///* ê±´ë¬¼ ë° ë¶€ìœ íƒ€ì¼ ìƒì„± í•¨ìˆ˜ */
 	UFUNCTION(BlueprintCallable, Category = "Init")
 		void SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor);
 	UFUNCTION(BlueprintCallable, Category = "Init")
 		void SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector MovementOffset);
-	/* Å¸ÀÏÀ» ÁöÁ¤ÇÏ¿© ÇØ´ç Å¸ÀÏ ¾Æ·¡¿¡ °Ç¹°À» »ı¼ºÇÒ ¼ö ÀÖµµ·Ï ÇÏ´Â ÇÔ¼ö */
+	/* íƒ€ì¼ì„ ì§€ì •í•˜ì—¬ í•´ë‹¹ íƒ€ì¼ ì•„ë˜ì— ê±´ë¬¼ì„ ìƒì„±í•  ìˆ˜ ìˆë„ë¡ í•˜ëŠ” í•¨ìˆ˜ */
 	UFUNCTION(BlueprintCallable, Category = "Init")
 		AActor* SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 Floor, FName TileTag);
 public:	

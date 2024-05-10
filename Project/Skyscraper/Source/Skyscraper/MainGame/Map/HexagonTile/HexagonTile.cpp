@@ -17,10 +17,10 @@ AHexagonTile::AHexagonTile()
 	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = false;
 
-	// º¯¼ö°ª ÃÊ±âÈ­
+	// ë³€ìˆ˜ê°’ ì´ˆê¸°í™”
 	offset = 3465.0f;
 
-	// Å¸ÀÏ static mesh ·Îµå
+	// íƒ€ì¼ static mesh ë¡œë“œ
 	static ConstructorHelpers::FClassFinder<AActor> SingleHexagonTileClass(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/HexagonTile/SingleHexagonTile.SingleHexagonTile_C'"));
 	if (!(SingleHexagonTileClass.Succeeded())) return;
 
@@ -29,7 +29,7 @@ AHexagonTile::AHexagonTile()
 	for (int i = 0; i < 37; ++i)
 		Tiles.AddDefaulted();
 
-	{	//Áß¾Ó À°°¢ Å¸ÀÏ ¹èÄ¡
+	{	//ì¤‘ì•™ ìœ¡ê° íƒ€ì¼ ë°°ì¹˜
 		Tiles[0] = CreateDefaultSubobject<UChildActorComponent>(TEXT("MiddleTile"));
 		Tiles[0]->SetChildActorClass(TileClass);
 		Tiles[0]->ComponentTags.Add(TEXT("MiddleTile"));
@@ -39,12 +39,12 @@ AHexagonTile::AHexagonTile()
 
 
 	int tilecount = 1;
-	for (int angle = 0; angle < 6; ++angle)	// °¢µµ 6ºÎºĞ Å¸ÀÏ¿¡ ´ëÇØ
+	for (int angle = 0; angle < 6; ++angle)	// ê°ë„ 6ë¶€ë¶„ íƒ€ì¼ì— ëŒ€í•´
 	{
-		for (int distance = 1; distance < 4; ++distance)	// Áß¾Ó Å¸ÀÏ·ÎºÎÅÍÀÇ °Å¸®
+		for (int distance = 1; distance < 4; ++distance)	// ì¤‘ì•™ íƒ€ì¼ë¡œë¶€í„°ì˜ ê±°ë¦¬
 		{
 			FString tag = "Section" + FString::FromInt((distance - 2) * -1 + 2);
-			{//60µµ ¹æ¸é À§Ä¡¿¡ StaticMesh Ãß°¡
+			{//60ë„ ë°©ë©´ ìœ„ì¹˜ì— StaticMesh ì¶”ê°€
 				FString name = tag + "_" + FString::FromInt(tilecount);
 				Tiles[tilecount] = CreateDefaultSubobject<UChildActorComponent>(FName(name));
 				Tiles[tilecount]->SetChildActorClass(TileClass);
@@ -54,7 +54,7 @@ AHexagonTile::AHexagonTile()
 				++tilecount;
 			}
 
-			// 60µµ ¹æ¸é »çÀÌ À§Ä¡¿¡ Static Mesh Ãß°¡
+			// 60ë„ ë°©ë©´ ì‚¬ì´ ìœ„ì¹˜ì— Static Mesh ì¶”ê°€
 			for (int midCount = 2; midCount < distance + 1; ++midCount)
 			{
 				FVector firstLoc = CalculateRelativeLocation(angle, distance);
@@ -75,11 +75,11 @@ AHexagonTile::AHexagonTile()
 
 	}
 
-	// °Ç¹° Å¬·¡½º ·Îµå
+	// ê±´ë¬¼ í´ë˜ìŠ¤ ë¡œë“œ
 	static ConstructorHelpers::FClassFinder<AActor> BuildingClassRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/SingleBuildingFloor.SingleBuildingFloor_C'"));
 	BuildingClass = BuildingClassRef.Class;
 
-	// ºØ±« Å¸ÀÏ Å¬·¡½º ·Îµå
+	// ë¶•ê´´ íƒ€ì¼ í´ë˜ìŠ¤ ë¡œë“œ
 	ConstructorHelpers::FClassFinder<AActor> GC_TileRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/HexagonTile/BP_GC_Tile.BP_GC_Tile_C'"));
 	GC_Tile = GC_TileRef.Class;
 
@@ -88,7 +88,7 @@ AHexagonTile::AHexagonTile()
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
 {
-	// ÁÖ¾îÁø °¢µµ¿Í °Å¸®(±¸¿ª1~4) ¿¡ µû¶ó ÀûÇÕÇÑ RelativeLocationÀ» ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+	// ì£¼ì–´ì§„ ê°ë„ì™€ ê±°ë¦¬(êµ¬ì—­1~4) ì— ë”°ë¼ ì í•©í•œ RelativeLocationì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
 	float TileDistance = offset * Distance;
 
 	float sin = UKismetMathLibrary::DegSin(AngleCount * 60 + 30);
@@ -100,9 +100,9 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 void AHexagonTile::InitialSettings()
 {
 	UE_LOG(LogClass, Warning, TEXT("AHexagonTile::InitialSettings()"));
-	// ÆÀ ¸®½ºÆù À§Ä¡ ºôµù »ı¼º
+	// íŒ€ ë¦¬ìŠ¤í° ìœ„ì¹˜ ë¹Œë”© ìƒì„±
 	{
-		// ºØ±« ¹æÇâ ¼³Á¤ ( 0',60',120',180',240',300' )
+		// ë¶•ê´´ ë°©í–¥ ì„¤ì • ( 0',60',120',180',240',300' )
 		CollapseDirectionAngle = FMath::RandRange(0, 5);
 
 		ATeamBuildings.Add(SpawnTeamBuilding(
@@ -121,7 +121,7 @@ void AHexagonTile::InitialSettings()
 
 	}
 
-	// °¢ ±¸¿ªº° ºôµù »ı¼º
+	// ê° êµ¬ì—­ë³„ ë¹Œë”© ìƒì„±
 	{
 		SpawnBuildings(6, FName("Section1"), 3);
 		SpawnBuildings(4, FName("Section2"), 5);
@@ -129,7 +129,7 @@ void AHexagonTile::InitialSettings()
 		SpawnBuildings(1, FName("MiddleTile"), 9);
 	}
 
-	// °¢ ±¸¿ªº° ºÎÀ¯ Å¸ÀÏ »ı¼º
+	// ê° êµ¬ì—­ë³„ ë¶€ìœ  íƒ€ì¼ ìƒì„±
 	{
 		SpawnFloatingTiles(4, FName("Section1"), FVector(0.0f, 0.0f, -2500.0f));
 		SpawnFloatingTiles(2, FName("Section2"), FVector(0.0f, 0.0f, -4500.0f));
@@ -140,8 +140,8 @@ void AHexagonTile::InitialSettings()
 
 UChildActorComponent* AHexagonTile::GetLineTileFromAngleAndDistance(int32 FindAngle, int32 FindDistance, FVector FindTileLocation)
 {
-	// (0, 0, ÁÂÇ¥) ÀÔ·Â½Ã ÇØ´ç ÁÂÇ¥ÀÇ Å¸ÀÏ ¹İÈ¯
-	// (1, 3) ÀÔ·Â½Ã 60µµ ¹æ¸éÀÇ Section1 Å¸ÀÏ ¹İÈ¯
+	// (0, 0, ì¢Œí‘œ) ì…ë ¥ì‹œ í•´ë‹¹ ì¢Œí‘œì˜ íƒ€ì¼ ë°˜í™˜
+	// (1, 3) ì…ë ¥ì‹œ 60ë„ ë°©ë©´ì˜ Section1 íƒ€ì¼ ë°˜í™˜
 		// 
 	if (FindDistance != 0)
 	{
@@ -150,7 +150,7 @@ UChildActorComponent* AHexagonTile::GetLineTileFromAngleAndDistance(int32 FindAn
 
 	for (UChildActorComponent* Tile : Tiles)
 	{
-		// ¸ğµç Å¸ÀÏ Áß ÇØ´ç Å¸ÀÏ°úÀÇ °Å¸®¸¦ ºñ±³ÇÏ¿© Ã£±â
+		// ëª¨ë“  íƒ€ì¼ ì¤‘ í•´ë‹¹ íƒ€ì¼ê³¼ì˜ ê±°ë¦¬ë¥¼ ë¹„êµí•˜ì—¬ ì°¾ê¸°
 		if (UKismetMathLibrary::Vector_DistanceSquared(Tile->GetRelativeLocation(), FindTileLocation) < 100.0f)
 		{
 			return Tile;
@@ -163,15 +163,15 @@ UChildActorComponent* AHexagonTile::GetLineTileFromAngleAndDistance(int32 FindAn
 void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 {
 	/*
-	 SpawnCount - ¼³Ä¡µÉ °Ç¹°ÀÇ °¹¼ö / TileTag - ¼³Ä¡µÉ Å¸ÀÏ ¼½¼Ç (Section1~3) / Floor - ¼³Ä¡µÉ °Ç¹°ÀÇ Ãş ¼ö
+	 SpawnCount - ì„¤ì¹˜ë  ê±´ë¬¼ì˜ ê°¯ìˆ˜ / TileTag - ì„¤ì¹˜ë  íƒ€ì¼ ì„¹ì…˜ (Section1~3) / Floor - ì„¤ì¹˜ë  ê±´ë¬¼ì˜ ì¸µ ìˆ˜
 	 */
-	TArray<UChildActorComponent*> SectionTiles;	// Æ¯Á¤ ¼½¼ÇÀÇ Å¸ÀÏµéÀÌ ÀúÀåµÇ´Â ¹è¿­
-	TObjectPtr<UChildActorComponent> TargetTile; // °Ç¹°ÀÌ ¼³Ä¡µÉ Å¸ÀÏ
+	TArray<UChildActorComponent*> SectionTiles;	// íŠ¹ì • ì„¹ì…˜ì˜ íƒ€ì¼ë“¤ì´ ì €ì¥ë˜ëŠ” ë°°ì—´
+	TObjectPtr<UChildActorComponent> TargetTile; // ê±´ë¬¼ì´ ì„¤ì¹˜ë  íƒ€ì¼
 
-	{ // ÇØ´ç ¼½¼Ç Å¸ÀÏ ±¸ÇÏ±â
+	{ // í•´ë‹¹ ì„¹ì…˜ íƒ€ì¼ êµ¬í•˜ê¸°
 		for (const auto& pTile : Tiles)
 		{
-			// TileTag ÅÂ±×¸¦ °¡Áø Å¸ÀÏµéÀ» ÃßÃâÇÑ´Ù.
+			// TileTag íƒœê·¸ë¥¼ ê°€ì§„ íƒ€ì¼ë“¤ì„ ì¶”ì¶œí•œë‹¤.
 			if (pTile && pTile->ComponentHasTag(TileTag))
 			{
 				SectionTiles.Add(pTile);
@@ -179,17 +179,17 @@ void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 		}
 	}
 
-	{ // ºôµù ¹èÄ¡ÇÏ±â
+	{ // ë¹Œë”© ë°°ì¹˜í•˜ê¸°
 		int BuildingCount = 0;
 		while (BuildingCount < SpawnCount)
 		{
-			// °Ç¹°ÀÌ »ı¼º µÉ Å¸ÀÏ ±¸ÇÏ±â
+			// ê±´ë¬¼ì´ ìƒì„± ë  íƒ€ì¼ êµ¬í•˜ê¸°
 			int index = FMath::RandRange(0, SectionTiles.Num() - 1);
 			TargetTile = SectionTiles[index];
-			// ÇØ´ç Å¸ÀÏ¿¡ °Ç¹°ÀÌ ¼³Ä¡µÇÁö ¾Ê¾Ò´Ù¸é, °Ç¹°À» »ı¼ºÇÏ¿© ¼³Ä¡
+			// í•´ë‹¹ íƒ€ì¼ì— ê±´ë¬¼ì´ ì„¤ì¹˜ë˜ì§€ ì•Šì•˜ë‹¤ë©´, ê±´ë¬¼ì„ ìƒì„±í•˜ì—¬ ì„¤ì¹˜
 			if (!Tile_Actor.Contains(TargetTile))
 			{
-				// ºôµù »ı¼º ¹× Ãß°¡
+				// ë¹Œë”© ìƒì„± ë° ì¶”ê°€
 				ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
 				if (Building)
 				{
@@ -199,7 +199,7 @@ void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 				}
 				Tile_Actor.Add(TargetTile, Building);
 
-				// ÇØ´ç ¼½¼Ç Å¸ÀÏÀ» »ç¿ëÇßÀ¸´Ï ¼±ÅÃÁö¿¡¼­ Á¦°Å
+				// í•´ë‹¹ ì„¹ì…˜ íƒ€ì¼ì„ ì‚¬ìš©í–ˆìœ¼ë‹ˆ ì„ íƒì§€ì—ì„œ ì œê±°
 				SectionTiles.Remove(TargetTile);
 
 				++BuildingCount;
@@ -211,15 +211,15 @@ void AHexagonTile::SpawnBuildings(int32 SpawnCount, FName TileTag, int32 Floor)
 void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector MovementOffset)
 {
 	/*
-	 SpawnCount - ¼³Ä¡µÉ ºÎÀ¯Å¸ÀÏ °¹¼ö / TileTag - ¼³Ä¡µÉ Å¸ÀÏ ¼½¼Ç (Section1~3) / MovementOffset - »ı¼ºµÉ ºÎÀ¯Å¸ÀÏÀÇ ¿òÁ÷ÀÓ ¿ÀÇÁ¼Â
+	 SpawnCount - ì„¤ì¹˜ë  ë¶€ìœ íƒ€ì¼ ê°¯ìˆ˜ / TileTag - ì„¤ì¹˜ë  íƒ€ì¼ ì„¹ì…˜ (Section1~3) / MovementOffset - ìƒì„±ë  ë¶€ìœ íƒ€ì¼ì˜ ì›€ì§ì„ ì˜¤í”„ì…‹
 	 */
-	TArray<UChildActorComponent*> SectionTiles;	// Æ¯Á¤ ¼½¼ÇÀÇ Å¸ÀÏµéÀÌ ÀúÀåµÇ´Â ¹è¿­
-	TObjectPtr<UChildActorComponent> TargetTile; // °Ç¹°ÀÌ ¼³Ä¡µÉ Å¸ÀÏ
+	TArray<UChildActorComponent*> SectionTiles;	// íŠ¹ì • ì„¹ì…˜ì˜ íƒ€ì¼ë“¤ì´ ì €ì¥ë˜ëŠ” ë°°ì—´
+	TObjectPtr<UChildActorComponent> TargetTile; // ê±´ë¬¼ì´ ì„¤ì¹˜ë  íƒ€ì¼
 
-	{ // ÇØ´ç ¼½¼Ç Å¸ÀÏ ±¸ÇÏ±â
+	{ // í•´ë‹¹ ì„¹ì…˜ íƒ€ì¼ êµ¬í•˜ê¸°
 		for (const auto& pTile : Tiles)
 		{
-			// TileTag ÅÂ±×¸¦ °¡Áø Å¸ÀÏµéÀ» ÃßÃâÇÑ´Ù.
+			// TileTag íƒœê·¸ë¥¼ ê°€ì§„ íƒ€ì¼ë“¤ì„ ì¶”ì¶œí•œë‹¤.
 			if (pTile && pTile->ComponentHasTag(TileTag))
 			{
 				SectionTiles.Add(pTile);
@@ -227,17 +227,17 @@ void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector M
 		}
 	}
 
-	{ // ºÎÀ¯ Å¸ÀÏ ¹èÄ¡ÇÏ±â
+	{ // ë¶€ìœ  íƒ€ì¼ ë°°ì¹˜í•˜ê¸°
 		int FloatingTileCount = 0;
 		while (FloatingTileCount < SpawnCount)
 		{
-			// ºÎÀ¯Å¸ÀÏÀÌ »ı¼º µÉ Å¸ÀÏ ±¸ÇÏ±â
+			// ë¶€ìœ íƒ€ì¼ì´ ìƒì„± ë  íƒ€ì¼ êµ¬í•˜ê¸°
 			int index = FMath::RandRange(0, SectionTiles.Num() - 1);
 			TargetTile = SectionTiles[index];
-			// ÇØ´ç Å¸ÀÏ¿¡ °Ç¹°/ºÎÀ¯Å¸ÀÏÀÌ ¼³Ä¡µÇÁö ¾Ê¾Ò´Ù¸é, °Ç¹°À» »ı¼ºÇÏ¿© ¼³Ä¡
+			// í•´ë‹¹ íƒ€ì¼ì— ê±´ë¬¼/ë¶€ìœ íƒ€ì¼ì´ ì„¤ì¹˜ë˜ì§€ ì•Šì•˜ë‹¤ë©´, ê±´ë¬¼ì„ ìƒì„±í•˜ì—¬ ì„¤ì¹˜
 			if (!Tile_Actor.Contains(TargetTile))
 			{
-				// ºÎÀ¯Å¸ÀÏ »ı¼º ¹× Ãß°¡
+				// ë¶€ìœ íƒ€ì¼ ìƒì„± ë° ì¶”ê°€
 				AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
 				if (FloatingTile)
 				{
@@ -246,7 +246,7 @@ void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector M
 				}
 				Tile_Actor.Add(TargetTile, FloatingTile);
 
-				// ÇØ´ç ¼½¼Ç Å¸ÀÏÀ» »ç¿ëÇßÀ¸´Ï ¼±ÅÃÁö¿¡¼­ Á¦°Å
+				// í•´ë‹¹ ì„¹ì…˜ íƒ€ì¼ì„ ì‚¬ìš©í–ˆìœ¼ë‹ˆ ì„ íƒì§€ì—ì„œ ì œê±°
 				SectionTiles.Remove(TargetTile);
 
 				++FloatingTileCount;
@@ -262,10 +262,10 @@ AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 
 		UE_LOG(LogTemp, Warning, TEXT("%s %d"), *TargetTile->GetName(), CollapseDirectionAngle);
 
 	}
-	{ // ºôµù ¹èÄ¡ÇÏ±â
+	{ // ë¹Œë”© ë°°ì¹˜í•˜ê¸°
 		if (!Tile_Actor.Contains(TargetTile))
 		{
-			// ºôµù »ı¼º ¹× Ãß°¡
+			// ë¹Œë”© ìƒì„± ë° ì¶”ê°€
 			ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
 			if (Building)
 			{
@@ -326,7 +326,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 		{
 		case (BYTE)ETILETYPE::FLOATINGTILE: // FLOATING TILE
 		{
-			// ºÎÀ¯Å¸ÀÏ »ı¼º ¹× Ãß°¡
+			// ë¶€ìœ íƒ€ì¼ ìƒì„± ë° ì¶”ê°€
 			AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
 			if (FloatingTile)
 			{
@@ -358,7 +358,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 		{
 		case 1:	// BUILDING
 		{
-			// ºôµù »ı¼º ¹× Ãß°¡
+			// ë¹Œë”© ìƒì„± ë° ì¶”ê°€
 			ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
 			if (Building)
 			{
@@ -371,7 +371,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 		}
 		case 2: // FLOATING TILE
 		{
-			// ºÎÀ¯Å¸ÀÏ »ı¼º ¹× Ãß°¡
+			// ë¶€ìœ íƒ€ì¼ ìƒì„± ë° ì¶”ê°€
 			AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
 			if (FloatingTile)
 			{
@@ -393,7 +393,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 		{
 		case (BYTE)ETILETYPE::BUILDING:	// BUILDING
 		{
-			// ºôµù »ı¼º ¹× Ãß°¡
+			// ë¹Œë”© ìƒì„± ë° ì¶”ê°€
 			ABuilding* Building = GetWorld()->SpawnActorDeferred<ABuilding>(ABuilding::StaticClass(), FTransform(), this);
 			if (Building)
 			{
@@ -406,7 +406,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo)
 		}
 		case (BYTE)ETILETYPE::FLOATINGTILE: // FLOATING TILE
 		{
-			// ºÎÀ¯Å¸ÀÏ »ı¼º ¹× Ãß°¡
+			// ë¶€ìœ íƒ€ì¼ ìƒì„± ë° ì¶”ê°€
 			AFloatingTile* FloatingTile = GetWorld()->SpawnActorDeferred<AFloatingTile>(AFloatingTile::StaticClass(), FTransform(), this);
 			if (FloatingTile)
 			{
@@ -444,7 +444,7 @@ TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)
 	TArray<UChildActorComponent*> SectionTiles;
 	for (const auto& pTile : Tiles)
 	{
-		// TileTag ÅÂ±×¸¦ °¡Áø Å¸ÀÏµéÀ» ÃßÃâÇÑ´Ù.
+		// TileTag íƒœê·¸ë¥¼ ê°€ì§„ íƒ€ì¼ë“¤ì„ ì¶”ì¶œí•œë‹¤.
 		if (pTile && pTile->ComponentHasTag(tag))
 		{
 			SectionTiles.Add(pTile);
@@ -482,13 +482,13 @@ FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 {
 	float CollapseRemainDistance{};
-	// CollapseLevel¿¡ µû¶ó ÆÄ±«µÇÁö ¾Ê´Â ¿µ¿ª ±æÀÌ ¼³Á¤
+	// CollapseLevelì— ë”°ë¼ íŒŒê´´ë˜ì§€ ì•ŠëŠ” ì˜ì—­ ê¸¸ì´ ì„¤ì •
 	{
 		if (CollapseLevel == 1) CollapseRemainDistance = 2.5f;
 		else CollapseRemainDistance = 1.5f;
 	}
 
-	// ÁöÇü ÆÄ±« ÈÄ ³²Àº Å¸ÀÏÀÇ Áß¾Ó Å¸ÀÏ ±¸ÇÏ±â
+	// ì§€í˜• íŒŒê´´ í›„ ë‚¨ì€ íƒ€ì¼ì˜ ì¤‘ì•™ íƒ€ì¼ êµ¬í•˜ê¸°
 	{
 		FVector NewMiddleTileLocation = CurrentMiddleTile->GetRelativeLocation();
 		NewMiddleTileLocation.X += (offset * UKismetMathLibrary::DegSin(CollapseDirectionAngle * 60 + 30));
@@ -497,20 +497,21 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 		CurrentMiddleTile = GetLineTileFromAngleAndDistance(0, 0, NewMiddleTileLocation);
 	}
 
-	// ÆÄ±« ¿µ¿ª¿¡ ÇØ´çÇÏ´Â À°°¢Å¸ÀÏ ÆÄ±« ¹× ÇØ´ç À°°¢Å¸ÀÏ ¾Æ·¡ °Ç¹° / ºÎÀ¯Å¸ÀÏ »èÁ¦
-	// »èÁ¦ ÈÄ GeometryComponent¿¡ ÇØ´çÇÏ´Â Å¸ÀÏ »ı¼º
+	// íŒŒê´´ ì˜ì—­ì— í•´ë‹¹í•˜ëŠ” ìœ¡ê°íƒ€ì¼ íŒŒê´´ ë° í•´ë‹¹ ìœ¡ê°íƒ€ì¼ ì•„ë˜ ê±´ë¬¼ / ë¶€ìœ íƒ€ì¼ ì‚­ì œ
+	// ì‚­ì œ í›„ GeometryComponentì— í•´ë‹¹í•˜ëŠ” íƒ€ì¼ ìƒì„±
 	{
-		for (UChildActorComponent* Tile : Tiles)
+		//for (UChildActorComponent* Tile : Tiles)
+		for(int i =0; i<Tiles.Num(); ++i)
 		{
-			float TileDistance = UKismetMathLibrary::Vector_Distance(Tile->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
-			FVector GeometrySpawnLocation = Tile->GetRelativeLocation();
+			float TileDistance = UKismetMathLibrary::Vector_Distance(Tiles[i]->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
+			FVector GeometrySpawnLocation = Tiles[i]->GetRelativeLocation();
 
-			// ÆÄ±« ¿µ¿ª Ã¼Å©
+			// íŒŒê´´ ì˜ì—­ ì²´í¬
 			if (TileDistance > offset * CollapseRemainDistance)
 			{
-				if (Tile_Actor.Contains(Tile))
+				if (Tile_Actor.Contains(Tiles[i]))
 				{
-					AActor* TargetActor = *(Tile_Actor.Find(Tile));
+					AActor* TargetActor = *(Tile_Actor.Find(Tiles[i]));
 					ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
 					if (Child_Actor)
 					{
@@ -518,34 +519,27 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 						TargetActor->SetLifeSpan(20.0f);
 
 					}
-					Tile_Actor.Remove(Tile);
+					UE_LOG(LogTemp, Warning, TEXT("Tile_Actor Remove() 1 %d "), Tile_Actor.Num());
+					Tile_Actor.Remove(Tiles[i]);
+					
+					UE_LOG(LogTemp, Warning, TEXT("Tile_Actor Remove() 2 %d "), Tile_Actor.Num());
 				}
+				Tiles[i]->DestroyComponent();
+				Tiles.RemoveAt(i);
+				i -= 1;
+				
+				//Tiles[i] = nullptr;
 
-				Tile->DestroyComponent();
-				Tile = nullptr;
-
-				// Å¸ÀÏ GeometryCollection »ı¼º
+				// íƒ€ì¼ GeometryCollection ìƒì„±
 				AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
-
 				NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
 			}
 		}
 	}
 
-	{ // ¹è¿­ ³» Invalid °ª Á¦°Å
-		TArray<UChildActorComponent*> TempArray;
-		for (UChildActorComponent* Tile : Tiles)
-		{
-			if (Tile)
-			{
-				TempArray.Add(Tile);
-			}
-		}
-		Tiles.Empty();
-		for (UChildActorComponent* TempTile : TempArray)
-		{
-			Tiles.Add(TempTile);
-		}
-	}
+}
 
+void AHexagonTile::CollapseLevel3()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Tiles.Num());
 }

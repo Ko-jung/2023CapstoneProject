@@ -59,6 +59,9 @@ void AMainGameMode::BeginPlay()
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
 	m_Socket->Send(&PRP, PRP.PacketSize);
+	// For Get Building Info
+	PRequestPacket PRP2(COMP_OP::OP_SETTIMER);
+	m_Socket->Send(&PRP2, PRP2.PacketSize);
 }
 
 void AMainGameMode::Tick(float Deltatime)
@@ -69,6 +72,10 @@ void AMainGameMode::Tick(float Deltatime)
 	{
 		return;
 	}
+
+	if(TileDropTimer > 0.f)
+		TileDropTimer -= Deltatime;
+	// UI Setting
 
 	ProcessFunc();
 	SendPlayerSwapWeaponInfo();
@@ -174,6 +181,13 @@ void AMainGameMode::ProcessFunc()
 					Characters[PSDS.TargetSerialNum]->ApplyDown(Dirction);
 				}
 			}
+			break;
+		}		
+		case (BYTE)COMP_OP::OP_SETTIMER:
+		{
+			PSetTimer PST;
+			memcpy(&PST, packet, sizeof(PST));
+			TileDropTimer = PST.SecondsUntilActivation;
 			break;
 		}
 		default:
@@ -561,6 +575,12 @@ void AMainGameMode::Test_TakeDamage(int DamageType)
 
 	m_Socket->Send(PDP, sizeof(PDamagedPlayer));
 	//PushQueue(PDP);
+}
+
+void AMainGameMode::RequestTileDrop()
+{
+	PRequestPacket PRP(COMP_OP::OP_TILEDROP);
+	m_Socket->Send(&PRP, sizeof(PRP));
 }
 
 void AMainGameMode::SpawnSkillActor_Implementation(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team) {}

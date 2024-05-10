@@ -140,7 +140,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		break;
 	}
 	default:
-		LogUtil::PrintLog("abc");
+		LogUtil::PrintLog("PacketMgr::ProcessPacket p->PacketType is DEFAULT");
 		break;
 	}
 }
@@ -159,6 +159,24 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 		ClientMgr::Instance()->Send(id, &PBI, PBI.PacketSize);
 		break;
 	}
+	case COMP_OP::OP_TILEDROP:
+	{
+		int RoomNum = id / MAXPLAYER;
+		BYTE TileDropLevel = RoomMgr::Instance()->GetTileDropLevelAndIncrease(RoomNum);
+
+		PTileDrop PTD(TileDropLevel);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PTD, sizeof(PTD));
+		break;
+	}
+	case COMP_OP::OP_SETTIMER:
+	{
+		int RoomNum = id / MAXPLAYER;
+		float durationTime = RoomMgr::Instance()->GetRoomElapsedTime(RoomNum);
+
+		PSetTimer PST(ETimer::TileDropTiler, 300.f - durationTime);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PST, sizeof(PST));
+		break;
+	}
 	default:
 		break;
 	}
@@ -168,6 +186,22 @@ void PacketMgr::SendStartGame(int RoomNum, int ClientNum, void* etc)
 {
 	PStartGame PSG;
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PSG, sizeof(PSG));
+
+	RoomMgr::Instance()->StartTime(RoomNum);
+}
+
+void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
+{
+	BYTE TDLevel = RoomMgr::Instance()->GetTileDropLevel(RoomNum);
+
+	// 이미 Exec 함수로 호출하였다.
+	if (TDLevel >= TileDropLevel) return;
+
+	PTileDrop PTD(TileDropLevel);
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PTD, sizeof(PTD));
+
+	PSetTimer PST(ETimer::TileDropTiler, 300.f);
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PST, sizeof(PST));
 }
 
 void PacketMgr::GameBeginProcessing(int NowClientId)
@@ -182,7 +216,17 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 	TimerMgr::Instance()->Insert(TE2);
 
 	// ======== Tile Drop ========
+	TimerEvent TileDrop1Timer(std::chrono::seconds(300 + 20),
+		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 1));
+	TimerMgr::Instance()->Insert(TileDrop1Timer);
 
+	TimerEvent TileDrop2Timer(std::chrono::seconds(600 + 20),
+		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 2));
+	TimerMgr::Instance()->Insert(TileDrop2Timer);
+
+	TimerEvent TileDrop3Timer(std::chrono::seconds(900 + 20),
+		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 3));
+	TimerMgr::Instance()->Insert(TileDrop3Timer);
 	//============================
 
 	// ======== new Room =========

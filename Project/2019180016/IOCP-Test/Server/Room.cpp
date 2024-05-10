@@ -19,6 +19,7 @@
 Room::Room()
 {
 	KillScore[0] = KillScore[1] = 0;
+	TileDropLevel = 0;
 
 	memset(BuildingExist, (BYTE)ETILETYPE::NONTILE, sizeof(BuildingExist));
 
@@ -119,10 +120,22 @@ void Room::AddKillCount(bool IsTeamA)
 	//}
 }
 
+void Room::SetStartTime()
+{
+	RoomStartTime = std::chrono::system_clock::now();
+}
+
 BYTE* Room::GetBuildingExist(int& size)
 {
 	size = TILE_MIDDLE_COUNT + TILE_SECTION1_COUNT + TILE_SECTION2_COUNT + TILE_SECTION3_COUNT;
 	return BuildingExist;
+}
+
+float Room::GetRoomElapsedTime()
+{
+	auto Now = std::chrono::system_clock::now();
+
+	return std::chrono::duration<float>(Now - RoomStartTime).count();
 }
 
 void Room::SpawnItem(int ItemCount)

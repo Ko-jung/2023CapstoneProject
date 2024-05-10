@@ -217,9 +217,9 @@ struct PStartGame : Packet
 // USTRUCT()
 struct PTileDrop : Packet
 {
-	// GENERATED_BODY()
-
-	PTileDrop() : Packet(COMP_OP::OP_TILEDROP) { }
+	BYTE TileDropLevel;
+	PTileDrop() : Packet(COMP_OP::OP_TILEDROP), TileDropLevel(0) { PacketSize = sizeof(PTileDrop); }
+	PTileDrop(BYTE TileDropLevel) : Packet(COMP_OP::OP_TILEDROP), TileDropLevel(TileDropLevel) { PacketSize = sizeof(PTileDrop); }
 };
 
 // contained room num in RoomNum

@@ -27,6 +27,7 @@ private:
 	void SendSpawn(int TargetClientID);
 	void SendOffInvincibility(int TargetClientID);
 	void SendStartGame(int RoomNum, int ClientNum, void* etc);
+	void SendTileDrop(int RoomNum, BYTE TileDropLevel);
 
 	const int GetWeaponDamage(const bool& isMelee, const int& weaponEnum);
 };

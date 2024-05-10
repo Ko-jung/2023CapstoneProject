@@ -102,6 +102,7 @@ enum class ETimer : BYTE
 {
 	DefaultTimer,
 	SelectTimer,
+	TileDropTiler,
 };
 
 enum class ECharacterState : BYTE

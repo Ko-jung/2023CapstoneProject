@@ -4,6 +4,7 @@
 #include <atomic>
 #include <vector>
 #include <Windows.h>
+#include <chrono>
 
 constexpr int TILE_MIDDLE_COUNT = 1;
 constexpr int TILE_SECTION3_COUNT = 6;
@@ -29,13 +30,20 @@ public:
 	Room();
 	~Room() {}
 
+	void IncreaseTileDropLevel() { ++TileDropLevel; }
 	void AddKillCount(bool IsTeamA);
+	void SetStartTime();
+
 	BYTE* GetBuildingExist(int& size);
+	BYTE GetTileDropLevel() { return TileDropLevel; }
+	float GetRoomElapsedTime();			// 게임이 시작하고 경과시간
 
 	void SpawnItem(int ItemCount);
 
 private:
 	std::array<std::atomic<int>, 2> KillScore;
+	int TileDropLevel;
+	std::chrono::system_clock::time_point RoomStartTime;
 	
 	/// <summary>
 	/// <para>If 0, No TileActor(Building, Floating) </para>

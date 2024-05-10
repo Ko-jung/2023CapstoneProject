@@ -31,7 +31,8 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	// 캐릭터 - 컨트롤러 yaw 분리시(Separate Camera 모드) && 인풋 입력 제한 시 직접 회전 처리
-	if(bCanLookInput && !PossessingPawn->InputEnabled())
+	// if (bCanLookInput && !(Cast<ASkyscraperCharacter>(GetOwner())->InputEnabled()))
+	if(bCanLookInput && PossessingPawn && !PossessingPawn->InputEnabled())
 	{
 		FVector2D MouseDeltaValue{};
 		GetInputMouseDelta(MouseDeltaValue.X, MouseDeltaValue.Y);

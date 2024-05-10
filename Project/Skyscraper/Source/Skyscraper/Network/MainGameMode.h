@@ -67,6 +67,9 @@ public:
 	 UPROPERTY(EditAnywhere)
 	 FVector TempSpawnLocation[5];
 
+	 UFUNCTION(Exec)
+	 void RequestTileDrop();
+
 private:
 	TArray<ASkyscraperCharacter*> Characters;
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
@@ -77,4 +80,6 @@ private:
 	int KillCount[2] = { 0, };
 	FVector SpawnLoction[2];
 	FName TeamName[2];
+
+	float TileDropTimer;
 };

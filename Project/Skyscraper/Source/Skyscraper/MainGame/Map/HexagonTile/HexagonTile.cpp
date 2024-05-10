@@ -478,6 +478,56 @@ FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 	return FVector();
 }
 
+void AHexagonTile::CollapseTilesAndActors(int CollapseLevel, int CenterIndex)
+{
+	float CollapseRemainDistance{};
+	// CollapseLevel에 따라 파괴되지 않는 영역 길이 설정
+	{
+		if (CollapseLevel == 1) CollapseRemainDistance = 2.5f;
+		else CollapseRemainDistance = 1.5f;
+	}
+
+	CurrentMiddleTile = Tiles[CenterIndex];
+
+	// 파괴 영역에 해당하는 육각타일 파괴 및 해당 육각타일 아래 건물 / 부유타일 삭제
+	// 삭제 후 GeometryComponent에 해당하는 타일 생성
+	{
+		//for (UChildActorComponent* Tile : Tiles)
+		for (int i = 0; i < Tiles.Num(); ++i)
+		{
+			float TileDistance = UKismetMathLibrary::Vector_Distance(Tiles[i]->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
+			FVector GeometrySpawnLocation = Tiles[i]->GetRelativeLocation();
+
+			// 파괴 영역 체크
+			if (TileDistance > offset * CollapseRemainDistance)
+			{
+				if (Tile_Actor.Contains(Tiles[i]))
+				{
+					AActor* TargetActor = *(Tile_Actor.Find(Tiles[i]));
+					ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
+					if (Child_Actor)
+					{
+						Child_Actor->DoCollapse();
+						TargetActor->SetLifeSpan(20.0f);
+
+					}
+					Tile_Actor.Remove(Tiles[i]);
+				}
+				Tiles[i]->DestroyComponent();
+				Tiles.RemoveAt(i);
+				i -= 1;
+
+				//Tiles[i] = nullptr;
+
+				// 타일 GeometryCollection 생성
+				AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
+				NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
+				NewGCTileActor->SetLifeSpan(30.0f);
+			}
+		}
+	}
+}
+
 
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 {

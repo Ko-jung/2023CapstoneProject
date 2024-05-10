@@ -102,6 +102,8 @@ public:
 
 	FVector GetSpawnLocation(bool IsTeamA);
 
+	void CollapseTilesAndActors(int CollapseLevel, int CenterIndex);
+
 protected:
 	enum class ESectionCount : uint8 { MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };
 	enum class ETILETYPE : uint8 { NONTILE, BUILDING, FLOATINGTILE, SPAWNBUILDING_A, SPAWNBUILDING_B, };

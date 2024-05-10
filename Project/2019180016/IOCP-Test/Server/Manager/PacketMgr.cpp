@@ -162,9 +162,10 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 	case COMP_OP::OP_TILEDROP:
 	{
 		int RoomNum = id / MAXPLAYER;
-		BYTE TileDropLevel = RoomMgr::Instance()->GetTileDropLevelAndIncrease(RoomNum);
+		int CenterIndex;
+		BYTE TileDropLevel = RoomMgr::Instance()->GetTileDropCenterIndex(RoomNum, CenterIndex);
 
-		PTileDrop PTD(TileDropLevel);
+		PTileDrop PTD(TileDropLevel, CenterIndex);
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PTD, sizeof(PTD));
 		break;
 	}
@@ -197,7 +198,10 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 	// 이미 Exec 함수로 호출하였다.
 	if (TDLevel >= TileDropLevel) return;
 
-	PTileDrop PTD(TileDropLevel);
+	int CenterIndex;
+	TDLevel = RoomMgr::Instance()->GetTileDropCenterIndex(RoomNum, CenterIndex);
+
+	PTileDrop PTD(TileDropLevel, BYTE(CenterIndex));
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PTD, sizeof(PTD));
 
 	PSetTimer PST(ETimer::TileDropTiler, 300.f);

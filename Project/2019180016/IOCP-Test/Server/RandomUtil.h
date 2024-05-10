@@ -10,6 +10,7 @@ public:
 	~RandomUtil() {}
 
 	static int RandRange(int minInt, int maxInt);
+	static int RandVector(const std::vector<int>& v);
 
 	static std::vector<int> RandUniqueInt(const int& minInt, const int& maxInt, const int& count);
 	static std::vector<int> RandUniqueInt(const int& minInt, const int& maxInt, const int& count, const std::vector<int>& IncludeInt);

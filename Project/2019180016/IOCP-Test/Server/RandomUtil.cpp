@@ -9,6 +9,12 @@ int RandomUtil::RandRange(int minInt, int maxInt)
     return IntUid(mt);
 }
 
+int RandomUtil::RandVector(const std::vector<int>& v)
+{
+	int RandInt = RandRange(0, v.size() - 1);
+	return v[RandInt];
+}
+
 std::vector<int> RandomUtil::RandUniqueInt(const int& minInt, const int& maxInt, const int& count)
 {
 	std::vector<int> ReturnVector;

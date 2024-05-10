@@ -256,6 +256,13 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		UE_LOG(LogTemp, Warning, TEXT("New Timer Push, Time is %f s"), PST->SecondsUntilActivation);
 		break;
 	}
+	case (int)COMP_OP::OP_TILEDROP:
+	{
+		PTileDrop* PTD = new PTileDrop();
+		memcpy(PTD, p, sizeof(*PTD));
+		Gamemode->PushQueue(PTD);
+		break;
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;

@@ -36,6 +36,7 @@ public:
 	void ProcessSpawnObject(PSpawnObject PSO);
 	void ProcessChangedCharacterState(PChangedPlayerState* PCPS);
 	void ProcessBuildingInfo(PBuildingInfo* PBI);
+	void ProcessTileDrop(PTileDrop PTD);
 	void GetHexagonTileOnLevel();
 
 	void SendPlayerLocation();

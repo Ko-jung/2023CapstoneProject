@@ -69,3 +69,8 @@ float RoomMgr::GetRoomElapsedTime(int roomId)
 {
 	return Rooms[roomId]->GetRoomElapsedTime();
 }
+
+int RoomMgr::GetTileDropCenterIndex(const int roomId, int& CenterIndex)
+{
+	return Rooms[roomId]->GetTileDropCenterIndex(CenterIndex);
+}

@@ -29,6 +29,11 @@ IOCPServer::IOCPServer()
 	m_TimerMgr = TimerMgr::Instance();
 
 	IsLobbyServerConnect = false;
+
+	// RoomMgr::Instance()->AddRoom(0);
+	// int a;
+	// RoomMgr::Instance()->GetTileDropCenterIndex(0, a);
+	// RoomMgr::Instance()->GetTileDropCenterIndex(0, a);
 }
 
 IOCPServer::~IOCPServer()

@@ -205,7 +205,7 @@ float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 
 void ASkyscraperCharacter::DoStun(const AActor* Attacker, const float StunTime, const FVector StunDirection) const
 {
-	if (MainGameMode->GetIsConnected())
+	if (IsValid(MainGameMode) && MainGameMode->GetIsConnected())
 	{
 		MainGameMode->SendStunDown(Attacker, this, StunDirection, true, StunTime);
 	}
@@ -217,7 +217,7 @@ void ASkyscraperCharacter::DoStun(const AActor* Attacker, const float StunTime, 
 
 void ASkyscraperCharacter::DoDown(const AActor* Attacker, const FVector& DownDirection) const
 {
-	if (MainGameMode->GetIsConnected())
+	if (IsValid(MainGameMode) && MainGameMode->GetIsConnected())
 	{
 		MainGameMode->SendStunDown(Attacker, this, DownDirection);
 	}

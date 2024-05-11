@@ -173,6 +173,8 @@ void UMainRangeComponent::RemoveThisWeapon()
 void UMainRangeComponent::PlayFireAnim()
 {
 	if (!CanFire()) return;
+	UE_LOG(LogTemp, Warning, TEXT("이때가 키 눌리기고, %f %f"),CurrentFireCoolTime,FireMaxCoolTime);
+	 
 	CurrentFireCoolTime = FireMaxCoolTime;
 
 	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));

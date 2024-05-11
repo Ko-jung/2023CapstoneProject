@@ -136,6 +136,12 @@ void UCombatSystemComponent::AddInputMappingContext()
 
 void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)
 {
+	if (OwnerAnimInstance->IsAnyMontagePlaying())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("행동 중 무기 교체 불가"));
+		return;
+	}
+
 	if(MainWeaponComponent == TargetWeaponComponent)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("같은 장비 교체 X"));

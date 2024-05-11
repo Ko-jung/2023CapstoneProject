@@ -5,6 +5,8 @@
 #include <vector>
 #include <Windows.h>
 #include <chrono>
+	
+//#define ContiguousTiles
 
 constexpr int TILE_MIDDLE_COUNT = 1;
 constexpr int TILE_SECTION3_COUNT = 6;
@@ -19,6 +21,17 @@ constexpr int BUILDING_SECTION1_COUNT = 6;	// +2 SpawnBuilding
 constexpr int FLOATING_TILE_SECTION3_COUNT = 1;
 constexpr int FLOATING_TILE_SECTION2_COUNT = 2;
 constexpr int FLOATING_TILE_SECTION1_COUNT = 4;
+
+struct TileProperty
+{
+	BYTE TileType;
+	BYTE SectionLevel;
+	float PosX;
+	float PosY;
+
+	TileProperty() : TileType(0), SectionLevel(0), PosX(0.f), PosY(0.f) {}
+	TileProperty(BYTE type, BYTE level, float x, float y) : TileType(type), SectionLevel(level), PosX(x), PosY(y) {}
+};
 
 class Room
 {
@@ -35,10 +48,10 @@ public:
 	void AddKillCount(bool IsTeamA);
 	void SetStartTime();
 
-	BYTE* GetBuildingExist(int& size);
 	BYTE GetTileDropLevel() { return TileDropLevel; }
 	float GetRoomElapsedTime();			// 게임이 시작하고 경과시간
 	int GetTileDropCenterIndex(int& CenterIndex);
+
 	void GetTilePos(const int Index, float& X, float& Y);
 	double Distance(float x1, float y1, float x2, float y2);
 
@@ -49,7 +62,12 @@ private:
 	std::array<int, 3> CenterTileIndex;
 	int TileDropLevel;
 	std::chrono::system_clock::time_point RoomStartTime;
-	
+
+#ifdef ContiguousTiles
+public:
+	BYTE* GetBuildingExist(int& size);
+
+private:
 	/// <summary>
 	/// <para>If 0, No TileActor(Building, Floating) </para>
 	/// <para>1, Building </para>
@@ -61,6 +79,22 @@ private:
 	/// <para>[19, 36] : Section1 </para>
 	/// </summary>
 	BYTE BuildingExist[TILE_MIDDLE_COUNT + TILE_SECTION1_COUNT + TILE_SECTION2_COUNT + TILE_SECTION3_COUNT];
+
+#else
+public:
+	const std::vector<TileProperty>& GetBuildingExist() { return BuildingExist; }
+
+private:
+	std::vector<TileProperty> BuildingExist;
+	void CalculateLocation(const BYTE AngleCount, const BYTE Distance, float& x, float& y);
+	TileProperty* GetLineTileFromAngleAndDistance(BYTE FindAngle, BYTE FindDistance,
+							float FindTileLocationX, float FindTileLocationY, int& CenterIndex);
+	void SpawnBuildings(const BYTE& SpawnCount, const BYTE& SectionLevel);
+	void SpawnFloatingTiles(const BYTE& SpawnCount, const BYTE& SectionLevel);
+	void SpawnTeamBuilding(const BYTE& SectionLevel);
+#endif // ContiguousTiles
+
+
 
 	// 아이템 정보
 

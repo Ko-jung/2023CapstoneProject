@@ -158,9 +158,12 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 		int ArraySize;
 		BYTE* BuildingExist = RoomMgr::Instance()->GetBuildingExist(id / MAXPLAYER, ArraySize);
 
-		PBuildingInfo PBI;
+		PBuildingInfo PBI(ArraySize);
 		memcpy(PBI.BuildInfo, BuildingExist, ArraySize);
 		ClientMgr::Instance()->Send(id, &PBI, PBI.PacketSize);
+
+		// TODO: Pool 사용 또는 Room 내부에 변수를 하나 더 생성
+		delete BuildingExist;
 		break;
 	}
 	case COMP_OP::OP_TILEDROP:

@@ -407,7 +407,7 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 
 void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 {
-	HexagonTile->InitialSettings(PBI->BuildInfo);
+	HexagonTile->InitialSettings(PBI->BuildInfo, PBI->BuildInfoSize);
 
 	for (int i = 0; i < PlayerSelectInfo.Num(); i++)
 	{

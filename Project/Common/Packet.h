@@ -267,8 +267,10 @@ struct PSwapWeapon : Packet
 struct PBuildingInfo : Packet
 {
 	BYTE BuildInfo[37];
+	BYTE BuildInfoSize;
 
-	PBuildingInfo() : Packet(COMP_OP::OP_BUILDINGINFO) { PacketSize = sizeof(PBuildingInfo); }
+	PBuildingInfo() : Packet(COMP_OP::OP_BUILDINGINFO), BuildInfoSize(37) { PacketSize = sizeof(PBuildingInfo); }
+	PBuildingInfo(BYTE size) : Packet(COMP_OP::OP_BUILDINGINFO), BuildInfoSize(size) { PacketSize = sizeof(PBuildingInfo); }
 };
 
 struct PRequestPacket : Packet

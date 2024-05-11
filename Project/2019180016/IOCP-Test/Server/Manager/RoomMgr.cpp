@@ -50,7 +50,14 @@ void RoomMgr::IncreaseTileDropLevel(int roomId)
 
 BYTE* RoomMgr::GetBuildingExist(int roomId, int& size)
 {
-	return Rooms[roomId]->GetBuildingExist(size);
+	const std::vector<TileProperty>& BuildingExist = Rooms[roomId]->GetBuildingExist();
+	BYTE* ReturnExist = new BYTE[37];
+	for (int i = 0; i < BuildingExist.size(); i++)
+	{
+		ReturnExist[i] = BuildingExist[i].TileType;
+	}
+	size = BuildingExist.size();
+	return ReturnExist;
 }
 
 int RoomMgr::GetTileDropLevelAndIncrease(int roomId)

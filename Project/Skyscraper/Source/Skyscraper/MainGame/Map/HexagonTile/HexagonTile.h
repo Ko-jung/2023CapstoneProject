@@ -95,7 +95,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// ======= 2019180016 ========	
-	void InitialSettings(BYTE* BuildingInfo);	// Setting Building From Server
+	//void InitialSettings(BYTE* BuildingInfo);	// Setting Building From Server
+	void InitialSettings(BYTE* BuildingInfo, uint8 size);	// Setting Building From Server
 	void Init();								// Call InitialSettings(BYTE* BuildingInfo) or InitialSettings()
 
 	TArray<UChildActorComponent*> GetTilesWithTag(FName tag);

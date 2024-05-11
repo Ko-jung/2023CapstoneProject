@@ -386,11 +386,22 @@ void UCombatSystemComponent::OnOutDownMontage(FName NotifyName)
 
 void UCombatSystemComponent::DEBUG_ChangeToNextWeapon()
 {
-	
 	EMeleeSelect NewMeleeSelect = (EMeleeSelect)(((uint8)(MeleeSelect) + 1) % ((uint8)(EMeleeSelect::EMS_NONE)));
 	ERangeSelect NewRangeSelect = (ERangeSelect)(((uint8)(RangeSelect)+1) % ((uint8)(ERangeSelect::ERS_NONE)));
 	SetInitialSelect(NewMeleeSelect, NewRangeSelect);
 	SwapToMeleeWeapon(FInputActionValue());
+}
+
+void UCombatSystemComponent::ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect)
+{
+	SetInitialSelect(NewMeleeSelect, RangeSelect);
+	SwapToMeleeWeapon(FInputActionValue());
+}
+
+void UCombatSystemComponent::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
+{
+	SetInitialSelect(MeleeSelect, NewRangeSelect);
+	SwapToRangeWeapon(FInputActionValue());
 }
 
 

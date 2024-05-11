@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Skyscraper/Enum/EMeleeSelect.h"
+#include "Skyscraper/Enum/ERangeSelect.h"
 #include "SkyscraperPlayerController.generated.h"
 
 class UMiniMapWidget;
@@ -28,6 +30,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE UMiniMapWidget* GetMiniMapWidget() const { return MiniMapWidget; }
+
+	void ChangePlayerMeleeWeapon(EMeleeSelect NewMeleeSelect) const;
+	void ChangePlayerRangeWeapon(ERangeSelect NewRangeSelect) const;
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

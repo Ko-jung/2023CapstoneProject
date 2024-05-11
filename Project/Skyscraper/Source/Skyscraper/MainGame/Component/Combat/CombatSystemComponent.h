@@ -38,11 +38,17 @@ public:
 	UFUNCTION()
 		void SwapToRangeWeapon(const FInputActionValue& Value);
 
-	// AnimInstance¿¡¼­ Ä³¸¯ÅÍÀÇ Idle »óÅÂ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» À§ÇØ ÇÊ¿äÇÑ º¯¼ö getter
-	// WeaponType - ¸Ç¼Õ(0), ±Ù°Å¸®(1), ¿ø°Å¸®(2)
-	// EquippedWeapon - EMeleeSelect/ERangeSelect °ª°ú µ¿ÀÏ
+	// AnimInstanceì—ì„œ ìºë¦­í„°ì˜ Idle ìƒíƒœ ì• ë‹ˆë©”ì´ì…˜ì„ ìœ„í•´ í•„ìš”í•œ ë³€ìˆ˜ getter
+	// WeaponType - ë§¨ì†(0), ê·¼ê±°ë¦¬(1), ì›ê±°ë¦¬(2)
+	// EquippedWeapon - EMeleeSelect/ERangeSelect ê°’ê³¼ ë™ì¼
 	UFUNCTION(BlueprintCallable)
 		void GetWeaponEquipStateForAnimation(ESwapWeapon& WeaponType, uint8& EquippedWeapon);
+
+	UFUNCTION()
+		void ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect);
+	UFUNCTION()
+		void ChangeRangeWeapon(ERangeSelect NewRangeSelect);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -61,7 +67,7 @@ protected:
 	//UPROPERTY(EditAnywhere,Category = MotionWarping)
 	//	UAnimMontage* AM_Down;
 
-	// == ¹«±â ÄÄÆÛ³ÍÆ®¿¡ ´ëÇÑ º¯¼ö
+	// == ë¬´ê¸° ì»´í¼ë„ŒíŠ¸ì— ëŒ€í•œ ë³€ìˆ˜
 	UPROPERTY()
 		UActorComponent* MainWeaponComponent;
 	UPROPERTY()
@@ -95,10 +101,11 @@ protected:
 	UFUNCTION()
 	void OnOutDownMontage(FName NotifyName);
 
-	// µğ¹ö±ëÀ» À§ÇÑ ÇÔ¼ö
-	// Ä³¸¯ÅÍ ¹«±â ÀüÈ¯
+	// ë””ë²„ê¹…ì„ ìœ„í•œ í•¨ìˆ˜
+	// ìºë¦­í„° ë¬´ê¸° ì „í™˜
 	UFUNCTION(BlueprintCallable)
 	void DEBUG_ChangeToNextWeapon();
+
 public:	
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 	FORCEINLINE UMainRangeComponent* GetRangeComponent() const { return Cast<UMainRangeComponent>(MainRangeWeaponComponent); }

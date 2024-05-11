@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
@@ -18,6 +19,23 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MiniMapRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Map/WBP_Map.WBP_Map_C'"));
 	MiniMapWidgetClass = WBP_MiniMapRef.Class;
+}
+
+void ASkyscraperPlayerController::ChangePlayerMeleeWeapon(EMeleeSelect NewMeleeSelect) const
+{
+	if(PossessingPawn && PossessingPawn->CombatSystemComponent)
+	{
+		PossessingPawn->CombatSystemComponent->ChangeMeleeWeapon(NewMeleeSelect);
+	}
+
+}
+
+void ASkyscraperPlayerController::ChangePlayerRangeWeapon(ERangeSelect NewRangeSelect) const
+{
+	if (PossessingPawn && PossessingPawn->CombatSystemComponent)
+	{
+		PossessingPawn->CombatSystemComponent->ChangeRangeWeapon(NewRangeSelect);
+	}
 }
 
 void ASkyscraperPlayerController::BeginPlay()

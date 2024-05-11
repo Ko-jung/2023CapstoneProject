@@ -54,7 +54,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
-	GetCharacterMovement()->MaxStepHeight = 100.0f;	// °è´Ü¿¡¼­ ¿Ã¶ó°¥ ¼ö ÀÖµµ·Ï ³ôÀÌ Á¶Á¤
+	GetCharacterMovement()->MaxStepHeight = 100.0f;	// ê³„ë‹¨ì—ì„œ ì˜¬ë¼ê°ˆ ìˆ˜ ìˆë„ë¡ ë†’ì´ ì¡°ì •
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;
@@ -89,6 +89,13 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Assassin/ABP_Assassin.ABP_Assassin_C'"));
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
+
+	{// ë¶€ìŠ¤í„° ë©”ì‰¬ ì¶”ê°€
+		BoostMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BoostSkeletalMesh"));
+		BoostMesh->SetupAttachment(GetMesh(),TEXT("BoostSocket"));
+	}
+	
+	
 
 	{ // == Set Input Asset
 
@@ -168,7 +175,7 @@ void ASkyscraperCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
-	{ // ¼÷ÀÌ±â(crouch)Áß Ä«¸Ş¶ó À§Ä¡ º¯ÇÏÁö ¾Êµµ·Ï °ª ¼³Á¤
+	{ // ìˆ™ì´ê¸°(crouch)ì¤‘ ì¹´ë©”ë¼ ìœ„ì¹˜ ë³€í•˜ì§€ ì•Šë„ë¡ ê°’ ì„¤ì •
 		GetCharacterMovement()->SetCrouchedHalfHeight(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight());
 	}
 	
@@ -323,7 +330,7 @@ void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuf
 	{
 		GetWorld()->GetTimerManager().SetTimer(SpeedBuffTimerHandle, this, &ThisClass::ResetSpeedBuffValue, 0.2f, false, fBuffTime);
 	}
-	else      // Å¸ÀÌ¸Ó°¡ ±âÁ¸¿¡ ½ÇÇà ÁßÀÌ¾ú´Ù¸é (¹«Àû ¸ğµå ÁßÀÌ¾ú´Ù¸é, ½Ã°£ ÃÊ±âÈ­)
+	else      // íƒ€ì´ë¨¸ê°€ ê¸°ì¡´ì— ì‹¤í–‰ ì¤‘ì´ì—ˆë‹¤ë©´ (ë¬´ì  ëª¨ë“œ ì¤‘ì´ì—ˆë‹¤ë©´, ì‹œê°„ ì´ˆê¸°í™”)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(SpeedBuffTimerHandle, this, &ThisClass::ResetSpeedBuffValue, 0.2f, false, fBuffTime);
@@ -344,7 +351,7 @@ void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuf
 	{
 		GetWorld()->GetTimerManager().SetTimer(PowerBuffTimerHandle, this, &ThisClass::ResetPowerBuffValue, 0.2f, false, fBuffTime);
 	}
-	else      // Å¸ÀÌ¸Ó°¡ ±âÁ¸¿¡ ½ÇÇà ÁßÀÌ¾ú´Ù¸é (¹«Àû ¸ğµå ÁßÀÌ¾ú´Ù¸é, ½Ã°£ ÃÊ±âÈ­)
+	else      // íƒ€ì´ë¨¸ê°€ ê¸°ì¡´ì— ì‹¤í–‰ ì¤‘ì´ì—ˆë‹¤ë©´ (ë¬´ì  ëª¨ë“œ ì¤‘ì´ì—ˆë‹¤ë©´, ì‹œê°„ ì´ˆê¸°í™”)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(PowerBuffTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(PowerBuffTimerHandle, this, &ThisClass::ResetPowerBuffValue, 0.2f, false, fBuffTime);
@@ -421,7 +428,7 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Move);
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Look);
-		// ¾ÆÀÌÅÛ »óÈ£ÀÛ¿ë
+		// ì•„ì´í…œ ìƒí˜¸ì‘ìš©
 		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
 		EnhancedInputComponent->BindAction(IA_ItemUsing, ETriggerEvent::Started, this, &ASkyscraperCharacter::UseItem);
 	}
@@ -452,13 +459,13 @@ void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 
-		// ÁÂ, ¿ì, µÚ ÀÌµ¿½Ã ÀÌµ¿¼Óµµ¸¦ ´À¸®°Ô ÇÏ±â À§ÇØ crouch¸¦ »ç¿ë
-		if((MovementVector.Y + 1.0f) <= FLT_EPSILON)   // µÚ·Î ÀÌµ¿ ÁßÀÌ¶ó¸é,
+		// ì¢Œ, ìš°, ë’¤ ì´ë™ì‹œ ì´ë™ì†ë„ë¥¼ ëŠë¦¬ê²Œ í•˜ê¸° ìœ„í•´ crouchë¥¼ ì‚¬ìš©
+		if((MovementVector.Y + 1.0f) <= FLT_EPSILON)   // ë’¤ë¡œ ì´ë™ ì¤‘ì´ë¼ë©´,
 		{
 			Crouch();
 			GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 		}
-		else if ( !(MovementVector.X <= FLT_EPSILON)  &&  (!((MovementVector.Y - 1.0f) <= FLT_EPSILON)) ) // ÁÂ¿ì ÀÌµ¿ÁßÀÌ¸ç, Àü¹æÀÌµ¿ ÇÏÁö ¾ÊÀ» ½Ã
+		else if ( !(MovementVector.X <= FLT_EPSILON)  &&  (!((MovementVector.Y - 1.0f) <= FLT_EPSILON)) ) // ì¢Œìš° ì´ë™ì¤‘ì´ë©°, ì „ë°©ì´ë™ í•˜ì§€ ì•Šì„ ì‹œ
 		{
 			Crouch();
 			GetCharacterMovement()->MaxWalkSpeedCrouched = 450.0f;
@@ -490,14 +497,14 @@ void ASkyscraperCharacter::ItemInteraction()
 {
 
 
-	// ¿ùµå ³» ¿ÀºêÁ§Æ® Áß ¾ÆÀÌÅÛ ¾×ÅÍ Ã£±â
-	// ´Ù¸¸, ¿ùµå ³» ¸ğµç ¿ÀºêÁ§Æ®¿¡ ´ëÇØ¼­ Å½»öÇÏ´Â °ÍÀÌ¹Ç·Î ±»ÀÌ ·±Å¸ÀÓÁß 0~3°³ ¸¸ Á¸ÀçÇÏ´Â ¾×ÅÍ¿¡ ´ëÇØ¼­
-	// GetAllActorsOfClass ¸¦ ÇÏ´Â °ÍÀº ¸Å¿ì ºñÈ¿À² ÀûÀÏ °ÍÀ¸·Î ¿¹»óµÇ¹Ç·Î
-	// ´Ù¸¥ ¹æ¹ıÀ» Ã£¾Æº¸±â (³ë¼Ç Å½±¸)
+	// ì›”ë“œ ë‚´ ì˜¤ë¸Œì íŠ¸ ì¤‘ ì•„ì´í…œ ì•¡í„° ì°¾ê¸°
+	// ë‹¤ë§Œ, ì›”ë“œ ë‚´ ëª¨ë“  ì˜¤ë¸Œì íŠ¸ì— ëŒ€í•´ì„œ íƒìƒ‰í•˜ëŠ” ê²ƒì´ë¯€ë¡œ êµ³ì´ ëŸ°íƒ€ì„ì¤‘ 0~3ê°œ ë§Œ ì¡´ì¬í•˜ëŠ” ì•¡í„°ì— ëŒ€í•´ì„œ
+	// GetAllActorsOfClass ë¥¼ í•˜ëŠ” ê²ƒì€ ë§¤ìš° ë¹„íš¨ìœ¨ ì ì¼ ê²ƒìœ¼ë¡œ ì˜ˆìƒë˜ë¯€ë¡œ
+	// ë‹¤ë¥¸ ë°©ë²•ì„ ì°¾ì•„ë³´ê¸° (ë…¸ì…˜ íƒêµ¬)
 	TArray<AActor*> ItemActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALootingItemActor::StaticClass(), ItemActors);
 
-	// C++ ÀÎÅÍÆäÀÌ½º ÇÔ¼ö ½ÇÇà
+	// C++ ì¸í„°í˜ì´ìŠ¤ í•¨ìˆ˜ ì‹¤í–‰
 	for(AActor* ItemActor : ItemActors)
 	{
 		if (IItemInteraction* ItemInterface = Cast<IItemInteraction>(ItemActor))

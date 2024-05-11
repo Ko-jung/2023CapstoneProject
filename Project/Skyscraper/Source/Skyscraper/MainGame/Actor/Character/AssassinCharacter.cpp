@@ -5,5 +5,8 @@
 
 AAssassinCharacter::AAssassinCharacter()
 {
-	// Skyscraper Character¸¦ Assassin Ä³¸¯ÅÍ¿¡ ¸ÂÃç¼­ ÀÛ¾÷ÇÏ¿© »ı¼ºÀÚ¿¡¼­ ÀÛ¾÷ÇØÁÙ ÇÊ¿ä ¾øÀ½
+	// Skyscraper Characterë¥¼ Assassin ìºë¦­í„°ì— ë§ì¶°ì„œ ì‘ì—…í•˜ì—¬ ìƒì„±ìì—ì„œ ì‘ì—…í•´ì¤„ í•„ìš” ì—†ìŒ
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/4_assassin/assassin_boost.assassin_boost'"));
+	BoostMesh->SetSkeletalMesh(MeshAsset.Object);
 }

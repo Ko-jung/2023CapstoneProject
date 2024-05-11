@@ -15,6 +15,11 @@ AElectricCharacter::AElectricCharacter()
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
+	{
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/2_electric/elec_boost.elec_boost'"));
+		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+	}
+
 
 	{ // == Set Anim Montages
 		// Dagger

@@ -15,6 +15,10 @@ AShieldCharacter::AShieldCharacter()
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
+	{
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/0_shield/shield_boost.shield_boost'"));
+		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+	}
 	
 	{ // == Set Anim Montages
 		// Dagger

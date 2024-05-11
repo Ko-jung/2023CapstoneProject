@@ -41,7 +41,7 @@ class ASkyscraperCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
+
 	// 플레이어가 떠 있는지에 대한 변수 (AnimInstance에서 사용 예정)
 	UPROPERTY(VisibleAnywhere)
 		bool bIsHover;
@@ -81,7 +81,9 @@ public:
 protected:
 	UPROPERTY()
 	TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
-			
+
+	UPROPERTY(EditAnywhere, Category = "Boost")
+		USkeletalMeshComponent* BoostMesh;
 
 protected:
 	// 키 인풋에 따른 액션 함수

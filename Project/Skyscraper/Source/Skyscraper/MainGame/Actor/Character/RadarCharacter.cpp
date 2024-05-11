@@ -16,6 +16,11 @@ ARadarCharacter::ARadarCharacter()
 	}
 
 
+	{
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/5_radar/radar_boost.radar_boost'"));
+		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+	}
+
 	{ // == Set Anim Montages
 		// Dagger
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DaggerRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Radar/Combat/Melee/Dagger/AM_Radar_DaggerAttack.AM_Radar_DaggerAttack'"));

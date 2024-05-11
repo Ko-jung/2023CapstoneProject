@@ -15,6 +15,11 @@ ABoomerangCharacter::ABoomerangCharacter()
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
+	{
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/3_boomerang/boom_boost.boom_boost'"));
+		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+	}
+
 
 	{ // == Set Anim Montages
 		// Dagger

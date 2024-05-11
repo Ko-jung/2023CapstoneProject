@@ -15,6 +15,10 @@ AWindCharacter::AWindCharacter()
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
+	{
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/1_wind/wind_boost.wind_boost'"));
+		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+	}
 
 	{ // == Set Anim Montages
 		// Dagger

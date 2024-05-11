@@ -47,7 +47,6 @@ void UDaggerComponent::BeginPlay()
 	Super::BeginPlay();
 
 	{ // 소유 캐릭터에게 서브 무기 부착
-		UE_LOG(LogTemp, Warning, TEXT("실행은 되는데"));
 		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
 		SubWeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, SubWeaponSocketName);
 		SubWeaponMeshComponent->SetHiddenInGame(true);

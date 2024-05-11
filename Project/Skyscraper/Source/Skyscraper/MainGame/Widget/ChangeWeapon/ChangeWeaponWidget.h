@@ -23,6 +23,7 @@ public:
 	void InitializeWeaponState(EMeleeSelect NowMeleeSelect, ERangeSelect NowRangeSelect);
 	
 protected:
+	void FindButtonData();
 	void ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect);
 	void ChangeRangeWeapon(ERangeSelect NewRangeSelect);
 
@@ -53,6 +54,7 @@ protected:
 		TArray<UButton*> MeleeButton;
 	UPROPERTY()
 		TArray<UButton*> RangeButton;
+
 	UPROPERTY(meta = (BindWidget))
 		UButton* DaggerButton;
 	UPROPERTY(meta = (BindWidget))

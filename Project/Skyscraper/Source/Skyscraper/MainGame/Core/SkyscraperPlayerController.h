@@ -8,6 +8,7 @@
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "SkyscraperPlayerController.generated.h"
 
+class UChangeWeaponWidget;
 class UMiniMapWidget;
 class UTimeAndKillCountWidget;
 class ASkyscraperCharacter;
@@ -30,6 +31,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE UMiniMapWidget* GetMiniMapWidget() const { return MiniMapWidget; }
+
+	UFUNCTION(BlueprintCallable)
+	void AddChangeWeaponWidget();
+	UFUNCTION(BlueprintCallable)
+	void RemoveChangeWeaponWidget();
 
 	void ChangePlayerMeleeWeapon(EMeleeSelect NewMeleeSelect) const;
 	void ChangePlayerRangeWeapon(ERangeSelect NewRangeSelect) const;
@@ -57,6 +63,12 @@ protected:
 		TSubclassOf<UUserWidget> MiniMapWidgetClass;
 	UPROPERTY()
 		TObjectPtr<UMiniMapWidget> MiniMapWidget;
+
+	// ChangeWeapon Widget 클래스 및 변수
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> ChangeWeaponWidgetClass;
+	UPROPERTY()
+		TObjectPtr<UChangeWeaponWidget> ChangeWeaponWidget;
 
 	// 캐릭터와 컨트롤러를 분리한 ECharacterCameraMode::ECCM_SeparateController 시 bool 값 변경을 통해 사용
 	UPROPERTY(EditAnywhere)

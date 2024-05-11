@@ -49,6 +49,10 @@ public:
 	UFUNCTION()
 		void ChangeRangeWeapon(ERangeSelect NewRangeSelect);
 
+	EMeleeSelect GetCurrentMeleeSelect() const { return MeleeSelect; }
+	ERangeSelect GetCurrentRangeSelect() const { return RangeSelect; }
+
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

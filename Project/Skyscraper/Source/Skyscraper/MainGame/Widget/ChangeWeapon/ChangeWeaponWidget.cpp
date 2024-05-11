@@ -9,12 +9,25 @@
 
 void UChangeWeaponWidget::InitializeWeaponState(EMeleeSelect NowMeleeSelect, ERangeSelect NowRangeSelect)
 {
-	ChangeMeleeWeapon(NowMeleeSelect);
-	ChangeRangeWeapon(NowRangeSelect);
+	
+	CurrentMeleeSelect = (NowMeleeSelect);
+	CurrentRangeSelect = (NowRangeSelect);
+}
+
+void UChangeWeaponWidget::FindButtonData()
+{
+	MeleeButton.Add(DaggerButton);
+	MeleeButton.Add(KatanaButton);
+	MeleeButton.Add(SwordButton);
+
+	RangeButton.Add(SMGButton);
+	RangeButton.Add(RifleButton);
+	RangeButton.Add(RPGButton);
 }
 
 void UChangeWeaponWidget::ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect)
 {
+
 	CurrentMeleeSelect = NewMeleeSelect;
 
 	for(int i =0; i<(int8)EMeleeSelect::EMS_NONE; ++i)
@@ -36,7 +49,7 @@ void UChangeWeaponWidget::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
 		RangeButton[i]->SetBackgroundColor(FLinearColor::White);
 	}
 
-	RangeButton[(int8)CurrentMeleeSelect]->SetBackgroundColor(FLinearColor::FromSRGBColor(FColor(125, 125, 125)));
+	RangeButton[(int8)CurrentRangeSelect]->SetBackgroundColor(FLinearColor::FromSRGBColor(FColor(125, 125, 125)));
 
 	OwnerPlayerController->ChangePlayerRangeWeapon(NewRangeSelect);
 }
@@ -75,6 +88,13 @@ void UChangeWeaponWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
+
+}
+
+void UChangeWeaponWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
 	DaggerButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickMeleeToDagger);
 	KatanaButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickMeleeToKatana);
 	SwordButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickMeleeToSword);
@@ -90,15 +110,13 @@ void UChangeWeaponWidget::NativePreConstruct()
 	RangeButton.Add(RifleButton);
 	RangeButton.Add(RPGButton);
 
-}
-
-void UChangeWeaponWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-
 	OwnerPlayerController = Cast<ASkyscraperPlayerController>(GetOwningPlayer());
 	OwnerPlayerController->SetShowMouseCursor(true);
 	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(OwnerPlayerController);
+
+	
+	ChangeMeleeWeapon(CurrentMeleeSelect);
+	ChangeRangeWeapon(CurrentRangeSelect);
 	
 }
 

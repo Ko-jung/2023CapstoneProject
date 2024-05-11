@@ -7,6 +7,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
+#include "Skyscraper/MainGame/Widget/ChangeWeapon/ChangeWeaponWidget.h"
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
@@ -19,6 +20,36 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MiniMapRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Map/WBP_Map.WBP_Map_C'"));
 	MiniMapWidgetClass = WBP_MiniMapRef.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_ChangeWeapon(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/ChangeWeapon/WBP_ChangeWeapon.WBP_ChangeWeapon_C'"));
+	ChangeWeaponWidgetClass = WBP_ChangeWeapon.Class;
+}
+
+void ASkyscraperPlayerController::AddChangeWeaponWidget()
+{
+	if(!ChangeWeaponWidget)
+	{
+		ChangeWeaponWidget = Cast<UChangeWeaponWidget>(CreateWidget(this, ChangeWeaponWidgetClass));
+	}
+
+	if(ChangeWeaponWidget)
+	{
+		if (PossessingPawn && PossessingPawn->CombatSystemComponent)
+		{
+			ChangeWeaponWidget->InitializeWeaponState(PossessingPawn->CombatSystemComponent->GetCurrentMeleeSelect(), PossessingPawn->CombatSystemComponent->GetCurrentRangeSelect());
+			ChangeWeaponWidget->AddToViewport(15);
+		}
+			
+	}
+	
+}
+
+void ASkyscraperPlayerController::RemoveChangeWeaponWidget()
+{
+	if(ChangeWeaponWidget)
+	{
+		ChangeWeaponWidget->RemoveFromParent();
+	}
 }
 
 void ASkyscraperPlayerController::ChangePlayerMeleeWeapon(EMeleeSelect NewMeleeSelect) const

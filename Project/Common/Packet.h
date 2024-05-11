@@ -233,17 +233,22 @@ struct PSetTimer : Packet
 	PSetTimer(ETimer type, float secondTime) : Packet(COMP_OP::OP_SETTIMER), TimerType(type), SecondsUntilActivation(secondTime) { PacketSize = sizeof(PSetTimer); }
 };
 
-struct PSpawnItem : Packet, PTransform
+struct ItemInfo
 {
-	int RoomNum;
+	BYTE TileIndex;
+	BYTE Floor;
+	BYTE Effect;
+	BYTE ItemLevel;
 
-	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), PTransform(), RoomNum(-1) { PacketSize = sizeof(PSpawnItem); }
-	PSpawnItem(PVector Location, PVector Rotate, int Roomnum)
-		: Packet(COMP_OP::OP_SPAWNITEM),
-		PTransform(Location.X, Location.Y, Location.Z, Rotate.X, Rotate.Y, Rotate.Z), RoomNum(Roomnum)
-	{
-		PacketSize = sizeof(PSpawnItem);
-	}
+	ItemInfo() {};
+	ItemInfo(BYTE TileIndex, BYTE Floor, BYTE Effect, BYTE ItemLevel) :
+		TileIndex(TileIndex), Floor(Floor), Effect(Effect), ItemLevel(ItemLevel){}
+};
+struct PSpawnItem : Packet
+{
+	ItemInfo Item[5];
+
+	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM) { PacketSize = sizeof(PSpawnItem); }
 };
 
 struct PChangeAnimMontage : Packet

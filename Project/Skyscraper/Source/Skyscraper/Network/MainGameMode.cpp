@@ -216,6 +216,13 @@ void AMainGameMode::ProcessFunc()
 			ProcessTileDrop(PTD);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_SPAWNITEM:
+		{
+			PSpawnItem PSI;
+			memcpy(&PSI, packet, sizeof(PSI));
+			ProcessSpawnItem(PSI);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
 			break;
@@ -418,6 +425,11 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
 {
 	HexagonTile->CollapseTilesAndActors(PTD.TileDropLevel, PTD.CenterIndex);
+}
+
+void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
+{
+	HexagonTile->SpawnItem(PSI.Item);
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()
@@ -637,6 +649,12 @@ void AMainGameMode::Test_TakeDamage(int DamageType)
 void AMainGameMode::RequestTileDrop()
 {
 	PRequestPacket PRP(COMP_OP::OP_TILEDROP);
+	m_Socket->Send(&PRP, sizeof(PRP));
+}
+
+void AMainGameMode::RequestSpawnItem()
+{
+	PRequestPacket PRP(COMP_OP::OP_SPAWNITEM);
 	m_Socket->Send(&PRP, sizeof(PRP));
 }
 

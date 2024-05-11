@@ -181,6 +181,8 @@ void UHealthComponent::ChangeState(EHealthState s)
 {
 	switch (s)
 	{
+	case EHealthState::EHS_INVINCIBILITY:
+		break;
 	case EHealthState::EHS_LIVING:
 		break;		   
 	case EHealthState::EHS_DYING:

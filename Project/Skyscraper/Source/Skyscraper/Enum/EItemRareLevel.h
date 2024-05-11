@@ -1,7 +1,7 @@
 #pragma once
 
 UENUM()
-enum class EItemRareLevel
+enum class EItemRareLevel : uint8
 {
 	EIRL_NONE = 0,
 	EIRL_Normal,

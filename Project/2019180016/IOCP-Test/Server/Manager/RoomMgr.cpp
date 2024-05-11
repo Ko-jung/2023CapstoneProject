@@ -1,6 +1,9 @@
 #include "RoomMgr.h"
 #include "../Room.h"
 
+#include "TimerMgr.h"
+#include "ClientMgr.h"
+
 RoomMgr::RoomMgr()
 {
 }
@@ -16,6 +19,13 @@ RoomMgr::~RoomMgr()
 void RoomMgr::AddRoom(int roomId)
 {
 	Rooms[roomId] = new Room;
+
+	for (int i = 0; i < 3; i++)
+	{
+		TimerEvent ItemSpawnTimer{ std::chrono::seconds(20 + 300 * (i) + SELECTTIMESECOND),
+			std::bind(&RoomMgr::SendItemSpawn, this, roomId) };
+		TimerMgr::Instance()->Insert(ItemSpawnTimer);
+	}
 }
 
 void RoomMgr::DeleteRoom(int roomId)
@@ -80,4 +90,31 @@ float RoomMgr::GetRoomElapsedTime(int roomId)
 int RoomMgr::GetTileDropCenterIndex(const int roomId, int& CenterIndex)
 {
 	return Rooms[roomId]->GetTileDropCenterIndex(CenterIndex);
+}
+
+void RoomMgr::RequestSendItemSpawn(int roomId)
+{
+	SendItemSpawn(roomId);
+}
+
+void RoomMgr::SendItemSpawn(int roomId)
+{
+	std::vector<ItemInfo> Items;
+	Rooms[roomId]->SpawnItem(Items);
+
+	if (Items.empty())
+	{
+		LogUtil::PrintLog("RoomMgr::SendItemSpawn(int roomId) Error!");
+	}
+
+	PSpawnItem PSI;
+	for (int i = 0; i < Items.size(); i++)
+	{
+		PSI.Item[i].TileIndex = Items[i].TileIndex;
+		PSI.Item[i].Floor = Items[i].Floor;
+		PSI.Item[i].Effect = Items[i].Effect;
+		PSI.Item[i].ItemLevel = Items[i].ItemLevel;
+	}
+
+	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(roomId, &PSI, sizeof(PSI));
 }

@@ -275,19 +275,22 @@ struct PSetTimer : Packet
 };
 
 // USTRUCT()
-struct PSpawnItem : Packet, PTransform
+struct ItemInfo
 {
-	// GENERATED_BODY()
+	BYTE TileIndex;
+	BYTE Floor;
+	BYTE Effect;
+	BYTE ItemLevel;
 
-	int RoomNum;
+	ItemInfo() {};
+	ItemInfo(BYTE TileIndex, BYTE Floor, BYTE Effect, BYTE ItemLevel) :
+		TileIndex(TileIndex), Floor(Floor), Effect(Effect), ItemLevel(ItemLevel) {}
+};
+struct PSpawnItem : Packet
+{
+	ItemInfo Item[5];
 
-	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), PTransform(), RoomNum(-1) { PacketSize = sizeof(PSpawnItem); }
-	PSpawnItem(PVector Location, PVector Rotate, int Roomnum)
-		: Packet(COMP_OP::OP_SPAWNITEM),
-		PTransform(Location.X, Location.Y, Location.Z, Rotate.X, Rotate.Y, Rotate.Z), RoomNum(Roomnum)
-	{
-		PacketSize = sizeof(PSpawnItem);
-	}
+	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM) { PacketSize = sizeof(PSpawnItem); }
 };
 
 // USTRUCT()

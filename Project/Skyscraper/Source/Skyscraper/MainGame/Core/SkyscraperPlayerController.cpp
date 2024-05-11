@@ -119,5 +119,21 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 		
 		SetControlRotation(GetControlRotation().Add(MouseDeltaValue.Y,MouseDeltaValue.X, 0.0f));
 	}
-	
+
+	{//TODO: 서버이전 전 테스트용 코드
+		AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+
+		if (HexagonTile)
+		{
+			for (int i = 0; i < 37; ++i)
+			{
+				if (MiniMapWidget)
+				{
+					MiniMapWidget->SetTileImageAlignment(i, HexagonTile->GetTileWidgetAlignment(i));
+					MiniMapWidget->SetTileImage(i, HexagonTile->GetTileImageType(i));
+				}
+
+			}
+		}
+	}
 }

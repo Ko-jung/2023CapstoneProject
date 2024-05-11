@@ -15,6 +15,8 @@
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
+#include "Skyscraper/MainGame/Actor/LootingItem/LootingItemActor.h"
+
 // Sets default values
 AHexagonTile::AHexagonTile()
 {
@@ -526,6 +528,39 @@ void AHexagonTile::Init()
 		InitialSettings();
 }
 
+void AHexagonTile::SpawnItem(ItemInfo* Items)
+{
+	int SpawnCount = 5 - (TileDropLevel * 2);
+	ABuilding* Building = nullptr;
+	for (int i = 0; i < SpawnCount; i++)
+	{
+		Building = Cast<ABuilding>(*Tile_Actor.Find(Tiles[Items[i].TileIndex]));
+		if (!Building)
+		{
+			UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem Building Is nullptr"));
+			continue;
+		}
+
+		FVector BuildingLocation = (*Building->Building_Floors[Items[i].Floor]).GetActorLocation();
+		BuildingLocation.X += 100.f;
+		BuildingLocation.Y += 100.f;
+		BuildingLocation.Z -= 800.f;
+
+		FHitResult Result;
+		GetWorld()->LineTraceSingleByChannel(Result, BuildingLocation,
+			FVector{ BuildingLocation.X, BuildingLocation.Y, BuildingLocation.Z - 2000.f },
+			ECollisionChannel::ECC_WorldStatic);
+
+		ALootingItemActor* LootingActor = GetWorld()->SpawnActorDeferred<ALootingItemActor>(ALootingItemActor::StaticClass(),
+			FTransform(FRotator(), Result.Location), this);
+		if (LootingActor)
+		{
+			LootingActor->Initialize((EItemEffect)Items[i].Effect, (EItemRareLevel)Items[i].ItemLevel);
+			LootingActor->FinishSpawning(FTransform(FRotator(), Result.Location));
+		}
+	}
+}
+
 TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)
 {
 	TArray<UChildActorComponent*> SectionTiles;
@@ -567,6 +602,8 @@ FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel, int CenterIndex)
 {
+	IncreaseTileDropLevel();
+
 	float CollapseRemainDistance{};
 	// CollapseLevel에 따라 파괴되지 않는 영역 길이 설정
 	{

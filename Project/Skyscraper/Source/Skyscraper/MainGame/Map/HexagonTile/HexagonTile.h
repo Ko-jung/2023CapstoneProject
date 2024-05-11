@@ -99,6 +99,8 @@ public:
 	void InitialSettings(BYTE* BuildingInfo, uint8 size);	// Setting Building From Server
 	void Init();								// Call InitialSettings(BYTE* BuildingInfo) or InitialSettings()
 
+	void SpawnItem(struct ItemInfo* Items);
+
 	TArray<UChildActorComponent*> GetTilesWithTag(FName tag);
 
 	int GetTileDropLevel() { return TileDropLevel; }
@@ -116,7 +118,7 @@ public:
 protected:
 	enum class ESectionCount : uint8 { MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };
 	enum class ETILETYPE : uint8 { NONTILE, BUILDING, FLOATINGTILE, SPAWNBUILDING_A, SPAWNBUILDING_B, };
-
+	 
 	BYTE BuildInfo[(uint8)ESectionCount::MIDDLE + (uint8)ESectionCount::SECTION3 + (uint8)ESectionCount::SECTION2 + (uint8)ESectionCount::SECTION1];
 	int TileDropLevel;
 	// ===========================

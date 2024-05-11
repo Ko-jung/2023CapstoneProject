@@ -263,6 +263,13 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		Gamemode->PushQueue(PTD);
 		break;
 	}
+	case (int)COMP_OP::OP_SPAWNITEM:
+	{
+		PSpawnItem* PSI = new PSpawnItem();
+		memcpy(PSI, p, sizeof(*PSI));
+		Gamemode->PushQueue(PSI);
+		break;
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;

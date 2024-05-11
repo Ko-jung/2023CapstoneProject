@@ -128,3 +128,23 @@ enum class EAnimMontage : BYTE
 	Down,
 	Death
 };
+
+enum class EItemEffect : BYTE
+{
+	NONE = 0,
+	Single_BoostBulletInfinity,
+	Single_GodMode,
+	Team_PlusHealth,
+	Team_Power,
+	Team_Speed,
+	COUNT
+};
+
+enum class EItemRareLevel : BYTE
+{
+	NONE = 0,
+	Normal,
+	Rare,
+	Legend,
+	COUNT
+};

@@ -37,6 +37,7 @@ public:
 	void ProcessChangedCharacterState(PChangedPlayerState* PCPS);
 	void ProcessBuildingInfo(PBuildingInfo* PBI);
 	void ProcessTileDrop(PTileDrop PTD);
+	void ProcessSpawnItem(PSpawnItem PSI);
 	void GetHexagonTileOnLevel();
 
 	void SendPlayerLocation();
@@ -71,6 +72,8 @@ public:
 
 	 UFUNCTION(Exec)
 	 void RequestTileDrop();
+	 UFUNCTION(Exec)
+	 void RequestSpawnItem();
 
 private:
 	TArray<ASkyscraperCharacter*> Characters;

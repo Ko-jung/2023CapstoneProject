@@ -1,7 +1,7 @@
 #pragma once
 
 UENUM()
-enum class EItemEffect
+enum class EItemEffect : uint8
 {
 	EIE_NONE = 0,
 	EIE_Single_BoostBulletInfinity,

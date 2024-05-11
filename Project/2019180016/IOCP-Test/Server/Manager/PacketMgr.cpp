@@ -185,6 +185,12 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 		ClientMgr::Instance()->Send(id, &PST, sizeof(PST));
 		break;
 	}
+	case COMP_OP::OP_SPAWNITEM:
+	{
+		int RoomNum = id / MAXPLAYER;
+		RoomMgr::Instance()->RequestSendItemSpawn(RoomNum);
+		break;
+	}
 	default:
 		break;
 	}
@@ -219,23 +225,23 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 {
 	// 너무 빨리 보내면 못 받는다
 	TimerEvent TE1(std::chrono::seconds(1),
-		std::bind(&PacketMgr::SendSelectTime, this, NowClientId, 15.f));
+		std::bind(&PacketMgr::SendSelectTime, this, NowClientId, (float)SELECTTIMESECOND));
 	TimerMgr::Instance()->Insert(TE1);
 
-	TimerEvent TE2(std::chrono::seconds(20),
+	TimerEvent TE2(std::chrono::seconds(SELECTTIMESECOND),
 		std::bind(&PacketMgr::SendStartGame, this, NowClientId / MAXPLAYER, NowClientId % MAXPLAYER, nullptr));
 	TimerMgr::Instance()->Insert(TE2);
 
 	// ======== Tile Drop ========
-	TimerEvent TileDrop1Timer(std::chrono::seconds(300 + 20),
+	TimerEvent TileDrop1Timer(std::chrono::seconds(300 + SELECTTIMESECOND),
 		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 1));
 	TimerMgr::Instance()->Insert(TileDrop1Timer);
 
-	TimerEvent TileDrop2Timer(std::chrono::seconds(600 + 20),
+	TimerEvent TileDrop2Timer(std::chrono::seconds(600 + SELECTTIMESECOND),
 		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 2));
 	TimerMgr::Instance()->Insert(TileDrop2Timer);
 
-	TimerEvent TileDrop3Timer(std::chrono::seconds(900 + 20),
+	TimerEvent TileDrop3Timer(std::chrono::seconds(900 + SELECTTIMESECOND),
 		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 3));
 	TimerMgr::Instance()->Insert(TileDrop3Timer);
 	//============================
@@ -333,7 +339,8 @@ void PacketMgr::SendSpawn(int TargetClientID)
 	// Set Full HP
 	ClientMgr::Instance()->Heal(TargetClientID, -1);
 
-	ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::INVINCIBILITY);
+	//ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::INVINCIBILITY);
+	ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::LIVING);
 	PChangedPlayerState PCPS(TargetClientID, ECharacterState::INVINCIBILITY);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / MAXPLAYER, &PCPS, sizeof(PCPS));
 }

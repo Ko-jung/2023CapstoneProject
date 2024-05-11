@@ -2,6 +2,8 @@
 #include "RandomUtil.h"
 #include <cmath>
 
+#include "../../../Common/Packet.h"
+
 //TileInfo Room::Tiles[4] = { 
 //	TileInfo(TILE_MIDDLE_COUNT,
 //				BUILDING_MIDDLE_COUNT,
@@ -170,8 +172,43 @@ float Room::GetRoomElapsedTime()
 	return std::chrono::duration<float>(Now - RoomStartTime).count();
 }
 
-void Room::SpawnItem(int ItemCount)
+void Room::SpawnItem(std::vector<ItemInfo>& TileIndex)
 {
+	int ItemCount = 5 - (TileDropLevel * 2);
+
+	std::vector<BYTE> BuildTileIndex;
+	BuildTileIndex.reserve(BuildingExist.size());
+
+	for (int i = 0; i < BuildingExist.size(); i++)
+	{
+		if (BuildingExist[i].TileType != (BYTE)ETILETYPE::NONBUILDING)
+		{
+			BuildTileIndex.push_back(i);
+		}
+	}
+
+	int SpawnCount = 0;
+	while (SpawnCount < ItemCount)
+	{
+		int index = RandomUtil::RandRange(0, BuildTileIndex.size() - 1);
+		int RarityRand = RandomUtil::RandRange(0, 9);
+		int Rarity;
+		int Effect = RandomUtil::RandRange(0, (BYTE)EItemEffect::COUNT - 1);
+
+		if (RarityRand < 5)				Rarity = (BYTE)EItemRareLevel::Normal;
+		else if (RarityRand < 8)		Rarity = (BYTE)EItemRareLevel::Rare;
+		else						Rarity = (BYTE)EItemRareLevel::Legend;
+
+		int floor;
+		if (BuildingExist[BuildTileIndex[index]].SectionLevel == 0)			floor = RandomUtil::RandRange(0, 9 - 1);
+		else if (BuildingExist[BuildTileIndex[index]].SectionLevel == 3)	floor = RandomUtil::RandRange(0, 7 - 1);
+		else if (BuildingExist[BuildTileIndex[index]].SectionLevel == 2)	floor = RandomUtil::RandRange(0, 5 - 1);
+		else	 															floor = RandomUtil::RandRange(0, 3 - 1);
+
+		TileIndex.emplace_back(BuildTileIndex[index], floor, Effect, Rarity);
+		BuildTileIndex.erase(BuildTileIndex.begin() + index);
+		SpawnCount++;
+	}
 
 }
 

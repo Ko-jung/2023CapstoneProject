@@ -28,6 +28,8 @@
 #define LOBBYSERVERIP "127.0.0.1"
 #define LOBBYSERVERPORT 9001
 
+constexpr int SELECTTIMESECOND = 15;
+
 //#define MEMCPYBUFTOPACKET(packet, bytes) memcpy(&packet, (exp->_wsa_buf.buf + bytes), sizeof(packet))
 
 #define SingleTon(ClassName)\

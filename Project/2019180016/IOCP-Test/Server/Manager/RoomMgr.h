@@ -27,7 +27,12 @@ public:
 	float GetRoomElapsedTime(int roomId);
 	int GetTileDropCenterIndex(const int roomId, int& CenterIndex);
 
+	void RequestSendItemSpawn(int roomId);
+
 private:
+	// Timer Func
+	void SendItemSpawn(int roomId);
+
 	std::array<Room*, MAXROOM> Rooms{ nullptr, };
 };
 

@@ -33,15 +33,14 @@ void UKatanaComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ê²€ì§‘ ì™¼ì† ì†Œì¼“ì— ë¶™ì´ê¸°
+	// °ËÁý ¿Þ¼Õ ¼ÒÄÏ¿¡ ºÙÀÌ±â
 	FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
 	KatanaSheathComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, TEXT("KatanaSheathSocket"));
-	KatanaSheathComponent->SetHiddenInGame(true);
 	//KatanaSheathSocket
 	//KatanaSheathSocket
 
 
-	// ì¹´íƒ€ë‚˜ ê²€ì§‘ìª½ì— ë°°ì¹˜ì‹œí‚¤ê¸°
+	// Ä«Å¸³ª °ËÁýÂÊ¿¡ ¹èÄ¡½ÃÅ°±â
 	KatanaAttachToRightHand(false);
 }
 
@@ -50,12 +49,12 @@ void UKatanaComponent::KatanaAttachToRightHand(bool bToRightHand)
 	if (!WeaponMeshComponent) return;
 
 	FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
-	// ë¬´ê¸° ê²€ì§‘ -> ì˜¤ë¥¸ì†ìœ¼ë¡œ ì˜®ê¸°ê¸°
+	// ¹«±â °ËÁý -> ¿À¸¥¼ÕÀ¸·Î ¿Å±â±â
 	if(bToRightHand)
 	{
 		WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
 	}
-	// ì˜¤ë¥¸ì† -> ê²€ì§‘ ì˜®ê¸°ê¸°
+	// ¿À¸¥¼Õ -> °ËÁý ¿Å±â±â
 	else
 	{
 		WeaponMeshComponent->AttachToComponent(KatanaSheathComponent, AttachmentTransformRules, TEXT("katana_sheathSocket"));

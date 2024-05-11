@@ -21,19 +21,19 @@ UDaggerComponent::UDaggerComponent()
 	AttackBlendOutTime.Add(0.2f);
 
 
-	// Skeletal Mesh ì†Œì¼“ ì´ë¦„ ì„¤ì •
+	// Skeletal Mesh ¼ÒÄÏ ÀÌ¸§ ¼³Á¤
 	WeaponSocketName = TEXT("DaggerRightSocket");
 
-	// Skeletal Mesh ë¡œë“œ
+	// Skeletal Mesh ·Îµå
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerRightSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/dagger_right.dagger_right'"));
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dagger Right Weapon"));
 	WeaponMeshComponent->SetSkeletalMesh(DaggerRightSkeletalMeshRef.Object);
 
 
-	// Skeletal Mesh ì†Œì¼“ ì´ë¦„ ì„¤ì •
-	SubWeaponSocketName = TEXT("DaggerLeftSocket");
+	// Skeletal Mesh ¼ÒÄÏ ÀÌ¸§ ¼³Á¤
+	WeaponSocketName = TEXT("DaggerLeftSocket");
 
-	// Skeletal Mesh ë¡œë“œ
+	// Skeletal Mesh ·Îµå
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerLeftSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/dagger_left.dagger_left'"));
 	SubWeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dagger Left Weapon"));
 	SubWeaponMeshComponent->SetSkeletalMesh(DaggerLeftSkeletalMeshRef.Object);
@@ -46,8 +46,7 @@ void UDaggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	{ // ì†Œìœ  ìºë¦­í„°ì—ê²Œ ì„œë¸Œ ë¬´ê¸° ë¶€ì°©
-		UE_LOG(LogTemp, Warning, TEXT("ì‹¤í–‰ì€ ë˜ëŠ”ë°"));
+	{ // ¼ÒÀ¯ Ä³¸¯ÅÍ¿¡°Ô ¼­ºê ¹«±â ºÎÂø
 		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
 		SubWeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, SubWeaponSocketName);
 		SubWeaponMeshComponent->SetHiddenInGame(true);

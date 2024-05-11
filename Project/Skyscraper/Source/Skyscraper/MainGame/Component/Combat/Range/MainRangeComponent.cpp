@@ -172,8 +172,6 @@ void UMainRangeComponent::RemoveThisWeapon()
 
 void UMainRangeComponent::PlayFireAnim()
 {
-	if (OwnerAnimInstance->IsAnyMontagePlaying()) return;
-
 	if (!CanFire()) return;
 	CurrentFireCoolTime = FireMaxCoolTime;
 
@@ -319,8 +317,6 @@ void UMainRangeComponent::BulletReloading()
 
 void UMainRangeComponent::PlayReloadAnim()
 {
-	if (OwnerAnimInstance->IsAnyMontagePlaying()) return;
-
 	if (!CanReload()) return;
 
 	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));

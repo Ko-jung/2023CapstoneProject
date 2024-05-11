@@ -7,6 +7,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Health/HealthBar.h"
 #include "Skyscraper/MainGame/Widget/Health/MyHealthWidget.h"
 
@@ -37,7 +38,7 @@ UHealthComponent::UHealthComponent()
 		HealthBarWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	
-	{ // Á¦Æ®ÆÑ À§Á¬ Å¬·¡½º ·Îµå
+	{ // ì œíŠ¸íŒ© ìœ„ì ¯ í´ë˜ìŠ¤ ë¡œë“œ
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MyHealthClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Health/WBP_Health.WBP_Health_C'"));
 		MyHealthWidgetClass = WBP_MyHealthClass.Class;
 	}
@@ -65,7 +66,7 @@ void UHealthComponent::BeginPlay()
 		HealthProgressBar = Cast<UHealthBar>(HealthBarWidgetComponent->GetUserWidgetObject());
 	}
 
-	// »ı¼º ½Ã Player¿£ controller°¡ ¾ø´Ù. ÈÄ¿¡ ºÒ·¯ÁÙ ¿¹Á¤
+	// ìƒì„± ì‹œ Playerì—” controllerê°€ ì—†ë‹¤. í›„ì— ë¶ˆëŸ¬ì¤„ ì˜ˆì •
 	AddWidget();
 	
 }
@@ -80,7 +81,7 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UHealthComponent::GetDamaged(float fBaseDamage)
 {
-	// ¹«Àû »óÅÂ¶ó¸é ´ë¹ÌÁö ¾È¹Şµµ·Ï
+	// ë¬´ì  ìƒíƒœë¼ë©´ ëŒ€ë¯¸ì§€ ì•ˆë°›ë„ë¡
 	if (bIsGodMode) return;
 
 	CurrentHealth = FMath::Max(CurrentHealth - fBaseDamage, 0.0f);
@@ -114,7 +115,7 @@ void UHealthComponent::ActivateGodMode(float GodModeTime)
 	{
 		GetWorld()->GetTimerManager().SetTimer(GodModeTimerHandle, this, &ThisClass::DeactivateGodMode, 0.2f, false, GodModeTime);
 	}
-	else      // Å¸ÀÌ¸Ó°¡ ±âÁ¸¿¡ ½ÇÇà ÁßÀÌ¾ú´Ù¸é (¹«Àû ¸ğµå ÁßÀÌ¾ú´Ù¸é, ½Ã°£ ÃÊ±âÈ­)
+	else      // íƒ€ì´ë¨¸ê°€ ê¸°ì¡´ì— ì‹¤í–‰ ì¤‘ì´ì—ˆë‹¤ë©´ (ë¬´ì  ëª¨ë“œ ì¤‘ì´ì—ˆë‹¤ë©´, ì‹œê°„ ì´ˆê¸°í™”)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(GodModeTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(GodModeTimerHandle, this, &ThisClass::DeactivateGodMode, 0.2f, false, GodModeTime);
@@ -142,7 +143,7 @@ void UHealthComponent::ActivatePlusHealthBuff(float PlusHealthPercent, float Plu
 	{
 		GetWorld()->GetTimerManager().SetTimer(PlusHealthBuffTimerHandle, this, &ThisClass::DeactivatePlusHealth, 0.2f, false, PlusHealthTime);
 	}
-	else      // Å¸ÀÌ¸Ó°¡ ±âÁ¸¿¡ ½ÇÇà ÁßÀÌ¾ú´Ù¸é (¹«Àû ¸ğµå ÁßÀÌ¾ú´Ù¸é, ½Ã°£ ÃÊ±âÈ­)
+	else      // íƒ€ì´ë¨¸ê°€ ê¸°ì¡´ì— ì‹¤í–‰ ì¤‘ì´ì—ˆë‹¤ë©´ (ë¬´ì  ëª¨ë“œ ì¤‘ì´ì—ˆë‹¤ë©´, ì‹œê°„ ì´ˆê¸°í™”)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(PlusHealthBuffTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(PlusHealthBuffTimerHandle, this, &ThisClass::DeactivatePlusHealth, 0.2f, false, PlusHealthTime);
@@ -194,7 +195,7 @@ void UHealthComponent::ChangeState(EHealthState s)
 
 void UHealthComponent::AddWidget()
 {
-	{// == My Health UI ¿¬°áÇÏ±â
+	{// == My Health UI ì—°ê²°í•˜ê¸°
 		if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
 		{
 			MyHealthWidget = Cast<UMyHealthWidget>(CreateWidget(PlayerController, MyHealthWidgetClass));
@@ -211,14 +212,18 @@ void UHealthComponent::SetPlayerDie()
 	{
 		// == For player (with player controller)
 		OwnerCharacter->DisableInput(OwnerPlayerController);
-		// »ç¸Á ¸ùÅ¸Áê ÇÃ·¹ÀÌ½ÃÅ°±â
+		// ì‚¬ë§ ëª½íƒ€ì¥¬ í”Œë ˆì´ì‹œí‚¤ê¸°
 
 		if (UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Death))
 		{
 			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0, 0, FName(TEXT("Death_Bwd")));
 		}
 
-		// == TODO: Add DeadStateComponent
+		if(ASkyscraperPlayerController* PC = Cast<ASkyscraperPlayerController>(OwnerPlayerController))
+		{
+			PC->AddChangeWeaponWidget();
+		}
+
 
 	}else
 	{

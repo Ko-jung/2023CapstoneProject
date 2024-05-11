@@ -15,46 +15,83 @@ ALootingItemActor::ALootingItemActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	{ // º¯¼ö ÃÊ±âÈ­
+	{ // ë³€ìˆ˜ ì´ˆê¸°í™”
 		RequiredTime = 1.0f;
 		CurrentInteractionTime = 0.0f;
 		LastInteractionTime = 0.0f;
 		CurrentInteractionActor = nullptr;
+		ItemEffectType = EItemEffect::EIE_Team_Speed;
+	}
+
+	float SphereRadius = 100.0f;
+
+	{
+		for (int i = 0; i < (int8)EItemEffect::EIE_COUNT; ++i)
+		{
+			ItemObjectStaticMeshes.AddDefaulted();
+		}
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> GodModeRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/1_1.1_1'"));
+		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Single_GodMode] = GodModeRef.Object;
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> BoostBulletRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/1_2.1_2'"));
+		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Single_BoostBulletInfinity] = BoostBulletRef.Object;
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> Team_SpeedRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/2_1.2_1'"));
+		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_Speed] = Team_SpeedRef.Object;
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> Team_PowerRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/2_2.2_2'"));
+		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_Power] = Team_PowerRef.Object;
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> Team_PlusHealthRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/2_3.2_3'"));
+		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_PlusHealth] = Team_PlusHealthRef.Object;
+	}
+
+	{
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> BodyMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/ITEM_SPAWNER.ITEM_SPAWNER'"));
+		BodyStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
+		SetRootComponent(BodyStaticMesh);
+		BodyStaticMesh->SetStaticMesh(BodyMeshRef.Object);
+
+		ItemObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemObject"));
+		ItemObjectMesh->SetupAttachment(BodyStaticMesh);
+		ItemObjectMesh->SetStaticMesh(ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Single_GodMode]);
+		ItemObjectMesh->AddRelativeLocation(FVector(0.0f, 0.0f, SphereRadius / 2));
 	}
 
 	{ // CreateDefaultSubobject 
 		SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-		SetRootComponent(SphereComponent);
+		SphereComponent->SetupAttachment(BodyStaticMesh);
 		SphereComponent->SetHiddenInGame(false);
-		SphereComponent->SetSphereRadius(100.0f);
+		SphereComponent->SetSphereRadius(SphereRadius);
+		SphereComponent->AddRelativeLocation(FVector(0.0f, 0.0f, SphereRadius));
 		SphereComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 		SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::SphereBeginOverlapFunc);
 		SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::SphereEndOverlapFunc);
 
 		GaugeWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("GaugeWidget"));
 		GaugeWidgetComponent->SetupAttachment(RootComponent);
-		{ // À§Á¬ ÄÄÆÛ³ÍÆ® À§Á¬ ¿¬°á ¹× ÃÊ±âÈ­
+		{ // ìœ„ì ¯ ì»´í¼ë„ŒíŠ¸ ìœ„ì ¯ ì—°ê²° ë° ì´ˆê¸°í™”
 			static ConstructorHelpers::FClassFinder<UUserWidget> GaugeWidgetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/ItemInteraction/WBP_InteractionGauge.WBP_InteractionGauge_C'"));
 			GaugeWidgetComponent->SetWidgetClass(GaugeWidgetRef.Class);
 			GaugeWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 			GaugeWidgetComponent->SetDrawSize(FVector2D(200.0f, 30.0f));
 			GaugeWidgetComponent->SetHiddenInGame(true);
-			GaugeWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+			GaugeWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
 		}
 
 		TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("ItemText"));
 		TextRenderComponent->SetupAttachment(RootComponent);
-		{ // Text Render ÃÊ±âÈ­
+		{ // Text Render ì´ˆê¸°í™”
 			TextRenderComponent->SetText(FText::FromString(TEXT("Item")));
 			TextRenderComponent->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
 			TextRenderComponent->SetVerticalAlignment(EVerticalTextAligment::EVRTA_TextCenter);
 		}
 
+		
+
+		
+
 	}
 
 
 
-	{ // »óÈ£ÀÛ¿ë Å° À§Á¬ ·Îµå
+	{ // ìƒí˜¸ì‘ìš© í‚¤ ìœ„ì ¯ ë¡œë“œ
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_InteractionKeyRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/ItemInteraction/WBP_PressItemKey.WBP_PressItemKey_C'"));
 		WBP_InteractionKey = WBP_InteractionKeyRef.Class;
 	}
@@ -69,6 +106,8 @@ void ALootingItemActor::BeginPlay()
 	SetActorTickEnabled(false);
 
 	InteractionBar = Cast<UProgressBar>(GaugeWidgetComponent->GetUserWidgetObject()->GetWidgetFromName("PB_Interaction"));
+
+	ItemObjectMesh->SetStaticMesh(ItemObjectStaticMeshes[(uint8)ItemEffectType]);
 }
 
 void ALootingItemActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -84,7 +123,7 @@ void ALootingItemActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void ALootingItemActor::AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("DoItemEffect"));
-	// »ç¿ëÇÑ Ä³¸¯ÅÍ¿¡°Ô ¾ÆÀÌÅÛÀ» Ãß°¡
+	// ì‚¬ìš©í•œ ìºë¦­í„°ì—ê²Œ ì•„ì´í…œì„ ì¶”ê°€
 	ItemUsedCharacter->AddItem(ItemEffectType, ItemRareLevel);
 
 	Destroy();
@@ -96,12 +135,12 @@ void ALootingItemActor::SphereBeginOverlapFunc(UPrimitiveComponent* OverlappedCo
 {
 	if (TObjectPtr<ASkyscraperCharacter> OverlapCharacter = Cast<ASkyscraperCharacter>(OtherActor))
 	{
-		// À§Á¬ »ı¼º ¹× ¿¬°á
+		// ìœ„ì ¯ ìƒì„± ë° ì—°ê²°
 		if(OverlapCharacter->GetPlayerController())
 		{
 			UUserWidget* InteractionKeyWidget = CreateWidget(OverlapCharacter->GetPlayerController(), WBP_InteractionKey);
 			InteractionKeyWidget->AddToViewport();
-			// TMap¿¡ [Ä³¸¯ÅÍ, À§Á¬] Æ©ÇÃ Ãß°¡
+			// TMapì— [ìºë¦­í„°, ìœ„ì ¯] íŠœí”Œ ì¶”ê°€
 			PlayerAndWidgetMap.Add(OverlapCharacter, InteractionKeyWidget);
 		}
 	}
@@ -115,19 +154,19 @@ void ALootingItemActor::SphereEndOverlapFunc(UPrimitiveComponent* OverlappedComp
 
 void ALootingItemActor::RemovePlayerWidget(AActor* EndOverlapCharacter)
 {
-	// ³ª°£ ¾×ÅÍ°¡ Ä³¸¯ÅÍ°¡ ¾Æ´Ï¶ó¸é Á¾·á
+	// ë‚˜ê°„ ì•¡í„°ê°€ ìºë¦­í„°ê°€ ì•„ë‹ˆë¼ë©´ ì¢…ë£Œ
 	if (!EndOverlapCharacter->IsA(ASkyscraperCharacter::StaticClass())) return;
 
-	// ³ª°£ ¾×ÅÍ°¡ ÇöÀç ¸Ê¿¡ ÀúÀåµÇ¾î ÀÖÁö ¾ÊÀ»°æ¿ìµµ Á¾·á
+	// ë‚˜ê°„ ì•¡í„°ê°€ í˜„ì¬ ë§µì— ì €ì¥ë˜ì–´ ìˆì§€ ì•Šì„ê²½ìš°ë„ ì¢…ë£Œ
 	
 	if (!PlayerAndWidgetMap.FindChecked(EndOverlapCharacter)) return;
 
 	if (UUserWidget** Widget = PlayerAndWidgetMap.Find(EndOverlapCharacter))
 	{
-		// ºäÆ÷Æ®¿¡¼­ Á¦°Å
+		// ë·°í¬íŠ¸ì—ì„œ ì œê±°
 		(*Widget)->RemoveFromParent();
 
-		// TMap¿¡¼­ Á¦°Å
+		// TMapì—ì„œ ì œê±°
 		PlayerAndWidgetMap.Remove(EndOverlapCharacter);
 	}
 }
@@ -137,8 +176,13 @@ void ALootingItemActor::RemovePlayerWidget(AActor* EndOverlapCharacter)
 void ALootingItemActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//if (ItemObjectMesh)
+	//{
+	//	ItemObjectMesh->AddRelativeRotation(FRotator(0.0f, DeltaTime * 10, 0.0f));
+	//	ItemObjectMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 100 * FMath::Sin(GetWorld()->GetTimeSeconds()) + 100.0f));
+	//}
 
-	// 0.5ÃÊ ÀÌ»ó »óÈ£ÀÛ¿ë °è¼Ó ÁøÇàÇÏÁö ¾Ê¾ÒÀ» ½Ã,
+	// 0.5ì´ˆ ì´ìƒ ìƒí˜¸ì‘ìš© ê³„ì† ì§„í–‰í•˜ì§€ ì•Šì•˜ì„ ì‹œ,
 	if (GetWorld()->GetTimeSeconds() - LastInteractionTime > 0.5f)
 	{
 		CurrentInteractionTime = 0.0f;
@@ -147,17 +191,19 @@ void ALootingItemActor::Tick(float DeltaTime)
 		CurrentInteractionActor = nullptr;
 		SetProgressBarPercent();
 	}
+
+	
 }
 
 void ALootingItemActor::ItemInteraction(AActor* InteractionActor)
 {
-	// ÇöÀç ¿À¹ö·¦ ÁßÀÎ ¾×ÅÍ¿¡ ´ëÇØ¼­¸¸ ½ÇÇàµÉ ¼ö ÀÖµµ·Ï
+	// í˜„ì¬ ì˜¤ë²„ë© ì¤‘ì¸ ì•¡í„°ì— ëŒ€í•´ì„œë§Œ ì‹¤í–‰ë  ìˆ˜ ìˆë„ë¡
 	if (!PlayerAndWidgetMap.Find(InteractionActor)) return;
 
 	TObjectPtr<ASkyscraperCharacter> InteractionCharacter = Cast<ASkyscraperCharacter>(InteractionActor);
 	if (!InteractionCharacter) return;
 
-	// ÇöÀç »óÈ£ÀÛ¿ëÁßÀÌ´ø Ä³¸¯ÅÍ°¡ ¾øÀ» °æ¿ì
+	// í˜„ì¬ ìƒí˜¸ì‘ìš©ì¤‘ì´ë˜ ìºë¦­í„°ê°€ ì—†ì„ ê²½ìš°
 	if (!CurrentInteractionActor)
 	{
 		CurrentInteractionActor = InteractionCharacter;
@@ -166,7 +212,7 @@ void ALootingItemActor::ItemInteraction(AActor* InteractionActor)
 		GaugeWidgetComponent->SetHiddenInGame(false);
 	}
 
-	// ±âÁ¸ »óÈ£ÀÛ¿ë ÁßÀÌ´ø Ä³¸¯ÅÍ°¡ ÇöÀç »óÈ£ÀÛ¿ë ¿äÃ»ÇÑ Ä³¸¯ÅÍ¿Í °°À» °æ¿ì
+	// ê¸°ì¡´ ìƒí˜¸ì‘ìš© ì¤‘ì´ë˜ ìºë¦­í„°ê°€ í˜„ì¬ ìƒí˜¸ì‘ìš© ìš”ì²­í•œ ìºë¦­í„°ì™€ ê°™ì„ ê²½ìš°
 	if (CurrentInteractionActor == InteractionCharacter)
 	{
 		CurrentInteractionTime += GetWorld()->GetDeltaSeconds();
@@ -174,7 +220,7 @@ void ALootingItemActor::ItemInteraction(AActor* InteractionActor)
 
 		SetProgressBarPercent();
 
-		// ½Ã°£ÀÌ Ã¤¿öÁ³´Ù¸é È¿°ú Àû¿ëÇÏ±â
+		// ì‹œê°„ì´ ì±„ì›Œì¡Œë‹¤ë©´ íš¨ê³¼ ì ìš©í•˜ê¸°
 		if (CurrentInteractionTime >= RequiredTime)
 		{
 			AddItemToUsedCharacter(InteractionCharacter);

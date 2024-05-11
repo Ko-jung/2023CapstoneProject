@@ -21,40 +21,47 @@ class SKYSCRAPER_API ALootingItemActor : public AActor, public IItemInteraction
 {
 	GENERATED_BODY()
 	
-		// ¾ÆÀÌÅÛÀÇ Èñ±Íµµ enum º¯¼ö
+		// ì•„ì´í…œì˜ í¬ê·€ë„ enum ë³€ìˆ˜
 		UPROPERTY(EditAnywhere)
 		EItemRareLevel ItemRareLevel;
-	// ¾ÆÀÌÅÛÀÇ È¿°ú enum º¯¼ö
+	// ì•„ì´í…œì˜ íš¨ê³¼ enum ë³€ìˆ˜
 	UPROPERTY(EditAnywhere)
 		EItemEffect ItemEffectType;
 
-	// ¿À¹ö·¦ ¹üÀ§ SphereComponent
+	// ì˜¤ë²„ë© ë²”ìœ„ SphereComponent
 	UPROPERTY(VisibleAnywhere)
 		TObjectPtr<USphereComponent> SphereComponent;
-	// »óÈ£ÀÛ¿ë °ÔÀÌÁö Widget Component
+	// ìƒí˜¸ì‘ìš© ê²Œì´ì§€ Widget Component
 	UPROPERTY(VisibleAnywhere)
 		TObjectPtr<UWidgetComponent> GaugeWidgetComponent;
 	// Text Render
 	UPROPERTY(VisibleAnywhere)
 		TObjectPtr<UTextRenderComponent> TextRenderComponent;
 
-	// »óÈ£ÀÛ¿ë ÇÊ¿ä ½Ã°£
+	UPROPERTY(VisibleAnywhere)
+		TObjectPtr<UStaticMeshComponent> BodyStaticMesh;
+	UPROPERTY(VisibleAnywhere)
+		TObjectPtr<UStaticMeshComponent> ItemObjectMesh;
+	UPROPERTY(EditAnywhere)
+		TArray<TObjectPtr<UStaticMesh>> ItemObjectStaticMeshes;
+
+	// ìƒí˜¸ì‘ìš© í•„ìš” ì‹œê°„
 	UPROPERTY(EditAnywhere)
 		float RequiredTime;
-	// ÇöÀç »óÈ£ÀÛ¿ë ½Ã°£
+	// í˜„ì¬ ìƒí˜¸ì‘ìš© ì‹œê°„
 	UPROPERTY()
 		float CurrentInteractionTime;
-	// °¡Àå ÀÌÀü »óÈ£ÀÛ¿ë ½Ã°£
+	// ê°€ì¥ ì´ì „ ìƒí˜¸ì‘ìš© ì‹œê°„
 	UPROPERTY()
 		float LastInteractionTime;
-	// Player - Widget ¸Ê
+	// Player - Widget ë§µ
 	UPROPERTY()
 		TMap<AActor*, UUserWidget*> PlayerAndWidgetMap;
-	// ÇöÀç »óÈ£ÀÛ¿ë ÁßÀÎ Ä³¸¯ÅÍ
+	// í˜„ì¬ ìƒí˜¸ì‘ìš© ì¤‘ì¸ ìºë¦­í„°
 	UPROPERTY()
 		TObjectPtr<AActor> CurrentInteractionActor;
 
-	// »óÈ£ÀÛ¿ë Å° À§Á¬
+	// ìƒí˜¸ì‘ìš© í‚¤ ìœ„ì ¯
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> WBP_InteractionKey;
 
@@ -62,17 +69,18 @@ class SKYSCRAPER_API ALootingItemActor : public AActor, public IItemInteraction
 		TObjectPtr<UProgressBar> InteractionBar;
 
 public:
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	ALootingItemActor();
 
 
 protected:
 	// Begin Play
 	virtual void BeginPlay() override;
+	
 	// End Play
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	// »óÈ£ÀÛ¿ë ¿Ï·á½Ã ÇØ´ç Ä³¸¯ÅÍ¿¡°Ô ¾ÆÀÌÅÛÀ» Ãß°¡ÇÏ´Â ÇÔ¼ö
+	// ìƒí˜¸ì‘ìš© ì™„ë£Œì‹œ í•´ë‹¹ ìºë¦­í„°ì—ê²Œ ì•„ì´í…œì„ ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
 	UFUNCTION()
 		virtual void AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCharacter);
 
@@ -85,17 +93,17 @@ protected:
 	UFUNCTION()
 		void SphereEndOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex);
 
-	// End Overlap½Ã ÇÃ·¹ÀÌ¾îÀÇ À§Á¬À» Á¦°ÅÇÏ´Â ÇÔ¼ö
+	// End Overlapì‹œ í”Œë ˆì´ì–´ì˜ ìœ„ì ¯ì„ ì œê±°í•˜ëŠ” í•¨ìˆ˜
 	void RemovePlayerWidget(AActor* EndOverlapCharacter);
 
-	// ÇÁ·Î±×·¹½º ¹ÙÀÇ ÆÛ¼¾Æ®¸¦ ¹Ù²Ù´Â ÇÔ¼ö
+	// í”„ë¡œê·¸ë ˆìŠ¤ ë°”ì˜ í¼ì„¼íŠ¸ë¥¼ ë°”ê¾¸ëŠ” í•¨ìˆ˜
 	void SetProgressBarPercent() const;
 public:
 	// Tick Event
 	virtual void Tick(float DeltaTime) override;
-	// ÀÎÅÍÆäÀÌ½º - »óÈ£ÀÛ¿ë Å°¸¦ ÅëÇÑ »óÈ£ÀÛ¿ë ½Ã ½ÇÇàµÉ ÇÔ¼ö
+	// ì¸í„°í˜ì´ìŠ¤ - ìƒí˜¸ì‘ìš© í‚¤ë¥¼ í†µí•œ ìƒí˜¸ì‘ìš© ì‹œ ì‹¤í–‰ë  í•¨ìˆ˜
 	virtual void ItemInteraction(AActor* InteractionActor) override;
 
-	// SpawnActorDeferred ¸¦ ÅëÇØ ¾×ÅÍ¸¦ »ı¼º ÈÄ ÃÊ±âÈ­ÇÒ ¶§ »ç¿ëÇÒ ÇÔ¼ö
+	// SpawnActorDeferred ë¥¼ í†µí•´ ì•¡í„°ë¥¼ ìƒì„± í›„ ì´ˆê¸°í™”í•  ë•Œ ì‚¬ìš©í•  í•¨ìˆ˜
 	FORCEINLINE void Initialize(EItemEffect EffectType, EItemRareLevel RareLevel) { ItemEffectType = EffectType; ItemRareLevel = RareLevel; }
 };

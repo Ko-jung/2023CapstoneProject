@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetTileImage(int index, ETileImageType TileImageType);
 
+	UFUNCTION()
+		void CollapseTileImage(int index);
+
 protected:
 	virtual void NativePreConstruct() override;
 	

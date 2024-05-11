@@ -64,6 +64,8 @@ public:
 		void CollapseTilesAndActors(int CollapseLevel);
 	UFUNCTION(BlueprintCallable, Category = "Collapse")
 		void CollapseLevel3();
+	UFUNCTION(Category = "Collapse")
+		void CollapseTile(int CollapseTargetIndex);
 
 	///* 붕괴 3단계 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")

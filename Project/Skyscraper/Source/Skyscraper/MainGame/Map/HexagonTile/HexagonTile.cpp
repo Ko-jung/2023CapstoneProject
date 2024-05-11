@@ -10,6 +10,9 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/Enum/ETileImageType.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values
@@ -544,33 +547,11 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 		for(int i =0; i<Tiles.Num(); ++i)
 		{
 			float TileDistance = UKismetMathLibrary::Vector_Distance(Tiles[i]->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
-			FVector GeometrySpawnLocation = Tiles[i]->GetRelativeLocation();
-
 			// 파괴 영역 체크
 			if (TileDistance > offset * CollapseRemainDistance)
 			{
-				if (Tile_Actor.Contains(Tiles[i]))
-				{
-					AActor* TargetActor = *(Tile_Actor.Find(Tiles[i]));
-					ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
-					if (Child_Actor)
-					{
-						Child_Actor->DoCollapse();
-						TargetActor->SetLifeSpan(20.0f);
-
-					}
-					Tile_Actor.Remove(Tiles[i]);
-				}
-				Tiles[i]->DestroyComponent();
-				Tiles.RemoveAt(i);
+				CollapseTile(i);
 				i -= 1;
-				
-				//Tiles[i] = nullptr;
-
-				// 타일 GeometryCollection 생성
-				AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
-				NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
-				NewGCTileActor->SetLifeSpan(30.0f);
 			}
 		}
 	}
@@ -581,10 +562,17 @@ void AHexagonTile::CollapseLevel3()
 {
 	int index = UKismetMathLibrary::RandomIntegerInRange(0, Tiles.Num() - 1);
 
-	FVector GeometrySpawnLocation = Tiles[index]->GetRelativeLocation();
-	if (Tile_Actor.Contains(Tiles[index]))
+	CollapseTile(index);
+}
+
+void AHexagonTile::CollapseTile(int CollapseTargetIndex)
+{
+	if (CollapseTargetIndex >= Tiles.Num()) return;
+
+	FVector GeometrySpawnLocation = Tiles[CollapseTargetIndex]->GetRelativeLocation();
+	if (Tile_Actor.Contains(Tiles[CollapseTargetIndex]))
 	{
-		AActor* TargetActor = *(Tile_Actor.Find(Tiles[index]));
+		AActor* TargetActor = *(Tile_Actor.Find(Tiles[CollapseTargetIndex]));
 		ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
 		if (Child_Actor)
 		{
@@ -592,13 +580,23 @@ void AHexagonTile::CollapseLevel3()
 			TargetActor->SetLifeSpan(20.0f);
 
 		}
-		Tile_Actor.Remove(Tiles[index]);
+		Tile_Actor.Remove(Tiles[CollapseTargetIndex]);
 	}
-	Tiles[index]->DestroyComponent();
-	Tiles.RemoveAt(index);
+	Tiles[CollapseTargetIndex]->DestroyComponent();
+	Tiles.RemoveAt(CollapseTargetIndex);
 
 	// 타일 GeometryCollection 생성
 	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
 	NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
 	NewGCTileActor->SetLifeSpan(30.0f);
+
+	{// 모든 플레이어 컨트롤러에게 이미지를 바꾸도록 요구
+		FConstPlayerControllerIterator PCIter =  GetWorld()->GetPlayerControllerIterator();
+		for(int i =0; i< GetWorld()->GetNumPlayerControllers(); ++i)
+		{
+			//Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->SetTileImage(CollapseTargetIndex, ETileImageType::ETIT_Collapse);
+			Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->CollapseTileImage(CollapseTargetIndex);
+		}
+		
+	}
 }

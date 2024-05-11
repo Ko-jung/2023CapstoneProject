@@ -26,6 +26,14 @@ void UMiniMapWidget::SetTileImage(int index, ETileImageType TileImageType)
 	TileImages[index]->SetBrushFromTexture(TileTextures[(int8)TileImageType]);
 }
 
+void UMiniMapWidget::CollapseTileImage(int index)
+{
+	if (index >= TileImages.Num()) return;
+
+	SetTileImage(index, ETileImageType::ETIT_Collapse);
+	TileImages.RemoveAt(index);
+}
+
 void UMiniMapWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();

@@ -9,6 +9,7 @@
 #include "Skyscraper/MainGame/Map/FloatingTile/FloatingTile.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Skyscraper/Enum/ETileImageType.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values
@@ -291,6 +292,7 @@ void AHexagonTile::BeginPlay()
 
 	// Move to Init()
 	//InitialSettings();
+
 }
 
 // Called every frame
@@ -478,6 +480,44 @@ FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 	return FVector();
 }
 
+FVector2D AHexagonTile::GetTileWidgetAlignment(int index) const
+{
+	if (index >= Tiles.Num()) return FVector2D{};
+	FVector TileLocation = Tiles[index]->GetRelativeLocation();
+	FVector2D WidgetAlignment{};
+
+	// x축 업 -> y축 업 // y축 업 -> x축 다운
+	WidgetAlignment = FVector2D(-TileLocation.Y / offset*0.88f, TileLocation.X / offset);
+
+	// 위젯 중앙정렬로 인한 0.5f 0.5f 초기값 더하기
+	WidgetAlignment.X += 0.5f; WidgetAlignment.Y += 0.5f;
+
+	return WidgetAlignment;
+}
+
+ETileImageType AHexagonTile::GetTileImageType(int index)
+{
+	if (index >= Tiles.Num()) return ETileImageType::ETIT_Normal;
+
+	{//  TODO: 만약 해당 타일 자식이 아이템을 가지고 있다면 아이템 으로 반환시키기
+
+	}
+	
+	if(Tile_Actor.Contains(Tiles[index]))
+	{
+		AActor* ChildActor = *Tile_Actor.Find(Tiles[index]);
+		if(Cast<ABuilding>(ChildActor))
+		{
+			return ETileImageType::ETIT_Building;
+		}
+		if(Cast<AFloatingTile>(ChildActor))
+		{
+			return ETileImageType::ETIT_FloatTile;
+		}
+	}
+
+	return ETileImageType::ETIT_Normal;
+}
 
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 {

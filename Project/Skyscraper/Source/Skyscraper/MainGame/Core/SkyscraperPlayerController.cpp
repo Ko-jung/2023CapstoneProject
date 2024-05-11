@@ -3,7 +3,10 @@
 
 #include "SkyscraperPlayerController.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
+#include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
 ASkyscraperPlayerController::ASkyscraperPlayerController()
@@ -11,6 +14,10 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_TimeAndKillCountRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/TimeAndKillCount/WBP_TimeAndKillCount.WBP_TimeAndKillCount_C'"));
 	TimeAndKillCountWidgetClass = WBP_TimeAndKillCountRef.Class;
+
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MiniMapRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Map/WBP_Map.WBP_Map_C'"));
+	MiniMapWidgetClass = WBP_MiniMapRef.Class;
 }
 
 void ASkyscraperPlayerController::BeginPlay()
@@ -23,14 +30,38 @@ void ASkyscraperPlayerController::BeginPlay()
 	{
 		TimeAndKillCountWidget->AddToViewport();
 	}
+
+	MiniMapWidget = Cast<UMiniMapWidget>(CreateWidget(this, MiniMapWidgetClass));
+	if(MiniMapWidget)
+	{
+		MiniMapWidget->AddToViewport();
+	}
+
+	{//TODO: ì„œë²„ì´ì „ ì „ í…ŒìŠ¤íŠ¸ìš© ì½”ë“œ
+		AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+
+		if (HexagonTile) 
+		{
+			for(int i =0 ;i<37; ++i)
+			{
+				if(MiniMapWidget)
+				{
+					MiniMapWidget->SetTileImageAlignment(i, HexagonTile->GetTileWidgetAlignment(i));
+					MiniMapWidget->SetTileImage(i, HexagonTile->GetTileImageType(i));
+				}
+				
+			}
+		}
+	}
 	
+
 }
 
 void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// Ä³¸¯ÅÍ - ÄÁÆ®·Ñ·¯ yaw ºĞ¸®½Ã(Separate Camera ¸ğµå) && ÀÎÇ² ÀÔ·Â Á¦ÇÑ ½Ã Á÷Á¢ È¸Àü Ã³¸®
+	// ìºë¦­í„° - ì»¨íŠ¸ë¡¤ëŸ¬ yaw ë¶„ë¦¬ì‹œ(Separate Camera ëª¨ë“œ) && ì¸í’‹ ì…ë ¥ ì œí•œ ì‹œ ì§ì ‘ íšŒì „ ì²˜ë¦¬
 	// if (bCanLookInput && !(Cast<ASkyscraperCharacter>(GetOwner())->InputEnabled()))
 	if(bCanLookInput && PossessingPawn && !PossessingPawn->InputEnabled())
 	{

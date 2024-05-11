@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Skyscraper/Enum/ETileImageType.h"
 #include "HexagonTile.generated.h"
 
 class ABuilding;
@@ -101,6 +102,10 @@ public:
 	void IncreaseTileDropLevel() { ++TileDropLevel; }
 
 	FVector GetSpawnLocation(bool IsTeamA);
+
+	UFUNCTION()
+	FVector2D GetTileWidgetAlignment(int index) const;
+	ETileImageType GetTileImageType(int index);
 
 protected:
 	enum class ESectionCount : uint8 { MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };

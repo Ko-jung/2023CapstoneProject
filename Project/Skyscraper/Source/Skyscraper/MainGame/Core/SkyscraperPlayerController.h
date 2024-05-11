@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "SkyscraperPlayerController.generated.h"
 
+class UMiniMapWidget;
 class UTimeAndKillCountWidget;
 class ASkyscraperCharacter;
 /**
@@ -24,6 +25,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UTimeAndKillCountWidget* GetTimeAndKillCountWidget() const { return TimeAndKillCountWidget; }
+
+	UFUNCTION(BlueprintCallable)
+		FORCEINLINE UMiniMapWidget* GetMiniMapWidget() const { return MiniMapWidget; }
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -42,6 +46,12 @@ protected:
 		TSubclassOf<UUserWidget> TimeAndKillCountWidgetClass;
 	UPROPERTY()
 		TObjectPtr<UTimeAndKillCountWidget> TimeAndKillCountWidget;
+
+	// MiniMap Widget 클래스 및 변수
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> MiniMapWidgetClass;
+	UPROPERTY()
+		TObjectPtr<UMiniMapWidget> MiniMapWidget;
 
 	// 캐릭터와 컨트롤러를 분리한 ECharacterCameraMode::ECCM_SeparateController 시 bool 값 변경을 통해 사용
 	UPROPERTY(EditAnywhere)

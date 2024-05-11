@@ -9,6 +9,10 @@
 #include "Skyscraper/MainGame/Map/FloatingTile/FloatingTile.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Skyscraper/Enum/ETileImageType.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values
@@ -291,6 +295,7 @@ void AHexagonTile::BeginPlay()
 
 	// Move to Init()
 	//InitialSettings();
+
 }
 
 // Called every frame
@@ -528,6 +533,44 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel, int CenterIndex)
 	}
 }
 
+FVector2D AHexagonTile::GetTileWidgetAlignment(int index) const
+{
+	if (index >= Tiles.Num()) return FVector2D{};
+	FVector TileLocation = Tiles[index]->GetRelativeLocation();
+	FVector2D WidgetAlignment{};
+
+	// x축 업 -> y축 업 // y축 업 -> x축 다운
+	WidgetAlignment = FVector2D(-TileLocation.Y / offset*0.88f, TileLocation.X / offset);
+
+	// 위젯 중앙정렬로 인한 0.5f 0.5f 초기값 더하기
+	WidgetAlignment.X += 0.5f; WidgetAlignment.Y += 0.5f;
+
+	return WidgetAlignment;
+}
+
+ETileImageType AHexagonTile::GetTileImageType(int index)
+{
+	if (index >= Tiles.Num()) return ETileImageType::ETIT_Normal;
+
+	{//  TODO: 만약 해당 타일 자식이 아이템을 가지고 있다면 아이템 으로 반환시키기
+
+	}
+	
+	if(Tile_Actor.Contains(Tiles[index]))
+	{
+		AActor* ChildActor = *Tile_Actor.Find(Tiles[index]);
+		if(Cast<ABuilding>(ChildActor))
+		{
+			return ETileImageType::ETIT_Building;
+		}
+		if(Cast<AFloatingTile>(ChildActor))
+		{
+			return ETileImageType::ETIT_FloatTile;
+		}
+	}
+
+	return ETileImageType::ETIT_Normal;
+}
 
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 {
@@ -554,33 +597,11 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 		for(int i =0; i<Tiles.Num(); ++i)
 		{
 			float TileDistance = UKismetMathLibrary::Vector_Distance(Tiles[i]->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
-			FVector GeometrySpawnLocation = Tiles[i]->GetRelativeLocation();
-
 			// 파괴 영역 체크
 			if (TileDistance > offset * CollapseRemainDistance)
 			{
-				if (Tile_Actor.Contains(Tiles[i]))
-				{
-					AActor* TargetActor = *(Tile_Actor.Find(Tiles[i]));
-					ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
-					if (Child_Actor)
-					{
-						Child_Actor->DoCollapse();
-						TargetActor->SetLifeSpan(20.0f);
-
-					}
-					Tile_Actor.Remove(Tiles[i]);
-				}
-				Tiles[i]->DestroyComponent();
-				Tiles.RemoveAt(i);
+				CollapseTile(i);
 				i -= 1;
-				
-				//Tiles[i] = nullptr;
-
-				// 타일 GeometryCollection 생성
-				AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
-				NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
-				NewGCTileActor->SetLifeSpan(30.0f);
 			}
 		}
 	}
@@ -591,10 +612,17 @@ void AHexagonTile::CollapseLevel3()
 {
 	int index = UKismetMathLibrary::RandomIntegerInRange(0, Tiles.Num() - 1);
 
-	FVector GeometrySpawnLocation = Tiles[index]->GetRelativeLocation();
-	if (Tile_Actor.Contains(Tiles[index]))
+	CollapseTile(index);
+}
+
+void AHexagonTile::CollapseTile(int CollapseTargetIndex)
+{
+	if (CollapseTargetIndex >= Tiles.Num()) return;
+
+	FVector GeometrySpawnLocation = Tiles[CollapseTargetIndex]->GetRelativeLocation();
+	if (Tile_Actor.Contains(Tiles[CollapseTargetIndex]))
 	{
-		AActor* TargetActor = *(Tile_Actor.Find(Tiles[index]));
+		AActor* TargetActor = *(Tile_Actor.Find(Tiles[CollapseTargetIndex]));
 		ICollapsible* Child_Actor = Cast<ICollapsible>(TargetActor);
 		if (Child_Actor)
 		{
@@ -602,13 +630,23 @@ void AHexagonTile::CollapseLevel3()
 			TargetActor->SetLifeSpan(20.0f);
 
 		}
-		Tile_Actor.Remove(Tiles[index]);
+		Tile_Actor.Remove(Tiles[CollapseTargetIndex]);
 	}
-	Tiles[index]->DestroyComponent();
-	Tiles.RemoveAt(index);
+	Tiles[CollapseTargetIndex]->DestroyComponent();
+	Tiles.RemoveAt(CollapseTargetIndex);
 
 	// 타일 GeometryCollection 생성
 	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
 	NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
 	NewGCTileActor->SetLifeSpan(30.0f);
+
+	{// 모든 플레이어 컨트롤러에게 이미지를 바꾸도록 요구
+		FConstPlayerControllerIterator PCIter =  GetWorld()->GetPlayerControllerIterator();
+		for(int i =0; i< GetWorld()->GetNumPlayerControllers(); ++i)
+		{
+			//Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->SetTileImage(CollapseTargetIndex, ETileImageType::ETIT_Collapse);
+			Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->CollapseTileImage(CollapseTargetIndex);
+		}
+		
+	}
 }

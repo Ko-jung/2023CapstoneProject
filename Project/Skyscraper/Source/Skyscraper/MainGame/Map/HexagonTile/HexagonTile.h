@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Skyscraper/Enum/ETileImageType.h"
 #include "HexagonTile.generated.h"
 
 class ABuilding;
@@ -63,6 +64,8 @@ public:
 		void CollapseTilesAndActors(int CollapseLevel);
 	UFUNCTION(BlueprintCallable, Category = "Collapse")
 		void CollapseLevel3();
+	UFUNCTION(Category = "Collapse")
+		void CollapseTile(int CollapseTargetIndex);
 
 	///* 붕괴 3단계 함수 */
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
@@ -103,6 +106,11 @@ public:
 	FVector GetSpawnLocation(bool IsTeamA);
 
 	void CollapseTilesAndActors(int CollapseLevel, int CenterIndex);
+
+	UFUNCTION()
+	FVector2D GetTileWidgetAlignment(int index) const;
+	ETileImageType GetTileImageType(int index);
+
 
 protected:
 	enum class ESectionCount : uint8 { MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };

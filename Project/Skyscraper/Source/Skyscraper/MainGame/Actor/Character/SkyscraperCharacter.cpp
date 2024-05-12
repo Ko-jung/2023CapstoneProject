@@ -360,7 +360,9 @@ void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLe
 		OwningItem.Key = ItemEffect; OwningItem.Value = RareLevel;
 		UE_LOG(LogTemp, Warning, TEXT("character earn item"));
 	}
-	MainGameMode->SendGetItem(this, Item);
+
+	if(MainGameMode)
+		MainGameMode->SendGetItem(this, Item);
 }
 
 void ASkyscraperCharacter::SetCharacterGodMode(bool bNewGodMode)

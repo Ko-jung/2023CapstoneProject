@@ -146,6 +146,8 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 		Timer = 5 * (PUI.ItemLevel);
 		break;	  
 	case (BYTE)EItemEffect::Team_PlusHealth:
+		ItemHeal(id, (EItemRareLevel)PUI.ItemLevel);
+		break;
 	case (BYTE)EItemEffect::Team_Power:
 	case (BYTE)EItemEffect::Team_Speed:
 		Timer = 10 * (PUI.ItemLevel);
@@ -165,4 +167,34 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 void ClientMgr::Heal(int id, float HealAmount)
 {
 	m_Clients[id]->Heal(HealAmount);
+}
+
+void ClientMgr::ItemHeal(int id, EItemRareLevel level)
+{
+	bool IsTeamA = id < MAXPLAYER / 2;
+	int RoomNum = id / MAXPLAYER;
+	float HealCount{ 0 };
+	switch (level)
+	{
+	case EItemRareLevel::Normal:	HealCount = 250.f;	break;
+	case EItemRareLevel::Rare:		HealCount = 500.f;	break;
+	case EItemRareLevel::Legend:	HealCount = 1000.f;	break;
+	default:
+		break;
+	}
+
+	for (int i = 0; i < MAXPLAYER / 2; i++)
+	{
+		// ¹æ¹øÈ£ 0 * 6 + [0, 2] + 0 or 3
+		int TargetId = RoomNum * MAXPLAYER + i + (MAXPLAYER / 2 * IsTeamA);
+		Heal(TargetId, HealCount);
+	}
+
+	for (int i = 0; i < MAXPLAYER; i++)
+	{
+		int TargetId = RoomNum * MAXPLAYER + i;
+
+		PChangedPlayerHP PCPH(TargetId, m_Clients[TargetId]->GetCurrnetHp());
+		SendPacketToAllSocketsInRoom(RoomNum, &PCPH, sizeof(PCPH));
+	}
 }

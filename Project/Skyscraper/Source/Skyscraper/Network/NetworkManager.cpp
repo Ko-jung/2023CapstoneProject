@@ -203,10 +203,9 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 	}
 	case (int)COMP_OP::OP_PLAYERPOSITION:
 	{
-		PPlayerPosition* PlayerPosition = new PPlayerPosition();
-		memcpy(PlayerPosition, p, sizeof(PPlayerPosition));
-		//TryPush(PlayerPosition);
-		Gamemode->PushQueue(PlayerPosition);
+		PPlayerPosition* PPP = new PPlayerPosition();
+		memcpy(PPP, p, sizeof(*PPP));
+		Gamemode->PushQueue(PPP);
 		break;
 	}
 	case (int)COMP_OP::OP_CHANGEDPLAYERHP:

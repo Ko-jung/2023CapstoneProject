@@ -23,6 +23,7 @@ public:
 	void ProcessItem(int id, PUseItem PUI);
 
 	void Heal(int id, float damage);
+	void ItemHeal(int id, EItemRareLevel level);
 
 	void Send(int id, Packet* p, int size);
 	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);

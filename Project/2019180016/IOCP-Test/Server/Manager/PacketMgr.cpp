@@ -97,6 +97,8 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		int id = c->GetClientNum();
 		int SendPlayerRoomNum = id / MAXPLAYER;
 		int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
+		
+		if (clients[TargetPlayerId]->GetCurrnetHp() < 0.001f) return;
 
 		bool IsDead = clients[TargetPlayerId]->TakeDamage(Damage);
 		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, clients[TargetPlayerId]->GetCurrnetHp());

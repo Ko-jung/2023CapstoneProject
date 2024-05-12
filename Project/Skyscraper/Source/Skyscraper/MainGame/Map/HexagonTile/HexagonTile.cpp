@@ -736,7 +736,7 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 	// 삭제 후 GeometryComponent에 해당하는 타일 생성
 	{
 		//for (UChildActorComponent* Tile : Tiles)
-		for(int i =0; i<Tiles.Num(); ++i)
+		for(volatile int i =0; i<Tiles.Num(); ++i)
 		{
 			float TileDistance = UKismetMathLibrary::Vector_Distance(Tiles[i]->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
 			// 파괴 영역 체크

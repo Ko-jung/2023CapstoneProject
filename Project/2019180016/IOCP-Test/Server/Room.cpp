@@ -386,25 +386,27 @@ int Room::GetTileDropCenterIndex(int& CenterIndex)
 		CenterY = BuildingExist[CenterTileIndex[TileDropLevel - 1]].PosY;
 	}
 
-	CenterX += sin((float)(CollapseDirectionAngle * 60 + 30) * (3.1415 / 180));
-	CenterY += cos((float)(CollapseDirectionAngle * 60 + 30) * (3.1415 / 180));
+	// CenterX += sin((float)(CollapseDirectionAngle * 60 + 30) * (3.1415 / 180));
+	// CenterY += cos((float)(CollapseDirectionAngle * 60 + 30) * (3.1415 / 180));
 
 	// Center Tile
 	TileProperty* Property = GetLineTileFromAngleAndDistance(0, 0, CenterX, CenterY, CenterIndex);
-	{
-		//for (UChildActorComponent* Tile : Tiles)
-		for (int i = 0; i < BuildingExist.size(); ++i)
-		{
-			float TileDistance = Distance(BuildingExist[i].PosX, BuildingExist[i].PosY,
-				Property->PosX, Property->PosY);
-			// 파괴 영역 체크
-			if (TileDistance > CollapseRemainDistance)
-			{
-				BuildingExist.erase(BuildingExist.begin() + i);
-				i -= 1;
-			}
-		}
-	}
+	CenterTileIndex[TileDropLevel] = CenterIndex;
+
+	//{
+	//	//for (UChildActorComponent* Tile : Tiles)
+	//	for (int i = 0; i < BuildingExist.size(); ++i)
+	//	{
+	//		float TileDistance = Distance(BuildingExist[i].PosX, BuildingExist[i].PosY,
+	//			Property->PosX, Property->PosY);
+	//		// 파괴 영역 체크
+	//		if (TileDistance > CollapseRemainDistance)
+	//		{
+	//			BuildingExist.erase(BuildingExist.begin() + i);
+	//			i -= 1;
+	//		}
+	//	}
+	//}
 
 	IncreaseTileDropLevel();
 	return TileDropLevel;
@@ -418,25 +420,48 @@ void Room::CalculateLocation(const BYTE AngleCount, const BYTE Distance, float& 
 
 TileProperty* Room::GetLineTileFromAngleAndDistance(BYTE FindAngle, BYTE FindDistance, float FindTileLocationX, float FindTileLocationY, int& CenterIndex)
 {
+	std::vector<TileProperty*> TileList;
+	TileList.reserve(10);
+	for (auto& t : BuildingExist)
+	{
+		if (Distance(t.PosX, t.PosY, FindTileLocationX, FindTileLocationY) < 1.5f)
+		{
+			TileList.push_back(&t);
+		}
+	}
+
+	int index = RandomUtil::RandRange(0, TileList.size() - 1);
+	CenterIndex = 0;
+	for (int i = 0; i < BuildingExist.size(); i++)
+	{
+		if (TileList[index] == &BuildingExist[i])
+		{
+			CenterIndex = i;
+		}
+	}
+	return TileList[index];
+
+
+
 	// (0, 0, 좌표) 입력시 해당 좌표의 타일 반환
 	// (1, 3) 입력시 60도 방면의 Section1 타일 반환
 		// 
-	if (FindDistance != 0)
-	{
-		CalculateLocation(FindAngle, FindDistance, FindTileLocationX, FindTileLocationY);
-	}
+	//if (FindDistance != 0)
+	//{
+	//	CalculateLocation(FindAngle, FindDistance, FindTileLocationX, FindTileLocationY);
+	//}
 
-	CenterIndex = 0;
-	for (TileProperty& Tile : BuildingExist)
-	{
-		// 모든 타일 중 해당 타일과의 거리를 비교하여 찾기
-		if (Distance(Tile.PosX, Tile.PosY, FindTileLocationX, FindTileLocationY) < 1.0f)
-		{
-			return &Tile;
-		}
-		++CenterIndex;
-	}
-	return nullptr;
+	//CenterIndex = 0;
+	//for (TileProperty& Tile : BuildingExist)
+	//{
+	//	// 모든 타일 중 해당 타일과의 거리를 비교하여 찾기
+	//	if (Distance(Tile.PosX, Tile.PosY, FindTileLocationX, FindTileLocationY) < 1.0f)
+	//	{
+	//		return &Tile;
+	//	}
+	//	++CenterIndex;
+	//}
+	//return nullptr;
 }
 
 void Room::SpawnBuildings(const BYTE& SpawnCount, const BYTE& SectionLevel)

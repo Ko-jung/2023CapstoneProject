@@ -351,6 +351,13 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 		// 다운 힘 = 1000.0f
 		DownDirection *= 1000.0f;
 		OwnerCharacter->LaunchCharacter(FVector(DownDirection.X, DownDirection.Y, 750.0f), false, true);
+
+		// 캐릭터 중력 적용시키기
+		if(UCharacterMovementComponent* CharacterMovement = OwnerCharacter->GetCharacterMovement())
+		{
+			CharacterMovement->GravityScale = 2.0f;
+		}
+		
 	}
 	
 }

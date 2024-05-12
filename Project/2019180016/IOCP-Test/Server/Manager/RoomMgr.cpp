@@ -63,6 +63,11 @@ int RoomMgr::IsEndGame(int roomId)
 	return Rooms[roomId]->IsEndGame();
 }
 
+int RoomMgr::CharacterDead(int ClientId)
+{
+	return Rooms[ClientId / MAXPLAYER]->CharacterDead(ClientId % MAXPLAYER);
+}
+
 BYTE* RoomMgr::GetBuildingExist(int roomId, int& size)
 {
 	const std::vector<TileProperty>& BuildingExist = Rooms[roomId]->GetBuildingExist();

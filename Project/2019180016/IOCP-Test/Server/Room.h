@@ -51,6 +51,9 @@ public:
 	void SetStartTime();
 	int IsEndGame();
 
+	// 타일드랍 3단계부터 스폰불가, 팀 전체가 죽어있는지 판단
+	int CharacterDead(int SerialNum);
+
 	BYTE GetTileDropLevel() { return TileDropLevel; }
 	float GetRoomElapsedTime();			// 게임이 시작하고 경과시간
 	int GetTileDropCenterIndex(int& CenterIndex);
@@ -63,6 +66,7 @@ public:
 private:
 	std::array<std::atomic<int>, 2> KillScore;
 	std::array<int, 3> CenterTileIndex;
+	std::vector<bool> IsDying;
 	int TileDropLevel;
 	std::chrono::system_clock::time_point RoomStartTime;
 	int ItemSerial;

@@ -287,7 +287,15 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 	}
 	else
 	{
-
+		if (int Winner = RoomMgr::Instance()->CharacterDead(ClientId) != 0)
+		{
+			PFinishGame PFG;
+			if (Winner > 0)
+				PFG.IsTeamAWin = true;
+			else
+				PFG.IsTeamAWin = false;
+			ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / MAXPLAYER, &PFG, sizeof(PFG));
+		}
 	}
 
 	// Send Dead state

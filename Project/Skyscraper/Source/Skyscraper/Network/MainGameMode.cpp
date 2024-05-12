@@ -22,6 +22,9 @@
 #include "../MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
+// Input mode
+#include "Blueprint/WidgetBlueprintLibrary.h"
+
 void AMainGameMode::BeginPlay()
 {
 	GetHexagonTileOnLevel();
@@ -48,6 +51,7 @@ void AMainGameMode::BeginPlay()
 	if (PlayerController)
 	{
 		PlayerController->SetShowMouseCursor(false);
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController);
 	}
 	UGameUserSettings::GetGameUserSettings()->SetFullscreenMode(EWindowMode::WindowedFullscreen);
 	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);

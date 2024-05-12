@@ -1,6 +1,7 @@
 #include "Room.h"
 #include "RandomUtil.h"
 #include <cmath>
+#include <algorithm>
 
 #include "../../../Common/Packet.h"
 
@@ -83,6 +84,8 @@ Room::Room() :
 	}
 
 #else
+	IsDying.reserve(6);
+
 	BuildingExist.reserve(TileCount);
 	BuildingExist.emplace_back((BYTE)ETILETYPE::NONBUILDING, 0, 0.f, 0.f);
 
@@ -175,6 +178,39 @@ int Room::IsEndGame()
 		return -1;
 	else
 		return 0;
+}
+
+int Room::CharacterDead(int SerialNum)
+{
+	IsDying[SerialNum] = true;
+
+	bool IsEnd = true;
+	for (int i = 0; i < 3; i++)
+	{
+		if (IsDying[i] == false)
+			IsEnd = false;
+	}
+	if(IsEnd)
+		return 1;
+	IsEnd = true;
+	for (int i = 3; i < 6; i++)
+	{
+		if (IsDying[i] == false)
+			IsEnd = false;
+	}
+	if (IsEnd)
+		return -1;
+
+	//if (std::all_of(IsDying.begin(), IsDying.begin() + 3))
+	//{
+	//	return 1;
+	//}
+	//else if (std::all_of(IsDying.begin() + 3, IsDying.end()))
+	//{
+	//	return -1;
+	//}
+
+	return 0;
 }
 
 float Room::GetRoomElapsedTime()

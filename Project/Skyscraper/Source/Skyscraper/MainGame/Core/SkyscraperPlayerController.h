@@ -8,6 +8,7 @@
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "SkyscraperPlayerController.generated.h"
 
+class UGameResultWidget;
 class UChangeWeaponWidget;
 class UMiniMapWidget;
 class UTimeAndKillCountWidget;
@@ -39,6 +40,9 @@ public:
 
 	void ChangePlayerMeleeWeapon(EMeleeSelect NewMeleeSelect) const;
 	void ChangePlayerRangeWeapon(ERangeSelect NewRangeSelect) const;
+
+	UFUNCTION(BlueprintCallable)
+	void AddGameResultWidget(const FText& WinnerText);
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -69,6 +73,12 @@ protected:
 		TSubclassOf<UUserWidget> ChangeWeaponWidgetClass;
 	UPROPERTY()
 		TObjectPtr<UChangeWeaponWidget> ChangeWeaponWidget;
+
+	// ChangeWeapon Widget 클래스 및 변수
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> GameResultWidgetClass;
+	UPROPERTY()
+		TObjectPtr<UGameResultWidget> GameResultWidget;
 
 	// 캐릭터와 컨트롤러를 분리한 ECharacterCameraMode::ECCM_SeparateController 시 bool 값 변경을 통해 사용
 	UPROPERTY(EditAnywhere)

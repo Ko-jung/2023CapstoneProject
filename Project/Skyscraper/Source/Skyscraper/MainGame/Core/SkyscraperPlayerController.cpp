@@ -8,6 +8,7 @@
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
 #include "Skyscraper/MainGame/Widget/ChangeWeapon/ChangeWeaponWidget.h"
+#include "Skyscraper/MainGame/Widget/GameResult/GameResultWidget.h"
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
@@ -23,6 +24,9 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_ChangeWeapon(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/ChangeWeapon/WBP_ChangeWeapon.WBP_ChangeWeapon_C'"));
 	ChangeWeaponWidgetClass = WBP_ChangeWeapon.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_GameResult(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/GameResult/WBP_GameResult.WBP_GameResult_C'"));
+	GameResultWidgetClass = WBP_GameResult.Class;
 }
 
 void ASkyscraperPlayerController::AddChangeWeaponWidget()
@@ -66,6 +70,20 @@ void ASkyscraperPlayerController::ChangePlayerRangeWeapon(ERangeSelect NewRangeS
 	if (PossessingPawn && PossessingPawn->CombatSystemComponent)
 	{
 		PossessingPawn->CombatSystemComponent->ChangeRangeWeapon(NewRangeSelect);
+	}
+}
+
+void ASkyscraperPlayerController::AddGameResultWidget(const FText& WinnerText)
+{
+	if (!GameResultWidget)
+	{
+		GameResultWidget = Cast<UGameResultWidget>(CreateWidget(this, GameResultWidgetClass));
+	}
+
+	if (GameResultWidget)
+	{
+		GameResultWidget->SetWinnerText(WinnerText);
+		GameResultWidget->AddToViewport(20);
 	}
 }
 

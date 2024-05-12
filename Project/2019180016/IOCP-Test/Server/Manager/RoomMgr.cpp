@@ -58,6 +58,11 @@ void RoomMgr::IncreaseTileDropLevel(int roomId)
 	return Rooms[roomId]->IncreaseTileDropLevel();
 }
 
+int RoomMgr::IsEndGame(int roomId)
+{
+	return Rooms[roomId]->IsEndGame();
+}
+
 BYTE* RoomMgr::GetBuildingExist(int roomId, int& size)
 {
 	const std::vector<TileProperty>& BuildingExist = Rooms[roomId]->GetBuildingExist();

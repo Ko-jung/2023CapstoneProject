@@ -35,6 +35,7 @@ enum class COMP_OP : BYTE
 	OP_SWAPWEAPON,
 	OP_BUILDINGINFO,
 	OP_REQUESTPACKET,
+	OP_FINISHGAME,
 
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,
@@ -104,7 +105,7 @@ enum class ETimer : BYTE
 {
 	DefaultTimer,
 	SelectTimer,
-	TileDropTiler,
+	TileDropTimer,
 };
 
 enum class ECharacterState : BYTE

@@ -214,6 +214,13 @@ struct PStartGame : Packet
 	PStartGame() : Packet(COMP_OP::OP_STARTGAME) { }
 };
 
+struct PFinishGame : Packet
+{
+	bool IsTeamAWin;
+	PFinishGame() : Packet(COMP_OP::OP_FINISHGAME), IsTeamAWin(false) { PacketSize = sizeof(PFinishGame); }
+	PFinishGame(bool winner) : Packet(COMP_OP::OP_FINISHGAME), IsTeamAWin(winner) { PacketSize = sizeof(PFinishGame); }
+};
+
 // USTRUCT()
 struct PTileDrop : Packet
 {

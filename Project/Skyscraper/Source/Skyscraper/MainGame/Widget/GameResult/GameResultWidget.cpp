@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
+#include "Skyscraper/Network/MainGameMode.h"
+
 void UGameResultWidget::SetWinnerText(const FText& NewText) const
 {
 	if(WinnerText)
@@ -33,6 +35,8 @@ void UGameResultWidget::NativeConstruct()
 void UGameResultWidget::GoToLobby()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), FName("LobbyLevel"));
+	//auto gamemode = UGameplayStatics::GetGameMode(this);
+	//Cast<AMainGameMode>(gamemode)->GoToLobby();
 }
 
 

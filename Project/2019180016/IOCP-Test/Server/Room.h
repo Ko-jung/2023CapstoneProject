@@ -22,6 +22,8 @@ constexpr int FLOATING_TILE_SECTION3_COUNT = 1;
 constexpr int FLOATING_TILE_SECTION2_COUNT = 2;
 constexpr int FLOATING_TILE_SECTION1_COUNT = 4;
 
+constexpr int FINISH_KILL_COUNT = 10;
+
 struct TileProperty
 {
 	BYTE TileType;
@@ -47,6 +49,7 @@ public:
 	void IncreaseTileDropLevel() { ++TileDropLevel; }
 	void AddKillCount(bool IsTeamA);
 	void SetStartTime();
+	int IsEndGame();
 
 	BYTE GetTileDropLevel() { return TileDropLevel; }
 	float GetRoomElapsedTime();			// 게임이 시작하고 경과시간
@@ -63,6 +66,8 @@ private:
 	int TileDropLevel;
 	std::chrono::system_clock::time_point RoomStartTime;
 	int ItemSerial;
+
+	TileProperty* PrevCenterTile;
 
 #ifdef ContiguousTiles
 public:

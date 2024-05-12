@@ -8,34 +8,6 @@
 #include "../ClientInfo.h"
 #include "../TimerEvent.h"
 
-//Packet* PacketMgr::GetPacket(COMP_OP op)
-//{
-//	switch (op)
-//	{
-//	case COMP_OP::OP_POSITION:
-//		return new PPosition();
-//	case COMP_OP::OP_OBJECTSPAWN:
-//		return new PSpawnObject();
-//	default:
-//		cout << "PacketMgr::GetPacket Cant Find COMP_OP!" << endl;
-//		return nullptr;
-//	}
-//}
-
-//Packet* GetPacket(COMP_OP op)
-//{
-//	switch (op)
-//	{
-//	case COMP_OP::OP_POSITION:
-//		return new PPosition();
-//	case COMP_OP::OP_OBJECTSPAWN:
-//		return new PSpawnObject();
-//	default:
-//		cout << "GetPacket Cant Find COMP_OP!" << endl;
-//		return nullptr;
-//	}
-//}
-
 void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 {
 	switch (p->PacketType)
@@ -190,6 +162,9 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 
 		PTileDrop PTD(TileDropLevel, CenterIndex);
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PTD, sizeof(PTD));
+
+		PSetTimer PST(ETimer::TileDropTimer, 300.f);
+		ClientMgr::Instance()->Send(id, &PST, sizeof(PST));
 		break;
 	}
 	case COMP_OP::OP_SETTIMER:
@@ -197,7 +172,7 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 		int RoomNum = id / MAXPLAYER;
 		float durationTime = RoomMgr::Instance()->GetRoomElapsedTime(RoomNum);
 
-		PSetTimer PST(ETimer::TileDropTiler, 300.f - durationTime);
+		PSetTimer PST(ETimer::TileDropTimer, 300.f - durationTime);
 		ClientMgr::Instance()->Send(id, &PST, sizeof(PST));
 		break;
 	}
@@ -205,6 +180,13 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 	{
 		int RoomNum = id / MAXPLAYER;
 		RoomMgr::Instance()->RequestSendItemSpawn(RoomNum);
+		break;
+	}
+	case COMP_OP::OP_FINISHGAME:
+	{
+		int RoomNum = id / MAXPLAYER;
+		PFinishGame PFG;
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PFG, sizeof(PFG));
 		break;
 	}
 	default:
@@ -220,12 +202,17 @@ void PacketMgr::SendStartGame(int RoomNum, int ClientNum, void* etc)
 	RoomMgr::Instance()->StartTime(RoomNum);
 }
 
+// TODO: RoomMgr로 이동
 void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 {
 	BYTE TDLevel = RoomMgr::Instance()->GetTileDropLevel(RoomNum);
-
 	// 이미 Exec 함수로 호출하였다.
 	if (TDLevel >= TileDropLevel) return;
+
+	float NextTimer{};
+
+	if (TDLevel < 3)	NextTimer = 300.f;
+	else				NextTimer = 60.f;
 
 	int CenterIndex;
 	TDLevel = RoomMgr::Instance()->GetTileDropCenterIndex(RoomNum, CenterIndex);
@@ -233,7 +220,7 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 	PTileDrop PTD(TileDropLevel, BYTE(CenterIndex));
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PTD, sizeof(PTD));
 
-	PSetTimer PST(ETimer::TileDropTiler, 300.f);
+	PSetTimer PST(ETimer::TileDropTimer, NextTimer);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PST, sizeof(PST));
 }
 
@@ -277,14 +264,31 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 	RoomMgr::Instance()->AddKillCount(ClientId);
 
 	// Check Game End
+	// TODO: ADDKILLCOUNT와 동시에 하게
+	if (int Winner = RoomMgr::Instance()->IsEndGame(ClientId / MAXPLAYER) != 0)
+	{
+		PFinishGame PFG;
+		if (Winner > 0)
+			PFG.IsTeamAWin = true;
+		else
+			PFG.IsTeamAWin = false;
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / MAXPLAYER, &PFG, sizeof(PFG));
+	}
 
 
 	// Respawn Timer 10s, GodMode 3s
 	TimerEvent RespawnTimer(std::chrono::seconds(10), std::bind(&PacketMgr::SendSpawn, this, ClientId));
 	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
 
-	TimerMgr::Instance()->Insert(RespawnTimer);
-	TimerMgr::Instance()->Insert(GodmodeTimer);
+	if (RoomMgr::Instance()->GetTileDropLevel(ClientId / MAXPLAYER) < 3)
+	{
+		TimerMgr::Instance()->Insert(RespawnTimer);
+		TimerMgr::Instance()->Insert(GodmodeTimer);
+	}
+	else
+	{
+
+	}
 
 	// Send Dead state
 	ClientMgr::Instance()->ChangeState(ClientId, ECharacterState::DEAD);

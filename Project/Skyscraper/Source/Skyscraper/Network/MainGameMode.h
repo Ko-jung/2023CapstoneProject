@@ -29,6 +29,8 @@ public:
 	virtual void ProcessFunc() override;
 	// void ProcessPosition();
 
+	void GoToLobby();
+
 	void SpawnCharacter(int TargetSerialNum);
 	void UpdateUI(float Deltatime);
 
@@ -78,6 +80,8 @@ public:
 	 void RequestTileDrop();
 	 UFUNCTION(Exec)
 	 void RequestSpawnItem();
+	 UFUNCTION(Exec)
+	 void RequestFinishGame();
 
 private:
 	TArray<ASkyscraperCharacter*> Characters;

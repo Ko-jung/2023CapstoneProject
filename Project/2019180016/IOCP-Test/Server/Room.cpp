@@ -21,7 +21,8 @@
 
 Room::Room() :
 	TileDropLevel(0),
-	ItemSerial(0)
+	ItemSerial(0),
+	PrevCenterTile(nullptr)
 {
 	KillScore[0] = KillScore[1] = 0;
 
@@ -138,7 +139,7 @@ void Room::AddKillCount(bool IsTeamA)
 	//{
 		if (IsTeamA)
 		{
-			++KillScore[(int)ETEAM::A];
+			++KillScore[(int)ETEAM::B];
 			//int score = KillScore[(int)ETEAM::A];
 			//bool IsSucc = std::atomic_compare_exchange_strong(
 			//	&KillScore[(int)ETEAM::A],
@@ -149,7 +150,7 @@ void Room::AddKillCount(bool IsTeamA)
 		}
 		else
 		{
-			++KillScore[(int)ETEAM::B];
+			++KillScore[(int)ETEAM::A];
 			//int score = KillScore[(int)ETEAM::B];
 			//bool IsSucc = std::atomic_compare_exchange_strong(
 			//	&KillScore[(int)ETEAM::B],
@@ -164,6 +165,16 @@ void Room::AddKillCount(bool IsTeamA)
 void Room::SetStartTime()
 {
 	RoomStartTime = std::chrono::system_clock::now();
+}
+
+int Room::IsEndGame()
+{
+	if (KillScore[(BYTE)ETEAM::A] >= FINISH_KILL_COUNT)
+		return 1;
+	else if(KillScore[(BYTE)ETEAM::B] >= FINISH_KILL_COUNT)
+		return -1;
+	else
+		return 0;
 }
 
 float Room::GetRoomElapsedTime()
@@ -208,8 +219,7 @@ void Room::SpawnItem(std::vector<ItemInfo>& TileIndex)
 		else if (BuildingExist[BuildTileIndex[index]].SectionLevel == 2)	floor = RandomUtil::RandRange(0, 5 - 1);
 		else	 															floor = RandomUtil::RandRange(0, 3 - 1);
 
-		TileIndex.emplace_back(ItemSerial, BuildTileIndex[index], floor, Effect, Rarity);
-		++ItemSerial;
+		TileIndex.emplace_back(ItemSerial++, BuildTileIndex[index], floor, Effect, Rarity);
 		BuildTileIndex.erase(BuildTileIndex.begin() + index);
 	}
 }
@@ -382,16 +392,28 @@ int Room::GetTileDropCenterIndex(int& CenterIndex)
 	else 
 	{
 		CollapseRemainDistance = 1.5f * 1.5f;
-		CenterX = BuildingExist[CenterTileIndex[TileDropLevel - 1]].PosX;
-		CenterY = BuildingExist[CenterTileIndex[TileDropLevel - 1]].PosY;
+		CenterX = PrevCenterTile->PosX;
+		CenterY = PrevCenterTile->PosY;
 	}
 
 	// CenterX += sin((float)(CollapseDirectionAngle * 60 + 30) * (3.1415 / 180));
 	// CenterY += cos((float)(CollapseDirectionAngle * 60 + 30) * (3.1415 / 180));
 
 	// Center Tile
-	TileProperty* Property = GetLineTileFromAngleAndDistance(0, 0, CenterX, CenterY, CenterIndex);
+	TileProperty* CurrentCenterTile = GetLineTileFromAngleAndDistance(0, 0, CenterX, CenterY, CenterIndex);
 	CenterTileIndex[TileDropLevel] = CenterIndex;
+	for (int i = 0; i < BuildingExist.size(); ++i)
+	{
+		float TileDistance = Distance(BuildingExist[i].PosX, BuildingExist[i].PosY,
+			CurrentCenterTile->PosX, CurrentCenterTile->PosY);
+		// 파괴 영역 체크
+		if (TileDistance > CollapseRemainDistance)
+		{
+			BuildingExist.erase(BuildingExist.begin() + i);
+			i -= 1;
+		}
+	}
+	PrevCenterTile = CurrentCenterTile;
 
 	//{
 	//	//for (UChildActorComponent* Tile : Tiles)

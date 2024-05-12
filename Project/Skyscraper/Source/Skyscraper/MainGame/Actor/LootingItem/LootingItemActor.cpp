@@ -140,6 +140,8 @@ void ALootingItemActor::SphereBeginOverlapFunc(UPrimitiveComponent* OverlappedCo
 		{
 			UUserWidget* InteractionKeyWidget = CreateWidget(OverlapCharacter->GetPlayerController(), WBP_InteractionKey);
 
+			if (!InteractionKeyWidget) return;
+
 			InteractionKeyWidget->AddToViewport();
 			// TMap에 [캐릭터, 위젯] 튜플 추가
 			PlayerAndWidgetMap.Add(OverlapCharacter, InteractionKeyWidget);
@@ -150,6 +152,8 @@ void ALootingItemActor::SphereBeginOverlapFunc(UPrimitiveComponent* OverlappedCo
 void ALootingItemActor::SphereEndOverlapFunc(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int OtherBodyIndex)
 {
+	if (PlayerAndWidgetMap.IsEmpty()) return;
+
 	RemovePlayerWidget(OtherActor);
 }
 

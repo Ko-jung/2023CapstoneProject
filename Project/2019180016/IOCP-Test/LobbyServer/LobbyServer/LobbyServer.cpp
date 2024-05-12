@@ -223,13 +223,20 @@ void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
 			0,											
 			(LPWSAOVERLAPPED)&m_AcceptExpOver._wsa_over);
 
-
 		if (0 != ret)
 		{
 			cout << "AcceptEx����\n";
 			error_display(WSAGetLastError());
 			return;
 		}
+
+		//////////////////////////////////////////
+		{
+
+		m_MatchingQueue.push(m_Clients[m_iClientId - 1]);
+			CheckingMatchingQueue();
+		}
+		///////////////////////////////////////////
 	}
 	else
 	{

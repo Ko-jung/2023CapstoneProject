@@ -50,6 +50,7 @@ protected:
 private:
 
 public:
+	void UpdateImage();
 
 protected:
 	// 소유한 GetPawn() 에 대하여 형변환

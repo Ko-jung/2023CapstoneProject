@@ -25,6 +25,9 @@
 // Input mode
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
+// Minimap
+#include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
+
 void AMainGameMode::BeginPlay()
 {
 	GetHexagonTileOnLevel();
@@ -461,6 +464,8 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 	{
 		SpawnCharacter(i);
 	}
+
+	PlayerController->UpdateImage();
 }
 
 void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
@@ -478,6 +483,11 @@ void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
 void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
 {
 	HexagonTile->SpawnItem(PSI.Item, PSI.SpawnCount);
+	
+	for (int i = 0; i < PSI.SpawnCount; i++)
+	{
+		PlayerController->GetMiniMapWidget()->SetTileImage(PSI.Item[i].TileIndex, ETileImageType::ETIT_Item);
+	}
 }
 
 void AMainGameMode::ProcessUseItem(PUseItem PUI)

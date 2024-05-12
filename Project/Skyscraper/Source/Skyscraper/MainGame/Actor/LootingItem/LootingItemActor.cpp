@@ -124,9 +124,12 @@ void ALootingItemActor::AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCha
 {
 	UE_LOG(LogTemp, Warning, TEXT("DoItemEffect"));
 	// 사용한 캐릭터에게 아이템을 추가
-	ItemUsedCharacter->AddItem(ItemEffectType, ItemRareLevel);
+	ItemUsedCharacter->AddItem(ItemEffectType, ItemRareLevel, this);
 
-	Destroy();
+
+
+	// Destory On Server
+	//Destroy();
 }
 
 

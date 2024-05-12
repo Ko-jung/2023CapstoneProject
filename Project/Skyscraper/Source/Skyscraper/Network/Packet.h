@@ -277,14 +277,15 @@ struct PSetTimer : Packet
 // USTRUCT()
 struct ItemInfo
 {
+	BYTE ItemSerialNum;
 	BYTE TileIndex;
 	BYTE Floor;
 	BYTE Effect;
 	BYTE ItemLevel;
 
 	ItemInfo() {};
-	ItemInfo(BYTE TileIndex, BYTE Floor, BYTE Effect, BYTE ItemLevel) :
-		TileIndex(TileIndex), Floor(Floor), Effect(Effect), ItemLevel(ItemLevel) {}
+	ItemInfo(BYTE ItemSerialNum, BYTE TileIndex, BYTE Floor, BYTE Effect, BYTE ItemLevel) :
+		ItemSerialNum(ItemSerialNum), TileIndex(TileIndex), Floor(Floor), Effect(Effect), ItemLevel(ItemLevel) {}
 };
 struct PSpawnItem : Packet
 {
@@ -293,6 +294,25 @@ struct PSpawnItem : Packet
 
 	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), SpawnCount(0) { PacketSize = sizeof(PSpawnItem); }
 	PSpawnItem(BYTE SpawnCount) : Packet(COMP_OP::OP_SPAWNITEM), SpawnCount(SpawnCount) { PacketSize = sizeof(PSpawnItem); }
+};
+
+struct PUseItem : Packet
+{
+	BYTE UsePlayerSerial;
+	BYTE Effect;
+	BYTE ItemLevel;
+
+	PUseItem() : Packet(COMP_OP::OP_USEITEM), UsePlayerSerial(0), Effect(0), ItemLevel(0) { PacketSize = sizeof(PUseItem); }
+	PUseItem(BYTE UsePlayerSerial, BYTE Effect, BYTE ItemLevel) :
+		Packet(COMP_OP::OP_USEITEM), UsePlayerSerial(UsePlayerSerial), Effect(Effect), ItemLevel(ItemLevel) { PacketSize = sizeof(PUseItem); }
+};
+
+struct PGetItem : Packet
+{
+	BYTE ItemSerialNum;
+
+	PGetItem() : Packet(COMP_OP::OP_GETITEM), ItemSerialNum(0) { PacketSize = sizeof(PGetItem); }
+	PGetItem(BYTE SerialNum) : Packet(COMP_OP::OP_GETITEM), ItemSerialNum(SerialNum) { PacketSize = sizeof(PGetItem); }
 };
 
 // USTRUCT()

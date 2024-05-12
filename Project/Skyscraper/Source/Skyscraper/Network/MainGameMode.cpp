@@ -223,6 +223,20 @@ void AMainGameMode::ProcessFunc()
 			ProcessSpawnItem(PSI);
 			break;
 		}
+		case (int)COMP_OP::OP_USEITEM:
+		{
+			PUseItem PUI;
+			memcpy(&PUI, packet, sizeof(PUI));
+			ProcessUseItem(PUI);
+			break;
+		}
+		case (int)COMP_OP::OP_GETITEM:
+		{
+			PGetItem PGI;
+			memcpy(&PGI, packet, sizeof(PGI));
+			ProcessGetItem(PGI);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
 			break;
@@ -432,6 +446,17 @@ void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
 	HexagonTile->SpawnItem(PSI.Item, PSI.SpawnCount);
 }
 
+void AMainGameMode::ProcessUseItem(PUseItem PUI)
+{
+	//Characters[PUI.UsePlayerSerial];
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
+}
+
+void AMainGameMode::ProcessGetItem(PGetItem PGI)
+{
+	HexagonTile->RemoveItem(PGI.ItemSerialNum);
+}
+
 void AMainGameMode::GetHexagonTileOnLevel()
 {
 	TArray<AActor*> HexagonTiles;
@@ -558,6 +583,24 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 	{
 		PStunDownState PSDS{ (BYTE)TargetSerialNum, Dirction, StunTime, IsStun };
 		m_Socket->Send(&PSDS, sizeof(PSDS));
+	}
+}
+
+void AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
+{
+	if (Sender == Characters[SerialNum])
+	{
+		PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
+		m_Socket->Send(&PUI, sizeof(PUI));
+	}
+}
+
+void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
+{
+	if (Sender == Characters[SerialNum])
+	{
+		PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
+		m_Socket->Send(&PGI, sizeof(PGI));
 	}
 }
 

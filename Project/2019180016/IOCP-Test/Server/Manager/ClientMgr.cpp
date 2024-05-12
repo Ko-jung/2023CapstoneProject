@@ -1,6 +1,7 @@
 #include "ClientMgr.h"
-
 #include "../ClientInfo.h"
+
+#include "TimerMgr.h"
 
 ClientMgr::ClientMgr() : 
 	m_iClientId(0),
@@ -129,6 +130,36 @@ void ClientMgr::ProcessMove(int id, PPlayerPosition PPP)
 void ClientMgr::ChangeState(int id, ECharacterState state)
 {
 	m_Clients[id]->SetState(state);
+}
+
+void ClientMgr::ProcessItem(int id, PUseItem PUI)
+{
+	int Timer = 0;
+	switch (PUI.Effect)
+	{
+	case (BYTE)EItemEffect::NONE:
+		break;	  
+	case (BYTE)EItemEffect::Single_BoostBulletInfinity:
+		Timer = 10 * (PUI.ItemLevel);
+		break;	  
+	case (BYTE)EItemEffect::Single_GodMode:
+		Timer = 5 * (PUI.ItemLevel);
+		break;	  
+	case (BYTE)EItemEffect::Team_PlusHealth:
+	case (BYTE)EItemEffect::Team_Power:
+	case (BYTE)EItemEffect::Team_Speed:
+		Timer = 10 * (PUI.ItemLevel);
+		break;
+	default:
+			break;
+	}
+	SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
+
+	// TODO: 서버에서 버프를 꺼야한다.
+	
+	// TimerEvent OffTimer{std::chrono::seconds(Timer),
+	// std::bind(&)};
+	// TimerMgr::Instance()->Insert
 }
 
 void ClientMgr::Heal(int id, float HealAmount)

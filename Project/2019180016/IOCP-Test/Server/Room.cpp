@@ -19,10 +19,11 @@
 //				FLOATING_TILE_SECTION1_COUNT),
 //};
 
-Room::Room()
+Room::Room() :
+	TileDropLevel(0),
+	ItemSerial(0)
 {
 	KillScore[0] = KillScore[1] = 0;
-	TileDropLevel = 0;
 
 #ifdef ContiguousTiles
 	memset(BuildingExist, (BYTE)ETILETYPE::NONBUILDING, sizeof(BuildingExist));
@@ -197,9 +198,9 @@ void Room::SpawnItem(std::vector<ItemInfo>& TileIndex)
 		int Rarity;
 		int Effect = RandomUtil::RandRange(0, (BYTE)EItemEffect::COUNT - 1);
 
-		if (RarityRand < 5)				Rarity = (BYTE)EItemRareLevel::Normal;
-		else if (RarityRand < 8)		Rarity = (BYTE)EItemRareLevel::Rare;
-		else						Rarity = (BYTE)EItemRareLevel::Legend;
+		if (RarityRand < 6)				Rarity = (BYTE)EItemRareLevel::Normal;
+		else if (RarityRand < 9)		Rarity = (BYTE)EItemRareLevel::Rare;
+		else							Rarity = (BYTE)EItemRareLevel::Legend;
 
 		int floor;
 		if (BuildingExist[BuildTileIndex[index]].SectionLevel == 0)			floor = RandomUtil::RandRange(0, 9 - 1);
@@ -207,7 +208,8 @@ void Room::SpawnItem(std::vector<ItemInfo>& TileIndex)
 		else if (BuildingExist[BuildTileIndex[index]].SectionLevel == 2)	floor = RandomUtil::RandRange(0, 5 - 1);
 		else	 															floor = RandomUtil::RandRange(0, 3 - 1);
 
-		TileIndex.emplace_back(BuildTileIndex[index], floor, Effect, Rarity);
+		TileIndex.emplace_back(ItemSerial, BuildTileIndex[index], floor, Effect, Rarity);
+		++ItemSerial;
 		BuildTileIndex.erase(BuildTileIndex.begin() + index);
 	}
 }

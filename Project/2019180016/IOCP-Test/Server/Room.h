@@ -62,6 +62,7 @@ private:
 	std::array<int, 3> CenterTileIndex;
 	int TileDropLevel;
 	std::chrono::system_clock::time_point RoomStartTime;
+	int ItemSerial;
 
 #ifdef ContiguousTiles
 public:

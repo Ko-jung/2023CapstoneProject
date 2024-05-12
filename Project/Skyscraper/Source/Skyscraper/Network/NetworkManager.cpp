@@ -4,6 +4,10 @@
 #include "NetworkManager.h"
 #include "NetworkGameMode.h"
 
+#define COPYPACKET(classname) classname* pack = new classname();\
+memcpy(pack, p, sizeof(*pack));\
+Gamemode->PushQueue(pack);
+
 NetworkManager::NetworkManager() : 
 	Thread(nullptr),
 	Gamemode(nullptr),
@@ -268,6 +272,16 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		PSpawnItem* PSI = new PSpawnItem();
 		memcpy(PSI, p, sizeof(*PSI));
 		Gamemode->PushQueue(PSI);
+		break;
+	}
+	case (int)COMP_OP::OP_USEITEM:
+	{
+		COPYPACKET(PUseItem);
+		break;
+	}
+	case (int)COMP_OP::OP_GETITEM:
+	{
+		COPYPACKET(PSpawnItem);
 		break;
 	}
 	default:

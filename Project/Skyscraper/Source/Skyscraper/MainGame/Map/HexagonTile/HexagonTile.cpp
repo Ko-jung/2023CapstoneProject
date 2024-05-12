@@ -279,6 +279,10 @@ AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 
 				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (Floor % 3),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
 				//Building->SetActorLabel(FString(L"SpawnBuilding"));
 			}
+			else
+			{
+				UE_LOG(LogClass, Warning, TEXT("%d: SpawnBuilding Is NULLPTR!"));
+			}
 			Tile_Actor.Add(TargetTile, Building);
 			return Building;
 		}
@@ -298,6 +302,8 @@ void AHexagonTile::BeginPlay()
 	// Move to Init()
 	//InitialSettings();
 
+	ItemMap.Reserve(10);
+	ItemSerial = 0;
 }
 
 // Called every frame
@@ -364,6 +370,10 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (i % 3),0.0f},Tiles[i]->GetRelativeLocation() * GetActorScale3D() });
 				//Building->SetActorLocation();
 			}
+			else
+			{
+				UE_LOG(LogClass, Warning, TEXT("%d: Building Is NULLPTR!"), i);
+			}
 			Tile_Actor.Add(Tiles[i], Building);
 			break;
 		}
@@ -375,6 +385,10 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 			{
 				FloatingTile->Initialize(FVector(0.0f, 0.0f, MoveZOffset));
 				FloatingTile->FinishSpawning(FTransform{ FRotator{},Tiles[i]->GetRelativeLocation() * GetActorScale3D() });
+			}
+			else
+			{
+				UE_LOG(LogClass, Warning, TEXT("%d: FloatingTile Is NULLPTR!"), i);
 			}
 			Tile_Actor.Add(Tiles[i], FloatingTile);
 			break;
@@ -535,8 +549,14 @@ void AHexagonTile::SpawnItem(ItemInfo* Items, const uint8 SpawnCount)
 	for (int i = 0; i < SpawnCount; i++)
 	{
 		volatile auto IndexActorComponent = Tiles[Items[i].TileIndex];
-		volatile auto TileActor = *Tile_Actor.Find(IndexActorComponent);
-		Building = Cast<ABuilding>(TileActor);
+		volatile auto TileActor = Tile_Actor.Find(IndexActorComponent);
+		if (!TileActor)
+		{
+			UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem TileActor Is nullptr"));
+			continue;
+		}
+
+		Building = Cast<ABuilding>(*TileActor);
 		if (!Building)
 		{
 			UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem Building Is nullptr"));
@@ -559,8 +579,31 @@ void AHexagonTile::SpawnItem(ItemInfo* Items, const uint8 SpawnCount)
 		{
 			LootingActor->Initialize((EItemEffect)Items[i].Effect, (EItemRareLevel)Items[i].ItemLevel);
 			LootingActor->FinishSpawning(FTransform(FRotator(), Result.Location));
+
+			ItemMap.Add({ ItemSerial++, LootingActor });
 		}
 	}
+}
+
+void AHexagonTile::RemoveItem(BYTE SerialNum)
+{
+	if (ItemMap.Find(SerialNum))
+	{
+		ItemMap[SerialNum]->Destroy();
+		ItemMap.Remove(SerialNum);
+	}
+}
+
+BYTE AHexagonTile::FindItemSerialNum(const AActor* LootingActor)
+{
+	for (int i = 0; i < ItemMap.Num(); i++)
+	{
+		if (ItemMap[i] == LootingActor)
+		{
+			return i;
+		}
+	}
+	return (BYTE)(-1);
 }
 
 TArray<UChildActorComponent*> AHexagonTile::GetTilesWithTag(FName tag)
@@ -581,7 +624,7 @@ FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 {
 	if (ATeamBuildings.IsEmpty() || BTeamBuildings.IsEmpty()) return FVector();
 
-	int TileDropIndex = TileDropLevel == 0 ? 0 : 1;
+	int TileDropIndex = TileDropLevel == 0 ? 1 : 0;
 	ABuilding* Building = nullptr;
 	if(IsTeamA)
 	{

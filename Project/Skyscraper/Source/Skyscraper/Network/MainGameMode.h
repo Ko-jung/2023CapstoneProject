@@ -38,6 +38,8 @@ public:
 	void ProcessBuildingInfo(PBuildingInfo* PBI);
 	void ProcessTileDrop(PTileDrop PTD);
 	void ProcessSpawnItem(PSpawnItem PSI);
+	void ProcessUseItem(PUseItem PUI);
+	void ProcessGetItem(PGetItem PGI);
 	void GetHexagonTileOnLevel();
 
 	void SendPlayerLocation();
@@ -46,6 +48,8 @@ public:
 	void SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage);
 	void SendTakeDamage(AActor* Sender, AActor* Target);
 	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
+	void SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
+	void SendGetItem(const AActor* Sender, const AActor* Item);
 
 	int GetIndex(const AActor* target);
 

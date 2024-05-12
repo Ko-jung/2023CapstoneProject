@@ -353,14 +353,14 @@ void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuf
 	}
 }
 
-void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel)
+void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel, AActor* Item)
 {
 	if(OwningItem.Key==EItemEffect::EIE_NONE)
 	{
 		OwningItem.Key = ItemEffect; OwningItem.Value = RareLevel;
 		UE_LOG(LogTemp, Warning, TEXT("character earn item"));
 	}
-	
+	MainGameMode->SendGetItem(this, Item);
 }
 
 void ASkyscraperCharacter::SetCharacterGodMode(bool bNewGodMode)
@@ -522,6 +522,8 @@ void ASkyscraperCharacter::UseItem()
 		{
 			Object->DoItemEffect(this);
 			delete Object;
+
+			MainGameMode->SendUseItem(this, (BYTE)OwningItem.Key, (BYTE)OwningItem.Value);
 		}
 		OwningItem.Key = EItemEffect::EIE_NONE;
 		OwningItem.Value = EItemRareLevel::EIRL_NONE;

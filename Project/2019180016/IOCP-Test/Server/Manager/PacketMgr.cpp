@@ -143,6 +143,20 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSDS, sizeof(PSDS));
 		break;
 	}
+	case (int)COMP_OP::OP_USEITEM:
+	{
+		PUseItem PUI;
+		MEMCPYBUFTOPACKET(PUI);
+		ClientMgr::Instance()->ProcessItem(c->GetClientNum() / MAXPLAYER, PUI);
+		break;
+	}
+	case (int)COMP_OP::OP_GETITEM:
+	{
+		PGetItem PGI;
+		MEMCPYBUFTOPACKET(PGI);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PGI, sizeof(PGI));
+		break;
+	}
 	default:
 		LogUtil::PrintLog("PacketMgr::ProcessPacket p->PacketType is DEFAULT");
 		break;

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Skyscraper/Enum/ETileImageType.h"
+#include <unordered_map>
+
 #include "HexagonTile.generated.h"
 
 class ABuilding;
@@ -100,6 +102,8 @@ public:
 	void Init();								// Call InitialSettings(BYTE* BuildingInfo) or InitialSettings()
 
 	void SpawnItem(struct ItemInfo* Items, const uint8 SpawnCount);
+	void RemoveItem(BYTE SerialNum);
+	BYTE FindItemSerialNum(const class AActor* LootingActor);
 
 	TArray<UChildActorComponent*> GetTilesWithTag(FName tag);
 
@@ -121,5 +125,7 @@ protected:
 	 
 	BYTE BuildInfo[(uint8)ESectionCount::MIDDLE + (uint8)ESectionCount::SECTION3 + (uint8)ESectionCount::SECTION2 + (uint8)ESectionCount::SECTION1];
 	int TileDropLevel;
+	TMap<BYTE, class ALootingItemActor*> ItemMap;
+	int ItemSerial;
 	// ===========================
 };

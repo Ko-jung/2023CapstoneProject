@@ -145,7 +145,7 @@ public:
 	void SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime);
 
 	// 아이템을 추가시키는 함수
-	void AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel);
+	void AddItem(EItemEffect ItemEffect, EItemRareLevel RareLevel, AActor* Item);
 
 	// 캐릭터 무적 설정 및 해제 변수 / GodMode인지 get 함수
 	UFUNCTION(BlueprintCallable)

@@ -17,6 +17,7 @@ public:
 	void AddRoom(int roomId);
 	void DeleteRoom(int roomId);
 	void StartTime(int roomId);
+	//void RemoveItem(int roomId);
 
 	void AddKillCount(int DeathTargetId);
 	void IncreaseTileDropLevel(int roomId);

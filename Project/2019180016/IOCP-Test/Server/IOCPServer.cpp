@@ -31,6 +31,7 @@ IOCPServer::IOCPServer()
 	IsLobbyServerConnect = false;
 
 	// RoomMgr::Instance()->AddRoom(0);
+	// RoomMgr::Instance()->RequestSendItemSpawn(0);
 	// int a;
 	// RoomMgr::Instance()->GetTileDropCenterIndex(0, a);
 	// RoomMgr::Instance()->GetTileDropCenterIndex(0, a);

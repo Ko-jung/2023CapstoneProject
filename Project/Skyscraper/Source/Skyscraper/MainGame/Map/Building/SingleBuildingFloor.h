@@ -11,15 +11,15 @@ class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 {
 	GENERATED_BODY()
 
-	// °Ç¹° ÇÑ ÃæÀÇ ½ºÅÂÆ½ ¸Ş½Ã¿¡ ´ëÇÑ ¹è¿­
+	// ê±´ë¬¼ í•œ ì¶©ì˜ ìŠ¤íƒœí‹± ë©”ì‹œì— ëŒ€í•œ ë°°ì—´
 	UPROPERTY(EditAnywhere)
 		TArray<UStaticMeshComponent*> FloorStaticMeshes;
 
-	// À¯¸®Ã¢¿¡ ´ëÇÑ ½ºÅÂÆ½ ¸Ş½Ã ¹è¿­
+	// ìœ ë¦¬ì°½ì— ëŒ€í•œ ìŠ¤íƒœí‹± ë©”ì‹œ ë°°ì—´
 	UPROPERTY(EditAnywhere)
 		TArray<UStaticMeshComponent*> WindowStaticMeshes;
 
-	/* ºØ±« ÈÄ »ı±æ Geometry Collection */
+	/* ë¶•ê´´ í›„ ìƒê¸¸ Geometry Collection */
 	UPROPERTY()
 		UClass* GC_BuildingClass;
 public:

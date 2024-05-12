@@ -11,7 +11,7 @@ ASingleBuildingFloor::ASingleBuildingFloor()
  	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = false;
 
-	// °Ç¹°¿¡ ´ëÇÑ static mesh »ı¼º //TODO: geometry component¿¡ ´ëÇØ¼­µµ Ãß°¡ÇØÁà¾ß ÇÔ
+	// ê±´ë¬¼ì— ëŒ€í•œ static mesh ìƒì„± //TODO: geometry componentì— ëŒ€í•´ì„œë„ ì¶”ê°€í•´ì¤˜ì•¼ í•¨
 	{
 		CreateFloorStaticMeshes();
 	}
@@ -37,31 +37,35 @@ void ASingleBuildingFloor::Tick(float DeltaTime)
 
 void ASingleBuildingFloor::DoCollapse()
 {
-	// 3. GCComp ¾×ÅÍ »ı¼º
-	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_BuildingClass);
-	NewGCTileActor->SetActorLocation(GetActorLocation());
-	NewGCTileActor->SetActorRotation(GetActorRotation());
+	FTransform Transform{ GetActorRotation(),GetActorLocation() };
+	AActor* NewGCTileActor = GetWorld()->SpawnActorDeferred<AActor>(GC_BuildingClass, Transform);
+	if(NewGCTileActor)
+	{
+		NewGCTileActor->SetActorLocation(GetActorLocation());
+		NewGCTileActor->SetActorRotation(GetActorRotation());
+		NewGCTileActor->FinishSpawning(Transform);
+	}
 
 	Destroy();
 }
 
 
 // ==========================================================
-// »ı¼ºÀÚ¿¡¼­ »ç¿ëµÇ´Â ÇÔ¼ö
+// ìƒì„±ìì—ì„œ ì‚¬ìš©ë˜ëŠ” í•¨ìˆ˜
 // ==========================================================
 void ASingleBuildingFloor::CreateFloorStaticMeshes()
 {
-	/* ¸ğµç static mesh ÆÄÀÏ ·Îµå¿¡¼­ static À» »ç¿ëÇÏÁö ¾ÊÀº ÀÌÀ¯)
-	 * static mesh³» ·ÎÄÃ ÁÂÇ¥·Î ¹èÄ¡¿¡ ´ëÇÑ ÆíÀÇ¼ºÀ» Áõ°¡½ÃÄÑ
-	 * static mesh Á¾·ùº°·Î ¿©·¯°¡Áö Á¸ÀçÇÏ´Âµ¥,
-	 * ÇØ´ç ¸Ş½¬µé¿¡ ´ëÇØ ÀÌ¸§À¸·Î i¹ø¤Š Á¢±ÙÇÏÁö ¾Ê°í ¸ğµÎ ÄÚµå·Î ÀÛ¼ºÇÏ¸é
-	 * ¹«¼öÈ÷ ±æ¾îÁ® ÇÏ³ªÇÏ³ª ¸¸µå´Â ¹æ½ÄÀ¸·Î ÁøÇàÇßÀ¸¸ç,
+	/* ëª¨ë“  static mesh íŒŒì¼ ë¡œë“œì—ì„œ static ì„ ì‚¬ìš©í•˜ì§€ ì•Šì€ ì´ìœ )
+	 * static meshë‚´ ë¡œì»¬ ì¢Œí‘œë¡œ ë°°ì¹˜ì— ëŒ€í•œ í¸ì˜ì„±ì„ ì¦ê°€ì‹œì¼œ
+	 * static mesh ì¢…ë¥˜ë³„ë¡œ ì—¬ëŸ¬ê°€ì§€ ì¡´ì¬í•˜ëŠ”ë°,
+	 * í•´ë‹¹ ë©”ì‰¬ë“¤ì— ëŒ€í•´ ì´ë¦„ìœ¼ë¡œ ië²ˆì¨° ì ‘ê·¼í•˜ì§€ ì•Šê³  ëª¨ë‘ ì½”ë“œë¡œ ì‘ì„±í•˜ë©´
+	 * ë¬´ìˆ˜íˆ ê¸¸ì–´ì ¸ í•˜ë‚˜í•˜ë‚˜ ë§Œë“œëŠ” ë°©ì‹ìœ¼ë¡œ ì§„í–‰í–ˆìœ¼ë©°,
 
-	 ÁÖ¿ä ÀÌÀ¯)
-	 * »ı¼ºÀÚ´Â °ÔÀÓ ½ÃÀÛ ´ç½Ã(¿¡µğÅÍ ¿ÀÇÂ ´ç½Ã) ÇÑ¹ø ¸¸ ÀÛ¿ëÇÏ¹Ç·Î 
-	 * staticÀ¸·Î ±»ÀÌ ¸Ş¸ğ¸®¸¦ ÇÒ´çÇÏ°í ÀÖÀ» ÇÊ¿ä°¡ ¾ø´Ù°í ´À³¦
+	 ì£¼ìš” ì´ìœ )
+	 * ìƒì„±ìëŠ” ê²Œì„ ì‹œì‘ ë‹¹ì‹œ(ì—ë””í„° ì˜¤í”ˆ ë‹¹ì‹œ) í•œë²ˆ ë§Œ ì‘ìš©í•˜ë¯€ë¡œ 
+	 * staticìœ¼ë¡œ êµ³ì´ ë©”ëª¨ë¦¬ë¥¼ í• ë‹¹í•˜ê³  ìˆì„ í•„ìš”ê°€ ì—†ë‹¤ê³  ëŠë‚Œ
 	 */
-	// ¹Ù´Ú
+	// ë°”ë‹¥
 	{
 		UStaticMeshComponent* FloorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Floor"));
 		SetRootComponent(FloorMesh);
@@ -74,7 +78,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		FloorStaticMeshes.Add(FloorMesh);
 		
 	}
-	// ±âµÕ 3°³
+	// ê¸°ë‘¥ 3ê°œ
 	for (int i = 0; i < 3; ++i)
 	{
 		UStaticMeshComponent* PillarStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Pillar" + FString::FromInt(i)));
@@ -90,7 +94,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 
 		FloorStaticMeshes.Add(PillarStaticMesh);
 	}
-	// ¿¡¾îÄÁ 2°³
+	// ì—ì–´ì»¨ 2ê°œ
 	for (int i = 0; i < 2; ++i)
 	{
 		UStaticMeshComponent* AirconStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("AirCon" + FString::FromInt(i)));
@@ -106,7 +110,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 
 		FloorStaticMeshes.Add(AirconStaticMesh);
 	}
-	// Á¶¸í 6°³
+	// ì¡°ëª… 6ê°œ
 	for (int i = 0; i < 6; ++i)
 	{
 		UStaticMeshComponent* LightStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Light" + FString::FromInt(i)));
@@ -122,7 +126,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 
 		FloorStaticMeshes.Add(LightStaticMesh);
 	}
-	// ¼ÛÇ³±â
+	// ì†¡í’ê¸°
 	{
 		UStaticMeshComponent* ventilatorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("ventilator"));
 		ventilatorMesh->SetupAttachment(GetRootComponent());
@@ -135,7 +139,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 
 		FloorStaticMeshes.Add(ventilatorMesh);
 	}
-	// °è´Ü
+	// ê³„ë‹¨
 	{
 		UStaticMeshComponent* StairMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Stair"));
 		StairMesh->SetupAttachment(GetRootComponent());
@@ -148,7 +152,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 
 		FloorStaticMeshes.Add(StairMesh);
 	}
-	// °è´Ü ¹æÇâ º®
+	// ê³„ë‹¨ ë°©í–¥ ë²½
 	{
 		UStaticMeshComponent* StairWallMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("StairWall"));
 		StairWallMesh->SetupAttachment(GetRootComponent());
@@ -162,14 +166,14 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		FloorStaticMeshes.Add(StairWallMesh);
 	}
 
-	// 3¸éÀÇ À¯¸®Ã¢ º®¿¡ ´ëÇÏ¿© À¯¸®Ã¢ Ãß°¡
+	// 3ë©´ì˜ ìœ ë¦¬ì°½ ë²½ì— ëŒ€í•˜ì—¬ ìœ ë¦¬ì°½ ì¶”ê°€
 	{
-		// À¯¸® º®¸é 3°³
+		// ìœ ë¦¬ ë²½ë©´ 3ê°œ
 		for (int WallCount = 0; WallCount < 3; ++WallCount)
 		{
 			UStaticMeshComponent* WindowWallStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Window_Wall" + FString::FromInt(WallCount)));
 			WindowWallStaticMesh->SetupAttachment(GetRootComponent());
-			WindowWallStaticMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f * WallCount));
+			WindowWallStaticMesh->SetRelativeRotation(FRotator(0.0f, 90.0f * WallCount, 0.0f));
 
 			ConstructorHelpers::FObjectFinder<UStaticMesh> WindowWallMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_wall.map_3_wall'"));
 			if (WindowWallMeshRef.Succeeded())

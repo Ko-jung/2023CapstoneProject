@@ -423,13 +423,13 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 }
 
 void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
-{
+{ 
 	HexagonTile->CollapseTilesAndActors(PTD.TileDropLevel, PTD.CenterIndex);
 }
 
 void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
 {
-	HexagonTile->SpawnItem(PSI.Item);
+	HexagonTile->SpawnItem(PSI.Item, PSI.SpawnCount);
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()

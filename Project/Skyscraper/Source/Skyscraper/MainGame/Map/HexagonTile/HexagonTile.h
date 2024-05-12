@@ -99,7 +99,7 @@ public:
 	void InitialSettings(BYTE* BuildingInfo, uint8 size);	// Setting Building From Server
 	void Init();								// Call InitialSettings(BYTE* BuildingInfo) or InitialSettings()
 
-	void SpawnItem(struct ItemInfo* Items);
+	void SpawnItem(struct ItemInfo* Items, const uint8 SpawnCount);
 
 	TArray<UChildActorComponent*> GetTilesWithTag(FName tag);
 

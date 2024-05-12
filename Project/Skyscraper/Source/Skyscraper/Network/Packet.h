@@ -289,8 +289,10 @@ struct ItemInfo
 struct PSpawnItem : Packet
 {
 	ItemInfo Item[5];
+	BYTE SpawnCount;
 
-	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM) { PacketSize = sizeof(PSpawnItem); }
+	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), SpawnCount(0) { PacketSize = sizeof(PSpawnItem); }
+	PSpawnItem(BYTE SpawnCount) : Packet(COMP_OP::OP_SPAWNITEM), SpawnCount(SpawnCount) { PacketSize = sizeof(PSpawnItem); }
 };
 
 // USTRUCT()

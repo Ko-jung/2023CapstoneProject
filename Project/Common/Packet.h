@@ -222,7 +222,7 @@ struct PPlayerSelectInfo : Packet
 struct PEmptyRoomNum : Packet
 {
 	int RoomNum;
-	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) {}
+	PEmptyRoomNum() :Packet(COMP_OP::OP_SS_EMPTYROOMNUM) { PacketSize = sizeof(PEmptyRoomNum); }
 };
 
 struct PSetTimer : Packet
@@ -247,8 +247,10 @@ struct ItemInfo
 struct PSpawnItem : Packet
 {
 	ItemInfo Item[5];
+	BYTE SpawnCount;
 
-	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM) { PacketSize = sizeof(PSpawnItem); }
+	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), SpawnCount(0) { PacketSize = sizeof(PSpawnItem); }
+	PSpawnItem(BYTE SpawnCount) : Packet(COMP_OP::OP_SPAWNITEM), SpawnCount(SpawnCount) { PacketSize = sizeof(PSpawnItem); }
 };
 
 struct PChangeAnimMontage : Packet

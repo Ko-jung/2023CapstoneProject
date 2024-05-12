@@ -181,15 +181,17 @@ void Room::SpawnItem(std::vector<ItemInfo>& TileIndex)
 
 	for (int i = 0; i < BuildingExist.size(); i++)
 	{
-		if (BuildingExist[i].TileType != (BYTE)ETILETYPE::NONBUILDING)
+		if (BuildingExist[i].TileType != (BYTE)ETILETYPE::NONBUILDING && BuildingExist[i].TileType != (BYTE)ETILETYPE::FLOATINGTILE)
 		{
 			BuildTileIndex.push_back(i);
 		}
 	}
 
-	int SpawnCount = 0;
-	while (SpawnCount < ItemCount)
+	for (int SpawnCount = 0; SpawnCount < ItemCount; SpawnCount++)
 	{
+		// 아이템 3개를 만들어야되는데 건물이 3개 미만인경우
+		if (BuildTileIndex.empty()) break;
+
 		int index = RandomUtil::RandRange(0, BuildTileIndex.size() - 1);
 		int RarityRand = RandomUtil::RandRange(0, 9);
 		int Rarity;
@@ -207,9 +209,7 @@ void Room::SpawnItem(std::vector<ItemInfo>& TileIndex)
 
 		TileIndex.emplace_back(BuildTileIndex[index], floor, Effect, Rarity);
 		BuildTileIndex.erase(BuildTileIndex.begin() + index);
-		SpawnCount++;
 	}
-
 }
 
 double Room::Distance(float x1, float y1, float x2, float y2)
@@ -373,13 +373,13 @@ int Room::GetTileDropCenterIndex(int& CenterIndex)
 
 	if (TileDropLevel == 0) 
 	{
-		CollapseRemainDistance = 2.5f;
+		CollapseRemainDistance = 2.5f * 2.5f;
 		CenterX = BuildingExist[0].PosX;
 		CenterY = BuildingExist[0].PosY;
 	}
 	else 
 	{
-		CollapseRemainDistance = 1.5f;
+		CollapseRemainDistance = 1.5f * 1.5f;
 		CenterX = BuildingExist[CenterTileIndex[TileDropLevel - 1]].PosX;
 		CenterY = BuildingExist[CenterTileIndex[TileDropLevel - 1]].PosY;
 	}
@@ -389,7 +389,6 @@ int Room::GetTileDropCenterIndex(int& CenterIndex)
 
 	// Center Tile
 	TileProperty* Property = GetLineTileFromAngleAndDistance(0, 0, CenterX, CenterY, CenterIndex);
-
 	{
 		//for (UChildActorComponent* Tile : Tiles)
 		for (int i = 0; i < BuildingExist.size(); ++i)

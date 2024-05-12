@@ -102,12 +102,12 @@ void RoomMgr::SendItemSpawn(int roomId)
 	std::vector<ItemInfo> Items;
 	Rooms[roomId]->SpawnItem(Items);
 
-	if (Items.empty())
+   	if (Items.empty())
 	{
 		LogUtil::PrintLog("RoomMgr::SendItemSpawn(int roomId) Error!");
 	}
 
-	PSpawnItem PSI;
+	PSpawnItem PSI(Items.size());
 	for (int i = 0; i < Items.size(); i++)
 	{
 		PSI.Item[i].TileIndex = Items[i].TileIndex;

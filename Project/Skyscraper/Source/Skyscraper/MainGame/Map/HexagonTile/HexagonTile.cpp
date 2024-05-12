@@ -528,13 +528,15 @@ void AHexagonTile::Init()
 		InitialSettings();
 }
 
-void AHexagonTile::SpawnItem(ItemInfo* Items)
+void AHexagonTile::SpawnItem(ItemInfo* Items, const uint8 SpawnCount)
 {
-	int SpawnCount = 5 - (TileDropLevel * 2);
+	//int SpawnCount = 5 - (TileDropLevel * 2);
 	ABuilding* Building = nullptr;
 	for (int i = 0; i < SpawnCount; i++)
 	{
-		Building = Cast<ABuilding>(*Tile_Actor.Find(Tiles[Items[i].TileIndex]));
+		volatile auto IndexActorComponent = Tiles[Items[i].TileIndex];
+		volatile auto TileActor = *Tile_Actor.Find(IndexActorComponent);
+		Building = Cast<ABuilding>(TileActor);
 		if (!Building)
 		{
 			UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem Building Is nullptr"));

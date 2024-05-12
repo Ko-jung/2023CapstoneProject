@@ -8,6 +8,7 @@
 #include "Particles/ParticleSystemComponent.h"
 
 #include "GameFramework/Character.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values
@@ -74,10 +75,10 @@ void ARPGBullet::BulletExplode()
 
 	IgnoreActors.Add(FireCharacter);
 
-	// UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 100.0f, nullptr, IgnoreActors);
+	//UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 100.0f, nullptr, IgnoreActors);
 
 	TArray<FHitResult> Hits;
-	bool IsHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 100.f,
+	bool IsHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 500.f,
 		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
 
 	TArray<AActor*> UniqueActors;
@@ -99,6 +100,14 @@ void ARPGBullet::BulletExplode()
 		for (const auto& a : UniqueActors)
 		{
 			GameMode->SendTakeDamage(FireCharacter, a);
+
+			if (ASkyscraperCharacter* Character = Cast<ASkyscraperCharacter>(a))
+			{
+				FVector DownDirVector{};
+				DownDirVector = Character->GetActorLocation() - GetActorLocation();
+				Character->DoDown(FireCharacter, DownDirVector);
+			}
+
 			UE_LOG(LogTemp, Warning, TEXT("SendTakeDamage called. i = %d"), i);
 			i++;
 		}

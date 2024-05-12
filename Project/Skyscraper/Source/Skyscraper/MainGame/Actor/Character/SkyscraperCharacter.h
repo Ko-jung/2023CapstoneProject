@@ -157,6 +157,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCameraMode(ECharacterCameraMode CameraMode);
 
+	void PlayBoostAnimation(const FString& SectionString) const;
+
 // === 2019180016 ===
 protected:
 	class AMainGameMode* MainGameMode;

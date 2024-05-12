@@ -18,6 +18,9 @@ AShieldCharacter::AShieldCharacter()
 	{
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/0_shield/shield_boost.shield_boost'"));
 		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+
+		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/Boost/ABP_Shield_Boost.ABP_Shield_Boost_C'"));
+		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}
 	
 	{ // == Set Anim Montages
@@ -57,6 +60,8 @@ AShieldCharacter::AShieldCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DeathRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Shield/Combat/Death/AM_Shield_Death.AM_Shield_Death'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Death) = AM_DeathRef.Object;
 
-
+		// Boost
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/Boost/AM_Shield_Boost.AM_Shield_Boost'"));
+		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
 }

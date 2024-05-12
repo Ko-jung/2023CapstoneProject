@@ -18,6 +18,9 @@ AElectricCharacter::AElectricCharacter()
 	{
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/2_electric/elec_boost.elec_boost'"));
 		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+
+		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/Boost/ABP_Electric_Boost.ABP_Electric_Boost_C'"));
+		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}
 
 
@@ -58,7 +61,9 @@ AElectricCharacter::AElectricCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DeathRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Electric/Combat/Death/AM_Electric_Death.AM_Electric_Death'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Death) = AM_DeathRef.Object;
 
-
+		// Boost
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/Boost/AM_Electric_Boost.AM_Electric_Boost'"));
+		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
 
 }

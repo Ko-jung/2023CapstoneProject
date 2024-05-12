@@ -13,6 +13,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include <MotionWarpingComponent.h>
+
+#include "PlayMontageCallbackProxy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Actor/LootingItem/LootingItemActor.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
@@ -87,7 +89,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	{// 부스터 메쉬 추가
 		BoostMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BoostSkeletalMesh"));
-		BoostMesh->SetupAttachment(GetMesh(),TEXT("BoostSocket"));
+		BoostMesh->SetupAttachment(GetMesh(),TEXT("Bip001-Spine"));
 	}
 	
 	
@@ -161,7 +163,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DeathRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Combat/Death/AM_Assassin_Death.AM_Assassin_Death'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Death, AM_DeathRef.Object);
 
-
+		// Boost
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Boost/AM_Assassin_Boost.AM_Assassin_Boost'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Boost, AM_BoostRef.Object);
 	}
 }
 
@@ -395,6 +399,20 @@ void ASkyscraperCharacter::SetCameraMode(ECharacterCameraMode CameraMode)
 		break;
 	default:
 		break;
+	}
+}
+
+void ASkyscraperCharacter::PlayBoostAnimation(const FString& SectionString) const
+{
+	
+	if (BoostMesh)
+	{
+		FName SectionName = FName(*SectionString);
+		UAnimMontage* BoostAnimMontage = GetAnimMontage(ECharacterAnimMontage::ECAM_Boost);
+		if (BoostAnimMontage->IsValidSectionName(SectionName))
+		{
+			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(BoostMesh, BoostAnimMontage, 1.0f, 0,SectionName);
+		}
 	}
 }
 

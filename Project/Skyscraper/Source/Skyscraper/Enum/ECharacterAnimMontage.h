@@ -11,6 +11,7 @@ enum class ECharacterAnimMontage : int8
 	ECAM_Rifle,
 	ECAM_RPG,
 	ECAM_Stun, ECAM_Down,
-	ECAM_Death
+	ECAM_Death,
+	ECAM_Boost
 
 };

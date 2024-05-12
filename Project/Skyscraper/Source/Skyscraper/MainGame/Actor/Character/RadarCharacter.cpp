@@ -19,6 +19,9 @@ ARadarCharacter::ARadarCharacter()
 	{
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/5_radar/radar_boost.radar_boost'"));
 		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
+
+		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Radar/Boost/ABP_Radar_Boost.ABP_Radar_Boost_C'"));
+		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}
 
 	{ // == Set Anim Montages
@@ -58,6 +61,8 @@ ARadarCharacter::ARadarCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_DeathRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Radar/Combat/Death/AM_Radar_Death.AM_Radar_Death'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Death) = AM_DeathRef.Object;
 
-
+		// Boost
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Radar/Boost/AM_Radar_Boost.AM_Radar_Boost'"));
+		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
 }

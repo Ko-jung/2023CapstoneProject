@@ -57,7 +57,7 @@ UJetpackComponent::UJetpackComponent()
 
 	}
 
-	{ // ¡¶∆Æ∆— ¿ß¡¨ ≈¨∑°Ω∫ ∑ŒµÂ
+	{ // Ï†úÌä∏Ìå© ÏúÑÏ†Ø ÌÅ¥ÎûòÏä§ Î°úÎìú
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_JetpackClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Jetpack/WBP_JetpackGaugeBar.WBP_JetpackGaugeBar_C'"));
 		JetpackWidgetClass = WBP_JetpackClass.Class;
 	}
@@ -76,46 +76,7 @@ void UJetpackComponent::BeginPlay()
 	
 	AddInputMappingContext();
 
-	// Move to AddInputMappingContext()
-	
-	//{// == UI ø¨∞·«œ±‚
-	//	if(GetOwnerPlayerController())
-	//	{
-	//		JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(GetOwnerPlayerController(), JetpackWidgetClass));
-	//		JetpackWidget->AddToViewport();
-	//	}
-	//	
-	//}
-	//
-	//
-	//
-	//
-	//JetpackFuel = MaxJetpackFuel;
-	//
-	////Add Input Mapping Context
-	//if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
-	//{
-	//	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	//	{
-	//		Subsystem->AddMappingContext(IMC_Jetpack, 1);
-	//
-	//		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-	//		{
-	//			// Hover InputAction πŸ¿Œµ˘
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
-	//			// ¥ÎΩ√ InputAction πŸ¿Œµ˘
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
-	//			// »∏«« InputAction πŸ¿Œµ˘
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
-	//			EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_A], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
-	//			
-	//		}
-	//	}
-	//}
+	OwnerCharacter->PlayBoostAnimation("Default");
 }
 
 
@@ -131,13 +92,14 @@ void UJetpackComponent::OnLandJetpack()
 {
 	SetFuel(MaxJetpackFuel);
 	SetHoveringMode(false);
+
 }
 
 
 
 FVector UJetpackComponent::ClampToMaxWalkSpeed(const FVector& NewVelocity)
 {
-	// Owner Character¿« √÷¥Î º”µµø° Clamp «œ¥¬ «‘ºˆ
+	// Owner CharacterÏùò ÏµúÎåÄ ÏÜçÎèÑÏóê Clamp ÌïòÎäî Ìï®Ïàò
 	if (NewVelocity.Length() > GetOwnerCharacterMovement()->MaxWalkSpeed)
 	{
 		return NewVelocity.GetSafeNormal() * GetOwnerCharacterMovement()->MaxWalkSpeed;
@@ -157,7 +119,7 @@ void UJetpackComponent::SetFuel(double NewFuel)
 	JetpackFuel = FMath::Max(0.0f, NewFuel);
 
 	{
-		// UI ≥ª ¡¶∆Æ∆— ø¨∑· º≥¡§
+		// UI ÎÇ¥ Ï†úÌä∏Ìå© Ïó∞Î£å ÏÑ§Ï†ï
 		if(JetpackWidget)
 		{
 			JetpackWidget->SetJetpackGaugePercent(JetpackFuel / MaxJetpackFuel);
@@ -171,7 +133,7 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 {
 	if (bHover)
 	{
-		// Hover ¡ﬂ¿Ã æ∆¥œæ˙¥Ÿ∏È
+		// Hover Ï§ëÏù¥ ÏïÑÎãàÏóàÎã§Î©¥
 		if (!OwnerCharacter->GetIsHover())
 		{
 			OwnerCharacter->SetIsHover(true);
@@ -195,15 +157,15 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 
 void UJetpackComponent::AddJetpackVelocity(FVector AddVelocity, float FuelReduction)
 {
-	// == «ˆ¿Á ¡¶∆Æ∆— º”∑¬ø°º≠ AddVelocity ∏∏≈≠ ¥ı«œ∞Ì, FuelReduction ∏∏≈≠ ∞‘¿Ã¡ˆ ªÁøÎ
+	// == ÌòÑÏû¨ Ï†úÌä∏Ìå© ÏÜçÎ†•ÏóêÏÑú AddVelocity ÎßåÌÅº ÎçîÌïòÍ≥†, FuelReduction ÎßåÌÅº Í≤åÏù¥ÏßÄ ÏÇ¨Ïö©
 
-	// == ƒ≥∏Ø≈Õ »£πˆ∏µ ∏µÂ º≥¡§
+	// == Ï∫êÎ¶≠ÌÑ∞ Ìò∏Î≤ÑÎßÅ Î™®Îìú ÏÑ§Ï†ï
 	SetHoveringMode(true);
 
-	// == º”∑¬ º≥¡§
+	// == ÏÜçÎ†• ÏÑ§Ï†ï
 	GetOwnerCharacterMovement()->Velocity = ClampToMaxWalkSpeed(GetOwnerCharacterMovement()->Velocity + AddVelocity);
 
-	// == ¡¶∆Æ∆— ø¨∑· º≥¡§
+	// == Ï†úÌä∏Ìå© Ïó∞Î£å ÏÑ§Ï†ï
 	SetFuel(JetpackFuel - (GetWorld()->GetDeltaSeconds() * FuelReduction));
 }
 
@@ -310,13 +272,13 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 {
 
 	if (JetpackFuel < 0.1f) return;
-	// ¡ﬂ∑¬ æ¯æ÷±‚
+	// Ï§ëÎ†• ÏóÜÏï†Í∏∞
 	GetOwnerCharacterMovement()->GravityScale = 0.0f;
 
-	// æ◊≈Õ ¿ßƒ° ªÏ¬¶ ø√∏∞ µ⁄ ¿Ãµø(πŸ∑Œ ∂•ø° ¥Í¿ŒªÛ≈¬ø°º≠ ¡¯«‡Ω√ πŸ∑Œ ≥ª∑¡ø¿¥¬ «ˆªÛ ºˆ¡§)
+	// Ïï°ÌÑ∞ ÏúÑÏπò ÏÇ¥Ïßù Ïò¨Î¶∞ Îí§ Ïù¥Îèô(Î∞îÎ°ú ÎïÖÏóê ÎãøÏù∏ÏÉÅÌÉúÏóêÏÑú ÏßÑÌñâÏãú Î∞îÎ°ú ÎÇ¥Î†§Ïò§Îäî ÌòÑÏÉÅ ÏàòÏ†ï)
 	OwnerCharacter->SetActorLocation(OwnerCharacter->GetActorLocation() + FVector(0.0f, 0.0f, 3.0f));
 	
-	// ƒ≥∏Ø≈Õ πﬂªÁ
+	// Ï∫êÎ¶≠ÌÑ∞ Î∞úÏÇ¨
 	FVector	ForwardVector = OwnerCharacter->GetActorForwardVector();
 	FVector	RightVector = OwnerCharacter->GetActorRightVector();
 	ForwardVector *= InputValue.X;
@@ -327,10 +289,10 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 	LaunchVelocity = LaunchVelocity* DodgeSpeed * FVector(1.0f, 1.0f, 0.0f);
 	OwnerCharacter->LaunchCharacter(LaunchVelocity,false,false);
 
-	// ø¨∑· ªÁøÎ
+	// Ïó∞Î£å ÏÇ¨Ïö©
 	SetFuel(JetpackFuel - DodgeReductionGauge);
 
-	// »∏«« ∞®º” ≈∏¿Ã∏” º≥¡§
+	// ÌöåÌîº Í∞êÏÜç ÌÉÄÏù¥Î®∏ ÏÑ§Ï†ï
 	if (!SlowdownDodgeTimerHandle.IsValid())
 	{
 		GetWorld()->GetTimerManager().SetTimer(SlowdownDodgeTimerHandle, this, &ThisClass::SlowdownDodge, 0.2f, false,0.2f);
@@ -366,7 +328,7 @@ void UJetpackComponent::ActivateBoostGaugeInfinity(float InfinityTime)
 	{
 		GetWorld()->GetTimerManager().SetTimer(BoostGaugeInfinityTimerHandle, this, &ThisClass::DeactivateBoostGaugeInfinity, 0.2f, false, InfinityTime);
 	}
-	else      // ≈∏¿Ã∏”∞° ±‚¡∏ø° Ω««‡ ¡ﬂ¿Ãæ˙¥Ÿ∏È (π´¿˚ ∏µÂ ¡ﬂ¿Ãæ˙¥Ÿ∏È, Ω√∞£ √ ±‚»≠)
+	else      // ÌÉÄÏù¥Î®∏Í∞Ä Í∏∞Ï°¥Ïóê Ïã§Ìñâ Ï§ëÏù¥ÏóàÎã§Î©¥ (Î¨¥Ï†Å Î™®Îìú Ï§ëÏù¥ÏóàÎã§Î©¥, ÏãúÍ∞Ñ Ï¥àÍ∏∞Ìôî)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(BoostGaugeInfinityTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(BoostGaugeInfinityTimerHandle, this, &ThisClass::DeactivateBoostGaugeInfinity, 0.2f, false, InfinityTime);
@@ -382,7 +344,7 @@ void UJetpackComponent::DeactivateBoostGaugeInfinity()
 
 void UJetpackComponent::AddInputMappingContext()
 {
-	{// == UI ø¨∞·«œ±‚
+	{// == UI Ïó∞Í≤∞ÌïòÍ∏∞
 		if (GetOwnerPlayerController())
 		{
 			JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(GetOwnerPlayerController(), JetpackWidgetClass));
@@ -402,13 +364,13 @@ void UJetpackComponent::AddInputMappingContext()
 
 			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 			{
-				// Hover InputAction πŸ¿Œµ˘
+				// Hover InputAction Î∞îÏù∏Îî©
 				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
 				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
-				// ¥ÎΩ√ InputAction πŸ¿Œµ˘
+				// ÎåÄÏãú InputAction Î∞îÏù∏Îî©
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
-				// »∏«« InputAction πŸ¿Œµ˘
+				// ÌöåÌîº InputAction Î∞îÏù∏Îî©
 				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
 				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
 				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);

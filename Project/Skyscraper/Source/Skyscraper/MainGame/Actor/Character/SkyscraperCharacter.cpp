@@ -13,14 +13,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include <MotionWarpingComponent.h>
-
-#include "MyBlueprintItemDragDropAction.h"
-#include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Actor/LootingItem/LootingItemActor.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
-#include "Skyscraper/MainGame/Component/Combat/Melee/MainMeleeComponent.h"
-#include "Skyscraper/MainGame/Component/Combat/Range/MainRangeComponent.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 #include "Skyscraper/MainGame/Component/Jetpack/JetpackComponent.h"
 #include "Skyscraper/MainGame/Item/ItemFactory/ItemFactory.h"

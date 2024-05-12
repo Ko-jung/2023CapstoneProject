@@ -231,7 +231,12 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		FHitResult OutHit;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerCharacter);
+
+		// DebugDrawTraceTag is not used in shipping and test builds
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
 		GetWorld()->DebugDrawTraceTag = TEXT("DebugTraceTag");
+#endif
+
 		QueryParams.TraceTag = TEXT("DebugTraceTag");
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
 		if (HitResult)
@@ -283,7 +288,12 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 		FHitResult OutHit;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerCharacter);
+
+		// DebugDrawTraceTag is not used in shipping and test builds
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
 		GetWorld()->DebugDrawTraceTag = TEXT("DebugTraceTag");
+#endif
+
 		QueryParams.TraceTag = TEXT("DebugTraceTag");
 		
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn,QueryParams);

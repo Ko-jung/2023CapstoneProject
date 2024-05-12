@@ -430,7 +430,7 @@ TileProperty* Room::GetLineTileFromAngleAndDistance(BYTE FindAngle, BYTE FindDis
 	for (TileProperty& Tile : BuildingExist)
 	{
 		// 모든 타일 중 해당 타일과의 거리를 비교하여 찾기
-		if (Distance(Tile.PosX, Tile.PosY, FindTileLocationX, FindTileLocationY) < 1.5f)
+		if (Distance(Tile.PosX, Tile.PosY, FindTileLocationX, FindTileLocationY) < 1.0f)
 		{
 			return &Tile;
 		}

@@ -281,10 +281,14 @@ AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 
 			}
 			else
 			{
-				UE_LOG(LogClass, Warning, TEXT("%d: SpawnBuilding Is NULLPTR!"));
+				UE_LOG(LogClass, Warning, TEXT("SpawnBuilding Is NULLPTR!"));
 			}
 			Tile_Actor.Add(TargetTile, Building);
 			return Building;
+		}
+		else
+		{
+			UE_LOG(LogClass, Warning, TEXT("Building is Already Exist!"));
 		}
 	}
 
@@ -395,12 +399,14 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 		}
 		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
 		{
-			ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance((i - 1) / 6, Distance), Floor, Name));
+			//ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance((i - 1) / 6, Distance), Floor, Name));
+			ATeamBuildings.Add(SpawnTeamBuilding(Tiles[i], Floor, Name));
 			break;
 		}
 		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
 		{
-			BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance((i - 1) / 6, Distance), Floor, Name));
+			//BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance((i - 1) / 6, Distance), Floor, Name));
+			BTeamBuildings.Add(SpawnTeamBuilding(Tiles[i], Floor, Name));
 			break;
 		}
 		default:
@@ -670,7 +676,7 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel, int CenterIndex)
 			{
 				CollapseTile(i);
 				i -= 1;
-			}
+			} 
 		}
 	}
 }

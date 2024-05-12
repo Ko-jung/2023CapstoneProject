@@ -213,7 +213,7 @@ void AMainGameMode::ProcessFunc()
 			PTileDrop PTD;
 			memcpy(&PTD, packet, sizeof(PTD));
 			ProcessTileDrop(PTD);
-			++TileDropLevel;
+			if(++TileDropLevel >= 4) TileDropLevel = 4;
 			break;
 		}
 		case (BYTE)COMP_OP::OP_SPAWNITEM:
@@ -235,6 +235,23 @@ void AMainGameMode::ProcessFunc()
 			PGetItem PGI;
 			memcpy(&PGI, packet, sizeof(PGI));
 			ProcessGetItem(PGI);
+			break;
+		}
+		case (int)COMP_OP::OP_FINISHGAME:
+		{
+			PFinishGame PFG;
+			memcpy(&PFG, packet, sizeof(PFG));
+			ASkyscraperPlayerController* controller = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
+			if (controller)
+			{
+				FText Result;
+				if (PFG.IsTeamAWin)
+					Result = FText::FromString(L"Win A Team");
+				else
+					Result = FText::FromString(L"Win B Team");
+
+				controller->AddGameResultWidget(Result);
+			}
 			break;
 		}
 		default:
@@ -270,6 +287,12 @@ void AMainGameMode::ProcessFunc()
 //		}
 //	}
 //}
+
+void AMainGameMode::GoToLobby()
+{
+
+	UGameplayStatics::OpenLevel(GetWorld(), FName("LobbyLevel"));
+}
 
 void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 {
@@ -397,8 +420,8 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 	if (PCPS->State == EHealthState::EHS_DEAD)
 	{
 		// Add Kill Count
-		if (PCPS->ChangedPlayerSerial < MAXPLAYER / 2)	++KillCount[(int)ETEAM::A];
-		else											++KillCount[(int)ETEAM::B];
+		if (PCPS->ChangedPlayerSerial < MAXPLAYER / 2)	++KillCount[(int)ETEAM::B];
+		else											++KillCount[(int)ETEAM::A];
 
 		if (PCPS->ChangedPlayerSerial == SerialNum)
 		{
@@ -438,7 +461,14 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 
 void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
 { 
-	HexagonTile->CollapseTilesAndActors(PTD.TileDropLevel, PTD.CenterIndex);
+	if (PTD.TileDropLevel < 3)
+	{
+		HexagonTile->CollapseTilesAndActors(PTD.TileDropLevel, PTD.CenterIndex);
+	}
+	else
+	{
+		HexagonTile->CollapseLevel3(PTD.CenterIndex);
+	}
 }
 
 void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
@@ -691,6 +721,12 @@ void AMainGameMode::RequestTileDrop()
 void AMainGameMode::RequestSpawnItem()
 {
 	PRequestPacket PRP(COMP_OP::OP_SPAWNITEM);
+	m_Socket->Send(&PRP, sizeof(PRP));
+}
+
+void AMainGameMode::RequestFinishGame()
+{
+	PRequestPacket PRP(COMP_OP::OP_FINISHGAME);
 	m_Socket->Send(&PRP, sizeof(PRP));
 }
 

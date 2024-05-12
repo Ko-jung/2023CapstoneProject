@@ -756,6 +756,11 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 
 }
 
+void AHexagonTile::CollapseLevel3(uint8 CenterIndex)
+{
+	CollapseTile(CenterIndex);
+}
+
 void AHexagonTile::CollapseLevel3()
 {
 	int index = UKismetMathLibrary::RandomIntegerInRange(0, Tiles.Num() - 1);

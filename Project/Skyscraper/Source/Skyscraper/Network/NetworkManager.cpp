@@ -283,6 +283,14 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		COPYPACKET(PSpawnItem);
 		break;
 	}
+	case (int)COMP_OP::OP_FINISHGAME:
+	{
+		COPYPACKET(PFinishGame);
+
+		IsChangingGameMode = true;
+		State = ENetworkState::Lobby;
+		break;
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;

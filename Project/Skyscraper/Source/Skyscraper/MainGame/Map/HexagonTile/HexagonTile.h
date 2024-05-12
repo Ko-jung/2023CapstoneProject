@@ -113,6 +113,7 @@ public:
 	FVector GetSpawnLocation(bool IsTeamA);
 
 	void CollapseTilesAndActors(int CollapseLevel, int CenterIndex);
+	void CollapseLevel3(uint8 CenterIndex);
 
 	UFUNCTION()
 	FVector2D GetTileWidgetAlignment(int index) const;

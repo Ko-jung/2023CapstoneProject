@@ -21,6 +21,7 @@ public:
 
 	void AddKillCount(int DeathTargetId);
 	void IncreaseTileDropLevel(int roomId);
+	int IsEndGame(int roomID);
 
 	BYTE* GetBuildingExist(int roomId, int& size);
 	int GetTileDropLevelAndIncrease(int roomId);

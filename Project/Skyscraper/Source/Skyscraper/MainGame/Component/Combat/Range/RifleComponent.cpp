@@ -10,7 +10,7 @@ URifleComponent::URifleComponent()
 
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 20;
-	FireMaxCoolTime = 0.2f;
+	FireMaxCoolTime = 0.3f;
 	ReloadSpeedTime = 3.0f;
 
 	RecoilAboveAmount = 1.0f;

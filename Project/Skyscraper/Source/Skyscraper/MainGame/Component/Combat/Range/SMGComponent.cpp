@@ -9,7 +9,7 @@ USMGComponent::USMGComponent()
 	
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 50;
-	FireMaxCoolTime = 0.1f;
+	FireMaxCoolTime = 0.2f;
 	ReloadSpeedTime = 1.0f;
 
 	RecoilAboveAmount = 1.0f;

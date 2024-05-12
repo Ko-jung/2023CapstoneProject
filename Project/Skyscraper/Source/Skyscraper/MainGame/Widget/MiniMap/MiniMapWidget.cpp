@@ -32,6 +32,8 @@ void UMiniMapWidget::CollapseTileImage(int index)
 
 	SetTileImage(index, ETileImageType::ETIT_Collapse);
 	TileImages.RemoveAt(index);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d index's Is Collapse"), index);
 }
 
 void UMiniMapWidget::NativePreConstruct()

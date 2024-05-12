@@ -782,13 +782,17 @@ void AHexagonTile::CollapseTile(int CollapseTargetIndex)
 	NewGCTileActor->SetActorLocation(GeometrySpawnLocation);
 	NewGCTileActor->SetLifeSpan(30.0f);
 
-	{// 모든 플레이어 컨트롤러에게 이미지를 바꾸도록 요구
-		FConstPlayerControllerIterator PCIter =  GetWorld()->GetPlayerControllerIterator();
-		for(int i =0; i< GetWorld()->GetNumPlayerControllers(); ++i)
-		{
-			//Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->SetTileImage(CollapseTargetIndex, ETileImageType::ETIT_Collapse);
-			Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->CollapseTileImage(CollapseTargetIndex);
-		}
-		
-	}
+	auto c = GetWorld()->GetFirstPlayerController();
+	auto b = Cast<ASkyscraperPlayerController>(c);
+	b->GetMiniMapWidget()->CollapseTileImage(CollapseTargetIndex);
+
+	//{// 모든 플레이어 컨트롤러에게 이미지를 바꾸도록 요구
+	//	FConstPlayerControllerIterator PCIter =  GetWorld()->GetPlayerControllerIterator();
+	//	for(int i =0; i< GetWorld()->GetNumPlayerControllers(); ++i)
+	//	{
+	//		//Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->SetTileImage(CollapseTargetIndex, ETileImageType::ETIT_Collapse);
+	//		Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->CollapseTileImage(CollapseTargetIndex);
+	//	}
+	//	
+	//}
 }

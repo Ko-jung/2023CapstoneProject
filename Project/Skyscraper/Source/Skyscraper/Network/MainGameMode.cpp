@@ -198,10 +198,9 @@ void AMainGameMode::ProcessFunc()
 			memcpy(&PST, packet, sizeof(PST));
 			switch (PST.TimerType)
 			{
-			case ETimer::TileDropTiler:
+			case ETimer::TileDropTimer:
 			{
 				TileDropTimer = PST.SecondsUntilActivation;
-				++TileDropLevel;
 				break;
 			}
 			default:
@@ -214,6 +213,7 @@ void AMainGameMode::ProcessFunc()
 			PTileDrop PTD;
 			memcpy(&PTD, packet, sizeof(PTD));
 			ProcessTileDrop(PTD);
+			++TileDropLevel;
 			break;
 		}
 		case (BYTE)COMP_OP::OP_SPAWNITEM:
@@ -336,7 +336,7 @@ void AMainGameMode::UpdateUI(float Deltatime)
 	{
 		PlayerController->GetTimeAndKillCountWidget()->SetTimeText(	((int)TileDropTimer) / 60,
 																	((int)TileDropTimer) % 60);
-		PlayerController->GetTimeAndKillCountWidget()->SetCollapseLevelText(TileDropLevel);
+		PlayerController->GetTimeAndKillCountWidget()->SetCollapseLevelText(TileDropLevel + 1);
 		if (SerialNum < MAXPLAYER / 2)
 		{
 			PlayerController->GetTimeAndKillCountWidget()->SetFriendlyKillCountText(KillCount[(int)ETEAM::A]);
@@ -459,21 +459,14 @@ void AMainGameMode::ProcessGetItem(PGetItem PGI)
 
 void AMainGameMode::GetHexagonTileOnLevel()
 {
-	TArray<AActor*> HexagonTiles;
-	UGameplayStatics::GetAllActorsOfClass(this, AHexagonTile::StaticClass(), HexagonTiles);
-
-	for (auto& h : HexagonTiles)
+	AHexagonTile* Hexagon = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+	if (!Hexagon)
 	{
-		AHexagonTile* Hexagon = Cast<AHexagonTile>(h);
-		if (!Hexagon)
-		{
-			UE_LOG(LogClass, Warning, TEXT("AHexagonTIle Cast FAILED!"));
-			break;
-		}
-
-		HexagonTile = Hexagon;
-		break;
+		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::GetHexagonTileOnLevel() AHexagonTIle Cast FAILED!"));
+		return;
 	}
+
+	HexagonTile = Hexagon;
 }
 
 void AMainGameMode::SendPlayerLocation()

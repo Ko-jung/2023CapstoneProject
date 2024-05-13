@@ -19,7 +19,7 @@
 
 #define BUFSIZE 128
 #define MAXCLIENT 2100
-#define MAXPLAYER 4
+#define MAXPLAYER 6
 #define MAXROOM 350
 
 #define GAMESERVERIP "127.0.0.1"

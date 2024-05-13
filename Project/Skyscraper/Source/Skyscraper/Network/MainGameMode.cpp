@@ -230,21 +230,21 @@ void AMainGameMode::ProcessFunc()
 			ProcessSpawnItem(PSI);
 			break;
 		}
-		case (int)COMP_OP::OP_USEITEM:
+		case (BYTE)COMP_OP::OP_USEITEM:
 		{
 			PUseItem PUI;
 			memcpy(&PUI, packet, sizeof(PUI));
 			ProcessUseItem(PUI);
 			break;
 		}
-		case (int)COMP_OP::OP_GETITEM:
+		case (BYTE)COMP_OP::OP_GETITEM:
 		{
 			PGetItem PGI;
 			memcpy(&PGI, packet, sizeof(PGI));
 			ProcessGetItem(PGI);
 			break;
 		}
-		case (int)COMP_OP::OP_FINISHGAME:
+		case (BYTE)COMP_OP::OP_FINISHGAME:
 		{
 			PFinishGame PFG;
 			memcpy(&PFG, packet, sizeof(PFG));
@@ -499,6 +499,8 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 void AMainGameMode::ProcessGetItem(PGetItem PGI)
 {
 	HexagonTile->RemoveItem(PGI.ItemSerialNum);
+
+	//PlayerController->UpdateImage(PGI.)
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()

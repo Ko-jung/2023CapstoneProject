@@ -403,17 +403,17 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
 		{
 			if (Name == "Section1")
-				ATeamBuildings[0] = SpawnTeamBuilding(Tiles[i], Floor, Name);
-			else
 				ATeamBuildings[1] = SpawnTeamBuilding(Tiles[i], Floor, Name);
+			else
+				ATeamBuildings[0] = SpawnTeamBuilding(Tiles[i], Floor, Name);
 			break;
 		}
 		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
 		{
 			if (Name == "Section1")
-				BTeamBuildings[0] = SpawnTeamBuilding(Tiles[i], Floor, Name);
-			else
 				BTeamBuildings[1] = SpawnTeamBuilding(Tiles[i], Floor, Name);
+			else
+				BTeamBuildings[0] = SpawnTeamBuilding(Tiles[i], Floor, Name);
 			break;
 		}
 		default:
@@ -581,6 +581,7 @@ void AHexagonTile::SpawnItem(ItemInfo* Items, const uint8 SpawnCount)
 		BuildingLocation.Y += 100.f;
 		BuildingLocation.Z -= 800.f;
 
+		// 임시 아이템 스폰 장소, 후에 건물내에 스폰할 위치를 넣어서
 		FHitResult Result;
 		GetWorld()->LineTraceSingleByChannel(Result, BuildingLocation,
 			FVector{ BuildingLocation.X, BuildingLocation.Y, BuildingLocation.Z - 2000.f },
@@ -602,6 +603,7 @@ void AHexagonTile::RemoveItem(BYTE SerialNum)
 {
 	if (ItemMap.Find(SerialNum))
 	{
+	//	int Index = ItemMap[SerialNum]->
 		ItemMap[SerialNum]->Destroy();
 		ItemMap.Remove(SerialNum);
 	}

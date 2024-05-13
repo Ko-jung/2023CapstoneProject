@@ -142,3 +142,17 @@ void ASkyscraperPlayerController::UpdateImage()
 		}
 	}
 }
+
+void ASkyscraperPlayerController::UpdateImage(int index)
+{
+	AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+
+	if (HexagonTile)
+	{
+		if (MiniMapWidget)
+		{
+			MiniMapWidget->SetTileImageAlignment(index, HexagonTile->GetTileWidgetAlignment(index));
+			MiniMapWidget->SetTileImage(index, HexagonTile->GetTileImageType(index));
+		}
+	}
+}

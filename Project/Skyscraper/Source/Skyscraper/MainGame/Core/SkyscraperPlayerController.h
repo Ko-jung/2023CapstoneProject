@@ -51,6 +51,7 @@ private:
 
 public:
 	void UpdateImage();
+	void UpdateImage(int index);
 
 protected:
 	// 소유한 GetPawn() 에 대하여 형변환

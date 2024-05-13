@@ -90,6 +90,9 @@ AHexagonTile::AHexagonTile()
 	GC_Tile = GC_TileRef.Class;
 
 	TileDropLevel = 0;
+
+	ATeamBuildings.Init(nullptr, 2);
+	BTeamBuildings.Init(nullptr, 2);
 }
 
 FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance)
@@ -399,14 +402,18 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 		}
 		case (BYTE)ETILETYPE::SPAWNBUILDING_A:
 		{
-			//ATeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance((i - 1) / 6, Distance), Floor, Name));
-			ATeamBuildings.Add(SpawnTeamBuilding(Tiles[i], Floor, Name));
+			if (Name == "Section1")
+				ATeamBuildings[0] = SpawnTeamBuilding(Tiles[i], Floor, Name);
+			else
+				ATeamBuildings[1] = SpawnTeamBuilding(Tiles[i], Floor, Name);
 			break;
 		}
 		case (BYTE)ETILETYPE::SPAWNBUILDING_B:
 		{
-			//BTeamBuildings.Add(SpawnTeamBuilding(GetLineTileFromAngleAndDistance((i - 1) / 6, Distance), Floor, Name));
-			BTeamBuildings.Add(SpawnTeamBuilding(Tiles[i], Floor, Name));
+			if (Name == "Section1")
+				BTeamBuildings[0] = SpawnTeamBuilding(Tiles[i], Floor, Name);
+			else
+				BTeamBuildings[1] = SpawnTeamBuilding(Tiles[i], Floor, Name);
 			break;
 		}
 		default:
@@ -635,6 +642,7 @@ FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 	if(IsTeamA)
 	{
 		Building = Cast<ABuilding>(ATeamBuildings[TileDropIndex]);
+
 	}
 	else
 	{

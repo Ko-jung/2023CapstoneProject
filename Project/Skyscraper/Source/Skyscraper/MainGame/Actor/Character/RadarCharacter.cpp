@@ -8,8 +8,6 @@ ARadarCharacter::ARadarCharacter()
 	{ // Set Mesh Character
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/5_radar/radar.radar'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
-		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
-		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Radar/ABP_Radar.ABP_Radar_C'"));
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);

@@ -8,8 +8,7 @@ AElectricCharacter::AElectricCharacter()
 	{ // Set Mesh Character
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/2_electric/elec.elec'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
-		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
-		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/ABP_Electric.ABP_Electric_C'"));
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);

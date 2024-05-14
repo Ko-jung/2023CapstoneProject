@@ -32,8 +32,10 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 ASkyscraperCharacter::ASkyscraperCharacter()
 {
+	float CapsuleHeightSize = 76.5f;
+
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(42.f, CapsuleHeightSize);
 
 	bIsHover = false;
 	CharacterMaxWalkSpeed = 600.0f;
@@ -80,7 +82,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		// == Find and set USkeletalMesh from directory
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/4_assassin/assassin.assassin'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
-		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
+		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -CapsuleHeightSize - 0.5f));
 		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Assassin/ABP_Assassin.ABP_Assassin_C'"));

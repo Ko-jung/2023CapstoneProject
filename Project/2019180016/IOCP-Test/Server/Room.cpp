@@ -84,7 +84,7 @@ Room::Room() :
 	}
 
 #else
-	IsDying.reserve(6);
+	IsDying = { false, false,false,false,false,false };
 
 	BuildingExist.reserve(TileCount);
 	BuildingExist.emplace_back((BYTE)ETILETYPE::NONBUILDING, 0, 0.f, 0.f);

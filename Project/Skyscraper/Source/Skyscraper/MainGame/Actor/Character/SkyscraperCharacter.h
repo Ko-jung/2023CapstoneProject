@@ -84,6 +84,7 @@ public:
 
 	void PlayBoostAnimation(const FString& SectionString) const;
 
+
 	// 2019180016
 public:
 	/// <returns>
@@ -109,6 +110,7 @@ public:
 	int  GetSpeed() { return Speed; }
 	float GetXRotate() { return XRotate; }
 	// ==================
+
 protected:
 	// 키 인풋에 따른 액션 함수
 	/** Called for movement input */
@@ -148,7 +150,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 		void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
-
+	// ======
 private:
 
 public:

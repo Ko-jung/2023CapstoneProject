@@ -84,6 +84,8 @@ public:
 
 	void PlayBoostAnimation(const FString& SectionString) const;
 
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+		FORCEINLINE bool GetIsMoveDiagonally() { return bIsMoveDiagonally; }
 
 	// 2019180016
 public:
@@ -184,6 +186,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 		bool bIsHover;
 
+	UPROPERTY(VisibleAnywhere)
+		bool bIsMoveDiagonally;
 
 	// 캐릭터 기본 걷기 속도
 	UPROPERTY(EditAnywhere)

@@ -24,83 +24,86 @@ class SKYSCRAPER_API UJetpackComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	UJetpackComponent();
 
 protected:
 	// BeginPlay
 	virtual void BeginPlay() override;
 
-	// ÇÃ·¹ÀÌ¾îÀÇ ÃÖ´ë ¼Óµµ¿¡ ´ëÇÑ Clamp ÇÔ¼ö
+	// í”Œë ˆì´ì–´ì˜ ìµœëŒ€ ì†ë„ì— ëŒ€í•œ Clamp í•¨ìˆ˜
 	FVector ClampToMaxWalkSpeed(const FVector& NewVelocity);
 
-	// ºÎ½ºÅÍ ¿¬·á ¼³Á¤ ÇÔ¼ö
+	// ë¶€ìŠ¤í„° ì—°ë£Œ ì„¤ì • í•¨ìˆ˜
 	void SetFuel(double NewFuel);
-	// °øÁß ¸ğµå ¼³Á¤ ÇÔ¼ö
+	// ê³µì¤‘ ëª¨ë“œ ì„¤ì • í•¨ìˆ˜
 	void SetHoveringMode(bool bHover);
-	// ºÎ½ºÅÍ ¼Ó·Â(Ä³¸¯ÅÍ ¹«ºê¸ÕÆ® ÄÄÆÛ³ÍÆ® ¼Ó·Â) º¯°æ ÇÔ¼ö
+	// ë¶€ìŠ¤í„° ì†ë ¥(ìºë¦­í„° ë¬´ë¸Œë¨¼íŠ¸ ì»´í¼ë„ŒíŠ¸ ì†ë ¥) ë³€ê²½ í•¨ìˆ˜
 	void AddJetpackVelocity(FVector AddVelocity, float FuelReduction);
 
-	// °øÁß ³¯±â ·ÎÁ÷ ÇÔ¼ö
+	// ê³µì¤‘ ë‚ ê¸° ë¡œì§ í•¨ìˆ˜
 	void Hover(const FInputActionValue& InputActionValue);
-	// °øÁß ³¯±â Á¾·á ·ÎÁ÷ ÇÔ¼ö
+	// ê³µì¤‘ ë‚ ê¸° ì¢…ë£Œ ë¡œì§ í•¨ìˆ˜
 	void HoverStop();
 
-	// °øÁß ³¯±â Á¾·á½Ã ÃµÃµÈ÷ ³«ÇÏ(±Û¶óÀÌµù) ¼Óµµ·Î º¯°æÇÏ´Â ÇÔ¼ö
+	// ê³µì¤‘ ë‚ ê¸° ì¢…ë£Œì‹œ ì²œì²œíˆ ë‚™í•˜(ê¸€ë¼ì´ë”©) ì†ë„ë¡œ ë³€ê²½í•˜ëŠ” í•¨ìˆ˜
 	void ToGlidingSpeed();
 
-	// ºü¸¥ ´ë½¬ ·ÎÁ÷ ÇÔ¼ö
+	// ë¹ ë¥¸ ëŒ€ì‰¬ ë¡œì§ í•¨ìˆ˜
 	void DashFast();
-	// ºü¸¥ ´ë½¬ Á¾·á ·ÎÁ÷ ÇÔ¼ö
+	// ë¹ ë¥¸ ëŒ€ì‰¬ ì¢…ë£Œ ë¡œì§ í•¨ìˆ˜
 	void DashStop();
 
-	// È¸ÇÇ °ü·Ã ÇÔ¼ö
+	// íšŒí”¼ ê´€ë ¨ í•¨ìˆ˜
 	void Dodge_Fwd();
 	void Dodge_Bwd();
 	void Dodge_Right();
 	void Dodge_Left();
 
 
-	// ÇöÀç Á¦Æ®ÆÑÀÇ ¼Ó¼º (bIsHovering / bIsDashing) ¿¡ µû¶ó Ä³¸¯ÅÍ ÃÖ´ë ¼Óµµ Á¶Á¤
+	// í˜„ì¬ ì œíŠ¸íŒ©ì˜ ì†ì„± (bIsHovering / bIsDashing) ì— ë”°ë¼ ìºë¦­í„° ìµœëŒ€ ì†ë„ ì¡°ì •
 	void SetCharacterMaxSpeed();
 
-	// È¸ÇÇ(Dodge) ½Ã ¼Óµµ °¨¼Ò¸¦ À§ÇÑ ÇÔ¼ö
+	// íšŒí”¼(Dodge) ì‹œ ì†ë„ ê°ì†Œë¥¼ ìœ„í•œ í•¨ìˆ˜
 	UFUNCTION()
 	void SlowdownDodge();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	// Ä³¸¯ÅÍ°¡ ¶¥¿¡ ´ê¾ÒÀ» ¶§(On Landed) ½ÇÇàµÉ ÇÔ¼ö
+	// ìºë¦­í„°ê°€ ë•…ì— ë‹¿ì•˜ì„ ë•Œ(On Landed) ì‹¤í–‰ë  í•¨ìˆ˜
 	UFUNCTION()
 	void OnLandJetpack();
 
-	// È¸ÇÇ ·ÎÁ÷ ÇÔ¼ö
+	// íšŒí”¼ ë¡œì§ í•¨ìˆ˜
 	void Dodge(FVector2D InputValue);
 
-	// ºÎ½ºÅÍ ¹«ÇÑ Àû¿ë ¹× ÇØÁ¦ ÇÔ¼ö
+	// ë¶€ìŠ¤í„° ë¬´í•œ ì ìš© ë° í•´ì œ í•¨ìˆ˜
 	UFUNCTION()
 		void ActivateBoostGaugeInfinity(float InfinityTime);
 	UFUNCTION()
 		void DeactivateBoostGaugeInfinity();
+
+	UFUNCTION()
+		void DoDescent();
 
 	//========== 2019180016 ==========
 		void AddInputMappingContext();
 	//================================
 
 protected:
-	// == Owner Ä³¸¯ÅÍ °ü·Ã
+	// == Owner ìºë¦­í„° ê´€ë ¨
 	UPROPERTY()
 		TObjectPtr<ASkyscraperCharacter> OwnerCharacter;
 
-	// == Á¦Æ®ÆÑ º¯¼ö
-	// ¿¬·á °ü·Ã º¯¼ö
+	// == ì œíŠ¸íŒ© ë³€ìˆ˜
+	// ì—°ë£Œ ê´€ë ¨ ë³€ìˆ˜
 	UPROPERTY(VisibleAnywhere)
 		double JetpackFuel;
 	UPROPERTY(EditAnywhere)
 		double MaxJetpackFuel;
 
-	// ¼Óµµ °ü·Ã ÇÔ¼ö
+	// ì†ë„ ê´€ë ¨ í•¨ìˆ˜
 	UPROPERTY(EditAnywhere)
 		float HoveringMaxSpeed;
 	UPROPERTY(EditAnywhere)
@@ -110,7 +113,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float DodgeSlowdownValue;
 
-	// °ÔÀÌÁö »ç¿ë ¼öÄ¡ °ü·Ã ÇÔ¼ö
+	// ê²Œì´ì§€ ì‚¬ìš© ìˆ˜ì¹˜ ê´€ë ¨ í•¨ìˆ˜
 	UPROPERTY(EditAnywhere)
 		float HoverGaugePerSec;
 	UPROPERTY(EditAnywhere)
@@ -120,20 +123,20 @@ protected:
 
 	bool bHoverStoping;
 
-	// ºÎ½ºÅÍ °ÔÀÌÁö ¹«ÇÑ bool º¯¼ö
+	// ë¶€ìŠ¤í„° ê²Œì´ì§€ ë¬´í•œ bool ë³€ìˆ˜
 	UPROPERTY()
 		bool bIsBoostGaugeInfinity;
 
-	// ÇöÀç Á¦Æ®ÆÑÀÇ »óÅÂ¿¡ ´ëÇÑ º¯¼ö, Ä³¸¯ÅÍÀÇ ¼Óµµ¸¦ Á¶Á¤ÇÒ ¶§ »ç¿ë
+	// í˜„ì¬ ì œíŠ¸íŒ©ì˜ ìƒíƒœì— ëŒ€í•œ ë³€ìˆ˜, ìºë¦­í„°ì˜ ì†ë„ë¥¼ ì¡°ì •í•  ë•Œ ì‚¬ìš©
 	bool bIsHovering;
 	bool bIsDashing;
 
 
-	// Å¸ÀÌ¸Ó ÇÚµé
+	// íƒ€ì´ë¨¸ í•¸ë“¤
 	FTimerHandle SlowdownDodgeTimerHandle;
 	FTimerHandle BoostGaugeInfinityTimerHandle;
 
-	// Á¦Æ®ÆÑ À§Á¬¿¡ ´ëÇÑ Å¬·¡½º ¹× º¯¼ö
+	// ì œíŠ¸íŒ© ìœ„ì ¯ì— ëŒ€í•œ í´ë˜ìŠ¤ ë° ë³€ìˆ˜
 	TSubclassOf<UUserWidget> JetpackWidgetClass;
 	UPROPERTY()
 	UJetpackGaugeBar* JetpackWidget;
@@ -158,5 +161,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		TArray<UInputAction*> IA_Jetpack_Dodge;
 	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_Jetpack_Descent;
 };

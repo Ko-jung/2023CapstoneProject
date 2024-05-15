@@ -55,6 +55,8 @@ UJetpackComponent::UJetpackComponent()
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_Dodge_LeftRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Dodge_Left.IA_Jetpack_Dodge_Left'"));
 		IA_Jetpack_Dodge.Add(IA_Jetpack_Dodge_LeftRef.Object);
 
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_DescentRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Descent.IA_Jetpack_Descent'"));
+		IA_Jetpack_Descent = IA_Jetpack_DescentRef.Object;
 	}
 
 	{ // 제트팩 위젯 클래스 로드
@@ -204,7 +206,6 @@ void UJetpackComponent::ToGlidingSpeed()
 
 void UJetpackComponent::DashFast()
 {
-
 	if(JetpackFuel >0.0f)
 	{
 		SetHoveringMode(true);
@@ -220,7 +221,6 @@ void UJetpackComponent::DashFast()
 
 void UJetpackComponent::DashStop()
 {
-
 	ToGlidingSpeed();
 
 	bIsDashing = false;
@@ -342,6 +342,15 @@ void UJetpackComponent::DeactivateBoostGaugeInfinity()
 	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Deactivate"));
 }
 
+void UJetpackComponent::DoDescent() 
+{
+	if(UCharacterMovementComponent* CharacterMovementComponent = GetOwnerCharacterMovement())
+	{
+		CharacterMovementComponent->GravityScale = 1.0f;
+		UE_CLOG(true, LogTemp, Warning, TEXT("ctrl Descent"));
+	}
+}
+
 void UJetpackComponent::AddInputMappingContext()
 {
 	{// == UI 연결하기
@@ -371,11 +380,11 @@ void UJetpackComponent::AddInputMappingContext()
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
 				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
 				// 회피 InputAction 바인딩
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_W], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_S], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_D], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[(uint8)EDodgeKeys::EDK_A], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
-
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_W)], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_S)], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_D)], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_A)], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
+				EnhancedInputComponent->BindAction(IA_Jetpack_Descent, ETriggerEvent::Started, this, &ThisClass::DoDescent);
 			}
 		}
 	}

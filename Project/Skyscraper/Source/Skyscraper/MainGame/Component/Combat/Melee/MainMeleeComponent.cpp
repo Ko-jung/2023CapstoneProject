@@ -246,11 +246,19 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 	// == TODO: Delete Debug Later
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation(), UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors,EDrawDebugTrace::ForDuration,OutHits,true);
 
+	TArray<FHitResult*> UniqueOutHits;
+	for (FHitResult& HitResult : OutHits)
+	{
+		if (!UniqueOutHits.Contains(&HitResult))
+		{
+			UniqueOutHits.Add(&HitResult);
+		}
+	}
 	
 	bool bDoHitLag = false;
-	for(FHitResult HitResult : OutHits)
+	for(FHitResult* HitResult : UniqueOutHits)
 	{
-		AActor* HitActor = HitResult.GetActor();
+		AActor* HitActor = HitResult->GetActor();
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 
 		bDoHitLag = true;
@@ -281,18 +289,18 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 			GameMode->SendTakeDamage(OwnerCharacter, HitActor);
 		}
 
-		if(HitResult.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
+		if(HitResult->GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
 		{
 			{ // 대미지 소환 액터 소환
 				FTransform SpawnTransform;
-				SpawnTransform.SetLocation(HitResult.Location);
-				FRotator rotator = (HitResult.TraceEnd - HitResult.TraceStart).ToOrientationRotator();
+				SpawnTransform.SetLocation(HitResult->Location);
+				FRotator rotator = (HitResult->TraceEnd - HitResult->TraceStart).ToOrientationRotator();
 				rotator.Pitch += 180.0f;
 				SpawnTransform.SetRotation(rotator.Quaternion());
 				ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
 				if (DamageSpawner)
 				{
-					DamageSpawner->SetActorLocation(HitResult.Location);
+					DamageSpawner->SetActorLocation(HitResult->Location);
 					DamageSpawner->Initialize(fBaseDamage, 0.6f);
 					DamageSpawner->FinishSpawning(SpawnTransform);
 				}

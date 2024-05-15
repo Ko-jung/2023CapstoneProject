@@ -473,7 +473,7 @@ void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(RightDirection, MovementVector.X);
 
 		// 좌, 우, 뒤 이동시 이동속도를 느리게 하기 위해 crouch를 사용
-		if((MovementVector.Y + 1.0f) <= FLT_EPSILON)   // 뒤로 이동 중이라면,
+		if(MovementVector.Y < 0.0f)   // 뒤로 이동 중이라면,
 		{
 			Crouch();
 			GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
@@ -488,6 +488,8 @@ void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 			UnCrouch();
 		}
 
+		// 대각선 이동 체크
+		bIsMoveDiagonally = !(abs(MovementVector.Y) <= KINDA_SMALL_NUMBER) && !(abs(MovementVector.X) <= KINDA_SMALL_NUMBER);
 	}
 }
 

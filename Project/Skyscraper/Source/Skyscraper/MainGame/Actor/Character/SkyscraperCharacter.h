@@ -33,84 +33,9 @@ UCLASS(config=Game)
 class ASkyscraperCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
-
-	// 플레이어가 떠 있는지에 대한 변수 (AnimInstance에서 사용 예정)
-	UPROPERTY(VisibleAnywhere)
-		bool bIsHover;
-
-
-	// 캐릭터 기본 걷기 속도
-	UPROPERTY(EditAnywhere)
-		float CharacterMaxWalkSpeed;
-	// 캐릭터 버프 수치 - 기본 1.0f ( 40% 증가 버프 받으면 1.4f ...)
-	UPROPERTY(EditAnywhere)
-		float SpeedBuffValue;
-	UPROPERTY(EditAnywhere)
-		float PowerBuffValue;
-
-	// 캐릭터의 소유하고 있는 아이템에 대한 변수 ( 기본 값 - [EIE_NONE, EIRL_NONE]
-	TTuple<EItemEffect, EItemRareLevel> OwningItem;
-
-
-	// 타이머 핸들
-	FTimerHandle SpeedBuffTimerHandle;
-	FTimerHandle PowerBuffTimerHandle;
-
 public:
 	ASkyscraperCharacter();
 
-public:
-	// == 컴퍼넌트
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UCombatSystemComponent* CombatSystemComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UMotionWarpingComponent* MotionWarpingComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UHealthComponent* HealthComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UJetpackComponent* JetpackComponent;
-	
-protected:
-	UPROPERTY()
-	TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
-
-	UPROPERTY(EditAnywhere, Category = "Boost")
-		USkeletalMeshComponent* BoostMesh;
-
-protected:
-	// 키 인풋에 따른 액션 함수
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-	// 아이템 상호작용 키 
-	void ItemInteraction();
-	// 아이템 사용
-	void UseItem();
-
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	// To add mapping context
-	virtual void BeginPlay() override;
-
-	// 캐릭터가 땅에 닿았을 때 실행될 함수
-	virtual void Landed(const FHitResult& Hit) override;
-
-	// 버프(속도/공격력 증가 등) 타이머 시간 이후 초기화 시키는 함수
-	UFUNCTION()
-		void ResetSpeedBuffValue();
-	UFUNCTION()
-		void ResetPowerBuffValue();
-public:
 	// == Get component
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
@@ -149,30 +74,18 @@ public:
 
 	// 캐릭터 무적 설정 및 해제 변수 / GodMode인지 get 함수
 	UFUNCTION(BlueprintCallable)
-	void SetCharacterGodMode(bool bNewGodMode);
+		void SetCharacterGodMode(bool bNewGodMode);
 	UFUNCTION(BlueprintCallable)
-	bool IsCharacterGodMode();
+		bool IsCharacterGodMode();
 
 	// 캐릭터 카메라 모드 변경하는 함수
 	UFUNCTION(BlueprintCallable)
-	void SetCameraMode(ECharacterCameraMode CameraMode);
+		void SetCameraMode(ECharacterCameraMode CameraMode);
 
 	void PlayBoostAnimation(const FString& SectionString) const;
 
-// === 2019180016 ===
-protected:
-	class AMainGameMode* MainGameMode;
 
-	ESwapWeapon PrevWeaponType;
-
-	UPROPERTY(BlueprintReadWrite)
-	float Speed;
-	UPROPERTY(BlueprintReadWrite)
-	float XRotate;
-
-	UFUNCTION(BlueprintCallable)
-	void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
-
+	// 2019180016
 public:
 	/// <returns>
 	/// If Weapon Changed return true
@@ -196,8 +109,99 @@ public:
 	void SetXRotate(float r) { XRotate = r; }
 	int  GetSpeed() { return Speed; }
 	float GetXRotate() { return XRotate; }
-// ==================
+	// ==================
+
+protected:
+	// 키 인풋에 따른 액션 함수
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
+	/** Called for looking input */
+	void Look(const FInputActionValue& Value);
+	// 아이템 상호작용 키 
+	void ItemInteraction();
+	// 아이템 사용
+	void UseItem();
+
+	// APawn interface
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// To add mapping context
+	virtual void BeginPlay() override;
+
+	// 캐릭터가 땅에 닿았을 때 실행될 함수
+	virtual void Landed(const FHitResult& Hit) override;
+
+	// 버프(속도/공격력 증가 등) 타이머 시간 이후 초기화 시키는 함수
+	UFUNCTION()
+		void ResetSpeedBuffValue();
+	UFUNCTION()
+		void ResetPowerBuffValue();
+
+	// === 2019180016 ===
+protected:
+	class AMainGameMode* MainGameMode;
+
+	ESwapWeapon PrevWeaponType;
+
+	UPROPERTY(BlueprintReadWrite)
+		float Speed;
+	UPROPERTY(BlueprintReadWrite)
+		float XRotate;
+
+	UFUNCTION(BlueprintCallable)
+		void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
+	// ======
 private:
+
+public:
+	// == 컴퍼넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UCombatSystemComponent* CombatSystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UMotionWarpingComponent* MotionWarpingComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UHealthComponent* HealthComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		UJetpackComponent* JetpackComponent;
+
+protected:
+	UPROPERTY()
+		TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
+
+	UPROPERTY(EditAnywhere, Category = "Boost")
+		USkeletalMeshComponent* BoostMesh;
+
+private:
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		USpringArmComponent* CameraBoom;
+
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		UCameraComponent* FollowCamera;
+
+	// 플레이어가 떠 있는지에 대한 변수 (AnimInstance에서 사용 예정)
+	UPROPERTY(VisibleAnywhere)
+		bool bIsHover;
+
+
+	// 캐릭터 기본 걷기 속도
+	UPROPERTY(EditAnywhere)
+		float CharacterMaxWalkSpeed;
+	// 캐릭터 버프 수치 - 기본 1.0f ( 40% 증가 버프 받으면 1.4f ...)
+	UPROPERTY(EditAnywhere)
+		float SpeedBuffValue;
+	UPROPERTY(EditAnywhere)
+		float PowerBuffValue;
+
+	// 캐릭터의 소유하고 있는 아이템에 대한 변수 ( 기본 값 - [EIE_NONE, EIRL_NONE]
+	TTuple<EItemEffect, EItemRareLevel> OwningItem;
+
+
+	// 타이머 핸들
+	FTimerHandle SpeedBuffTimerHandle;
+	FTimerHandle PowerBuffTimerHandle;
+
 	// Input 관련 변수
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))

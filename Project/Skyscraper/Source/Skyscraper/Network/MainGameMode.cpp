@@ -261,6 +261,14 @@ void AMainGameMode::ProcessFunc()
 			}
 			break;
 		}
+		case (BYTE)COMP_OP::OP_BREAKOBJECT:
+		{
+			// Find Windows using LOCATION
+
+			// Break Window
+
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
 			break;

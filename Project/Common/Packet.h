@@ -316,4 +316,13 @@ struct PRequestPacket : Packet
 	PRequestPacket() : Packet(COMP_OP::OP_REQUESTPACKET) { PacketSize = sizeof(PRequestPacket); }
 	PRequestPacket(COMP_OP op) : Packet(COMP_OP::OP_REQUESTPACKET), RequestOp(op) { PacketSize = sizeof(PRequestPacket); }
 };
+
+struct PBreakObject : Packet
+{
+	EBreakType ObjectType;
+	PVector ObjectLocation;
+
+	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EBreakType::Window) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject(EBreakType type) : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type) { PacketSize = sizeof(PBreakObject); }
+};
 #pragma pack(pop)

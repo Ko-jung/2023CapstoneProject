@@ -131,6 +131,13 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PGI, sizeof(PGI));
 		break;
 	}
+	case (int)COMP_OP::OP_BREAKOBJECT:
+	{
+		PBreakObject PBO;
+		MEMCPYBUFTOPACKET(PBO);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PBO, sizeof(PBO));
+		break;
+	}
 	default:
 		LogUtil::PrintLog("PacketMgr::ProcessPacket p->PacketType is DEFAULT");
 		break;

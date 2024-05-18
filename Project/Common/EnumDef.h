@@ -36,6 +36,7 @@ enum class COMP_OP : BYTE
 	OP_BUILDINGINFO,
 	OP_REQUESTPACKET,
 	OP_FINISHGAME,
+	OP_BREAKOBJECT,
 
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,
@@ -150,4 +151,9 @@ enum class EItemRareLevel : BYTE
 	Rare,
 	Legend,
 	COUNT
+};
+
+enum class EBreakType : BYTE
+{
+	Window,
 };

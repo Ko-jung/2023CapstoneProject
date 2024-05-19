@@ -96,7 +96,6 @@ void UJetpackComponent::OnLandJetpack()
 	SetFuel(MaxJetpackFuel);
 	SetHoveringMode(false);
 
-	OwnerCharacter->GetAnimInstance()->bIsDescent = false;
 }
 
 
@@ -351,7 +350,6 @@ void UJetpackComponent::DoDescent()
 		CharacterMovementComponent->GravityScale = 1.0f;
 		UE_LOG(LogTemp, Warning, TEXT("ctrl 키 눌림"));
 
-		OwnerCharacter->GetAnimInstance()->bIsDescent = true;	
 			
 	}
 }

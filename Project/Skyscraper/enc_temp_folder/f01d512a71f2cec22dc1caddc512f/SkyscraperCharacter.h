@@ -13,10 +13,8 @@
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "Skyscraper/Enum/ESkillActor.h"
 #include "Skyscraper/Enum/ESwapWeapon.h"
-#include "Skyscraper/MainGame/Animation/SkyscraperAnimInstance.h"
 #include "SkyscraperCharacter.generated.h"
 
-class USkyscraperAnimInstance;
 class UJetpackComponent;
 class UHealthComponent;
 class UMainRangeComponent;
@@ -89,7 +87,8 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 		FORCEINLINE bool GetIsMoveDiagonally() { return bIsMoveDiagonally; }
 
-	FORCEINLINE TObjectPtr<USkyscraperAnimInstance> GetAnimInstance() const { return Cast<USkyscraperAnimInstance>(GetMesh()->GetAnimInstance()); }
+	UFUNCTION()
+		FORCEINLINE TSubclassOf<UAnimInstance> GetAnimInstanceClass() const { return AnimInstanceClass; }
 
 	// 2019180016
 public:
@@ -177,6 +176,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Boost")
 		USkeletalMeshComponent* BoostMesh;
 
+	UPROPERTY()
+		TSubclassOf<UAnimInstance> AnimInstanceClass;
 
 private:
 	/** Camera boom positioning the camera behind the character */

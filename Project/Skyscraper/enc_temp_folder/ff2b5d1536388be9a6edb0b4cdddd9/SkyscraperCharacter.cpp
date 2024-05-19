@@ -91,6 +91,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Assassin/ABP_Assassin.ABP_Assassin_C'"));
 		GetMesh()->SetAnimClass(AnimBPAsset.Class);
 
+		AnimInstanceClass = AnimBPAsset.Class;
 	}
 
 	{// 부스터 메쉬 추가

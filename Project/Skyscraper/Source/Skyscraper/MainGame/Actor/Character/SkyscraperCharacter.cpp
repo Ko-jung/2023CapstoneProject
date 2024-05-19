@@ -63,12 +63,15 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 125.0f));
+	{// Create a camera boom (pulls in towards the player if there is a collision)
+		CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+		CameraBoom->SetupAttachment(RootComponent);
+		CameraBoom->TargetArmLength = 350.0f; // The camera follows at this distance behind the character	
+		CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 85.0f));
+	}
+	
+	
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));

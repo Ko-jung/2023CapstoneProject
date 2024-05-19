@@ -147,6 +147,8 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 			GetOwnerCharacterMovement()->GravityScale = 0.0f;
 			GetOwnerCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 			GetOwnerCharacterMovement()->MaxAcceleration = 50000.0f;
+
+			OwnerCharacter->GetAnimInstance()->bIsDescent = false;
 		}
 	}
 	else   // bHover == false
@@ -276,6 +278,8 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 	if (JetpackFuel < 0.1f) return;
 	// 중력 없애기
 	GetOwnerCharacterMovement()->GravityScale = 0.0f;
+
+	OwnerCharacter->GetAnimInstance()->bIsDescent = false;
 
 	// 액터 위치 살짝 올린 뒤 이동(바로 땅에 닿인상태에서 진행시 바로 내려오는 현상 수정)
 	OwnerCharacter->SetActorLocation(OwnerCharacter->GetActorLocation() + FVector(0.0f, 0.0f, 3.0f));

@@ -42,7 +42,9 @@ public:
 	void ProcessSpawnItem(PSpawnItem PSI);
 	void ProcessUseItem(PUseItem PUI);
 	void ProcessGetItem(PGetItem PGI);
+
 	void GetHexagonTileOnLevel();
+	void GetWindowsOnLevel();
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();

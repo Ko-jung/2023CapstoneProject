@@ -28,6 +28,11 @@
 // Minimap
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 
+// Windows Array
+#include "EngineUtils.h"
+#include "Components/StaticMeshComponent.h"
+#include ""
+
 void AMainGameMode::BeginPlay()
 {
 	GetHexagonTileOnLevel();
@@ -39,6 +44,7 @@ void AMainGameMode::BeginPlay()
 	{
 		// Super::BeginPlay();
 		HexagonTile->Init();
+		GetWindowsOnLevel();
 		return;
 	}
 	PlayerSelectInfo = instance->GetSelectInfo();
@@ -115,6 +121,7 @@ void AMainGameMode::ProcessFunc()
 			PBuildingInfo PBI;
 			memcpy(&PBI, packet, sizeof(PBI));
 			ProcessBuildingInfo(&PBI);
+			GetWindowsOnLevel();
 			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_BUILDINGINFO"));
 			break;
 		}
@@ -521,6 +528,32 @@ void AMainGameMode::GetHexagonTileOnLevel()
 	}
 
 	HexagonTile = Hexagon;
+}
+
+void AMainGameMode::GetWindowsOnLevel()
+{
+	// UStaticMeshComponent를 담을 배열을 선언합니다.
+	TArray<UStaticMeshComponent*> FoundMeshComponents;
+
+	// 레벨에 있는 모든 Actor를 찾습니다.
+	for (TActorIterator<ASingleBuildingFloor> It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+
+		// Actor가 가지고 있는 모든 UStaticMeshComponent를 찾습니다.
+		TArray<UStaticMeshComponent*> MeshComponents;
+		Actor->GetComponents<UStaticMeshComponent>(MeshComponents);
+
+		// 원하는 조건에 맞는 UStaticMeshComponent인지 확인합니다.
+		for (UStaticMeshComponent* MeshComponent : MeshComponents)
+		{
+			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("MyMesh"))
+			{
+				// 조건에 맞는 UStaticMeshComponent를 배열에 추가합니다.
+				FoundMeshComponents.Add(MeshComponent);
+			}
+		}
+	}
 }
 
 void AMainGameMode::SendPlayerLocation()

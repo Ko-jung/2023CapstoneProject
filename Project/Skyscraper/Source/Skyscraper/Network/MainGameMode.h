@@ -42,9 +42,11 @@ public:
 	void ProcessSpawnItem(PSpawnItem PSI);
 	void ProcessUseItem(PUseItem PUI);
 	void ProcessGetItem(PGetItem PGI);
+	void ProcessBreakObject(PBreakObject PBO);
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();
+	UStaticMeshComponent* GetStaticMeshComponent(FVector Location, EBreakType BreakType);
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();
@@ -54,6 +56,7 @@ public:
 	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
 	void SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	void SendGetItem(const AActor* Sender, const AActor* Item);
+	void SendBreakObject(const AActor* Sender, const AActor* BreakTarget, EBreakType BreakType);
 
 	int GetIndex(const AActor* target);
 
@@ -100,4 +103,6 @@ private:
 	int TileDropLevel;
 
 	class ASkyscraperPlayerController* PlayerController;
+
+	TArray<UStaticMeshComponent*> WindowMeshComponents;
 };

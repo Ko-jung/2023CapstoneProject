@@ -270,10 +270,9 @@ void AMainGameMode::ProcessFunc()
 		}
 		case (BYTE)COMP_OP::OP_BREAKOBJECT:
 		{
-			// Find Windows using LOCATION
-
-			// Break Window
-
+			PBreakObject PBO;
+			memcpy(&PBO, packet, sizeof(PBO));
+			ProcessBreakObject(PBO);
 			break;
 		}
 		default:
@@ -518,6 +517,16 @@ void AMainGameMode::ProcessGetItem(PGetItem PGI)
 	//PlayerController->UpdateImage(PGI.)
 }
 
+void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
+{
+	// Find Windows using LOCATION
+	FVector ObjectLocation{ PBO.ObjectLocation.X, PBO.ObjectLocation.Y,PBO.ObjectLocation.Z };
+	UStaticMeshComponent* TargetObject = GetStaticMeshComponent(ObjectLocation, PBO.ObjectType);
+
+	// Break Window
+
+}
+
 void AMainGameMode::GetHexagonTileOnLevel()
 {
 	AHexagonTile* Hexagon = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
@@ -532,28 +541,44 @@ void AMainGameMode::GetHexagonTileOnLevel()
 
 void AMainGameMode::GetWindowsOnLevel()
 {
-	// UStaticMeshComponent를 담을 배열을 선언합니다.
-	TArray<UStaticMeshComponent*> FoundMeshComponents;
-
-	// 레벨에 있는 모든 Actor를 찾습니다.
 	for (TActorIterator<ASingleBuildingFloor> It(GetWorld()); It; ++It)
 	{
-		AActor* Actor = *It;
+		ASingleBuildingFloor* SingleBuildingFloor = *It;
 
-		// Actor가 가지고 있는 모든 UStaticMeshComponent를 찾습니다.
 		TArray<UStaticMeshComponent*> MeshComponents;
-		Actor->GetComponents<UStaticMeshComponent>(MeshComponents);
+		SingleBuildingFloor->GetComponents<UStaticMeshComponent>(MeshComponents);
 
-		// 원하는 조건에 맞는 UStaticMeshComponent인지 확인합니다.
+		// Find Window
 		for (UStaticMeshComponent* MeshComponent : MeshComponents)
 		{
 			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_3_window"))
 			{
-				// 조건에 맞는 UStaticMeshComponent를 배열에 추가합니다.
-				FoundMeshComponents.Add(MeshComponent);
+				WindowMeshComponents.Add(MeshComponent);
 			}
 		}
 	}
+}
+
+UStaticMeshComponent* AMainGameMode::GetStaticMeshComponent(FVector Location, EBreakType BreakType)
+{
+	switch (BreakType)
+	{
+	case EBreakType::Window:
+	{
+		for (UStaticMeshComponent* StaticMeshComponent : WindowMeshComponents)
+		{
+			FVector ComponentLocation = StaticMeshComponent->GetComponentLocation();
+			if (FVector::Dist(Location, ComponentLocation) < 25.f)
+			{
+				return StaticMeshComponent;
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return nullptr;
 }
 
 void AMainGameMode::SendPlayerLocation()
@@ -682,6 +707,17 @@ void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 		PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
 		m_Socket->Send(&PGI, sizeof(PGI));
 	}
+}
+
+void AMainGameMode::SendBreakObject(const AActor* Sender, const AActor* BreakTarget, EBreakType BreakType)
+{
+	if (Sender != Characters[SerialNum]) return;
+
+	PBreakObject PBO(BreakType);
+	FVector TargetLocation = BreakTarget->GetActorLocation();
+	PBO.ObjectLocation = TargetLocation;
+
+	m_Socket->Send(&PBO, sizeof(PBO));
 }
 
 int AMainGameMode::GetIndex(const AActor* target)

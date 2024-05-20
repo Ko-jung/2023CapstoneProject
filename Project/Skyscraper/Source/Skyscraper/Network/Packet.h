@@ -25,6 +25,9 @@ struct PVector
 	float Z;
 	PVector() { X = Y = Z = 0.f; }
 	PVector(float x, float y, float z) { X = x; Y = y; Z = z; }
+
+	// Unreal Code
+	PVector(FVector vector) { X = vector.X; Y = vector.Y; Z = vector.Z; }
 };
 
 #pragma pack(push, 1)

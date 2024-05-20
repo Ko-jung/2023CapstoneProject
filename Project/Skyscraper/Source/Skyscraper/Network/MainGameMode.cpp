@@ -31,7 +31,7 @@
 // Windows Array
 #include "EngineUtils.h"
 #include "Components/StaticMeshComponent.h"
-#include ""
+#include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -547,7 +547,7 @@ void AMainGameMode::GetWindowsOnLevel()
 		// 원하는 조건에 맞는 UStaticMeshComponent인지 확인합니다.
 		for (UStaticMeshComponent* MeshComponent : MeshComponents)
 		{
-			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("MyMesh"))
+			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_3_window"))
 			{
 				// 조건에 맞는 UStaticMeshComponent를 배열에 추가합니다.
 				FoundMeshComponents.Add(MeshComponent);

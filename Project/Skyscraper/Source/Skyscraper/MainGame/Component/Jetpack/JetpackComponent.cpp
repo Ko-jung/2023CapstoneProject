@@ -363,9 +363,9 @@ void UJetpackComponent::DoDescent()
 void UJetpackComponent::AddInputMappingContext()
 {
 	{// == UI 연결하기
-		if (GetOwnerPlayerController())
+		if (OwnerCharacter && OwnerCharacter->GetPlayerController())
 		{
-			JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(GetOwnerPlayerController(), JetpackWidgetClass));
+			JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(OwnerCharacter->GetPlayerController(), JetpackWidgetClass));
 			JetpackWidget->AddToViewport();
 		}
 

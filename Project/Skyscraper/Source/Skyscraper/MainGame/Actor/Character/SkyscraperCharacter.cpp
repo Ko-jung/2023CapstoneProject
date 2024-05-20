@@ -14,6 +14,7 @@
 #include "Components/InputComponent.h"
 #include <MotionWarpingComponent.h>
 
+#include "EnhancedPlayerInput.h"
 #include "PlayMontageCallbackProxy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Actor/LootingItem/LootingItemActor.h"
@@ -24,6 +25,7 @@
 #include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
 
 #include "../../../Network/MainGameMode.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -119,6 +121,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ItemUsingRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefault_ItemUsing.IA_GameDefault_ItemUsing'"));
 		IA_ItemUsing = IA_ItemUsingRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ObserveModeRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefault_ObserveMode.IA_GameDefault_ObserveMode'"));
+		IA_ObserveMode = IA_ObserveModeRef.Object;
 	}		 
 
 	{ // == Set components
@@ -192,6 +197,11 @@ void ASkyscraperCharacter::Landed(const FHitResult& Hit)
 	Super::Landed(Hit);
 	 
 	JetpackComponent->OnLandJetpack();
+}
+
+ASkyscraperPlayerController* ASkyscraperCharacter::GetPlayerController() const
+{
+	return Cast<ASkyscraperPlayerController>(GetController()); 
 }
 
 float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -448,6 +458,8 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// 아이템 상호작용
 		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
 		EnhancedInputComponent->BindAction(IA_ItemUsing, ETriggerEvent::Started, this, &ASkyscraperCharacter::UseItem);
+		EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Started, this, &ASkyscraperCharacter::StartObserveMode);
+		EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Completed, this, &ASkyscraperCharacter::EndObserveMode);
 	}
 	else
 	{
@@ -552,4 +564,14 @@ void ASkyscraperCharacter::UseItem()
 		OwningItem.Key = EItemEffect::EIE_NONE;
 		OwningItem.Value = EItemRareLevel::EIRL_NONE;
 	}
+}
+
+void ASkyscraperCharacter::StartObserveMode()
+{
+	GetPlayerController()->SetObserveMode(true);
+}
+
+void ASkyscraperCharacter::EndObserveMode()
+{
+	GetPlayerController()->SetObserveMode(false);
 }

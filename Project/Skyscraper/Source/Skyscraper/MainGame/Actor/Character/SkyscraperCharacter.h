@@ -16,6 +16,7 @@
 #include "Skyscraper/MainGame/Animation/SkyscraperAnimInstance.h"
 #include "SkyscraperCharacter.generated.h"
 
+class ASkyscraperPlayerController;
 class USkyscraperAnimInstance;
 class UJetpackComponent;
 class UHealthComponent;
@@ -42,7 +43,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
-	FORCEINLINE APlayerController* GetPlayerController() const { return Cast<APlayerController>(GetController()); }
+	ASkyscraperPlayerController* GetPlayerController() const;
 
 	// == Take Damage
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
@@ -127,6 +128,9 @@ protected:
 	void ItemInteraction();
 	// 아이템 사용
 	void UseItem();
+	// ObserveMode로 변경
+	void StartObserveMode();
+	void EndObserveMode();
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -228,9 +232,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* LookAction;
 
-	// 제트팩 WW/AA/SS/DD 회피 Input Action
+	/** ObserveMode Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		UInputAction* IA_Jetpack_Dodge;
+		UInputAction* IA_ObserveMode;
+
 
 	// 아이템 상호작용 Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))

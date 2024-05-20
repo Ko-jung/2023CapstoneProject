@@ -172,6 +172,7 @@ void UMainRangeComponent::RemoveThisWeapon()
 
 void UMainRangeComponent::PlayFireAnim()
 {
+	if (!OwnerCharacter->InputEnabled()) return;
 	if (!CanFire()) return;
 	UE_LOG(LogTemp, Warning, TEXT("이때가 키 눌리기고, %f %f"),CurrentFireCoolTime,FireMaxCoolTime);
 	 

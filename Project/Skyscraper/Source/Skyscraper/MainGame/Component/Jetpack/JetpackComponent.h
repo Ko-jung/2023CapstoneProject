@@ -143,8 +143,6 @@ protected:
 
 protected:
 	UFUNCTION()
-	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return OwnerCharacter->GetPlayerController(); }
-	UFUNCTION()
 	FORCEINLINE UCharacterMovementComponent* GetOwnerCharacterMovement() const { return OwnerCharacter->GetCharacterMovement(); }
 
 

@@ -22,12 +22,12 @@ URPGComponent::URPGComponent()
 	RecoilTime = 0.1f;
 	RecoilSpeed = 20.0f;
 
-	{ // ÃÑ¾Ë ¿¡¼Â ·Îµås
+	{ // ì´ì•Œ ì—ì…‹ ë¡œë“œs
 		static ConstructorHelpers::FClassFinder<ARPGBullet> RPGBulletBPRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/BP_RPGBullet.BP_RPGBullet_C'"));
 		RPGBulletBPClass = RPGBulletBPRef.Class;
 	}
 	
-	{ // ¹«±â ¿¡¼Â ·Îµå 
+	{ // ë¬´ê¸° ì—ì…‹ ë¡œë“œ 
 		WeaponSocketName = TEXT("RPGSocket");
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> RPGSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/gun/rpg.rpg'"));
 		WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RPG Weapon"));
@@ -41,6 +41,7 @@ URPGComponent::URPGComponent()
 
 void URPGComponent::Fire(float fBaseDamage)
 {
+	if (!OwnerCharacter->InputEnabled()) return;
 	if (!GetOwnerPlayerController()) return;
 
 	UseBullet();

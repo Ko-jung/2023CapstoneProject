@@ -87,6 +87,32 @@ void ASkyscraperPlayerController::AddGameResultWidget(const FText& WinnerText)
 	}
 }
 
+void ASkyscraperPlayerController::SetObserveMode(bool bToObserveMode)
+{
+	if(bToObserveMode)
+	{
+		if (PossessingPawn->GetAnimInstance() && PossessingPawn->GetAnimInstance()->IsAnyMontagePlaying()) return;
+
+		PossessingPawn->bUseControllerRotationYaw = false;
+		SetCanLookInput(true);
+		PossessingPawn->DisableInput(this);
+		LastRotator = GetControlRotation();
+	}
+	else
+	{
+		if (!bCanLookInput) return;
+
+		SetControlRotation(LastRotator);
+		LastRotator = FRotator{};
+
+		PossessingPawn->bUseControllerRotationYaw = true;
+		SetCanLookInput(false);
+		PossessingPawn->EnableInput(this);
+
+	}
+
+}
+
 void ASkyscraperPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -117,10 +143,18 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 	// if (bCanLookInput && !(Cast<ASkyscraperCharacter>(GetOwner())->InputEnabled()))
 	if(bCanLookInput && PossessingPawn && !PossessingPawn->InputEnabled())
 	{
-		FVector2D MouseDeltaValue{};
-		GetInputMouseDelta(MouseDeltaValue.X, MouseDeltaValue.Y);
-		
-		SetControlRotation(GetControlRotation().Add(MouseDeltaValue.Y,MouseDeltaValue.X, 0.0f));
+		if(IsInputKeyDown(EKeys::LeftAlt))
+		{
+			FVector2D MouseDeltaValue{};
+			GetInputMouseDelta(MouseDeltaValue.X, MouseDeltaValue.Y);
+
+			SetControlRotation(GetControlRotation().Add(MouseDeltaValue.Y, MouseDeltaValue.X, 0.0f));
+		}
+		else
+		{
+			SetObserveMode(false);
+			UE_LOG(LogTemp, Warning, TEXT("놨음"));
+		}
 	}
 
 }

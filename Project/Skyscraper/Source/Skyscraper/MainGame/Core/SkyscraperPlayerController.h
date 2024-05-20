@@ -26,6 +26,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE void SetCanLookInput(bool NewCanLookInput) { bCanLookInput = NewCanLookInput; }
+	UFUNCTION(BlueprintCallable)
+		FORCEINLINE bool GetCanLookInput() const { return bCanLookInput; }
+
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UTimeAndKillCountWidget* GetTimeAndKillCountWidget() const { return TimeAndKillCountWidget; }
@@ -43,6 +46,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddGameResultWidget(const FText& WinnerText);
+
+	UFUNCTION()
+		void SetObserveMode(bool bToObserveMode);
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -87,4 +93,6 @@ protected:
 		bool bCanLookInput = false;
 
 private:
+	UPROPERTY()
+		FRotator LastRotator;
 };

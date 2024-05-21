@@ -56,7 +56,7 @@ public:
 	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
 	void SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	void SendGetItem(const AActor* Sender, const AActor* Item);
-	void SendBreakObject(const AActor* Sender, const AActor* BreakTarget, EBreakType BreakType);
+	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType);
 
 	int GetIndex(const AActor* target);
 

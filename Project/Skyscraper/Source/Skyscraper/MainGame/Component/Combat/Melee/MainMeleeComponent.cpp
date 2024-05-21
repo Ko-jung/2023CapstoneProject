@@ -254,10 +254,20 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 			UniqueOutHits.Add(&HitResult);
 		}
 	}
-	
+
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+
 	bool bDoHitLag = false;
 	for(FHitResult* HitResult : UniqueOutHits)
 	{
+		UPrimitiveComponent* PrimitiveComponent = HitResult->GetComponent();
+		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
+			&& PrimitiveComponent->GetName().StartsWith("Window_"))
+		{
+			if(GameMode)
+				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+		}
+
 		AActor* HitActor = HitResult->GetActor();
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 
@@ -283,7 +293,6 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 		//UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
 		
 		// Execute on Sever
-		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
 		if (GameMode)
 		{
 			GameMode->SendTakeDamage(OwnerCharacter, HitActor);

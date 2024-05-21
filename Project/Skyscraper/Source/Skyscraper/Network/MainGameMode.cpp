@@ -524,7 +524,12 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 	UStaticMeshComponent* TargetObject = GetStaticMeshComponent(ObjectLocation, PBO.ObjectType);
 
 	// Break Window
-
+	if (!TargetObject)
+	{
+		UE_LOG(LogClass, Warning, TEXT("TargetObject is NULL"));
+		return;
+	}
+	TargetObject->ConditionalBeginDestroy();
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()
@@ -576,7 +581,7 @@ UStaticMeshComponent* AMainGameMode::GetStaticMeshComponent(FVector Location, EB
 		break;
 	}
 	default:
-		break;
+		return nullptr;
 	}
 	return nullptr;
 }
@@ -684,37 +689,43 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 {
 	int TargetSerialNum = GetIndex(Target);
 	if (TargetSerialNum == -1) return;
-	if (Attacker == Characters[SerialNum])
-	{
-		PStunDownState PSDS{ (BYTE)TargetSerialNum, Dirction, StunTime, IsStun };
-		m_Socket->Send(&PSDS, sizeof(PSDS));
-	}
+
+	if (!m_Socket || Characters.IsEmpty() || Attacker != Characters[SerialNum]) return;
+
+	PStunDownState PSDS{ (BYTE)TargetSerialNum, Dirction, StunTime, IsStun };
+	m_Socket->Send(&PSDS, sizeof(PSDS));
 }
 
 void AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
 {
-	if (Sender == Characters[SerialNum])
-	{
-		PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
-		m_Socket->Send(&PUI, sizeof(PUI));
-	}
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+
+	PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
+	m_Socket->Send(&PUI, sizeof(PUI));
 }
 
 void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 {
-	if (Sender == Characters[SerialNum])
-	{
-		PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
-		m_Socket->Send(&PGI, sizeof(PGI));
-	}
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+
+	PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
+	m_Socket->Send(&PGI, sizeof(PGI));
 }
 
-void AMainGameMode::SendBreakObject(const AActor* Sender, const AActor* BreakTarget, EBreakType BreakType)
+void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType)
 {
-	if (Sender != Characters[SerialNum]) return;
+	if (!m_Socket)
+	{
+		PBreakObject PBO;
+		PBO.ObjectType = BreakType;
+		PBO.ObjectLocation = BreakTarget->GetComponentLocation();
+		ProcessBreakObject(PBO);
+	}
+
+	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
 
 	PBreakObject PBO(BreakType);
-	FVector TargetLocation = BreakTarget->GetActorLocation();
+	FVector TargetLocation = BreakTarget->GetComponentLocation();
 	PBO.ObjectLocation = TargetLocation;
 
 	m_Socket->Send(&PBO, sizeof(PBO));

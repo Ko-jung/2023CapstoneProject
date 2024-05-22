@@ -34,6 +34,8 @@ UMainMeleeComponent::UMainMeleeComponent()
 	OwnerAnimInstance = nullptr;
 	OwnerCharacter = nullptr;
 	AnimationMovementDistance = 100.0f;
+	bCanAttack = true;
+	AttackCoolDownTime = 2.0f;
 
 	{ // == Set Input Asset
 		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_MeleeInputRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Combat/Melee/IMC_MainMeleeInput.IMC_MainMeleeInput'"));
@@ -48,6 +50,8 @@ UMainMeleeComponent::UMainMeleeComponent()
 void UMainMeleeComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bCanAttack = true;
 
 	{ // 소유 캐릭터 정보 흭득
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
@@ -69,6 +73,14 @@ void UMainMeleeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	RemoveThisWeapon();
 
 	// == TOOD: Unbind Melee Widget
+}
+
+void UMainMeleeComponent::AttackCoolTimeFunc()
+{
+	UE_LOG(LogTemp, Warning, TEXT("근접 쿨타임 종료"));
+	bCanAttack = true;
+
+	GetWorld()->GetTimerManager().ClearTimer(AttackCoolTimeTimerHandle);
 }
 
 void UMainMeleeComponent::AddInputMappingContext()
@@ -143,8 +155,9 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 		OwnerCharacter->DisableInput(OwnerCharacter->GetPlayerController());
 	}
-		
-	{ // == Play Montage
+
+	// == Play Montage
+	{ 
 		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
 
 		float AttackAnimPlayRate = PlayMontage->GetSectionLength(MeleeComboCount) / AttackTime[MeleeComboCount];
@@ -164,7 +177,18 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 		
 	}
 
-	{ // == Add MeleeComboCount 
+	// == Add MeleeComboCount
+	{ 
+		//최대 콤보 공격 시 쿨타임 설정
+		if(MeleeComboCount == AttackTime.Num()-1)
+		{
+			bCanAttack = false;
+			if(!AttackCoolTimeTimerHandle.IsValid())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("근접 마지막 타격, 쿨타임 시작"));
+				GetWorld()->GetTimerManager().SetTimer(AttackCoolTimeTimerHandle, this, &ThisClass::AttackCoolTimeFunc, 0.1f, false,AttackCoolDownTime);
+			}
+		}
 		MeleeComboCount = (MeleeComboCount + 1) % AttackTime.Num();
 	}
 
@@ -173,36 +197,37 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 
 void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
-	{// 이동 없이 공격 마무리 모션 사용 시 무기 집어넣는 애니메이션 재생을 진행하는데, 해당 애니메이션을 움직일 경우엔 막는 코드
-		
-		if (GetOwnerPlayerController())
-		{
-			// 이동을 하려 한다면,
-			if (GetOwnerPlayerController()->IsInputKeyDown(EKeys::W) ||
-				GetOwnerPlayerController()->IsInputKeyDown(EKeys::A) ||
-				GetOwnerPlayerController()->IsInputKeyDown(EKeys::S) ||
-				GetOwnerPlayerController()->IsInputKeyDown(EKeys::D))
-			{
-				//OwnerAnimInstance->StopAllMontages(0.2f);
-			}
-			else
-			{
-				{ // == Play Montage
-					UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
-					// 해당 몽타쥬의 Blend Out 시간 설정
-					PlayMontage->BlendOut.SetBlendTime(0.2f);
-
-					UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, 1.0f, 0, TEXT("FinishAttack"));
-					//PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
-					OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
-					OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
-
-				}
-			}
-
-		}
-	}
 	OwnerCharacter->EnableInput(OwnerCharacter->GetPlayerController());
+	
+	// 이동 없이 공격 마무리 모션 사용 시 무기 집어넣는 애니메이션 재생을 진행하는데, 해당 애니메이션을 움직일 경우엔 막는 코드
+
+	if (GetOwnerPlayerController())
+	{
+		// 이동을 하려 한다면,
+		if (GetOwnerPlayerController()->IsInputKeyDown(EKeys::W) ||
+			GetOwnerPlayerController()->IsInputKeyDown(EKeys::A) ||
+			GetOwnerPlayerController()->IsInputKeyDown(EKeys::S) ||
+			GetOwnerPlayerController()->IsInputKeyDown(EKeys::D))
+		{
+			//OwnerAnimInstance->StopAllMontages(0.2f);
+		}
+		else
+		{
+			{ // == Play Montage
+				UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
+				// 해당 몽타쥬의 Blend Out 시간 설정
+				PlayMontage->BlendOut.SetBlendTime(0.2f);
+				UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, 1.0f, 0, TEXT("FinishAttack"));
+				//PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
+				OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
+				OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
+			}
+		}
+
+	}
+
+	OwnerCharacter->EnableInput(GetOwnerPlayerController());
+	
 
 	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록
 	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - BufferedInput < 0.2f)
@@ -210,6 +235,7 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 		PlayAttackAnimMontage();
 		return;
 	}
+
 	OwnerCharacter->GetCharacterMovement()->GravityScale = 0.5f;
 	OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
 	LastAttackClickTime = UGameplayStatics::GetTimeSeconds(GetWorld());
@@ -220,6 +246,11 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 
 void UMainMeleeComponent::Attack()
 {
+	if (!bCanAttack) {
+		UE_LOG(LogTemp, Warning, TEXT("근접 쿨타임 중"));
+		return;
+	}
+
 	if(!OwnerAnimInstance->IsAnyMontagePlaying())
 	{
 		// == if attack in 0.5s after last attack, play combo attack // else play 0 attack
@@ -259,6 +290,8 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 			UniqueOutHits.Add(&HitResult);
 		}
 	}
+
+	
 
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
 

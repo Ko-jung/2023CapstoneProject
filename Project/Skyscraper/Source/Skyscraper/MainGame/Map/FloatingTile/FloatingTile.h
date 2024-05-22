@@ -15,51 +15,60 @@ class SKYSCRAPER_API AFloatingTile : public AActor, public ICollapsible
 	GENERATED_BODY()
 	
 public:	
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	AFloatingTile();
 
-	/* SpawnActorDeferred ½Ã Initialize ÇÔ¼ö */
+	/* SpawnActorDeferred ì‹œ Initialize í•¨ìˆ˜ */
 	void Initialize(FVector GetMovementOffset);
 
-	/* BeginPlay½Ã ½ÇÇàµÉ ÇÔ¼ö */
+	/* BeginPlayì‹œ ì‹¤í–‰ë  í•¨ìˆ˜ */
 	void SetInitialSetting();
 
 protected:
 	// Begin Play
 	virtual void BeginPlay() override;
 
-	/* ºÎÀ¯ Å¸ÀÏ static mesh */
+	/* ë¶€ìœ  íƒ€ì¼ static mesh */
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Default")
 		TObjectPtr<UStaticMeshComponent> StaticMesh;
 
-	/** ½ÃÀÛÀ§Ä¡·ÎºÎÅÍ ¿òÁ÷ÀÏ °Å¸® */
+	/** ì‹œì‘ìœ„ì¹˜ë¡œë¶€í„° ì›€ì§ì¼ ê±°ë¦¬ */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default", meta = (ExposeOnSpawn = "true"))
 		FVector MovementOffset;
 
-	/* ÁøÇà ¹æÇâ¿¡ ´ëÇÑ bool */
+	/* ì§„í–‰ ë°©í–¥ì— ëŒ€í•œ bool */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		bool MoveToEnd;
 
-	/* ¼Óµµ */
+	/* ì†ë„ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		double Speed;
 
-	/* ½ÃÀÛ À§Ä¡ */
+	/* ì´ë™ ì‹œê°„ */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
+		float MoveTime;
+
+	/* ëŒ€ê¸° ì‹œê°„ */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
+		float WaitTime;
+
+	/* í˜„ì¬ ì‹œê°„ */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
+		float CurrentTime;
+
+
+	/* ì‹œì‘ ìœ„ì¹˜ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		FVector InitStartLocation;
 
-	/* ¹İ´ëÆí À§Ä¡ */
+	/* ë°˜ëŒ€í¸ ìœ„ì¹˜ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		FVector InitEndLocation;
 
-	/* ÇöÀç ¸ñÇ¥ ÁöÁ¡ */
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
-		FVector TargetLocation;
-
-	//ÀÓ½Ã Å¸ÀÌ¸Ó ÇÚµé
+	//ì„ì‹œ íƒ€ì´ë¨¸ í•¸ë“¤
 	FTimerHandle TimerHandle;
 
-	/* ºØ±« ÈÄ »ı±æ Geometry Collection */
+	/* ë¶•ê´´ í›„ ìƒê¸¸ Geometry Collection */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Geometry")
 		UClass* GC_Tile;
 

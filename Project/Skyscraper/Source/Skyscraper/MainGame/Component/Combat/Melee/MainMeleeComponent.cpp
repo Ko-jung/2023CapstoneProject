@@ -19,7 +19,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
-
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values for this component's properties
@@ -139,6 +139,9 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 		UKismetSystemLibrary::DrawDebugLine(GetWorld(), OwnerCharacter->GetActorLocation(), ArrivePos, FLinearColor::Black, 3.0f, 10.0f);
 
 		OwnerCharacter->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(TEXT("MeleeMovement"), ArrivePos);
+		//OwnerCharacter->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(TEXT("MeleeMovement"), ArrivePos,OwnerCharacter->GetActorRotation());
+
+		OwnerCharacter->DisableInput(OwnerCharacter->GetPlayerController());
 	}
 		
 	{ // == Play Montage
@@ -171,6 +174,7 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
 	{// 이동 없이 공격 마무리 모션 사용 시 무기 집어넣는 애니메이션 재생을 진행하는데, 해당 애니메이션을 움직일 경우엔 막는 코드
+		
 		if (GetOwnerPlayerController())
 		{
 			// 이동을 하려 한다면,
@@ -198,7 +202,8 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 
 		}
 	}
-	
+	OwnerCharacter->EnableInput(OwnerCharacter->GetPlayerController());
+
 	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록
 	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - BufferedInput < 0.2f)
 	{

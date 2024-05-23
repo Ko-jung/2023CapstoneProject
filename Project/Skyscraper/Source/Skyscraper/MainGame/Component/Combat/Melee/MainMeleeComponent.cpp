@@ -302,8 +302,9 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
 			&& PrimitiveComponent->GetName().StartsWith("Window_"))
 		{
-			if(GameMode)
-				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+			PrimitiveComponent->DestroyComponent();
+			//if(GameMode)
+			//	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
 		}
 
 		AActor* HitActor = HitResult->GetActor();
@@ -325,15 +326,16 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 				Cast<ASkyscraperCharacter>(HitActor)->DoStun(OwnerCharacter, fStunTime, OwnerCharacter->GetActorForwardVector());
 			}
 			
-		}
-		
-		// == "This function will only execute on the server" <<= now, just client level
-		//UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+		}		
 		
 		// Execute on Sever
 		if (GameMode)
 		{
-			GameMode->SendTakeDamage(OwnerCharacter, HitActor);
+			if (not GameMode->SendTakeDamage(OwnerCharacter, HitActor))
+			{
+				// == "This function will only execute on the server" <<= now, just client level
+				UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+			}
 		}
 
 		if(HitResult->GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))

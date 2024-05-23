@@ -521,15 +521,15 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 {
 	// Find Windows using LOCATION
 	FVector ObjectLocation{ PBO.ObjectLocation.X, PBO.ObjectLocation.Y,PBO.ObjectLocation.Z };
-	UStaticMeshComponent* TargetObject = GetStaticMeshComponent(ObjectLocation, PBO.ObjectType);
+	UStaticMeshComponent* TargetObject = GetStaticMeshComponentByLocation(ObjectLocation, PBO.ObjectType);
 
-	// Break Window
+	// Break Window 
 	if (!TargetObject)
 	{
 		UE_LOG(LogClass, Warning, TEXT("TargetObject is NULL"));
 		return;
 	}
-	TargetObject->ConditionalBeginDestroy();
+	TargetObject->DestroyComponent();
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()
@@ -564,7 +564,7 @@ void AMainGameMode::GetWindowsOnLevel()
 	}
 }
 
-UStaticMeshComponent* AMainGameMode::GetStaticMeshComponent(FVector Location, EBreakType BreakType)
+UStaticMeshComponent* AMainGameMode::GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType)
 {
 	switch (BreakType)
 	{
@@ -661,16 +661,17 @@ void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMo
 	Send(&PCAM, sizeof(PCAM));
 }
 
-void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
+bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 {
-	if (Sender != Characters[SerialNum])
+
+	if (!m_Socket || Sender != Characters[SerialNum])
 	{
 		UE_LOG(LogClass, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
-		return;
+		return false;
 	}
 
 	int i = GetIndex(Target);
-	if (i == -1) return;
+	if (i == -1) return false;
 
 	ESwapWeapon weaponType;
 	uint8 equippedWeapon;
@@ -683,6 +684,7 @@ void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 
 	m_Socket->Send(&PDP, sizeof(PDP));
 	UE_LOG(LogClass, Warning, TEXT("Send Weapon Damage"));
+	return true;
 }
 
 void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)
@@ -711,7 +713,7 @@ void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 	PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
 	m_Socket->Send(&PGI, sizeof(PGI));
 }
-
+   
 void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType)
 {
 	if (!m_Socket)

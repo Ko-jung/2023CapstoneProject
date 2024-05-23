@@ -520,15 +520,17 @@ void AMainGameMode::ProcessGetItem(PGetItem PGI)
 void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 {
 	// Find Windows using LOCATION
-	FVector ObjectLocation{ PBO.ObjectLocation.X, PBO.ObjectLocation.Y,PBO.ObjectLocation.Z };
-	UStaticMeshComponent* TargetObject = GetStaticMeshComponentByLocation(ObjectLocation, PBO.ObjectType);
+	//FVector ObjectLocation{ PBO.ObjectLocation.X, PBO.ObjectLocation.Y,PBO.ObjectLocation.Z };
+	UStaticMeshComponent* TargetObject = WindowMeshComponents[PBO.ObjectSerial];
 
-	// Break Window 
 	if (!TargetObject)
 	{
 		UE_LOG(LogClass, Warning, TEXT("TargetObject is NULL"));
 		return;
 	}
+
+	UE_LOG(LogClass, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
+	// Break Window 
 	TargetObject->DestroyComponent();
 }
 
@@ -564,27 +566,37 @@ void AMainGameMode::GetWindowsOnLevel()
 	}
 }
 
-UStaticMeshComponent* AMainGameMode::GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType)
+int AMainGameMode::GetWindowsIndex(const UPrimitiveComponent* Target)
 {
-	switch (BreakType)
+	for (int i = 0; i < WindowMeshComponents.Num(); i++)
 	{
-	case EBreakType::Window:
-	{
-		for (UStaticMeshComponent* StaticMeshComponent : WindowMeshComponents)
-		{
-			FVector ComponentLocation = StaticMeshComponent->GetComponentLocation();
-			if (FVector::Dist(Location, ComponentLocation) < 25.f)
-			{
-				return StaticMeshComponent;
-			}
-		}
-		break;
+		if (WindowMeshComponents[i] == Target)
+			return i;
 	}
-	default:
-		return nullptr;
-	}
-	return nullptr;
+	return -1;
 }
+
+//UStaticMeshComponent* AMainGameMode::GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType)
+//{
+//	switch (BreakType)
+//	{
+//	case EBreakType::Window:
+//	{
+//		for (UStaticMeshComponent* StaticMeshComponent : WindowMeshComponents)
+//		{
+//			FVector ComponentLocation = StaticMeshComponent->GetComponentLocation();
+//			if (FVector::Dist(Location, ComponentLocation) < 25.f)
+//			{
+//				return StaticMeshComponent;
+//			}
+//		}
+//		break;
+//	}
+//	default:
+//		return nullptr;
+//	}
+//	return nullptr;
+//}
 
 void AMainGameMode::SendPlayerLocation()
 {
@@ -719,17 +731,16 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 	if (!m_Socket)
 	{
 		PBreakObject PBO;
+		int WindowIndex = GetWindowsIndex(BreakTarget);
 		PBO.ObjectType = BreakType;
-		PBO.ObjectLocation = BreakTarget->GetComponentLocation();
+		PBO.ObjectSerial = WindowIndex;
 		ProcessBreakObject(PBO);
 	}
 
 	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
 
-	PBreakObject PBO(BreakType);
-	FVector TargetLocation = BreakTarget->GetComponentLocation();
-	PBO.ObjectLocation = TargetLocation;
-
+	int WindowIndex = GetWindowsIndex(BreakTarget);
+	PBreakObject PBO(BreakType, WindowIndex);
 	m_Socket->Send(&PBO, sizeof(PBO));
 }
 

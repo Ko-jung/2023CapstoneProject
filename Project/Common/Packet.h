@@ -320,9 +320,9 @@ struct PRequestPacket : Packet
 struct PBreakObject : Packet
 {
 	EBreakType ObjectType;
-	PVector ObjectLocation;
+	WORD ObjectSerial;
 
-	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EBreakType::Window) { PacketSize = sizeof(PBreakObject); }
-	PBreakObject(EBreakType type) : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EBreakType::Window), ObjectSerial(0) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject(EBreakType type, WORD WindowSerial) : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial) { PacketSize = sizeof(PBreakObject); }
 };
 #pragma pack(pop)

@@ -46,7 +46,8 @@ public:
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();
-	UStaticMeshComponent* GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType);
+	int GetWindowsIndex(const UPrimitiveComponent* Target);
+	//UStaticMeshComponent* GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType);
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();

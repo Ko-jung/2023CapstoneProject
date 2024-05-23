@@ -302,9 +302,9 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
 			&& PrimitiveComponent->GetName().StartsWith("Window_"))
 		{
-			PrimitiveComponent->DestroyComponent();
-			//if(GameMode)
-			//	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+			//PrimitiveComponent->DestroyComponent();
+			if(GameMode)
+			 	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
 		}
 
 		AActor* HitActor = HitResult->GetActor();

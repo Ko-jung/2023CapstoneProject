@@ -526,14 +526,16 @@ void ASkyscraperCharacter::Look(const FInputActionValue& Value)
 
 void ASkyscraperCharacter::ItemInteraction()
 {
-
-
-	// 월드 내 오브젝트 중 아이템 액터 찾기
-	// 다만, 월드 내 모든 오브젝트에 대해서 탐색하는 것이므로 굳이 런타임중 0~3개 만 존재하는 액터에 대해서
-	// GetAllActorsOfClass 를 하는 것은 매우 비효율 적일 것으로 예상되므로
-	// 다른 방법을 찾아보기 (노션 탐구)
 	TArray<AActor*> ItemActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALootingItemActor::StaticClass(), ItemActors);
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALootingItemActor::StaticClass(), ItemActors);
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+	
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 100.0f, ObjectTypes, nullptr, ActorsToIgnore, ItemActors);
 
 	// C++ 인터페이스 함수 실행
 	for(AActor* ItemActor : ItemActors)

@@ -530,8 +530,17 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 	}
 
 	UE_LOG(LogClass, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
+
 	// Break Window 
-	TargetObject->DestroyComponent();
+	ASingleBuildingFloor* SBFloor = Cast<ASingleBuildingFloor>(TargetObject->GetOwner());
+	if (!SBFloor)
+	{
+		UE_LOG(LogClass, Warning, TEXT("SBFloor is nullptr"));
+		return;
+	}
+
+	SBFloor->DoCollapseWindow(TargetObject);
+	//TargetObject->DestroyComponent();
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()
@@ -735,6 +744,7 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 		PBO.ObjectType = BreakType;
 		PBO.ObjectSerial = WindowIndex;
 		ProcessBreakObject(PBO);
+		return;
 	}
 
 	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;

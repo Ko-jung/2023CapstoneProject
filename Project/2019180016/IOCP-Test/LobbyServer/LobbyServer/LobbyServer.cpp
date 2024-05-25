@@ -23,7 +23,11 @@ bool LobbyServer::Init(const int WorkerNum)
 		error_display(WSAGetLastError());
 		return false;
 	}
-	m_iWorkerNum = WorkerNum - 2;
+
+	if (WorkerNum > 2)
+		m_iWorkerNum = WorkerNum - 2;
+	else
+		m_iWorkerNum = 1;
 
 	m_GameServerSocket = new LobbyClientInfo();
 	m_GameServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));

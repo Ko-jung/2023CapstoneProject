@@ -3,6 +3,7 @@
 
 #include "SingleBuildingFloor.h"
 
+#include "GeometryCollection/GeometryCollectionActor.h"
 
 
 // Sets default values
@@ -18,6 +19,15 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 
 	ConstructorHelpers::FClassFinder<AActor> GC_BuildingRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/BP_GC_Building.BP_GC_Building_C'"));
 	GC_BuildingClass = GC_BuildingRef.Class;
+
+	for (int i = 0; i < 6; i++)
+	{
+		FString NewGCWindowString = "GC_map_3_window_00";
+		FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "'";
+		//                  /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
+		ConstructorHelpers::FClassFinder<UStaticMesh> GC_WindowRef(*FilePath);
+		GC_WindowClass.Add(GC_WindowRef.Class);
+	}
 }
 
 
@@ -49,6 +59,45 @@ void ASingleBuildingFloor::DoCollapse()
 	Destroy();
 }
 
+
+void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
+{
+	for (const auto& pWindow : WindowStaticMeshes)
+	{
+		if (pWindow == Target)
+		{
+			// /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
+
+			FString WindowString = pWindow->GetName();
+			int Index = (*WindowString.rbegin());
+
+			FTransform Transform{ pWindow->GetComponentRotation(), pWindow->GetComponentLocation() };
+			auto NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AGeometryCollectionActor>(GC_WindowClass[Index], Transform);
+			if (NewGCWindowMesh)
+			{
+				NewGCWindowMesh->SetActorLocation(GetActorLocation());
+				NewGCWindowMesh->SetActorRotation(GetActorRotation());
+				NewGCWindowMesh->FinishSpawning(Transform);
+			}
+			pWindow->DestroyComponent();
+			
+
+			//FString NewGCWindowString = FString("GC_") + WindowString;
+			//FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2016180016/FractureMesh/" + NewGCWindowString + "." + NewGCWindowString + "'";
+			//
+			//ConstructorHelpers::FObjectFinder<AGeometryCollectionActor>WindowMeshRef(*FilePath);
+			//if (WindowMeshRef.Succeeded())
+			//{
+			//}
+			//else
+			//{
+			//	UE_LOG(LogClass, Warning, TEXT("WindowMeshRef Cant find"));
+			//}
+
+			break;
+		}
+	}
+}
 
 // ==========================================================
 // 생성자에서 사용되는 함수

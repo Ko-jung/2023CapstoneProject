@@ -22,7 +22,13 @@ class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 	/* 붕괴 후 생길 Geometry Collection */
 	UPROPERTY()
 		UClass* GC_BuildingClass;
+
+	// ====== 2019180016 ======
+	UPROPERTY()
+	TArray<UClass*> GC_WindowClass;
+	// ========================
 public:
+
 	void CreateFloorStaticMeshes();
 	// Sets default values for this actor's properties
 	ASingleBuildingFloor();
@@ -36,4 +42,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void DoCollapse();
+
+	// ====== 2019180016 ======
+	void DoCollapseWindow(UStaticMeshComponent* Target);
+	// ========================
 };

@@ -525,6 +525,18 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 
 	// Break Window
 
+	UE_LOG(LogClass, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
+
+	// Break Window 
+	ASingleBuildingFloor* SBFloor = Cast<ASingleBuildingFloor>(TargetObject->GetOwner());
+	if (!SBFloor)
+	{
+		UE_LOG(LogClass, Warning, TEXT("SBFloor is nullptr"));
+		return;
+	}
+
+	SBFloor->DoCollapseWindow(TargetObject);
+	//TargetObject->DestroyComponent();
 }
 
 void AMainGameMode::GetHexagonTileOnLevel()

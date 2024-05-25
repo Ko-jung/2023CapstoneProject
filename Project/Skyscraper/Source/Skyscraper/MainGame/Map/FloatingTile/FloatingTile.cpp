@@ -14,7 +14,7 @@ AFloatingTile::AFloatingTile()
  	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = true;
 
-	// static mesh ø°º¬ ∑ŒµÂ
+	// static mesh ÏóêÏÖã Î°úÎìú
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> TileAsset(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_tile.map_3_tile'"));
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FloatingTile"));
 	SetRootComponent(StaticMesh);
@@ -31,13 +31,18 @@ void AFloatingTile::Initialize(FVector GetMovementOffset)
 
 void AFloatingTile::SetInitialSetting()
 {
-	// √ ±‚∞™ º≥¡§
+	// Ï¥àÍ∏∞Í∞í ÏÑ§Ï†ï
 	Speed = UKismetMathLibrary::RandomFloatInRange(0.5, 0.7);
+
+	MoveTime = UKismetMathLibrary::RandomFloatInRange(4.0, 7.0);
+	WaitTime = UKismetMathLibrary::RandomFloatInRange(1.0, 2.0);
+
+	CurrentTime = 0.0f;
 
 	SetActorLocation(GetActorLocation() + FVector(0.0f, 0.0f, -1000.0f));
 
 	InitStartLocation = GetActorLocation();
-	TargetLocation = InitEndLocation = GetActorLocation() + MovementOffset;
+	InitEndLocation = GetActorLocation() + MovementOffset;
 	MoveToEnd = true;
 }
 
@@ -53,38 +58,50 @@ void AFloatingTile::BeginPlay()
 void AFloatingTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	FVector ResultLoc{};
 
-	// ¿ßƒ° interpolation
-	FVector ResultLoc = UKismetMathLibrary::VInterpTo(
-		GetActorLocation(),
-		TargetLocation,
-		DeltaTime,
-		Speed
-	);
+	CurrentTime += DeltaTime;
+	
+	// ÏúÑÏπò interpolation
+	if(MoveToEnd)
+	{
+		// ÏúÑÏπò interpolation
+		ResultLoc = FMath::Lerp(
+			InitStartLocation,
+			InitEndLocation,
+			FMath::Min(1.0f, CurrentTime / MoveTime)
+		);
+	}
+	else
+	{
+		
+		ResultLoc = FMath::Lerp(
+			InitEndLocation,
+			InitStartLocation,
+			FMath::Min(1.0f, CurrentTime / MoveTime)
+		);
+	}
+	
 	SetActorLocation(ResultLoc);
 
-	// µµ¬¯ ¿ßƒ° ∞ËªÍ π◊ µµ¬¯«ﬂ¿ª ∞ÊøÏ π›¥Î∑Œ ¿Ãµø«œµµ∑œ
-	float DistanceToTarget = (TargetLocation - GetActorLocation()).Length();
-
-	if (DistanceToTarget < 50.0f)
+	if (CurrentTime >= MoveTime + WaitTime)
 	{
-		if (MoveToEnd) TargetLocation = InitStartLocation;
-		else TargetLocation = InitEndLocation;
 		MoveToEnd = !MoveToEnd;
+		CurrentTime = 0.0f;
 	}
 
 }
 
 void AFloatingTile::DoCollapse()
 {
-	// 1. tick ¿Ã∫•∆Æ ≤Ù±‚
+	// 1. tick Ïù¥Î≤§Ìä∏ ÎÅÑÍ∏∞
 	SetActorTickEnabled(false);
 
-	// 2. ±‚¡∏ ≈∏¿œ StaticMesh æ¯æ÷±‚
+	// 2. Í∏∞Ï°¥ ÌÉÄÏùº StaticMesh ÏóÜÏï†Í∏∞
 	StaticMesh->SetHiddenInGame(true);
 	StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// 3. GCComp æ◊≈Õ ª˝º∫
+	// 3. GCComp Ïï°ÌÑ∞ ÏÉùÏÑ±
 	AActor* NewGCTileActor = GetWorld()->SpawnActor(GC_Tile);
 	NewGCTileActor->SetActorLocation(GetActorLocation());
 

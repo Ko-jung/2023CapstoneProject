@@ -291,6 +291,11 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		State = ENetworkState::Lobby;
 		break;
 	}
+	case (int)COMP_OP::OP_BREAKOBJECT:
+	{
+		COPYPACKET(PBreakObject);
+		break;
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;

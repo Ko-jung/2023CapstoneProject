@@ -46,17 +46,19 @@ public:
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();
-	UStaticMeshComponent* GetStaticMeshComponent(FVector Location, EBreakType BreakType);
+	int GetWindowsIndex(const UPrimitiveComponent* Target);
+	//UStaticMeshComponent* GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType);
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();
 	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 	void SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage);
-	void SendTakeDamage(AActor* Sender, AActor* Target);
 	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
 	void SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	void SendGetItem(const AActor* Sender, const AActor* Item);
-	void SendBreakObject(const AActor* Sender, const AActor* BreakTarget, EBreakType BreakType);
+	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType);
+	bool SendTakeDamage(AActor* Sender, AActor* Target);
+	
 
 	int GetIndex(const AActor* target);
 

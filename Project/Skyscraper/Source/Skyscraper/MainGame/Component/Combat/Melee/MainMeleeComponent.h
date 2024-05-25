@@ -19,13 +19,13 @@ public:
 	// Sets default values for this component's properties
 	UMainMeleeComponent();
 
-	// InputMappingContext Ãß°¡ ¹× »èÁ¦ ÇÔ¼ö
+	// InputMappingContext ì¶”ê°€ ë° ì‚­ì œ í•¨ìˆ˜
 	void AddInputMappingContext();
 	void RemoveInputMappingContext();
 
-	// ´Ù½Ã ¹«±â¸¦ ÀåÂø ÇÏ¿´À» ¶§ Å° ÀÎÇ² Ãß°¡ ¹× ¹«±â Ãß°¡ÇÏ´Â ÇÔ¼ö
+	// ë‹¤ì‹œ ë¬´ê¸°ë¥¼ ì¥ì°© í•˜ì˜€ì„ ë•Œ í‚¤ ì¸í’‹ ì¶”ê°€ ë° ë¬´ê¸° ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
 	void AddThisWeapon();
-	// ¹«±â ÄÄÆÛ³ÍÆ® Á¦°ÅÇÒ ¶§, Å° ÀÎÇ² Á¦°Å ¹× ¹«±â Á¦°ÅÇÏ´Â ÇÔ¼ö
+	// ë¬´ê¸° ì»´í¼ë„ŒíŠ¸ ì œê±°í•  ë•Œ, í‚¤ ì¸í’‹ ì œê±° ë° ë¬´ê¸° ì œê±°í•˜ëŠ” í•¨ìˆ˜
 	void RemoveThisWeapon();
 
 	// == Do attack action by anim montage anim notify
@@ -37,7 +37,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CreateAttackArea(FVector vHitSize, float fStunTime, float fBaseDamage, bool bDoDown);
 
-	// ÀûÀ» ¸ÂÃâ ½Ã HitLag(¿ª°æÁ÷)À» ¹ß»ı½ÃÅ°´Â ÇÔ¼ö
+	// ì ì„ ë§ì¶œ ì‹œ HitLag(ì—­ê²½ì§)ì„ ë°œìƒì‹œí‚¤ëŠ” í•¨ìˆ˜
 	void DoHitLag();
 	void StopHitLag();
 	
@@ -46,8 +46,8 @@ protected:
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
 
-	// Âø¿ë ½Ã ¹«±â¿¡ ´ëÇÑ º¯¼ö
-	// °¢ ÇÏÀ§(ÀÚ½Ä) ÄÄÆÛ³ÍÆ® µé¿¡¼­ ÃÊ±âÈ­ ÁøÇà
+	// ì°©ìš© ì‹œ ë¬´ê¸°ì— ëŒ€í•œ ë³€ìˆ˜
+	// ê° í•˜ìœ„(ìì‹) ì»´í¼ë„ŒíŠ¸ ë“¤ì—ì„œ ì´ˆê¸°í™” ì§„í–‰
 	UPROPERTY()
 		USkeletalMeshComponent* WeaponMeshComponent;
 	UPROPERTY()
@@ -60,7 +60,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-
+	// ê·¼ì ‘ê³µê²© ì¿¨íƒ€ì„ ì´í›„ ì‹¤í–‰ë  í•¨ìˆ˜
+	void AttackCoolTimeFunc();
 	// == Play melee attack montage for attack
 	void PlayAttackAnimMontage();
 
@@ -78,14 +79,20 @@ protected:
 		int32 MeleeComboCount;
 	UPROPERTY(VisibleAnywhere, Category = ComboSystem)
 		float LastAttackClickTime;
-	// °ø°İ Áß ¼± ÀÔ·Â ÇßÀ» °æ¿ì 0.2ÃÊ ³» ÀÔ·ÂÀÌ ÀÌ·ïÁ³À» ½Ã ¹Ù·Î °ø°İÇÏµµ·Ï ½ÇÇà
+	// ê³µê²© ì¤‘ ì„  ì…ë ¥ í–ˆì„ ê²½ìš° 0.2ì´ˆ ë‚´ ì…ë ¥ì´ ì´ë¤„ì¡Œì„ ì‹œ ë°”ë¡œ ê³µê²©í•˜ë„ë¡ ì‹¤í–‰
 	UPROPERTY(VisibleAnywhere, Category = ComboSystem)
 		float BufferedInput;
 	UPROPERTY()
 		UAnimInstance* OwnerAnimInstance;
 
-	// ¿ª°æÁ÷ 0.1ÃÊ¿¡ ´ëÇÑ Å¸ÀÌ¸ÓÇÚµé
+	// ì—­ê²½ì§ 0.1ì´ˆì— ëŒ€í•œ íƒ€ì´ë¨¸í•¸ë“¤
 	FTimerHandle HitLagTimerHandle;
+
+	UPROPERTY()
+		bool bCanAttack;
+	UPROPERTY(EditAnywhere)
+		float AttackCoolDownTime;
+	FTimerHandle AttackCoolTimeTimerHandle;
 
 	
 public:	
@@ -94,7 +101,7 @@ public:
 
 	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
 
-	// ¹«±â ¿şÆù skeletal meshÀÇ visibleÀ» º¯°æÇØÁÖ´Â ÇÔ¼ö
+	// ë¬´ê¸° ì›¨í° skeletal meshì˜ visibleì„ ë³€ê²½í•´ì£¼ëŠ” í•¨ìˆ˜
 	virtual void SetWeaponHiddenInGame(bool bNewHidden) const;
 	
 private:

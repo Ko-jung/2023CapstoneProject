@@ -220,7 +220,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		// 유리 벽면 3개
 		for (int WallCount = 0; WallCount < 3; ++WallCount)
 		{
-			UStaticMeshComponent* WindowWallStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Window_Wall" + FString::FromInt(WallCount)));
+			UStaticMeshComponent* WindowWallStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Wall" + FString::FromInt(WallCount)));
 			WindowWallStaticMesh->SetupAttachment(GetRootComponent());
 			WindowWallStaticMesh->SetRelativeRotation(FRotator(0.0f, 90.0f * WallCount, 0.0f));
 

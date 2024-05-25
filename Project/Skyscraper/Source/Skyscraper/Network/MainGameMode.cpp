@@ -520,10 +520,14 @@ void AMainGameMode::ProcessGetItem(PGetItem PGI)
 void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 {
 	// Find Windows using LOCATION
-	FVector ObjectLocation{ PBO.ObjectLocation.X, PBO.ObjectLocation.Y,PBO.ObjectLocation.Z };
-	UStaticMeshComponent* TargetObject = GetStaticMeshComponent(ObjectLocation, PBO.ObjectType);
+	//FVector ObjectLocation{ PBO.ObjectLocation.X, PBO.ObjectLocation.Y,PBO.ObjectLocation.Z };
+	UStaticMeshComponent* TargetObject = WindowMeshComponents[PBO.ObjectSerial];
 
-	// Break Window
+	if (!TargetObject)
+	{
+		UE_LOG(LogClass, Warning, TEXT("TargetObject is NULL"));
+		return;
+	}
 
 	UE_LOG(LogClass, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
 
@@ -571,27 +575,37 @@ void AMainGameMode::GetWindowsOnLevel()
 	}
 }
 
-UStaticMeshComponent* AMainGameMode::GetStaticMeshComponent(FVector Location, EBreakType BreakType)
+int AMainGameMode::GetWindowsIndex(const UPrimitiveComponent* Target)
 {
-	switch (BreakType)
+	for (int i = 0; i < WindowMeshComponents.Num(); i++)
 	{
-	case EBreakType::Window:
-	{
-		for (UStaticMeshComponent* StaticMeshComponent : WindowMeshComponents)
-		{
-			FVector ComponentLocation = StaticMeshComponent->GetComponentLocation();
-			if (FVector::Dist(Location, ComponentLocation) < 25.f)
-			{
-				return StaticMeshComponent;
-			}
-		}
-		break;
+		if (WindowMeshComponents[i] == Target)
+			return i;
 	}
-	default:
-		break;
-	}
-	return nullptr;
+	return -1;
 }
+
+//UStaticMeshComponent* AMainGameMode::GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType)
+//{
+//	switch (BreakType)
+//	{
+//	case EBreakType::Window:
+//	{
+//		for (UStaticMeshComponent* StaticMeshComponent : WindowMeshComponents)
+//		{
+//			FVector ComponentLocation = StaticMeshComponent->GetComponentLocation();
+//			if (FVector::Dist(Location, ComponentLocation) < 25.f)
+//			{
+//				return StaticMeshComponent;
+//			}
+//		}
+//		break;
+//	}
+//	default:
+//		return nullptr;
+//	}
+//	return nullptr;
+//}
 
 void AMainGameMode::SendPlayerLocation()
 {
@@ -668,16 +682,17 @@ void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMo
 	Send(&PCAM, sizeof(PCAM));
 }
 
-void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
+bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 {
-	if (Sender != Characters[SerialNum])
+
+	if (!m_Socket || Sender != Characters[SerialNum])
 	{
 		UE_LOG(LogClass, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
-		return;
+		return false;
 	}
 
 	int i = GetIndex(Target);
-	if (i == -1) return;
+	if (i == -1) return false;
 
 	ESwapWeapon weaponType;
 	uint8 equippedWeapon;
@@ -690,45 +705,51 @@ void AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 
 	m_Socket->Send(&PDP, sizeof(PDP));
 	UE_LOG(LogClass, Warning, TEXT("Send Weapon Damage"));
+	return true;
 }
 
 void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)
 {
 	int TargetSerialNum = GetIndex(Target);
 	if (TargetSerialNum == -1) return;
-	if (Attacker == Characters[SerialNum])
-	{
-		PStunDownState PSDS{ (BYTE)TargetSerialNum, Dirction, StunTime, IsStun };
-		m_Socket->Send(&PSDS, sizeof(PSDS));
-	}
+
+	if (!m_Socket || Characters.IsEmpty() || Attacker != Characters[SerialNum]) return;
+
+	PStunDownState PSDS{ (BYTE)TargetSerialNum, Dirction, StunTime, IsStun };
+	m_Socket->Send(&PSDS, sizeof(PSDS));
 }
 
 void AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
 {
-	if (Sender == Characters[SerialNum])
-	{
-		PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
-		m_Socket->Send(&PUI, sizeof(PUI));
-	}
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+
+	PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
+	m_Socket->Send(&PUI, sizeof(PUI));
 }
 
 void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 {
-	if (Sender == Characters[SerialNum])
-	{
-		PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
-		m_Socket->Send(&PGI, sizeof(PGI));
-	}
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+
+	PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
+	m_Socket->Send(&PGI, sizeof(PGI));
 }
-
-void AMainGameMode::SendBreakObject(const AActor* Sender, const AActor* BreakTarget, EBreakType BreakType)
+   
+void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType)
 {
-	if (Sender != Characters[SerialNum]) return;
+	if (!m_Socket)
+	{
+		PBreakObject PBO;
+		int WindowIndex = GetWindowsIndex(BreakTarget);
+		PBO.ObjectType = BreakType;
+		PBO.ObjectSerial = WindowIndex;
+		ProcessBreakObject(PBO);
+	}
 
-	PBreakObject PBO(BreakType);
-	FVector TargetLocation = BreakTarget->GetActorLocation();
-	PBO.ObjectLocation = TargetLocation;
+	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
 
+	int WindowIndex = GetWindowsIndex(BreakTarget);
+	PBreakObject PBO(BreakType, WindowIndex);
 	m_Socket->Send(&PBO, sizeof(PBO));
 }
 

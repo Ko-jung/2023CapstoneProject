@@ -154,6 +154,10 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 			UE_LOG(LogTemp, Warning, TEXT("attack - %d // %f"), MeleeComboCount, PlayMontage->BlendOut.GetBlendTime());
 		}
 
+		{	// Montage Sync
+			OwnerCharacter->SendAnimMontageStatus(AnimMontageKey, PlayMontage->GetSectionIndex(StartingSection));
+		}
+
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage,AttackAnimPlayRate,0,StartingSection);
 		PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
 		OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
@@ -187,6 +191,10 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 					UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
 					// 해당 몽타쥬의 Blend Out 시간 설정
 					PlayMontage->BlendOut.SetBlendTime(0.2f);
+					
+					{	// Montage Sync
+						OwnerCharacter->SendAnimMontageStatus(AnimMontageKey, PlayMontage->GetSectionIndex("FinishAttack"));
+					}
 
 					UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, 1.0f, 0, TEXT("FinishAttack"));
 					//PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);

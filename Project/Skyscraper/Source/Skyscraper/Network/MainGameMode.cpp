@@ -176,7 +176,7 @@ void AMainGameMode::ProcessFunc()
 			PChangeAnimMontage PCAM;
 			memcpy(&PCAM, packet, sizeof(PCAM));
 			if(Characters[PCAM.ChangedPlayerSerial])
-				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage);
+				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage, PCAM.SectionNum);
 			break;
 		}
 		case (BYTE)COMP_OP::OP_SWAPWEAPON:
@@ -650,7 +650,7 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 	m_Socket->Send(&PSO, sizeof(PSO));
 }
 
-void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage)
+void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
 	if (!bIsConnected)
 		return;
@@ -664,6 +664,7 @@ void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMo
 
 	PCAM.ChangedPlayerSerial = SerialNum;
 	PCAM.eAnimMontage = eAnimMontage;
+	PCAM.SectionNum = Section;
 
 	Send(&PCAM, sizeof(PCAM));
 }

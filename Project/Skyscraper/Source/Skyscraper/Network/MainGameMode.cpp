@@ -744,6 +744,7 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 		PBO.ObjectType = BreakType;
 		PBO.ObjectSerial = WindowIndex;
 		ProcessBreakObject(PBO);
+		return;
 	}
 
 	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;

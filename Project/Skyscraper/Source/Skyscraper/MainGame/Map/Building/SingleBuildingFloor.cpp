@@ -3,7 +3,7 @@
 
 #include "SingleBuildingFloor.h"
 
-#include "GeometryCollection/GeometryCollectionActor.h"
+#include "GeometryCollection/GeometryCollectionObject.h"
 
 
 // Sets default values
@@ -22,10 +22,14 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 
 	for (int i = 0; i < 6; i++)
 	{
-		FString NewGCWindowString = "GC_map_3_window_00";
-		FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "'";
-		//                  /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
-		ConstructorHelpers::FClassFinder<UStaticMesh> GC_WindowRef(*FilePath);
+		// FString NewGCWindowString = "GC_map_3_window_00";
+		// FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "_C'";
+		// //                  /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
+
+		FString NewGCWindowString = "BP_GC_map_3_window_00";
+		FString FilePath = "/Script/Engine.Blueprint'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "_C'";
+		//					/Script/Engine.Blueprint'/Game/2019180016/FractureMesh/BP_GC_map_3_window_001.BP_GC_map_3_window_001'
+		ConstructorHelpers::FClassFinder<AActor> GC_WindowRef(*FilePath);
 		GC_WindowClass.Add(GC_WindowRef.Class);
 	}
 }
@@ -62,41 +66,56 @@ void ASingleBuildingFloor::DoCollapse()
 
 void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 {
-	for (const auto& pWindow : WindowStaticMeshes)
+	FString WindowString = Target->GetName();
+	int Index = FCString::Atoi(&(*WindowString.rbegin()));
+
+	FTransform Transform{ Target->GetComponentRotation(), Target->GetComponentLocation() };
+	auto NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[Index], Transform);
+	if (NewGCWindowMesh)
 	{
-		if (pWindow == Target)
-		{
-			// /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
-
-			FString WindowString = pWindow->GetName();
-			int Index = (*WindowString.rbegin());
-
-			FTransform Transform{ pWindow->GetComponentRotation(), pWindow->GetComponentLocation() };
-			auto NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AGeometryCollectionActor>(GC_WindowClass[Index], Transform);
-			if (NewGCWindowMesh)
-			{
-				NewGCWindowMesh->SetActorLocation(GetActorLocation());
-				NewGCWindowMesh->SetActorRotation(GetActorRotation());
-				NewGCWindowMesh->FinishSpawning(Transform);
-			}
-			pWindow->DestroyComponent();
-			
-
-			//FString NewGCWindowString = FString("GC_") + WindowString;
-			//FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2016180016/FractureMesh/" + NewGCWindowString + "." + NewGCWindowString + "'";
-			//
-			//ConstructorHelpers::FObjectFinder<AGeometryCollectionActor>WindowMeshRef(*FilePath);
-			//if (WindowMeshRef.Succeeded())
-			//{
-			//}
-			//else
-			//{
-			//	UE_LOG(LogClass, Warning, TEXT("WindowMeshRef Cant find"));
-			//}
-
-			break;
-		}
+		NewGCWindowMesh->SetActorLocation(GetActorLocation());
+		NewGCWindowMesh->SetActorRotation(GetActorRotation());
+		NewGCWindowMesh->FinishSpawning(Transform);
 	}
+	Target->DestroyComponent();
+
+
+
+	//for (const auto& pWindow : WindowStaticMeshes)
+	//{
+	//	if (pWindow == Target)
+	//	{
+	//		// /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
+
+	//		FString WindowString = pWindow->GetName();
+	//		int Index = (*WindowString.rbegin());
+
+	//		FTransform Transform{ pWindow->GetComponentRotation(), pWindow->GetComponentLocation() };
+	//		auto NewGCWindowMesh = GetWorld()->SpawnActorDeferred<UGeometryCollection>(GC_WindowClass[Index], Transform);
+	//		if (NewGCWindowMesh)
+	//		{
+	//			NewGCWindowMesh->Location(GetActorLocation());
+	//			NewGCWindowMesh->SetActorRotation(GetActorRotation());
+	//			NewGCWindowMesh->FinishSpawning(Transform);
+	//		}
+	//		pWindow->DestroyComponent();
+	//		
+
+	//		//FString NewGCWindowString = FString("GC_") + WindowString;
+	//		//FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2016180016/FractureMesh/" + NewGCWindowString + "." + NewGCWindowString + "'";
+	//		//
+	//		//ConstructorHelpers::FObjectFinder<AGeometryCollectionActor>WindowMeshRef(*FilePath);
+	//		//if (WindowMeshRef.Succeeded())
+	//		//{
+	//		//}
+	//		//else
+	//		//{
+	//		//	UE_LOG(LogClass, Warning, TEXT("WindowMeshRef Cant find"));
+	//		//}
+
+	//		break;
+	//	}
+	//}
 }
 
 // ==========================================================

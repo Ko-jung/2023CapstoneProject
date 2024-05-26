@@ -3,9 +3,6 @@
 
 #include "SingleBuildingFloor.h"
 
-#include "GeometryCollection/GeometryCollectionObject.h"
-
-
 // Sets default values
 ASingleBuildingFloor::ASingleBuildingFloor()
 {
@@ -22,6 +19,7 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 
 	for (int i = 0; i < 6; i++)
 	{
+		
 		// FString NewGCWindowString = "GC_map_3_window_00";
 		// FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "_C'";
 		// //                  /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
@@ -76,6 +74,8 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 		NewGCWindowMesh->SetActorLocation(GetActorLocation());
 		NewGCWindowMesh->SetActorRotation(GetActorRotation());
 		NewGCWindowMesh->FinishSpawning(Transform);
+
+		NewGCWindowMesh->SetLifeSpan(5.0f);
 	}
 	Target->DestroyComponent();
 

@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "TestBloodPaint",
+			"Path": "..\\Source\\TestBloodPaint.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "TestBloodPaintEditor",
+			"Path": "..\\Source\\TestBloodPaintEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

@@ -170,6 +170,10 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 			UE_LOG(LogTemp, Warning, TEXT("attack - %d // %f"), MeleeComboCount, PlayMontage->BlendOut.GetBlendTime());
 		}
 
+		{	// Montage Sync
+			OwnerCharacter->SendAnimMontageStatus(AnimMontageKey, PlayMontage->GetSectionIndex(StartingSection));
+		}
+
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage,AttackAnimPlayRate,0,StartingSection);
 		PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
 		OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
@@ -198,35 +202,39 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 {
 	OwnerCharacter->EnableInput(OwnerCharacter->GetPlayerController());
-	
-	// 이동 없이 공격 마무리 모션 사용 시 무기 집어넣는 애니메이션 재생을 진행하는데, 해당 애니메이션을 움직일 경우엔 막는 코드
 
-	if (GetOwnerPlayerController())
-	{
-		// 이동을 하려 한다면,
-		if (GetOwnerPlayerController()->IsInputKeyDown(EKeys::W) ||
-			GetOwnerPlayerController()->IsInputKeyDown(EKeys::A) ||
-			GetOwnerPlayerController()->IsInputKeyDown(EKeys::S) ||
-			GetOwnerPlayerController()->IsInputKeyDown(EKeys::D))
+	{// 이동 없이 공격 마무리 모션 사용 시 무기 집어넣는 애니메이션 재생을 진행하는데, 해당 애니메이션을 움직일 경우엔 막는 코드
+		if (GetOwnerPlayerController())
 		{
-			//OwnerAnimInstance->StopAllMontages(0.2f);
-		}
-		else
-		{
-			{ // == Play Montage
-				UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
-				// 해당 몽타쥬의 Blend Out 시간 설정
-				PlayMontage->BlendOut.SetBlendTime(0.2f);
-				UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, 1.0f, 0, TEXT("FinishAttack"));
-				//PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
-				OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
-				OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
+			// 이동을 하려 한다면,
+			if (GetOwnerPlayerController()->IsInputKeyDown(EKeys::W) ||
+				GetOwnerPlayerController()->IsInputKeyDown(EKeys::A) ||
+				GetOwnerPlayerController()->IsInputKeyDown(EKeys::S) ||
+				GetOwnerPlayerController()->IsInputKeyDown(EKeys::D))
+			{
+				//OwnerAnimInstance->StopAllMontages(0.2f);
 			}
+			else
+			{
+				{ // == Play Montage
+					UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
+					// 해당 몽타쥬의 Blend Out 시간 설정
+					PlayMontage->BlendOut.SetBlendTime(0.2f);
+					
+					{	// Montage Sync
+						OwnerCharacter->SendAnimMontageStatus(AnimMontageKey, PlayMontage->GetSectionIndex("FinishAttack"));
+					}
+
+					UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, 1.0f, 0, TEXT("FinishAttack"));
+					//PlayMontageCallbackProxy->OnBlendOut.AddDynamic(this, &ThisClass::OnBlendOutMeleeAttack);
+					OwnerCharacter->GetCharacterMovement()->GravityScale = 0.0f;
+					OwnerCharacter->GetCharacterMovement()->Velocity.Z = 0.0f;
+
+				}
+			}
+
 		}
-
 	}
-
-	OwnerCharacter->EnableInput(GetOwnerPlayerController());
 	
 
 	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록

@@ -101,6 +101,8 @@ public:
 
 	void SwapWeapon(ESwapWeapon WeaponType);
 
+	void SendAnimMontageStatus(ECharacterAnimMontage eMontage, int Section);
+
 	// == Stun / Down
 	void ApplyStun(const float StunTime, const FVector StunDirection) const;
 	void ApplyDown(const FVector& DownDirection) const;
@@ -110,7 +112,7 @@ public:
 	void AddCharacterMappingContext();
 
 	void SyncTransformAndAnim(FTransform t, float s, float r);
-	void SetMontage(ECharacterAnimMontage eAnimMontage);
+	void SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum);
 
 	void SetSpeed(float s) { Speed = s; }
 	void SetXRotate(float r) { XRotate = r; }

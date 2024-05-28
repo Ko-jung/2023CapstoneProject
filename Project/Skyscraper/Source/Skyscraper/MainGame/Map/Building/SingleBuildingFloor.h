@@ -26,6 +26,9 @@ class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 	// ====== 2019180016 ======
 	UPROPERTY()
 	TArray<UClass*> GC_WindowClass;
+
+	// UPROPERTY()
+	// TArray<UObject*> GC_WindowObject;
 	// ========================
 public:
 

@@ -182,6 +182,10 @@ void UMainRangeComponent::PlayFireAnim()
 	{ // == Play Montage
 		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
 		FName StartingSection = FName(*(FString("Fire")));
+		
+		{	// Montage Sync
+			OwnerCharacter->SendAnimMontageStatus(AnimMontageKey, PlayMontage->GetSectionIndex(StartingSection));
+		}
 
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, 1.0f, 0, StartingSection);
 	}
@@ -337,6 +341,10 @@ void UMainRangeComponent::PlayReloadAnim()
 		UAnimMontage* PlayMontage = OwnerCharacter->GetAnimMontage(AnimMontageKey);
 		FName StartingSection = FName(*(FString("Reload")));
 		float PlayRate = PlayMontage->GetSectionLength(1) / ReloadSpeedTime;
+
+		{	// Montage Sync
+			OwnerCharacter->SendAnimMontageStatus(AnimMontageKey, PlayMontage->GetSectionIndex(StartingSection));
+		}
 
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, PlayRate, 0, StartingSection);
 	}

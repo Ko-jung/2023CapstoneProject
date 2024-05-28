@@ -5,7 +5,31 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
-				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/BloodTestLevel.umap"
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/BloodTestLevel.umap",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/assassin_for_map.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/assassin_for_map_PhysicsAsset.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/assassin_for_map_Skeleton.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2157.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2158.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2159.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2182.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2183.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2206.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2234.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2235.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2236.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2248.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2249.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/assassin_skirt1.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/NewBlueprint.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/assassin_paint_PhysicsAsset.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/assassin_paint.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/Material__2261.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Character/assassin_paint_Skeleton.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/MyDefaultPawn.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/GM_.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Skirt/assassin_skirt.uasset",
+				"C:/Users/Administrator/Desktop/2023CapstoneProject/Project/TestBloodPaint/Content/2019180031/Test/Skirt/Material__2261.uasset"
 			]
 		}
 	]

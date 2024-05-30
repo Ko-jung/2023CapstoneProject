@@ -64,6 +64,8 @@ void UMainMeleeComponent::BeginPlay()
 		WeaponMeshComponent->SetHiddenInGame(true);
 	}
 	// == TODO: Create Melee Widget
+
+	SetInitialValue();
 }
 
 
@@ -400,6 +402,10 @@ void UMainMeleeComponent::StopHitLag()
 {
 	GetWorld()->GetTimerManager().ClearTimer(HitLagTimerHandle);
 	OwnerAnimInstance->Montage_Resume(nullptr);
+}
+
+void UMainMeleeComponent::SetInitialValue()
+{
 }
 
 // Called every frame

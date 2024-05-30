@@ -14,7 +14,7 @@ class SKYSCRAPER_API UDaggerComponent : public UMainMeleeComponent
 {
 	GENERATED_BODY()
 
-	// ¼­ºê ¹«±â¿¡ ´ëÇÑ º¯¼ö
+	// ì„œë¸Œ ë¬´ê¸°ì— ëŒ€í•œ ë³€ìˆ˜
 	UPROPERTY()
 		USkeletalMeshComponent* SubWeaponMeshComponent;
 	UPROPERTY()
@@ -25,6 +25,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	// ¹«±â ¿şÆù skeletal meshÀÇ visibleÀ» º¯°æÇØÁÖ´Â ÇÔ¼ö
+	// ë¬´ê¸° ì›¨í° skeletal meshì˜ visibleì„ ë³€ê²½í•´ì£¼ëŠ” í•¨ìˆ˜
 	virtual void SetWeaponHiddenInGame(bool bNewHidden) const override;
+
+	virtual void SetInitialValue() override;
 };

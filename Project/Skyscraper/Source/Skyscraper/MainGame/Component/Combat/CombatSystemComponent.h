@@ -53,6 +53,13 @@ public:
 	ERangeSelect GetCurrentRangeSelect() const { return RangeSelect; }
 
 
+	UPROPERTY(EditAnywhere, Category = MeleeValue)
+		TArray<float> DaggerAttackTime;
+	UPROPERTY(EditAnywhere, Category = MeleeValue)
+		TArray<float> KatanaAttackTime;
+	UPROPERTY(EditAnywhere, Category = MeleeValue)
+		TArray<float> SwordAttackTime;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

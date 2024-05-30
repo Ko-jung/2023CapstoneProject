@@ -55,7 +55,8 @@ UCombatSystemComponent::UCombatSystemComponent()
 		IA_LockOn = IA_LockOnRef.Object;
 	}
 
-	{ // Set Weapon Components
+	// Set Weapon Components
+	{ 
 		MeleeClass.Add(UDaggerComponent::StaticClass());
 		MeleeClass.Add(UKatanaComponent::StaticClass());
 		MeleeClass.Add(UGreatSwordComponent::StaticClass());
@@ -63,6 +64,24 @@ UCombatSystemComponent::UCombatSystemComponent()
 		RangeClass.Add(USMGComponent::StaticClass());
 		RangeClass.Add(URifleComponent::StaticClass());
 		RangeClass.Add(URPGComponent::StaticClass());
+	}
+
+	// 공격 시간 디폴트 값
+	{
+		DaggerAttackTime.Add(0.4f);
+		DaggerAttackTime.Add(0.4f);
+		DaggerAttackTime.Add(0.6f);
+		DaggerAttackTime.Add(0.4f);
+		DaggerAttackTime.Add(0.6f);
+
+		KatanaAttackTime.Add(0.6f);
+		KatanaAttackTime.Add(0.6f);
+		KatanaAttackTime.Add(0.8f);
+		KatanaAttackTime.Add(1.0f);
+
+		SwordAttackTime.Add(0.8f);
+		SwordAttackTime.Add(1.0f);
+		SwordAttackTime.Add(0.8f);
 	}
 
 }

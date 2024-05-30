@@ -3,23 +3,16 @@
 
 #include "DaggerComponent.h"
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 
 UDaggerComponent::UDaggerComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_DaggerAttack;
-
-	AttackTime.Add(0.4f);
-	AttackTime.Add(0.4f);
-	AttackTime.Add(0.6f);
-	AttackTime.Add(0.4f);
-	AttackTime.Add(0.6f);
-
 	AttackBlendOutTime.Add(0.1f);
 	AttackBlendOutTime.Add(0.1f);
 	AttackBlendOutTime.Add(0.1f);
 	AttackBlendOutTime.Add(0.1f);
 	AttackBlendOutTime.Add(0.2f);
-
 
 	// Skeletal Mesh 소켓 이름 설정
 	WeaponSocketName = TEXT("DaggerRightSocket");
@@ -58,4 +51,20 @@ void UDaggerComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 	Super::SetWeaponHiddenInGame(bNewHidden);
 	SubWeaponMeshComponent->SetHiddenInGame(bNewHidden);
 
+}
+
+void UDaggerComponent::SetInitialValue()
+{
+	Super::SetInitialValue();
+	UCombatSystemComponent* CombatComponent{};
+	if (OwnerCharacter)
+		CombatComponent = OwnerCharacter->CombatSystemComponent;
+
+	if(CombatComponent)
+	{
+		AttackTime = CombatComponent->DaggerAttackTime;
+	}
+	
+
+	
 }

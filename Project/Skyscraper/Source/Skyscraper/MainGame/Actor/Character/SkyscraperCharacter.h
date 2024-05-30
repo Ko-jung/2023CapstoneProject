@@ -186,11 +186,11 @@ protected:
 
 private:
 	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* FollowCamera;
 
 	// 플레이어가 떠 있는지에 대한 변수 (AnimInstance에서 사용 예정)
@@ -201,8 +201,13 @@ private:
 		bool bIsMoveDiagonally;
 
 	// 캐릭터 기본 걷기 속도
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,Category = Locomotion, meta = (AllowPrivateAccess = "true"))
 		float CharacterMaxWalkSpeed;
+	UPROPERTY(EditAnywhere, Category = Locomotion, meta = (AllowPrivateAccess = "true"))
+		float CharacterBwdMaxWalkSpeed;
+	UPROPERTY(EditAnywhere, Category = Locomotion, meta = (AllowPrivateAccess = "true"))
+		float CharacterBesideMaxWalkSpeed;
+
 	// 캐릭터 버프 수치 - 기본 1.0f ( 40% 증가 버프 받으면 1.4f ...)
 	UPROPERTY(EditAnywhere)
 		float SpeedBuffValue;

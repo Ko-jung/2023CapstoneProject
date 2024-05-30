@@ -41,6 +41,8 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	bIsHover = false;
 	CharacterMaxWalkSpeed = 600.0f;
+	CharacterBwdMaxWalkSpeed = 300.0f;
+	CharacterBesideMaxWalkSpeed = 450.0f;
 	SpeedBuffValue = 1.0f;
 	PowerBuffValue = 1.0f;
 
@@ -500,12 +502,12 @@ void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 		if(MovementVector.Y < 0.0f)   // 뒤로 이동 중이라면,
 		{
 			Crouch();
-			GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
+			GetCharacterMovement()->MaxWalkSpeedCrouched = CharacterBwdMaxWalkSpeed;
 		}
 		else if ( !(MovementVector.X <= FLT_EPSILON)  &&  (!((MovementVector.Y - 1.0f) <= FLT_EPSILON)) ) // 좌우 이동중이며, 전방이동 하지 않을 시
 		{
 			Crouch();
-			GetCharacterMovement()->MaxWalkSpeedCrouched = 450.0f;
+			GetCharacterMovement()->MaxWalkSpeedCrouched = CharacterBesideMaxWalkSpeed;
 		}
 		else
 		{

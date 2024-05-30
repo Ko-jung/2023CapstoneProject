@@ -5,6 +5,7 @@
 
 #include "GameFramework/SpringArmComponent.h"
 #include "Skyscraper/MainGame/Actor/Bullet/RPGBullet.h"
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 
 URPGComponent::URPGComponent()
 {
@@ -75,4 +76,19 @@ void URPGComponent::Fire(float fBaseDamage)
 		BulletActor->FinishSpawning(SpawnTransform);
 	}
 	//UBlueprint* BulletObject = Cast<UBlueprint>()
+}
+
+void URPGComponent::SetInitialValue()
+{
+	Super::SetInitialValue();
+
+	UCombatSystemComponent* CombatComponent{};
+	if (OwnerCharacter)
+		CombatComponent = OwnerCharacter->CombatSystemComponent;
+
+	if (CombatComponent)
+	{
+		FireMaxCoolTime = CombatComponent->RPG_FireTime;
+		ReloadSpeedTime = CombatComponent->RPG_ReloadTime;
+	}
 }

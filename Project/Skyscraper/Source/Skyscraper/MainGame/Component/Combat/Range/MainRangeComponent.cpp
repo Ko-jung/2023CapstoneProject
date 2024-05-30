@@ -110,7 +110,8 @@ void UMainRangeComponent::BeginPlay()
 		}
 
 	}
-	
+
+	SetInitialValue();
 }
 
 
@@ -118,6 +119,10 @@ void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	//Unbind Input Mapping Context
 	RemoveThisWeapon();
+}
+
+void UMainRangeComponent::SetInitialValue()
+{
 }
 
 void UMainRangeComponent::AddInputMappingContext()

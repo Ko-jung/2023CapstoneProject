@@ -60,6 +60,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = MeleeValue)
 		TArray<float> SwordAttackTime;
 
+	UPROPERTY(EditAnywhere, Category = RangeValue)
+		float SMG_ReloadTime;
+	UPROPERTY(EditAnywhere, Category = RangeValue)
+		float SMG_FireTime;
+	UPROPERTY(EditAnywhere, Category = RangeValue)
+		float AR_ReloadTime;
+	UPROPERTY(EditAnywhere, Category = RangeValue)
+		float AR_FireTime;
+	UPROPERTY(EditAnywhere, Category = RangeValue)
+		float RPG_ReloadTime;
+	UPROPERTY(EditAnywhere, Category = RangeValue)
+		float RPG_FireTime;
+	
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

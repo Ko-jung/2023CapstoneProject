@@ -82,6 +82,15 @@ UCombatSystemComponent::UCombatSystemComponent()
 		SwordAttackTime.Add(0.8f);
 		SwordAttackTime.Add(1.0f);
 		SwordAttackTime.Add(0.8f);
+
+		SMG_FireTime = 0.2f;
+		SMG_ReloadTime = 1.0f;
+
+		AR_FireTime = 0.3f;
+		AR_ReloadTime = 3.0f;
+
+		RPG_FireTime = 1.0f;
+		RPG_ReloadTime = 5.0f;
 	}
 
 }

@@ -13,6 +13,7 @@
 // Montage Sync
 #include "../MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/MainGame/Core/AISkyscraperController.h"
 
 // Processing Building Info From Server
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
@@ -356,13 +357,18 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 
 	if (TargetSerialNum == SerialNum)
 	{
-		GetWorld()->GetFirstPlayerController()->Possess(character);
+		APlayerController* controller = GetWorld()->GetFirstPlayerController();
+		controller->Possess(character);
+
+		ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
+		SkyController->SetPossessingPawn();
+
 		character->AddInputMappingContext();
 	}
 	else
 	{
-		ASkyscraperPlayerController* controller =
-			GetWorld()->SpawnActor<ASkyscraperPlayerController>(ASkyscraperPlayerController::StaticClass(), FVector(), FRotator());
+		AAISkyscraperController* controller =
+			GetWorld()->SpawnActor<AAISkyscraperController>(AAISkyscraperController::StaticClass(), FVector(), FRotator());
 		controller->Possess(character);
 	}
 

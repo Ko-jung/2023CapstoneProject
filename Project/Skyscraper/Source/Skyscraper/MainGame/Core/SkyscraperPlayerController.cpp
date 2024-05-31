@@ -116,7 +116,7 @@ void ASkyscraperPlayerController::SetObserveMode(bool bToObserveMode)
 void ASkyscraperPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	PossessingPawn = Cast<ASkyscraperCharacter>(GetPawn());
+	SetPossessingPawn();
 
 	TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
 	if(TimeAndKillCountWidget)
@@ -189,4 +189,9 @@ void ASkyscraperPlayerController::UpdateImage(int index)
 			MiniMapWidget->SetTileImage(index, HexagonTile->GetTileImageType(index));
 		}
 	}
+}
+
+void ASkyscraperPlayerController::SetPossessingPawn()
+{
+	PossessingPawn = Cast<ASkyscraperCharacter>(GetPawn());
 }

@@ -3,14 +3,12 @@
 
 #include "KatanaComponent.h"
 
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
+
 UKatanaComponent::UKatanaComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_KatanaAttack;
 
-	AttackTime.Add(0.6f);
-	AttackTime.Add(0.6f);
-	AttackTime.Add(0.8f);
-	AttackTime.Add(1.0f);
 
 	AttackBlendOutTime.Add(0.17f);
 	AttackBlendOutTime.Add(0.11f);
@@ -67,4 +65,18 @@ void UKatanaComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 	Super::SetWeaponHiddenInGame(bNewHidden);
 
 	KatanaSheathComponent->SetHiddenInGame(bNewHidden);
+}
+
+void UKatanaComponent::SetInitialValue()
+{
+	Super::SetInitialValue();
+
+	UCombatSystemComponent* CombatComponent{};
+	if (OwnerCharacter)
+		CombatComponent = OwnerCharacter->CombatSystemComponent;
+
+	if (CombatComponent)
+	{
+		AttackTime = CombatComponent->KatanaAttackTime;
+	}
 }

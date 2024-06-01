@@ -88,6 +88,8 @@ protected:
 	// 역경직 0.1초에 대한 타이머핸들
 	FTimerHandle HitLagTimerHandle;
 
+	virtual void SetInitialValue();
+
 	UPROPERTY()
 		bool bCanAttack;
 	UPROPERTY(EditAnywhere)

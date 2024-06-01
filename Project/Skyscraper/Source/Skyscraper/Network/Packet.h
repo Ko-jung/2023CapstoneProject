@@ -333,8 +333,9 @@ struct PChangeAnimMontage : Packet
 
 	ECharacterAnimMontage eAnimMontage;
 	BYTE ChangedPlayerSerial;
+	BYTE SectionNum;
 
-	PChangeAnimMontage() : Packet(COMP_OP::OP_CHANGEANIMMONTAGE), eAnimMontage(ECharacterAnimMontage::ECAM_Default), ChangedPlayerSerial(-1)
+	PChangeAnimMontage() : Packet(COMP_OP::OP_CHANGEANIMMONTAGE), eAnimMontage(ECharacterAnimMontage::ECAM_Default), ChangedPlayerSerial(0), SectionNum(0)
 	{
 		PacketSize = sizeof(PChangeAnimMontage);
 	}

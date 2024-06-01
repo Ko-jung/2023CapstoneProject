@@ -3,24 +3,22 @@
 
 #include "GreatSwordComponent.h"
 
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
+
 UGreatSwordComponent::UGreatSwordComponent()
 {
-	// ¾Ö´Ï¸ŞÀÌ¼Ç ¸ùÅ¸Áê Å° ¼³Á¤
+	// ì• ë‹ˆë©”ì´ì…˜ ëª½íƒ€ì¥¬ í‚¤ ì„¤ì •
 	AnimMontageKey = ECharacterAnimMontage::ECAM_GreatSwordAttack;
 	
-	// ÄŞº¸ °ø°İÀÇ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ½Ã°£
-	AttackTime.Add(0.8f);
-	AttackTime.Add(1.0f);
-	AttackTime.Add(0.8f);
 
 	AttackBlendOutTime.Add(0.2f);
 	AttackBlendOutTime.Add(0.1f);
 	AttackBlendOutTime.Add(0.1f);
 	
-	// Skeletal Mesh ¼ÒÄÏ ÀÌ¸§ ¼³Á¤
+	// Skeletal Mesh ì†Œì¼“ ì´ë¦„ ì„¤ì •
 	WeaponSocketName = TEXT("SwordSocket");
 
-	// Skeletal Mesh ·Îµå
+	// Skeletal Mesh ë¡œë“œ
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SwordSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/sword.sword'"));
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword Weapon"));
 	WeaponMeshComponent->SetSkeletalMesh(SwordSkeletalMeshRef.Object);
@@ -29,4 +27,19 @@ UGreatSwordComponent::UGreatSwordComponent()
 void UGreatSwordComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void UGreatSwordComponent::SetInitialValue()
+{
+	Super::SetInitialValue();
+	
+
+	UCombatSystemComponent* CombatComponent{};
+	if (OwnerCharacter)
+		CombatComponent = OwnerCharacter->CombatSystemComponent;
+
+	if (CombatComponent)
+	{
+		AttackTime = CombatComponent->SwordAttackTime;
+	}
 }

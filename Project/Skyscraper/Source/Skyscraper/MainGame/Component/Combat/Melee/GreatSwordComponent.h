@@ -17,4 +17,5 @@ public:
 	UGreatSwordComponent();
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetInitialValue() override;
 };

@@ -6,7 +6,7 @@
 // Sets default values
 ASingleBuildingFloor::ASingleBuildingFloor()
 {
- 	// bCanEverTick
+	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = false;
 
 	// 건물에 대한 static mesh 생성 //TODO: geometry component에 대해서도 추가해줘야 함
@@ -19,7 +19,7 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 
 	for (int i = 0; i < 6; i++)
 	{
-		
+
 		// FString NewGCWindowString = "GC_map_3_window_00";
 		// FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "_C'";
 		// //                  /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
@@ -37,7 +37,7 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 void ASingleBuildingFloor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -51,7 +51,7 @@ void ASingleBuildingFloor::DoCollapse()
 {
 	FTransform Transform{ GetActorRotation(),GetActorLocation() };
 	AActor* NewGCTileActor = GetWorld()->SpawnActorDeferred<AActor>(GC_BuildingClass, Transform);
-	if(NewGCTileActor)
+	if (NewGCTileActor)
 	{
 		NewGCTileActor->SetActorLocation(GetActorLocation());
 		NewGCTileActor->SetActorRotation(GetActorRotation());
@@ -61,22 +61,37 @@ void ASingleBuildingFloor::DoCollapse()
 	Destroy();
 }
 
-
+#include "Skyscraper/MainGame/Actor/GeometryCollection/WindowGeometryCollection.h"
 void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 {
 	FString WindowString = Target->GetName();
 	int Index = FCString::Atoi(&(*WindowString.rbegin()));
 
 	FTransform Transform{ Target->GetComponentRotation(), Target->GetComponentLocation() };
-	auto NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[Index], Transform);
+	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(AWindowGeometryCollection::StaticClass(), Transform);
 	if (NewGCWindowMesh)
 	{
-		NewGCWindowMesh->SetActorLocation(GetActorLocation());
-		NewGCWindowMesh->SetActorRotation(GetActorRotation());
-		NewGCWindowMesh->FinishSpawning(Transform);
+		AWindowGeometryCollection* GCWindow = Cast<AWindowGeometryCollection>(NewGCWindowMesh);
+		GCWindow->SetActorLocation(GetActorLocation());
+		GCWindow->SetActorRotation(GetActorRotation());
+		GCWindow->SetWindowObject(0);
+		GCWindow->FinishSpawning(Transform);
 
 		NewGCWindowMesh->SetLifeSpan(5.0f);
+		//NewGCWindowMesh->AddForce();
 	}
+
+
+	// AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[Index], Transform);
+	// if (NewGCWindowMesh)
+	// {
+	// 	NewGCWindowMesh->SetActorLocation(GetActorLocation());
+	// 	NewGCWindowMesh->SetActorRotation(GetActorRotation());
+	// 	NewGCWindowMesh->FinishSpawning(Transform);
+	// 
+	// 	NewGCWindowMesh->SetLifeSpan(5.0f);
+	// 	//NewGCWindowMesh->AddForce();
+	// }
 	Target->DestroyComponent();
 
 
@@ -130,21 +145,21 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 	 * 무수히 길어져 하나하나 만드는 방식으로 진행했으며,
 
 	 주요 이유)
-	 * 생성자는 게임 시작 당시(에디터 오픈 당시) 한번 만 작용하므로 
+	 * 생성자는 게임 시작 당시(에디터 오픈 당시) 한번 만 작용하므로
 	 * static으로 굳이 메모리를 할당하고 있을 필요가 없다고 느낌
 	 */
-	// 바닥
+	 // 바닥
 	{
 		UStaticMeshComponent* FloorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Floor"));
 		SetRootComponent(FloorMesh);
 		ConstructorHelpers::FObjectFinder<UStaticMesh> FloorMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_floor_002.map_3_floor_002'"));
-		if(FloorMeshRef.Succeeded())
+		if (FloorMeshRef.Succeeded())
 		{
 			FloorMesh->SetStaticMesh(FloorMeshRef.Object);
 		}
 		SetRootComponent(FloorMesh);
 		FloorStaticMeshes.Add(FloorMesh);
-		
+
 	}
 	// 기둥 3개
 	for (int i = 0; i < 3; ++i)
@@ -152,8 +167,8 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		UStaticMeshComponent* PillarStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Pillar" + FString::FromInt(i)));
 		PillarStaticMesh->SetupAttachment(GetRootComponent());
 
-		FString FileName = "map_3_pillar00" + FString::FromInt(i+1);
-		FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName +"'";
+		FString FileName = "map_3_pillar00" + FString::FromInt(i + 1);
+		FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
 		ConstructorHelpers::FObjectFinder<UStaticMesh> PillarMeshRef(*FilePath);
 		if (PillarMeshRef.Succeeded())
 		{
@@ -168,7 +183,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		UStaticMeshComponent* AirconStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("AirCon" + FString::FromInt(i)));
 		AirconStaticMesh->SetupAttachment(GetRootComponent());
 
-		FString FileName = "map_3_airCon00" + FString::FromInt(i+1);
+		FString FileName = "map_3_airCon00" + FString::FromInt(i + 1);
 		FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
 		ConstructorHelpers::FObjectFinder<UStaticMesh> AirconMeshRef(*FilePath);
 		if (AirconMeshRef.Succeeded())
@@ -184,7 +199,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		UStaticMeshComponent* LightStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Light" + FString::FromInt(i)));
 		LightStaticMesh->SetupAttachment(GetRootComponent());
 
-		FString FileName = "map_3_light00" + FString::FromInt(i+1);
+		FString FileName = "map_3_light00" + FString::FromInt(i + 1);
 		FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
 		ConstructorHelpers::FObjectFinder<UStaticMesh> LightMeshRef(*FilePath);
 		if (LightMeshRef.Succeeded())
@@ -211,7 +226,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 	{
 		UStaticMeshComponent* StairMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Stair"));
 		StairMesh->SetupAttachment(GetRootComponent());
-		
+
 		ConstructorHelpers::FObjectFinder<UStaticMesh> StairMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_stair.map_3_stair'"));
 		if (StairMeshRef.Succeeded())
 		{
@@ -256,7 +271,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 				UStaticMeshComponent* WindowStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Window_Wall" + FString::FromInt(WallCount) + "_" + FString::FromInt(WindowCount)));
 				WindowStaticMesh->SetupAttachment(WindowWallStaticMesh);
 
-				FString FileName = "map_3_window_00" + FString::FromInt(WindowCount+1);
+				FString FileName = "map_3_window_00" + FString::FromInt(WindowCount + 1);
 				FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
 				ConstructorHelpers::FObjectFinder<UStaticMesh> WindowMeshRef(*FilePath);
 				if (WindowMeshRef.Succeeded())

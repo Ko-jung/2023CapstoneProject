@@ -13,6 +13,7 @@
 // Montage Sync
 #include "../MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/MainGame/Core/AISkyscraperController.h"
 
 // Processing Building Info From Server
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
@@ -176,7 +177,7 @@ void AMainGameMode::ProcessFunc()
 			PChangeAnimMontage PCAM;
 			memcpy(&PCAM, packet, sizeof(PCAM));
 			if(Characters[PCAM.ChangedPlayerSerial])
-				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage);
+				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage, PCAM.SectionNum);
 			break;
 		}
 		case (BYTE)COMP_OP::OP_SWAPWEAPON:
@@ -356,13 +357,18 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 
 	if (TargetSerialNum == SerialNum)
 	{
-		GetWorld()->GetFirstPlayerController()->Possess(character);
+		APlayerController* controller = GetWorld()->GetFirstPlayerController();
+		controller->Possess(character);
+
+		ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
+		SkyController->SetPossessingPawn();
+
 		character->AddInputMappingContext();
 	}
 	else
 	{
-		ASkyscraperPlayerController* controller =
-			GetWorld()->SpawnActor<ASkyscraperPlayerController>(ASkyscraperPlayerController::StaticClass(), FVector(), FRotator());
+		AAISkyscraperController* controller =
+			GetWorld()->SpawnActor<AAISkyscraperController>(AAISkyscraperController::StaticClass(), FVector(), FRotator());
 		controller->Possess(character);
 	}
 
@@ -664,7 +670,7 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 	m_Socket->Send(&PSO, sizeof(PSO));
 }
 
-void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage)
+void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
 	if (!bIsConnected)
 		return;
@@ -678,6 +684,7 @@ void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMo
 
 	PCAM.ChangedPlayerSerial = SerialNum;
 	PCAM.eAnimMontage = eAnimMontage;
+	PCAM.SectionNum = Section;
 
 	Send(&PCAM, sizeof(PCAM));
 }

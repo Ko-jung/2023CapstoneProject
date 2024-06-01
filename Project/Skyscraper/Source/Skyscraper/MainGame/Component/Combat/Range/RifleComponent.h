@@ -18,4 +18,5 @@ public:
 	URifleComponent();
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetInitialValue() override;
 };

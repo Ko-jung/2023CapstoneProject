@@ -55,7 +55,8 @@ UCombatSystemComponent::UCombatSystemComponent()
 		IA_LockOn = IA_LockOnRef.Object;
 	}
 
-	{ // Set Weapon Components
+	// Set Weapon Components
+	{ 
 		MeleeClass.Add(UDaggerComponent::StaticClass());
 		MeleeClass.Add(UKatanaComponent::StaticClass());
 		MeleeClass.Add(UGreatSwordComponent::StaticClass());
@@ -63,6 +64,33 @@ UCombatSystemComponent::UCombatSystemComponent()
 		RangeClass.Add(USMGComponent::StaticClass());
 		RangeClass.Add(URifleComponent::StaticClass());
 		RangeClass.Add(URPGComponent::StaticClass());
+	}
+
+	// 공격 시간 디폴트 값
+	{
+		DaggerAttackTime.Add(0.4f);
+		DaggerAttackTime.Add(0.4f);
+		DaggerAttackTime.Add(0.6f);
+		DaggerAttackTime.Add(0.4f);
+		DaggerAttackTime.Add(0.6f);
+
+		KatanaAttackTime.Add(0.6f);
+		KatanaAttackTime.Add(0.6f);
+		KatanaAttackTime.Add(0.8f);
+		KatanaAttackTime.Add(1.0f);
+
+		SwordAttackTime.Add(0.8f);
+		SwordAttackTime.Add(1.0f);
+		SwordAttackTime.Add(0.8f);
+
+		SMG_FireTime = 0.2f;
+		SMG_ReloadTime = 1.0f;
+
+		AR_FireTime = 0.3f;
+		AR_ReloadTime = 3.0f;
+
+		RPG_FireTime = 1.0f;
+		RPG_ReloadTime = 5.0f;
 	}
 
 }
@@ -277,7 +305,8 @@ void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 	// 캐릭터와 경직 방향의 각도 구하기
 	float AngleD = FMath::RadiansToDegrees(FMath::Acos(StunDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
 
-	UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Stun);
+	ECharacterAnimMontage NowMontageType = ECharacterAnimMontage::ECAM_Stun;
+	UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(NowMontageType);
 	FName StartingSection{};
 	int SectionNum = -1;
 	// 캐릭터가 뒤에서 공격받은 상황
@@ -295,6 +324,10 @@ void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 
 	if(Montage)
 	{
+		{	// Montage Sync
+			OwnerCharacter->SendAnimMontageStatus(NowMontageType, SectionNum);
+		}
+
 		float AttackAnimPlayRate = Montage->GetSectionLength(SectionNum) / StunTime;
 		const float DamagedAnimPlayRate = Montage->GetPlayLength();
 		
@@ -315,7 +348,8 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 	float AngleD = FMath::RadiansToDegrees(FMath::Acos(DownDirection.GetSafeNormal().Dot(OwnerCharacter->GetActorForwardVector().GetSafeNormal())));
 
 
-	UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Down);
+	ECharacterAnimMontage NowMontageType = ECharacterAnimMontage::ECAM_Down;
+	UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(NowMontageType);
 	
 
 	if(Montage)
@@ -335,6 +369,10 @@ void UCombatSystemComponent::Down(FVector DownDirection)
 			NewRotator = (DownDirection * -1.0f).Rotation();
 		}
 		NewRotator.Pitch = -45.0f;
+
+		{	// Montage Sync
+			OwnerCharacter->SendAnimMontageStatus(NowMontageType, Montage->GetSectionIndex(StartingSection));
+		}
 
 		{ // == Play Down Montage
 			OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);

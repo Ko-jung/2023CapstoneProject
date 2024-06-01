@@ -41,6 +41,8 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	bIsHover = false;
 	CharacterMaxWalkSpeed = 600.0f;
+	CharacterBwdMaxWalkSpeed = 300.0f;
+	CharacterBesideMaxWalkSpeed = 450.0f;
 	SpeedBuffValue = 1.0f;
 	PowerBuffValue = 1.0f;
 
@@ -241,9 +243,6 @@ void ASkyscraperCharacter::DoDown(const AActor* Attacker, const FVector& DownDir
 
 UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharacterAnimMontage) const
 {
-	if(MainGameMode)
-		MainGameMode->SendAnimMontageStatus(this, eCharacterAnimMontage);
-
 	return *CharacterAnimMontages.Find(eCharacterAnimMontage);
 }
 
@@ -280,6 +279,17 @@ void ASkyscraperCharacter::SwapWeapon(ESwapWeapon WeaponType)
 	default:
 		break;
 	}
+}
+
+void ASkyscraperCharacter::SendAnimMontageStatus(ECharacterAnimMontage eMontage, int SectionNum)
+{
+	if (SectionNum == INDEX_NONE)
+	{
+		UE_LOG(LogClass, Warning, TEXT("Montage Cant find Enum Value is %d, SectionNum is %d"), eMontage, SectionNum);
+	}
+
+	if (MainGameMode)
+		MainGameMode->SendAnimMontageStatus(this, eMontage, SectionNum);
 }
 
 void ASkyscraperCharacter::ApplyStun(const float StunTime, const FVector StunDirection) const
@@ -326,10 +336,10 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
 	SetXRotate(r);
 }
 
-void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage)
+void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum)
 {
 	const auto& AnimMontage = *CharacterAnimMontages.Find(eAnimMontage);
-	PlayAnimMontage(AnimMontage);
+	PlayAnimMontage(AnimMontage, 1.f, AnimMontage->GetSectionName(SectionNum));
 }
 
 void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime)
@@ -492,12 +502,12 @@ void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 		if(MovementVector.Y < 0.0f)   // 뒤로 이동 중이라면,
 		{
 			Crouch();
-			GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
+			GetCharacterMovement()->MaxWalkSpeedCrouched = CharacterBwdMaxWalkSpeed;
 		}
 		else if ( !(MovementVector.X <= FLT_EPSILON)  &&  (!((MovementVector.Y - 1.0f) <= FLT_EPSILON)) ) // 좌우 이동중이며, 전방이동 하지 않을 시
 		{
 			Crouch();
-			GetCharacterMovement()->MaxWalkSpeedCrouched = 450.0f;
+			GetCharacterMovement()->MaxWalkSpeedCrouched = CharacterBesideMaxWalkSpeed;
 		}
 		else
 		{

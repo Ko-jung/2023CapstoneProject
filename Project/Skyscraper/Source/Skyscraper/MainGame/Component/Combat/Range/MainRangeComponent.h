@@ -59,6 +59,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	virtual void SetInitialValue();
 	
 	// 소유 캐릭터 변수
 	UPROPERTY()

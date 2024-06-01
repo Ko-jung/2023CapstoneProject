@@ -3,6 +3,8 @@
 
 #include "RifleComponent.h"
 
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
+
 URifleComponent::URifleComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_Rifle;
@@ -31,4 +33,19 @@ URifleComponent::URifleComponent()
 void URifleComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void URifleComponent::SetInitialValue()
+{
+	Super::SetInitialValue();
+
+	UCombatSystemComponent* CombatComponent{};
+	if (OwnerCharacter)
+		CombatComponent = OwnerCharacter->CombatSystemComponent;
+
+	if (CombatComponent)
+	{
+		FireMaxCoolTime = CombatComponent->AR_FireTime;
+		ReloadSpeedTime = CombatComponent->AR_ReloadTime;
+	}
 }

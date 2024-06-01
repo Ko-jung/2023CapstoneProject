@@ -95,4 +95,9 @@ protected:
 private:
 	UPROPERTY()
 		FRotator LastRotator;
+
+// ========== 2019180016 ========== 
+public:
+	void SetPossessingPawn();
+//=================================
 };

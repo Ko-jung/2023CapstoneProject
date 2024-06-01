@@ -26,4 +26,6 @@ protected:
 		void KatanaAttachToRightHand(bool bToRightHand);
 
 	virtual void SetWeaponHiddenInGame(bool bNewHidden) const override;
+
+	virtual void SetInitialValue() override;
 };

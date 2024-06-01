@@ -20,4 +20,5 @@ public:
 	URPGComponent();
 
 	virtual void Fire(float fBaseDamage) override;
+	virtual void SetInitialValue() override;
 };

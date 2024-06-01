@@ -15,4 +15,5 @@ class SKYSCRAPER_API USMGComponent : public UMainRangeComponent
 	GENERATED_BODY()
 public:
 	USMGComponent();
+	virtual void SetInitialValue() override;
 };

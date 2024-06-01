@@ -74,10 +74,10 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 		AWindowGeometryCollection* GCWindow = Cast<AWindowGeometryCollection>(NewGCWindowMesh);
 		GCWindow->SetActorLocation(GetActorLocation());
 		GCWindow->SetActorRotation(GetActorRotation());
-		GCWindow->SetWindowObject(0);
+		GCWindow->SetWindowObject(Index);
 		GCWindow->FinishSpawning(Transform);
 
-		NewGCWindowMesh->SetLifeSpan(5.0f);
+		GCWindow->SetLifeSpan(5.0f);
 		//NewGCWindowMesh->AddForce();
 	}
 

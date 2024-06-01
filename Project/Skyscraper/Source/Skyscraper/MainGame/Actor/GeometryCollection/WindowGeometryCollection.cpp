@@ -2,6 +2,7 @@
 
 
 #include "Skyscraper/MainGame/Actor/GeometryCollection/WindowGeometryCollection.h"
+#include "GeometryCollection/GeometryCollectionObject.h"
 
 TArray<UObject*> AWindowGeometryCollection::GC_WindowObject;
 
@@ -38,8 +39,17 @@ AWindowGeometryCollection::AWindowGeometryCollection()
 			}
 		}
 	}
+	//UGeometryCollection* GeometryCollectionObject = LoadObject<UGeometryCollection>(nullptr,
+	//	TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'"));
 
 	GCWindow = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("WindowGeometryCollection"));
+	UGeometryCollection* GC = Cast<UGeometryCollection>(GC_WindowObject[1]);
+	if(GC)
+		GCWindow->SetRestCollection(GC);
+	else
+		UE_LOG(LogClass, Warning, TEXT("GC is NULLPTR"));
+	GCWindow->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -60,7 +70,15 @@ void AWindowGeometryCollection::SetWindowObject(uint8 WindowNum)
 {
 	if (0 <= WindowNum  && WindowNum < GC_WindowObject.Num())
 	{
-		GCWindow = Cast<UGeometryCollectionComponent>(GC_WindowObject[WindowNum]);
+		UGeometryCollection* GC = Cast<UGeometryCollection>(GC_WindowObject[WindowNum]);
+		if (GC)
+		{
+			GCWindow->SetRestCollection(GC);
+		}
+		else
+		{
+			UE_LOG(LogClass, Warning, TEXT("Cast<UGeometryCollection>(GC_WindowObject[WindowNum]) Cast Failed"));
+		}
 	}
 	else
 	{

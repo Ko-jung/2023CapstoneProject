@@ -29,7 +29,7 @@ public:
 	void SetWindowObject(uint8 WindowNum);
 
 private:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UGeometryCollectionComponent* GCWindow;
 
 	static TArray<UObject*> GC_WindowObject;

@@ -507,3 +507,7 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,unrealengine,c++
 /Project/Skyscraper/Intermediate
 /Project/Skyscraper/Intermediate
+/Project/TestBloodPaint/Intermediate
+/Project/TestBloodPaint/Intermediate
+/Project/TestBloodPaint/Intermediate/ShaderAutogen
+/Project/TestBloodPaint/Intermediate

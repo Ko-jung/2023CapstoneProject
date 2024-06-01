@@ -11,6 +11,8 @@
     <None Include="..\..\Source\TestBloodPaintEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.gitignore" />
+    <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -29,6 +31,12 @@
     <Filter Include="Source\TestBloodPaint">
       <UniqueIdentifier>{1C3E46B4-2307-3D5B-81D1-44D75A04E88D}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\TestBloodPaint\ClothLiquid.cpp">
+      <Filter>Source\TestBloodPaint</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TestBloodPaint\ClothLiquid.h">
+      <Filter>Source\TestBloodPaint</Filter>
+    </ClInclude>
     <None Include="..\..\Source\TestBloodPaint\TestBloodPaint.Build.cs">
       <Filter>Source\TestBloodPaint</Filter>
     </None>

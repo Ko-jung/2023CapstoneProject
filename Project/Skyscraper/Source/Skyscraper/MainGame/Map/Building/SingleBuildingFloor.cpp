@@ -68,17 +68,31 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 	int Index = FCString::Atoi(&(*WindowString.rbegin()));
 
 	FTransform Transform{ Target->GetComponentRotation(), Target->GetComponentLocation() };
-	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(AWindowGeometryCollection::StaticClass(), Transform);
+	//AWindowGeometryCollection* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AWindowGeometryCollection>
+	//	(AWindowGeometryCollection::StaticClass(), Transform);
+
+	AWindowGeometryCollection* NewGCWindowMesh = GetWorld()->SpawnActor<AWindowGeometryCollection>(Target->GetComponentLocation(), Target->GetComponentRotation(), FActorSpawnParameters());
 	if (NewGCWindowMesh)
 	{
-		AWindowGeometryCollection* GCWindow = Cast<AWindowGeometryCollection>(NewGCWindowMesh);
-		GCWindow->SetActorLocation(GetActorLocation());
-		GCWindow->SetActorRotation(GetActorRotation());
-		GCWindow->SetWindowObject(Index);
-		GCWindow->FinishSpawning(Transform);
+		NewGCWindowMesh->Init(Index);
+		NewGCWindowMesh->AddForce({10.f, 10.f, 10.f});
+		NewGCWindowMesh->SetLifeSpan(5.0f);
 
-		GCWindow->SetLifeSpan(5.0f);
-		//NewGCWindowMesh->AddForce();
+		// AWindowGeometryCollection* GCWindow = Cast<AWindowGeometryCollection>(NewGCWindowMesh);
+		// if (GCWindow)
+		// {
+		// 	GCWindow->SetActorLocation(GetActorLocation());
+		// 	GCWindow->SetActorRotation(GetActorRotation());
+		// 	//GCWindow->SetActorTransform(FTransform{ GetActorRotation(), GetActorLocation() });
+		// 	GCWindow->SetWindowObject(Index);
+		// 	GCWindow->FinishSpawning(Transform);
+		// 
+		// }
+		// else
+		// {
+		// 	UE_LOG(LogClass, Warning, TEXT("Cast<AWindowGeometryCollection>(NewGCWindowMesh) Failed"));
+		// }
+		// //NewGCWindowMesh->AddForce();
 	}
 
 

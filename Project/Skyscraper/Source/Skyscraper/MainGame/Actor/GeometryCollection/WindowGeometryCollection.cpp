@@ -8,8 +8,11 @@ TArray<UObject*> AWindowGeometryCollection::GC_WindowObject;
 
 AWindowGeometryCollection::AWindowGeometryCollection()
 {
+
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	MaterialInterface = nullptr;
 
 	if (GC_WindowObject.IsEmpty())
 	{
@@ -42,14 +45,28 @@ AWindowGeometryCollection::AWindowGeometryCollection()
 	//UGeometryCollection* GeometryCollectionObject = LoadObject<UGeometryCollection>(nullptr,
 	//	TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'"));
 
+	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	GCWindow = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("WindowGeometryCollection"));
-	UGeometryCollection* GC = Cast<UGeometryCollection>(GC_WindowObject[1]);
-	if(GC)
+	GCWindow->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	// GCWindow->SetupAttachment(RootComponent);
+}
+
+void AWindowGeometryCollection::Init(uint8 WindowNum)
+{
+	UGeometryCollection* GC = Cast<UGeometryCollection>(GC_WindowObject[WindowNum]);
+	if (GC)
+	{
 		GCWindow->SetRestCollection(GC);
+
+		GCWindow->SetSimulatePhysics(true);
+		GCWindow->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GCWindow->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+		GCWindow->SetCollisionObjectType(ECollisionChannel::ECC_Destructible);
+
+		GCWindow->SetPhysMaterialOverride(nullptr);
+	}
 	else
 		UE_LOG(LogClass, Warning, TEXT("GC is NULLPTR"));
-	GCWindow->SetupAttachment(RootComponent);
-
 }
 
 // Called when the game starts or when spawned
@@ -68,11 +85,12 @@ void AWindowGeometryCollection::Tick(float DeltaTime)
 
 void AWindowGeometryCollection::SetWindowObject(uint8 WindowNum)
 {
-	if (0 <= WindowNum  && WindowNum < GC_WindowObject.Num())
+	if (GC_WindowObject.IsValidIndex(WindowNum))
 	{
 		UGeometryCollection* GC = Cast<UGeometryCollection>(GC_WindowObject[WindowNum]);
 		if (GC)
 		{
+			GCWindow->InitializeComponent();
 			GCWindow->SetRestCollection(GC);
 		}
 		else
@@ -82,7 +100,12 @@ void AWindowGeometryCollection::SetWindowObject(uint8 WindowNum)
 	}
 	else
 	{
-		UE_LOG(LogClass, Warning, TEXT("AWindowGeometryCollection::SetWindowObject(uint8 WindowNum) ¹üÀ§ ERROR"));
+		UE_LOG(LogClass, Warning, TEXT("AWindowGeometryCollection::SetWindowObject(uint8 WindowNum) IsValidIndex ERROR"));
 	}
+}
+
+void AWindowGeometryCollection::AddForce(FVector Direction)
+{
+	GCWindow->AddForce(Direction);
 }
 

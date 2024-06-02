@@ -16,13 +16,26 @@ public:
 	// Sets default values for this component's properties
 	ULiquidWetComponent();
 
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION(BlueprintCallable)
+		void SetSkirtGravity(float value);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	void FindOwnerClothConfigBase();
+
+	void SetOwnerCharacterNewMesh();
+private:
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+protected:
+	TObjectPtr<ACharacter> OwnerCharacter;
+
+	TObjectPtr<class UChaosClothConfig> SkirtConfig;
+private:
+
 
 		
 };

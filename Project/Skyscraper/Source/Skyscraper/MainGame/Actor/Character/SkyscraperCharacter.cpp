@@ -23,8 +23,10 @@
 #include "Skyscraper/MainGame/Component/Jetpack/JetpackComponent.h"
 #include "Skyscraper/MainGame/Item/ItemFactory/ItemFactory.h"
 #include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
+#include "Skyscraper/MainGame/Component/LiquidWet/LiquidWetComponent.h"
 
 #include "../../../Network/MainGameMode.h"
+#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -101,7 +103,11 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		BoostMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BoostSkeletalMesh"));
 		BoostMesh->SetupAttachment(GetMesh(),TEXT("Bip001-Spine"));
 	}
-	
+
+	// LiquidWet 컴퍼넌트 추가
+	{
+		LiquidWetComponent = CreateDefaultSubobject<ULiquidWetComponent>(TEXT("LiquidWetComponent"));
+	}
 	
 
 	{ // == Set Input Asset

@@ -29,6 +29,7 @@ struct FInputActionValue;
 class UCombatSystemComponent;
 class UMotionWarpingComponent;
 class UMainMeleeComponent;
+class ULiquidWetComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -175,6 +176,8 @@ public:
 		UHealthComponent* HealthComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		UJetpackComponent* JetpackComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+		ULiquidWetComponent* LiquidWetComponent;
 
 protected:
 	UPROPERTY()

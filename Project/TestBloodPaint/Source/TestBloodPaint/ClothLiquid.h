@@ -29,6 +29,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	void FindOwnerClothConfigBase();
+
+	void SetOwnerCharacterNewMesh();
 private:
 
 public:	
@@ -36,6 +38,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
+	TObjectPtr<ACharacter> OwnerCharacter;
+
 	TObjectPtr<UChaosClothConfig> SkirtConfig;
 
 private:

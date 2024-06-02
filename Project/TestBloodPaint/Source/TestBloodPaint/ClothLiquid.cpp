@@ -30,10 +30,12 @@ void UClothLiquid::SetSkirtGravity(float value)
 {
 	if(SkirtConfig)
 	{
+		// 값 조정
 		UE_LOG(LogTemp, Warning, TEXT("기존: %f,"), SkirtConfig->GravityScale);
 		SkirtConfig->GravityScale = value;
 
-
+		// OwnerCharacter의 mesh 다시 로드하여 값 로드
+		SetOwnerCharacterNewMesh();
 	}
 }
 
@@ -42,6 +44,8 @@ void UClothLiquid::SetSkirtGravity(float value)
 void UClothLiquid::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OwnerCharacter = Cast<ACharacter>(GetOwner());
 
 	FindOwnerClothConfigBase();
 	// ...
@@ -82,6 +86,18 @@ void UClothLiquid::FindOwnerClothConfigBase()
 	}
 		
 	
+}
+
+void UClothLiquid::SetOwnerCharacterNewMesh()
+{
+	if (!OwnerCharacter) return;
+
+	USkeletalMesh* CurrentMeshAsset = OwnerCharacter->GetMesh()->GetSkeletalMeshAsset();
+	
+	OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(nullptr);
+	OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(CurrentMeshAsset);
+	//OwnerCharacter->GetMesh()
+
 }
 
 

@@ -68,14 +68,12 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 	int Index = FCString::Atoi(&(*WindowString.rbegin()));
 
 	FTransform Transform{ Target->GetComponentRotation(), Target->GetComponentLocation() };
-	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(AWindowGeometryCollection::StaticClass(), Transform);
+	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[Index], Transform);
 	if (NewGCWindowMesh)
 	{
-		AWindowGeometryCollection* GCWindow = Cast<AWindowGeometryCollection>(NewGCWindowMesh);
-		GCWindow->SetActorLocation(GetActorLocation());
-		GCWindow->SetActorRotation(GetActorRotation());
-		GCWindow->SetWindowObject(0);
-		GCWindow->FinishSpawning(Transform);
+		NewGCWindowMesh->SetActorLocation(GetActorLocation());
+		NewGCWindowMesh->SetActorRotation(GetActorRotation());
+		NewGCWindowMesh->FinishSpawning(Transform);
 
 		NewGCWindowMesh->SetLifeSpan(5.0f);
 		//NewGCWindowMesh->AddForce();

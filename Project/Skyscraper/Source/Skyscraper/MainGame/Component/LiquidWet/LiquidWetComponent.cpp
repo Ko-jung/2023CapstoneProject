@@ -152,19 +152,18 @@ void ULiquidWetComponent::RenderLiquidWet()
 
 	UKismetRenderingLibrary::ClearRenderTarget2D(GetWorld(), RT_HitData);
 
-	UCanvas* Canvas = NewObject<UCanvas>();
+	UCanvas* Canvas{};
 	FVector2D Size{};
 	FDrawToRenderTargetContext Context{};
-	UKismetRenderingLibrary::BeginDrawCanvasToRenderTarget(GetWorld(), RT_HitData, Canvas, Size, Context);
+	UKismetRenderingLibrary::BeginDrawCanvasToRenderTarget(GetWorld(), RT_HitData,Canvas , Size, Context);
 
 
 	// 모든 충돌 데이터를 RT_HitData 렌더타겟에 담기
 	for(int i =0; i<FLiquidHitData.Num();++i)
 	{
-		FVector2D ScreenPosition{0,0};
-		ScreenPosition.X = (HitDataOffset * i) - (HitDataOffset / 2);
-
-		FVector2D ScreenSize{  static_cast<double>(HitDataOffset),0 };
+		FVector2D ScreenPosition{ static_cast<float>((HitDataOffset * i) - (HitDataOffset / 2)),0};
+		
+		FVector2D ScreenSize{  static_cast<float>(HitDataOffset),1 };
 
 		FVector2D CoordinatePosition{ 0,0 };
 		FVector2D CoordinateSize{ 1,1 };
@@ -175,9 +174,8 @@ void ULiquidWetComponent::RenderLiquidWet()
 		RenderColor.R = Data.HitUV.X;
 		RenderColor.G = Data.HitUV.Y;
 		RenderColor.B = Data.HitDuration / 50;
-		UE_LOG(LogTemp, Warning, TEXT("%f %f %f"), RenderColor.R, RenderColor.G, RenderColor.B);
 
-		Canvas->K2_DrawTexture(nullptr, ScreenPosition, ScreenSize, CoordinatePosition, CoordinateSize, RenderColor);
+		Canvas->K2_DrawTexture(nullptr, ScreenPosition, ScreenSize, CoordinatePosition, CoordinateSize, RenderColor);;
 	}
 
 	UKismetRenderingLibrary::EndDrawCanvasToRenderTarget(GetWorld(), Context);
@@ -185,5 +183,7 @@ void ULiquidWetComponent::RenderLiquidWet()
 	// 머테리얼 내 텍스쳐 설정
 	MaterialDynamicInstanceObj->SetScalarParameterValue(FName("HitCounts"), FLiquidHitData.Num());
 	MaterialDynamicInstanceObj->SetTextureParameterValue(FName("Tex"), RT_HitData);
+
+
 }
 

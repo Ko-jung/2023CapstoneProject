@@ -371,8 +371,11 @@ struct PBreakObject : Packet
 {
 	EBreakType ObjectType;
 	WORD ObjectSerial;
+	PVector Direction;
 
-	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EBreakType::Window), ObjectSerial(0) { PacketSize = sizeof(PBreakObject); }
-	PBreakObject(EBreakType type, WORD WindowSerial) : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EBreakType::Window), ObjectSerial(0), Direction(PVector()) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject(EBreakType type, WORD WindowSerial, PVector Direction) :
+		Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial), Direction(Direction)
+	{ PacketSize = sizeof(PBreakObject); }
 };
 #pragma pack(pop)

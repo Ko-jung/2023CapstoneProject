@@ -51,6 +51,7 @@ AWindowGeometryCollection::AWindowGeometryCollection()
 	// GCWindow->SetupAttachment(RootComponent);
 }
 
+#include "Field/FieldSystemObjects.h"
 void AWindowGeometryCollection::Init(uint8 WindowNum)
 {
 	UGeometryCollection* GC = Cast<UGeometryCollection>(GC_WindowObject[WindowNum]);
@@ -64,6 +65,9 @@ void AWindowGeometryCollection::Init(uint8 WindowNum)
 		GCWindow->SetCollisionObjectType(ECollisionChannel::ECC_Destructible);
 
 		GCWindow->SetPhysMaterialOverride(nullptr);
+
+		//UFieldNodeBase FNB;
+		//GCWindow->ApplyPhysicsField(true, EGeometryCollectionPhysicsTypeEnum::Chaos_LinearVelocity, nullptr, );
 	}
 	else
 		UE_LOG(LogClass, Warning, TEXT("GC is NULLPTR"));
@@ -108,4 +112,3 @@ void AWindowGeometryCollection::AddForce(FVector Direction)
 {
 	GCWindow->AddForce(Direction);
 }
-

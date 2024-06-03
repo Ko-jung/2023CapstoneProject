@@ -65,4 +65,15 @@ AElectricCharacter::AElectricCharacter()
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
 
+	// Skirt
+	{
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> SkirtStaticMeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/character/2_electric/elec_skirt.elec_skirt'"));
+		SkirtStaticMesh = SkirtStaticMeshAsset.Object;
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> SkirtMaterialAsset(TEXT("/Script/Engine.Material'/Game/2016180023/character/2_electric/material/Material_skirt.Material_skirt'"));
+		SkirtMaterial = SkirtMaterialAsset.Object;
+
+		SkirtMaterialValue = 10;
+	}
+
 }

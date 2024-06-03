@@ -3,7 +3,6 @@
 
 #include "ClothLiquid.h"
 #include "ClothConfigBase.h"
-#include "ClothConfig.h"
 #include "ClothingAsset.h"
 #include "GameFramework/Character.h"
 #include "ChaosCloth/ChaosClothConfig.h"

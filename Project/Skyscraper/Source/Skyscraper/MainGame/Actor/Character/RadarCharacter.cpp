@@ -63,4 +63,15 @@ ARadarCharacter::ARadarCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Radar/Boost/AM_Radar_Boost.AM_Radar_Boost'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
+
+	// Skirt
+	{
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> SkirtStaticMeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/character/5_radar/radar_skirt.radar_skirt'"));
+		SkirtStaticMesh = SkirtStaticMeshAsset.Object;
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> SkirtMaterialAsset(TEXT("/Script/Engine.Material'/Game/2016180023/character/5_radar/material/Material_skirt.Material_skirt'"));
+		SkirtMaterial = SkirtMaterialAsset.Object;
+
+		SkirtMaterialValue = 13;
+	}
 }

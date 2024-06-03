@@ -7,6 +7,8 @@
 #include "LiquidWetComponent.generated.h"
 
 
+class ASkyscraperCharacter;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SKYSCRAPER_API ULiquidWetComponent : public UActorComponent
 {
@@ -16,22 +18,21 @@ public:
 	// Sets default values for this component's properties
 	ULiquidWetComponent();
 
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	
 	UFUNCTION(BlueprintCallable)
 		void SetSkirtGravity(float value);
 protected:
+	
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	void AddSkirtCollisionMesh();
 	void FindOwnerClothConfigBase();
 
 	void SetOwnerCharacterNewMesh();
 private:
 public:	
 protected:
-	TObjectPtr<ACharacter> OwnerCharacter;
+	TObjectPtr<ASkyscraperCharacter> OwnerCharacter;
 
 	TObjectPtr<class UChaosClothConfig> SkirtConfig;
 private:

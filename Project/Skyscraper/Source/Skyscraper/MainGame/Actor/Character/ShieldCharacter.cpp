@@ -62,4 +62,15 @@ AShieldCharacter::AShieldCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/Boost/AM_Shield_Boost.AM_Shield_Boost'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
+
+	// Skirt
+	{
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> SkirtStaticMeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/character/0_shield/shield_skirt.shield_skirt'"));
+		SkirtStaticMesh = SkirtStaticMeshAsset.Object;
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> SkirtMaterialAsset(TEXT("/Script/Engine.Material'/Game/2016180023/character/0_shield/material/Material_skirt.Material_skirt'"));
+		SkirtMaterial = SkirtMaterialAsset.Object;
+
+		SkirtMaterialValue = 13;
+	}
 }

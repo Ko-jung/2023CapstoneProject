@@ -93,6 +93,10 @@ public:
 
 	FORCEINLINE TObjectPtr<USkyscraperAnimInstance> GetAnimInstance() const { return Cast<USkyscraperAnimInstance>(GetMesh()->GetAnimInstance()); }
 
+	FORCEINLINE UStaticMesh* GetSkirtStaticMesh()const { return SkirtStaticMesh; }
+	FORCEINLINE UMaterial* GetSkirtMaterial() const { return SkirtMaterial; }
+	FORCEINLINE float GetSkirtMaterialValue() const { return SkirtMaterialValue; }
+
 	// 2019180016
 public:
 	/// <returns>
@@ -186,6 +190,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Boost")
 		USkeletalMeshComponent* BoostMesh;
 
+	UPROPERTY(EditAnywhere, Category = "Skirt")
+		UStaticMesh* SkirtStaticMesh;
+	UPROPERTY(EditAnywhere, Category = "Skirt")
+		UMaterial* SkirtMaterial;
+	UPROPERTY(EditAnywhere, Category = "Skirt")
+		float SkirtMaterialValue;
 
 private:
 	/** Camera boom positioning the camera behind the character */

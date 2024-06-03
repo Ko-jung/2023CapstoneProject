@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "ChaosCloth/ChaosClothConfig.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 
 // Sets default values for this component's properties
 ULiquidWetComponent::ULiquidWetComponent()
@@ -37,11 +38,22 @@ void ULiquidWetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OwnerCharacter = Cast<ACharacter>(GetOwner());
+	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 
+	AddSkirtCollisionMesh();
 	FindOwnerClothConfigBase();
 	// ...
 
+}
+
+void ULiquidWetComponent::AddSkirtCollisionMesh()
+{
+	UStaticMeshComponent* SkirtCollisionMesh = Cast<UStaticMeshComponent>(OwnerCharacter->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false));
+
+	SkirtCollisionMesh->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules{ EAttachmentRule::SnapToTarget,true }, FName{ "SkirtSocket" });
+	SkirtCollisionMesh->SetStaticMesh(OwnerCharacter->GetSkirtStaticMesh());
+
+	SkirtCollisionMesh->SetVisibility(true);
 }
 
 void ULiquidWetComponent::FindOwnerClothConfigBase()
@@ -89,14 +101,5 @@ void ULiquidWetComponent::SetOwnerCharacterNewMesh()
 	OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(CurrentMeshAsset);
 	//OwnerCharacter->GetMesh()
 
-}
-
-
-// Called every frame
-void ULiquidWetComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 

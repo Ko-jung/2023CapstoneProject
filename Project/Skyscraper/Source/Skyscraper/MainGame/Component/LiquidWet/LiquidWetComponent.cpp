@@ -6,8 +6,11 @@
 #include "ClothingAsset.h"
 #include "GameFramework/Character.h"
 #include "ChaosCloth/ChaosClothConfig.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "Kismet/KismetRenderingLibrary.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Engine/Canvas.h"
 
 // Sets default values for this component's properties
 ULiquidWetComponent::ULiquidWetComponent()
@@ -16,7 +19,15 @@ ULiquidWetComponent::ULiquidWetComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
+	MaxHitCount = 250;
+	HitDataOffset = 4;
 	// ...
+}
+
+void ULiquidWetComponent::AddHitData(FVector2D HitUV, float LiquidDuration)
+{
+	FLiquidHitData.Add(FLiquidData{ HitUV,LiquidDuration });
+	RenderLiquidWet();
 }
 
 void ULiquidWetComponent::SetSkirtGravity(float value)
@@ -40,10 +51,7 @@ void ULiquidWetComponent::BeginPlay()
 
 	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
 
-	AddSkirtCollisionMesh();
-	FindOwnerClothConfigBase();
-	// ...
-
+	InitialSetting();
 }
 
 void ULiquidWetComponent::AddSkirtCollisionMesh()
@@ -53,7 +61,8 @@ void ULiquidWetComponent::AddSkirtCollisionMesh()
 	SkirtCollisionMesh->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules{ EAttachmentRule::SnapToTarget,true }, FName{ "SkirtSocket" });
 	SkirtCollisionMesh->SetStaticMesh(OwnerCharacter->GetSkirtStaticMesh());
 
-	SkirtCollisionMesh->SetVisibility(true);
+	SkirtCollisionMesh->SetVisibility(false);
+	SkirtCollisionMesh->SetCollisionObjectType(ECC_GameTraceChannel1);
 }
 
 void ULiquidWetComponent::FindOwnerClothConfigBase()
@@ -92,6 +101,40 @@ void ULiquidWetComponent::FindOwnerClothConfigBase()
 
 }
 
+void ULiquidWetComponent::SetSkirtMaterialDynamicInstance()
+{
+	if (!OwnerCharacter) return;
+
+	//UMaterial* SkirtMaterial = OwnerCharacter->GetSkirtMaterial();
+	//MaterialDynamicInstanceObj = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), SkirtMaterial);
+	//OwnerCharacter->GetMesh()->SetMaterial(OwnerCharacter->GetSkirtMaterialValue(), MaterialDynamicInstanceObj);
+
+	MaterialDynamicInstanceObj =  OwnerCharacter->GetMesh()->CreateAndSetMaterialInstanceDynamic(OwnerCharacter->GetSkirtMaterialValue());
+}
+
+void ULiquidWetComponent::CreateRenderTargetAndSetMaterialParam()
+{
+	if (!MaterialDynamicInstanceObj) return;
+
+	// 렌더타겟 생성 (HitData담는 캔버스)
+	RT_HitData = UKismetRenderingLibrary::CreateRenderTarget2D(GetWorld(), MaxHitCount * HitDataOffset, 1);
+	RT_HitData->AddressX = TextureAddress::TA_Clamp;
+	RT_HitData->AddressY = TextureAddress::TA_Clamp;
+
+	// 머테리얼 파라미터로 렌더타겟 연결
+	MaterialDynamicInstanceObj->SetTextureParameterValue(FName("Tex"), RT_HitData);
+	// 최대 Hit 갯수 연결
+	MaterialDynamicInstanceObj->SetScalarParameterValue(FName("XSize"), MaxHitCount);
+}
+
+void ULiquidWetComponent::InitialSetting()
+{
+	AddSkirtCollisionMesh();
+	FindOwnerClothConfigBase();
+	SetSkirtMaterialDynamicInstance();
+	CreateRenderTargetAndSetMaterialParam();
+}
+
 void ULiquidWetComponent::SetOwnerCharacterNewMesh()
 {
 	if (!OwnerCharacter) return;
@@ -101,5 +144,46 @@ void ULiquidWetComponent::SetOwnerCharacterNewMesh()
 	OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(CurrentMeshAsset);
 	//OwnerCharacter->GetMesh()
 
+}
+
+void ULiquidWetComponent::RenderLiquidWet()
+{
+	if (!(RT_HitData && MaterialDynamicInstanceObj)) return;
+
+	UKismetRenderingLibrary::ClearRenderTarget2D(GetWorld(), RT_HitData);
+
+	UCanvas* Canvas = NewObject<UCanvas>();
+	FVector2D Size{};
+	FDrawToRenderTargetContext Context{};
+	UKismetRenderingLibrary::BeginDrawCanvasToRenderTarget(GetWorld(), RT_HitData, Canvas, Size, Context);
+
+
+	// 모든 충돌 데이터를 RT_HitData 렌더타겟에 담기
+	for(int i =0; i<FLiquidHitData.Num();++i)
+	{
+		FVector2D ScreenPosition{0,0};
+		ScreenPosition.X = (HitDataOffset * i) - (HitDataOffset / 2);
+
+		FVector2D ScreenSize{  static_cast<double>(HitDataOffset),0 };
+
+		FVector2D CoordinatePosition{ 0,0 };
+		FVector2D CoordinateSize{ 1,1 };
+
+		//실질적인 데이터가 담기는 변수
+		FLinearColor RenderColor{0,0,0,1};
+		FLiquidData& Data = FLiquidHitData[i];
+		RenderColor.R = Data.HitUV.X;
+		RenderColor.G = Data.HitUV.Y;
+		RenderColor.B = Data.HitDuration / 50;
+		UE_LOG(LogTemp, Warning, TEXT("%f %f %f"), RenderColor.R, RenderColor.G, RenderColor.B);
+
+		Canvas->K2_DrawTexture(nullptr, ScreenPosition, ScreenSize, CoordinatePosition, CoordinateSize, RenderColor);
+	}
+
+	UKismetRenderingLibrary::EndDrawCanvasToRenderTarget(GetWorld(), Context);
+
+	// 머테리얼 내 텍스쳐 설정
+	MaterialDynamicInstanceObj->SetScalarParameterValue(FName("HitCounts"), FLiquidHitData.Num());
+	MaterialDynamicInstanceObj->SetTextureParameterValue(FName("Tex"), RT_HitData);
 }
 

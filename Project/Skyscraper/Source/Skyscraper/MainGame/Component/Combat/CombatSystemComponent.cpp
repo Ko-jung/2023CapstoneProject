@@ -11,6 +11,7 @@
 #include "Skyscraper/MainGame/Component/Combat/Range/SMGComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/RifleComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/Range/RPGComponent.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"

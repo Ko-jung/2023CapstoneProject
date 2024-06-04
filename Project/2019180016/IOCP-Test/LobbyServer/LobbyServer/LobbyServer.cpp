@@ -190,7 +190,7 @@ bool LobbyServer::ConnectToGameServer()
 		return false;
 	}
 
-	LogUtil::PrintLog("Connect Success to Game Server");
+	cout << "Connect Success to Game Server" << endl;
 	return true;
 }
 

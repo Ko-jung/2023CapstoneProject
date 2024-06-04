@@ -239,7 +239,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 		AccpetLobbyServer();
 		IsLobbyServerConnect = true;
 
-		LogUtil::PrintLog("Connect Success to Lobby Server");
+		cout << "Connect Success to Lobby Server" << endl;
 
 		if (!ReadyToNextAccept())
 		{

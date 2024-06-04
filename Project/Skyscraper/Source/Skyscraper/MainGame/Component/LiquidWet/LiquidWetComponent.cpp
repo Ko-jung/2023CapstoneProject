@@ -105,10 +105,7 @@ void ULiquidWetComponent::FindOwnerClothConfigBase()
 				SkirtConfig = Cast<UChaosClothConfig>(*Common->ClothConfigs.Find("ChaosClothConfig"));
 			}
 		}
-
 	}
-
-
 }
 
 void ULiquidWetComponent::SetSkirtMaterialDynamicInstance()
@@ -154,20 +151,8 @@ void ULiquidWetComponent::SetOwnerCharacterNewMesh()
 
 	USkeletalMesh* CurrentMeshAsset = OwnerCharacter->GetMesh()->GetSkeletalMeshAsset();
 	
-	//OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(nullptr);
-	//OwnerCharacter->GetMesh()->SetSkinnedAsset(CurrentMeshAsset);
-	//OwnerCharacter->GetMesh()->SetSkinnedAsset();
 	OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(nullptr,true);
 	OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(CurrentMeshAsset,true);
-	//OwnerCharacter->GetMesh()->UpdateBoneBodyMapping();
-	//OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(nullptr);
-
-
-
-	
-
-	//OwnerCharacter->GetMesh()
-
 }
 
 void ULiquidWetComponent::RenderLiquidWet()

@@ -18,6 +18,8 @@ public:
 	// Sets default values for this actor's properties
 	AWindowGeometryCollection();
 
+	void Init(uint8 WindowNum);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -27,10 +29,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetWindowObject(uint8 WindowNum);
+	void AddForce(FVector Direction);
 
 private:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UGeometryCollectionComponent* GCWindow;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* MaterialInterface;
 
 	static TArray<UObject*> GC_WindowObject;
 };

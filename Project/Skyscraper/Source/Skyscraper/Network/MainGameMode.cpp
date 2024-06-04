@@ -545,7 +545,7 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 		return;
 	}
 
-	SBFloor->DoCollapseWindow(TargetObject);
+	SBFloor->DoCollapseWindow(TargetObject, FVector{ PBO.Direction.X, PBO.Direction.Y, PBO.Direction.Z });
 	//TargetObject->DestroyComponent();
 }
 
@@ -744,12 +744,15 @@ void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
    
 void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType)
 {
+	FVector Direction = (BreakTarget->GetComponentLocation() - Sender->GetActorLocation()).GetSafeNormal();
+
 	if (!m_Socket)
 	{
 		PBreakObject PBO;
 		int WindowIndex = GetWindowsIndex(BreakTarget);
 		PBO.ObjectType = BreakType;
 		PBO.ObjectSerial = WindowIndex;
+		PBO.Direction = Direction;
 		ProcessBreakObject(PBO);
 		return;
 	}
@@ -757,7 +760,7 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
 
 	int WindowIndex = GetWindowsIndex(BreakTarget);
-	PBreakObject PBO(BreakType, WindowIndex);
+	PBreakObject PBO(BreakType, WindowIndex, Direction);
 	m_Socket->Send(&PBO, sizeof(PBO));
 }
 

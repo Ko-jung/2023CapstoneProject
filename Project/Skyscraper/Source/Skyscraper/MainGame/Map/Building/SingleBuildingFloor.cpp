@@ -17,6 +17,9 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 	ConstructorHelpers::FClassFinder<AActor> GC_BuildingRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/BP_GC_Building.BP_GC_Building_C'"));
 	GC_BuildingClass = GC_BuildingRef.Class;
 
+	ConstructorHelpers::FClassFinder<AActor> GCWindowActorRef(TEXT("/Script/Engine.Blueprint'/Game/2019180016/FractureMesh/BP_WindowGeometryCollection.BP_WindowGeometryCollection_C'"));
+	BPGCWindowActorClass = GCWindowActorRef.Class;
+
 	for (int i = 0; i < 6; i++)
 	{
 
@@ -62,7 +65,7 @@ void ASingleBuildingFloor::DoCollapse()
 }
 
 #include "Skyscraper/MainGame/Actor/GeometryCollection/WindowGeometryCollection.h"
-void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
+void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target, FVector ForceDirection)
 {
 	FString WindowString = Target->GetName();
 	int Index = FCString::Atoi(&(*WindowString.rbegin()));
@@ -76,9 +79,11 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 		NewGCWindowMesh->FinishSpawning(Transform);
 
 		NewGCWindowMesh->SetLifeSpan(5.0f);
-		//NewGCWindowMesh->AddForce();
 	}
-
+	else
+	{
+		UE_LOG(LogClass, Warning, TEXT("NewGCWindowMesh is nullptr!"));
+	}
 
 	// AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[Index], Transform);
 	// if (NewGCWindowMesh)
@@ -88,7 +93,6 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target)
 	// 	NewGCWindowMesh->FinishSpawning(Transform);
 	// 
 	// 	NewGCWindowMesh->SetLifeSpan(5.0f);
-	// 	//NewGCWindowMesh->AddForce();
 	// }
 	Target->DestroyComponent();
 

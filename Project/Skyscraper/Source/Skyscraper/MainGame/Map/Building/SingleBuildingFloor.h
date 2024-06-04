@@ -27,6 +27,9 @@ class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 	UPROPERTY()
 	TArray<UClass*> GC_WindowClass;
 
+	UPROPERTY()
+	UClass* BPGCWindowActorClass;
+
 	// UPROPERTY()
 	// TArray<UObject*> GC_WindowObject;
 	// ========================
@@ -47,6 +50,6 @@ public:
 	void DoCollapse();
 
 	// ====== 2019180016 ======
-	void DoCollapseWindow(UStaticMeshComponent* Target);
+	void DoCollapseWindow(UStaticMeshComponent* Target, FVector ForceDirection);
 	// ========================
 };

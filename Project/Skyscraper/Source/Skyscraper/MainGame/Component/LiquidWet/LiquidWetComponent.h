@@ -37,6 +37,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
 	void AddSkirtCollisionMesh();
 	void FindOwnerClothConfigBase();
 	void SetSkirtMaterialDynamicInstance();
@@ -50,6 +51,9 @@ protected:
 	void RenderLiquidWet();
 	// 액체 흔적 기준 치마의 물리 효과 계산하여 적용하는 함수
 	void CalculateAndApplySkirtGravity();
+
+	UFUNCTION()
+		void LiquidUpdateFunc();
 private:
 public:	
 protected:
@@ -75,7 +79,11 @@ protected:
 	// Skirt에 Liquid의 충돌 데이터를 담는 구조체 배열
 	UPROPERTY()
 	TArray<FLiquidData> FLiquidHitData;
+
+	FTimerHandle LiquidUpdateTimerHandle;
+
 	
+
 private:
 
 

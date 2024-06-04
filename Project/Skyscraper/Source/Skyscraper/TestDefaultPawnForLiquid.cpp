@@ -10,8 +10,16 @@
 
 void ATestDefaultPawnForLiquid::Fire() {
 	FVector Start = GetActorLocation();
-	FVector End = Start + UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetActorForwardVector() * 1000;
-
+	FVector End{};
+	if(Cast<APlayerController>(GetController()))
+	{
+		End = Start + UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetActorForwardVector() * 1000;
+	}else
+	{
+		End = Start + GetActorForwardVector() * 1000;
+	}
+	
+	//
 	TArray<AActor*> IgnoreActors;
 	IgnoreActors.Add(this);
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
@@ -30,7 +38,7 @@ void ATestDefaultPawnForLiquid::Fire() {
 			FVector2D HitUV{};
 			UGameplayStatics::FindCollisionUV(OutHit,0,HitUV);
 			UE_LOG(LogTemp, Warning, TEXT("UV 결과 - %f %f"), HitUV.X, HitUV.Y);
-			Character->LiquidWetComponent->AddHitData(HitUV, UKismetMathLibrary::RandomFloatInRange(8.0, 12.0));
+			Character->LiquidWetComponent->AddHitData(HitUV, UKismetMathLibrary::RandomFloatInRange(4.0, 6.0));
 		}
 	}
 }
@@ -39,6 +47,7 @@ void ATestDefaultPawnForLiquid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!Cast<APlayerController>(GetController()))return;
 	if (Cast<APlayerController>(GetController())->WasInputKeyJustPressed(EKeys::LeftMouseButton))
 	{
 		Fire();

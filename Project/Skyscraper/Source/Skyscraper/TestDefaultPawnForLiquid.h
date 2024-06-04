@@ -15,6 +15,7 @@ class SKYSCRAPER_API ATestDefaultPawnForLiquid : public ADefaultPawn
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable)
 	void Fire();
 
 	// Called every frame

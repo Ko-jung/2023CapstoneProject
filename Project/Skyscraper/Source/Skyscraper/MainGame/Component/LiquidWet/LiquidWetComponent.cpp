@@ -29,6 +29,14 @@ void ULiquidWetComponent::AddHitData(FVector2D HitUV, float LiquidDuration)
 {
 	if (FLiquidHitData.Num() >= MaxHitCount) return;
 
+	if(FLiquidHitData.Num() == 0)
+	{
+		if(!LiquidUpdateTimerHandle.IsValid())
+		{
+			GetWorld()->GetTimerManager().SetTimer(LiquidUpdateTimerHandle, this, &ThisClass::LiquidUpdateFunc, 0.1f, true);
+		}
+	}
+
 	FLiquidHitData.Add(FLiquidData{ HitUV,LiquidDuration });
 	RenderLiquidWet();
 	CalculateAndApplySkirtGravity();
@@ -42,6 +50,7 @@ void ULiquidWetComponent::SetSkirtGravity(float value)
 		UE_LOG(LogTemp, Warning, TEXT("기존: %f,"), SkirtConfig->GravityScale);
 		SkirtConfig->GravityScale = value;
 		SkirtConfig->LinearVelocityScale = FVector(0.0f);
+
 		// OwnerCharacter의 mesh 다시 로드하여 값 로드
 		SetOwnerCharacterNewMesh();
 	}
@@ -57,6 +66,7 @@ void ULiquidWetComponent::BeginPlay()
 
 	InitialSetting();
 }
+
 
 void ULiquidWetComponent::AddSkirtCollisionMesh()
 {
@@ -133,6 +143,9 @@ void ULiquidWetComponent::InitialSetting()
 	FindOwnerClothConfigBase();
 	SetSkirtMaterialDynamicInstance();
 	CreateRenderTargetAndSetMaterialParam();
+
+	CalculateAndApplySkirtGravity();
+	
 }
 
 void ULiquidWetComponent::SetOwnerCharacterNewMesh()
@@ -140,8 +153,19 @@ void ULiquidWetComponent::SetOwnerCharacterNewMesh()
 	if (!OwnerCharacter) return;
 
 	USkeletalMesh* CurrentMeshAsset = OwnerCharacter->GetMesh()->GetSkeletalMeshAsset();
-	OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(nullptr);
-	OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(CurrentMeshAsset);
+	
+	//OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(nullptr);
+	//OwnerCharacter->GetMesh()->SetSkinnedAsset(CurrentMeshAsset);
+	//OwnerCharacter->GetMesh()->SetSkinnedAsset();
+	OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(nullptr,true);
+	OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(CurrentMeshAsset,true);
+	//OwnerCharacter->GetMesh()->UpdateBoneBodyMapping();
+	//OwnerCharacter->GetMesh()->SetSkeletalMeshAsset(nullptr);
+
+
+
+	
+
 	//OwnerCharacter->GetMesh()
 
 }
@@ -189,9 +213,21 @@ void ULiquidWetComponent::RenderLiquidWet()
 
 void ULiquidWetComponent::CalculateAndApplySkirtGravity()
 {
-	float DefaultGravity = 1.0f;
-	float AddGravity = FLiquidHitData.Num() / 100;
+	float DefaultGravity = 0.25f;
+	float AddGravity = FLiquidHitData.Num()*1;
 
 	SetSkirtGravity(DefaultGravity+AddGravity);
+}
+
+void ULiquidWetComponent::LiquidUpdateFunc()
+{
+	for (FLiquidData& Data : FLiquidHitData)
+	{
+		Data.HitDuration = Data.HitDuration - GetWorld()->GetDeltaSeconds();
+	}
+	if (!FLiquidHitData.IsEmpty())
+	{
+		RenderLiquidWet();
+	}
 }
 

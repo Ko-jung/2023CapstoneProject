@@ -48,6 +48,8 @@ protected:
 
 	// 액체 흔적을 렌더링 하는 함수
 	void RenderLiquidWet();
+	// 액체 흔적 기준 치마의 물리 효과 계산하여 적용하는 함수
+	void CalculateAndApplySkirtGravity();
 private:
 public:	
 protected:

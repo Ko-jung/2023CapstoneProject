@@ -24,10 +24,14 @@ ULiquidWetComponent::ULiquidWetComponent()
 	// ...
 }
 
+
 void ULiquidWetComponent::AddHitData(FVector2D HitUV, float LiquidDuration)
 {
+	if (FLiquidHitData.Num() >= MaxHitCount) return;
+
 	FLiquidHitData.Add(FLiquidData{ HitUV,LiquidDuration });
 	RenderLiquidWet();
+	CalculateAndApplySkirtGravity();
 }
 
 void ULiquidWetComponent::SetSkirtGravity(float value)
@@ -37,7 +41,7 @@ void ULiquidWetComponent::SetSkirtGravity(float value)
 		// 값 조정
 		UE_LOG(LogTemp, Warning, TEXT("기존: %f,"), SkirtConfig->GravityScale);
 		SkirtConfig->GravityScale = value;
-
+		SkirtConfig->LinearVelocityScale = FVector(0.0f);
 		// OwnerCharacter의 mesh 다시 로드하여 값 로드
 		SetOwnerCharacterNewMesh();
 	}
@@ -89,10 +93,6 @@ void ULiquidWetComponent::FindOwnerClothConfigBase()
 			if (Common->ClothConfigs.Contains("ChaosClothConfig"))
 			{
 				SkirtConfig = Cast<UChaosClothConfig>(*Common->ClothConfigs.Find("ChaosClothConfig"));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("못찾았다!"));
 			}
 		}
 
@@ -185,5 +185,13 @@ void ULiquidWetComponent::RenderLiquidWet()
 	MaterialDynamicInstanceObj->SetTextureParameterValue(FName("Tex"), RT_HitData);
 
 
+}
+
+void ULiquidWetComponent::CalculateAndApplySkirtGravity()
+{
+	float DefaultGravity = 1.0f;
+	float AddGravity = FLiquidHitData.Num() / 100;
+
+	SetSkirtGravity(DefaultGravity+AddGravity);
 }
 

@@ -36,6 +36,8 @@
 
 void AMainGameMode::BeginPlay()
 {
+	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
+
 	GetHexagonTileOnLevel();
 
 	// Get Socket Instance
@@ -87,6 +89,8 @@ void AMainGameMode::BeginPlay()
 
 	TileDropTimer = 0.f;
 	TileDropLevel = 0;
+
+	UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::BeginPlay()"));
 }
 
 void AMainGameMode::Tick(float Deltatime)
@@ -112,6 +116,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMainGameMode::ProcessFunc()
 {
+	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
 	Packet* packet;
 	while (FuncQueue.try_pop(packet))
 	{
@@ -282,6 +287,7 @@ void AMainGameMode::ProcessFunc()
 		}
 		delete packet;
 	}
+	UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
 }
 
 //void AMainGameMode::ProcessPosition()

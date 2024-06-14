@@ -4,11 +4,10 @@
 #include "Skyscraper/MainGame/Actor/GeometryCollection/WindowGeometryCollection.h"
 #include "GeometryCollection/GeometryCollectionObject.h"
 
-TArray<UObject*> AWindowGeometryCollection::GC_WindowObject;
+//TArray<UObject*> AWindowGeometryCollection::GC_WindowObject;
 
 AWindowGeometryCollection::AWindowGeometryCollection()
 {
-
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 

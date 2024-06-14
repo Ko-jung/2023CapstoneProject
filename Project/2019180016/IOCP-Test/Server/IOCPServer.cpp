@@ -248,9 +248,8 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 	}
 	else
 	{
-		ClientMgr* ClientManager = ClientMgr::Instance();
 		// id�� �������� ��ȣ 9999�� ������ ��?
-		if (ClientManager->GetClientCount() < MAXCLIENT)
+		if (ClientMgr::Instance()->GetClientCount() < MAXCLIENT)
 		{
 			// ��� Ŭ���� ���� ��ȣ�� ����??
 			int NowClientNum;

@@ -38,5 +38,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	UMaterialInterface* MaterialInterface;
 
-	static TArray<UObject*> GC_WindowObject;
+	UPROPERTY()
+	 TArray<UObject*> GC_WindowObject;
 };

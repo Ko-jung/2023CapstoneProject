@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "WP_LoginWidget.generated.h"
+#include "LoginWidget.generated.h"
 
 class UButton;
 class UEditableText;
@@ -14,14 +14,17 @@ class UTextBlock;
  * 
  */
 UCLASS()
-class SKYSCRAPER_API UWP_LoginWidget : public UUserWidget
+class SKYSCRAPER_API ULoginWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
 	virtual void NativeConstruct() override;
 	//virtual bool Initialize();
-	
+
+	void OnPlayButtonClick();
+	void OnRegisterButtonClick();
+
 private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ExtraMessage;

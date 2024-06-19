@@ -20,9 +20,11 @@ class SKYSCRAPER_API ULoginWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
-	//virtual bool Initialize();
+	virtual bool Initialize();
 
+	UFUNCTION()
 	void OnPlayButtonClick();
+	UFUNCTION()
 	void OnRegisterButtonClick();
 
 private:

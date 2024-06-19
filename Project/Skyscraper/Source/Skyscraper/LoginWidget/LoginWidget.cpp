@@ -10,10 +10,21 @@
 void ULoginWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	// PlayButton->OnClicked.AddUniqueDynamic(this, &ULoginWidget::OnPlayButtonClick);
 	// RegisterButton->OnClicked.AddUniqueDynamic(this, &ULoginWidget::OnRegisterButtonClick);
 	
 
+}
+
+bool ULoginWidget::Initialize()
+{
+	bool Succ = Super::Initialize();
+	if (!Succ) return false;
+
+	if(!PlayButton)
+		UE_LOG(LogClass, Warning, TEXT("PlayButton is Nullptr!"));
+
+	PlayButton->OnClicked.AddDynamic(this, &ULoginWidget::OnPlayButtonClick);
+	return true;
 }
 
 void ULoginWidget::OnPlayButtonClick()
@@ -29,7 +40,8 @@ void ULoginWidget::OnPlayButtonClick()
 	PTryLogin PTL;
 	strcpy_s(PTL.ID, IDString.c_str());
 	strcpy_s(PTL.Password, PasswordString.c_str());
-	
+
+	UE_LOG(LogClass, Warning, TEXT("Play Button!"));
 }
 
 void ULoginWidget::OnRegisterButtonClick()

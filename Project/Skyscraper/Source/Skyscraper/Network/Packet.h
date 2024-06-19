@@ -378,4 +378,13 @@ struct PBreakObject : Packet
 		Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial), Direction(Direction)
 	{ PacketSize = sizeof(PBreakObject); }
 };
+
+struct PTryLogin : Packet
+{
+	char ID[30];
+	char Password[30];
+
+	PTryLogin() :Packet(COMP_OP::OP_TRYLOGIN) { PacketSize = sizeof(PTryLogin); }
+};
+
 #pragma pack(pop)

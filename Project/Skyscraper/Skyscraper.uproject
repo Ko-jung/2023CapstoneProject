@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{71B2D520-4EB0-4638-3032-D989D890BC2A}",
+	"EngineAssociation": "{3C6B1BD6-4E49-C073-E137-56994FD912A3}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -11,8 +11,7 @@
 			"AdditionalDependencies": [
 				"UMG",
 				"Engine",
-				"EnhancedInput",
-				"AIModule"
+				"EnhancedInput"
 			]
 		}
 	],

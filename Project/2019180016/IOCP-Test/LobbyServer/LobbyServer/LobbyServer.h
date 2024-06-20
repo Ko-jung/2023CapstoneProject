@@ -26,6 +26,8 @@ public:
 	void CheckingMatchingQueue();
 	bool ConnectToGameServer();
 
+	void ProcessTryLogin(int id, PTryLogin* PTL);
+
 	void Accept(int id, int bytes, EXP_OVER* exp);
 	void Send(int id, int bytes, EXP_OVER* exp);
 	void Recv(int id, int bytes, EXP_OVER* exp);

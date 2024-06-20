@@ -383,6 +383,7 @@ struct PTryLogin : Packet
 {
 	char ID[30];
 	char Password[30];
+	bool IsRegister;
 
 	PTryLogin() :Packet(COMP_OP::OP_TRYLOGIN) { PacketSize = sizeof(PTryLogin); }
 };

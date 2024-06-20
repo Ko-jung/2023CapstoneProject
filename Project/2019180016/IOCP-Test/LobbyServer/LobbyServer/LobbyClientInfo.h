@@ -13,7 +13,7 @@ public:
 
 	void RecvProcess(const DWORD& bytes, EXP_OVER* exp);
 
-	void SendProcess(int PacketSize, Packet* PacketData);
+	void SendProcess(Packet* PacketData);
 	void Recv();
 
 	SOCKET& GetSocket() { return m_sClientSocket; }

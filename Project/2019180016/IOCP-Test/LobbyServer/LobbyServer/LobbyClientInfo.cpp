@@ -39,7 +39,7 @@ void LobbyClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 	Recv();
 }
 
-void LobbyClientInfo::SendProcess(int PacketSize, Packet* PacketData)
+void LobbyClientInfo::SendProcess(Packet* PacketData)
 {
 	if (m_sClientSocket == INVALID_SOCKET)
 	{
@@ -47,7 +47,7 @@ void LobbyClientInfo::SendProcess(int PacketSize, Packet* PacketData)
 		return;
 	}
 
-	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (char)(PacketSize), (void*)PacketData };
+	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (char)(PacketData->PacketSize), (void*)PacketData };
 
 	int ret = WSASend(m_sClientSocket, &exp->_wsa_buf, 1, 0, 0, &exp->_wsa_over, 0);
 	if (SOCKET_ERROR == ret) {

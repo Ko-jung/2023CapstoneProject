@@ -2,6 +2,8 @@
 #include "LobbyClientInfo.h"
 #include "../../Common/LogUtil.h"
 
+#include "Manager/DBMgr.h"
+
 LobbyServer::LobbyServer()
 {
 	m_IocpFunctionMap.insert({ COMP_OP::OP_ACCEPT,	[this](int id, int bytes, EXP_OVER* exp) {Accept(id, bytes, exp); } });
@@ -168,7 +170,7 @@ void LobbyServer::CheckingMatchingQueue()
 	if (m_MatchingQueue.size() >= MAXPLAYER)
 	{
 		PEmptyRoomNum PER;
-		m_GameServerSocket->SendProcess(sizeof(PER), &PER);
+		m_GameServerSocket->SendProcess(&PER);
 	}
 }
 
@@ -192,6 +194,23 @@ bool LobbyServer::ConnectToGameServer()
 
 	cout << "Connect Success to Game Server" << endl;
 	return true;
+}
+
+void LobbyServer::ProcessTryLogin(int id, PTryLogin* PTL)
+{	
+	int ret = DBMgr::Instance()->ExecLogin(L"", *PTL);
+	if (ret == -1)
+	{
+		// Database Error
+	}
+	else if (ret == 1)
+	{
+		// ID Error
+	}
+	else if (ret == 2)
+	{
+		// Password Error
+	}
 }
 
 void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
@@ -273,6 +292,9 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 		//m_MatchingQueue.push(m_Clients[id]);
 		//CheckingMatchingQueue();
 		break;
+	case (int)COMP_OP::OP_TRYLOGIN:
+		ProcessTryLogin(id, reinterpret_cast<PTryLogin*>(packet));
+		break;
 	default:
 		break;
 	}
@@ -302,7 +324,7 @@ void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 		{
 			while (m_MatchingQueue.try_pop(client))
 			{
-				client->SendProcess(sizeof(PConnectToGameserver), &SPS);
+				client->SendProcess(&SPS);
 
 				i++;
 			}

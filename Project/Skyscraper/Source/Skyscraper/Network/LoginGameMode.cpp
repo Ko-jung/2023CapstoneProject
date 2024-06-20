@@ -2,10 +2,15 @@
 
 
 #include "LoginGameMode.h"
+#include "NetworkManager.h"
 
 void ALoginGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
+
+	m_Socket->SetState(ENetworkState::Login);
+	m_Socket->SetGamemode(this);
 }
 
 void ALoginGameMode::Tick(float)

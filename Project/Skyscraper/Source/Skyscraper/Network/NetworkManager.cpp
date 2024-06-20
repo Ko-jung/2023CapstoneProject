@@ -94,6 +94,9 @@ void NetworkManager::ProcessRecv(Packet* p)
 
 	switch (State)
 	{
+	case ENetworkState::Login:
+		ProcessRecvFromLogin(p);
+		break;
 	case ENetworkState::Lobby:
 		ProcessRecvFromLobby(p);
 		break;
@@ -104,6 +107,16 @@ void NetworkManager::ProcessRecv(Packet* p)
 		ProcessRecvFromMainGame(p);
 		break;
 	default:
+		break;
+	}
+}
+
+void NetworkManager::ProcessRecvFromLogin(Packet* p)
+{
+	switch (p->PacketType)
+	{
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("ProcessRecvFromLogin OP Error!"));
 		break;
 	}
 }

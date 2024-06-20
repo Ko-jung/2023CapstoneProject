@@ -23,6 +23,7 @@ class ANetworkGameMode;
 
 enum class ENetworkState
 {
+	Login,
 	Lobby,
 	SelectGame,
 	MainGame
@@ -44,6 +45,7 @@ public:
 	void Disconnect();
 
 	void ProcessRecv(Packet* p);
+	void ProcessRecvFromLogin(Packet* p);
 	void ProcessRecvFromLobby(Packet* p);
 	void ProcessRecvFromSelectGame(Packet* p);
 	void ProcessRecvFromMainGame(Packet* p);

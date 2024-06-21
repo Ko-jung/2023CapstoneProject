@@ -157,11 +157,16 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 		}
 	}
 
+	if (MiniMapWidget && MiniMapWidget->GetPlayerImage() && HexagonTile)
+	{
+		MiniMapWidget->SetPlayerImageAlignment(HexagonTile->GetAlignmentByLocation(PossessingPawn->GetActorLocation()));
+	}
+
 }
 
 void ASkyscraperPlayerController::UpdateImage()
 {
-	AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 
 	// 육각 타일 이미지 배치
 	if (HexagonTile)
@@ -176,16 +181,11 @@ void ASkyscraperPlayerController::UpdateImage()
 
 		}
 	}
-
-	if(MiniMapWidget->GetPlayerImage())
-	{
-		//MiniMapWidget->SetPlayerImageAlignment()
-	}
 }
 
 void ASkyscraperPlayerController::UpdateImage(int index)
 {
-	AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 
 	if (HexagonTile)
 	{

@@ -41,8 +41,6 @@ void UMiniMapWidget::SetPlayerImageAlignment(FVector2D NewAlignment)
 {
 	if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(PlayerImage->Slot))
 	{
-		FVector2D Cur = CanvasPanelSlot->GetAlignment();
-		NewAlignment = Cur +NewAlignment;
 		CanvasPanelSlot->SetAlignment(NewAlignment);
 	}
 }

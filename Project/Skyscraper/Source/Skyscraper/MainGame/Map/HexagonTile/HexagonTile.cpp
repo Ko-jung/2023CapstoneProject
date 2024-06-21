@@ -706,6 +706,8 @@ FVector2D AHexagonTile::GetTileWidgetAlignment(int index) const
 	return WidgetAlignment;
 }
 
+
+
 ETileImageType AHexagonTile::GetTileImageType(int index)
 {
 	if (index >= Tiles.Num()) return ETileImageType::ETIT_Normal;
@@ -769,6 +771,19 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 void AHexagonTile::CollapseLevel3(uint8 CenterIndex)
 {
 	CollapseTile(CenterIndex);
+}
+
+FVector2D AHexagonTile::GetAlignmentByLocation(const FVector& ActorLocation)
+{
+	FVector2D WidgetAlignment{};
+
+	// x축 업 -> y축 업 // y축 업 -> x축 다운
+	WidgetAlignment = FVector2D(-ActorLocation.Y / offset * 0.88f, ActorLocation.X / offset);
+
+	// 위젯 중앙정렬로 인한 0.5f 0.5f 초기값 더하기
+	WidgetAlignment.X += 0.5f; WidgetAlignment.Y += 0.5f;
+
+	return WidgetAlignment;
 }
 
 void AHexagonTile::CollapseLevel3()

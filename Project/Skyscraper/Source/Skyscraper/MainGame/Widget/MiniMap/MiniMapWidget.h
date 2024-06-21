@@ -45,6 +45,9 @@ protected:
 
 	UPROPERTY()
 		TArray<UTexture2D*> TileTextures;
+
+	UPROPERTY()
+		UImage* PlayerImage;
 private:
 
 };

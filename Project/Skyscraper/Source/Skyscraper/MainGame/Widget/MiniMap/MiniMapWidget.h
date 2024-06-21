@@ -29,6 +29,11 @@ public:
 	UFUNCTION()
 		void CollapseTileImage(int index);
 
+	UFUNCTION()
+		UImage* GetPlayerImage()const { return PlayerImage; }
+
+	UFUNCTION(BlueprintCallable)
+		void SetPlayerImageAlignment(FVector2D NewAlignment);
 protected:
 	virtual void NativePreConstruct() override;
 	

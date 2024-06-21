@@ -24,6 +24,7 @@ void UMiniMapWidget::SetTileImage(int index, ETileImageType TileImageType)
 	if (TileImageType == ETileImageType::ETIT_SIZE) return;
 
 	TileImages[index]->SetBrushFromTexture(TileTextures[(int8)TileImageType]);
+	
 }
 
 void UMiniMapWidget::CollapseTileImage(int index)
@@ -34,6 +35,16 @@ void UMiniMapWidget::CollapseTileImage(int index)
 	TileImages.RemoveAt(index);
 
 	UE_LOG(LogTemp, Warning, TEXT("%d index's Is Collapse"), index);
+}
+
+void UMiniMapWidget::SetPlayerImageAlignment(FVector2D NewAlignment)
+{
+	if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(PlayerImage->Slot))
+	{
+		FVector2D Cur = CanvasPanelSlot->GetAlignment();
+		NewAlignment = Cur +NewAlignment;
+		CanvasPanelSlot->SetAlignment(NewAlignment);
+	}
 }
 
 void UMiniMapWidget::NativePreConstruct()
@@ -80,7 +91,7 @@ void UMiniMapWidget::NativePreConstruct()
 
 	// 플레이어 이미지 찾기
 	{
-		PlayerImage = Cast<UImage>(GetWidgetFromName(TEXT("PlayerImage")));
+		PlayerImage = Cast<UImage>(GetWidgetFromName(TEXT("PlayerImageWidget")));
 	}
 
 	

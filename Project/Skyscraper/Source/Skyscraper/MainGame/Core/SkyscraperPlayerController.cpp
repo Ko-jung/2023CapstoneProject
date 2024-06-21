@@ -163,6 +163,7 @@ void ASkyscraperPlayerController::UpdateImage()
 {
 	AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 
+	// 육각 타일 이미지 배치
 	if (HexagonTile)
 	{
 		for (int i = 0; i < 37; ++i)
@@ -174,6 +175,11 @@ void ASkyscraperPlayerController::UpdateImage()
 			}
 
 		}
+	}
+
+	if(MiniMapWidget->GetPlayerImage())
+	{
+		//MiniMapWidget->SetPlayerImageAlignment()
 	}
 }
 

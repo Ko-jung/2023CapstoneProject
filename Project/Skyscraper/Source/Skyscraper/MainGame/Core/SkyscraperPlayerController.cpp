@@ -4,6 +4,7 @@
 #include "SkyscraperPlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
@@ -159,7 +160,9 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 
 	if (MiniMapWidget && MiniMapWidget->GetPlayerImage() && HexagonTile)
 	{
-		MiniMapWidget->SetPlayerImageAlignment(HexagonTile->GetAlignmentByLocation(PossessingPawn->GetActorLocation()));
+		FVector ForwardVector = GetControlRotation().Vector();
+		FRotator RotationValue = UKismetMathLibrary::FindLookAtRotation(FVector{ 0.0f,0.0f,0.0f }, ForwardVector);
+		MiniMapWidget->SetPlayerImageAlignment(HexagonTile->GetAlignmentByLocation(PossessingPawn->GetActorLocation()), RotationValue.Yaw);
 	}
 
 }

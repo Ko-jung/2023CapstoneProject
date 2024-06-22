@@ -37,13 +37,23 @@ void UMiniMapWidget::CollapseTileImage(int index)
 	UE_LOG(LogTemp, Warning, TEXT("%d index's Is Collapse"), index);
 }
 
-void UMiniMapWidget::SetPlayerImageAlignment(FVector2D NewAlignment)
+void UMiniMapWidget::SetPlayerImageAlignment(FVector2D NewAlignment, float NewAngle)
 {
 	if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(PlayerImage->Slot))
 	{
 		CanvasPanelSlot->SetAlignment(NewAlignment);
 	}
+	PlayerImage->SetRenderTransformAngle(NewAngle);
 }
+
+void UMiniMapWidget::SetOtherPlayerImageAlignment(UImage* TargetPlayerImage, FVector2D NewAlignment)
+{
+	if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(TargetPlayerImage->Slot))
+	{
+		CanvasPanelSlot->SetAlignment(NewAlignment);
+	}
+}
+
 
 void UMiniMapWidget::NativePreConstruct()
 {

@@ -58,6 +58,11 @@ protected:
 
 	UPROPERTY()
 		UImage* PlayerImage;
+
+	UPROPERTY()
+		TArray<UImage*> FriendlyPlayerImages;
+	UPROPERTY()
+		TArray<UImage*> EnemyPlayerImages;
 private:
 
 };

@@ -102,6 +102,19 @@ void UMiniMapWidget::NativePreConstruct()
 		PlayerImage = Cast<UImage>(GetWidgetFromName(TEXT("PlayerImageWidget")));
 	}
 
+	// 아군 플레이어 이미지
+	{
+		FriendlyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("FriendlyPlayerWidget_1")));
+		FriendlyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("FriendlyPlayerWidget_2")));
+	}
+
+	// 적군 플레이어 이미지
+	{
+		EnemyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_1")));
+		EnemyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_2")));
+		EnemyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_3")));
+	}
+
 	
 
 }

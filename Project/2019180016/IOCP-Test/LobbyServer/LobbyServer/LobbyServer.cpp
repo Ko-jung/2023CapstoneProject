@@ -35,7 +35,7 @@ bool LobbyServer::Init(const int WorkerNum)
 	m_GameServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));
 	for (int i = 0; i < MAXCLIENT; i++)
 	{
-		m_Clients[i] = new LobbyClientInfo();
+		Clients[i] = new LobbyClientInfo();
 	}
 
 	return true;
@@ -153,8 +153,8 @@ void LobbyServer::Worker()
 
 LobbyClientInfo* LobbyServer::GetEmptyClient()
 {
-	auto it = std::find_if(m_Clients.begin(), m_Clients.end(), [](LobbyClientInfo* a) {return a->GetClientNum() == -1; });
-	if (it != m_Clients.end())
+	auto it = std::find_if(Clients.begin(), Clients.end(), [](LobbyClientInfo* a) {return a->GetClientNum() == -1; });
+	if (it != Clients.end())
 	{
 		return *it;
 	}
@@ -198,19 +198,24 @@ bool LobbyServer::ConnectToGameServer()
 
 void LobbyServer::ProcessTryLogin(int id, PTryLogin* PTL)
 {	
-	int ret = DBMgr::Instance()->ExecLogin(L"", *PTL);
-	if (ret == -1)
-	{
-		// Database Error
-	}
-	else if (ret == 1)
-	{
-		// ID Error
-	}
-	else if (ret == 2)
-	{
-		// Password Error
-	}
+	PLoginResult PLR;
+	PLR.LoginResult = DBMgr::Instance()->ExecLogin(L"", *PTL);
+
+	Clients[id]->SendProcess(&PLR);
+
+	//int ret = DBMgr::Instance()->ExecLogin(L"", *PTL);
+	//if (ret == (char)ELoginResult::DatabaseError)
+	//{
+	//	// Database Error
+	//}
+	//else if (ret == (char)ELoginResult::IDError)
+	//{
+	//	// ID Error
+	//}
+	//else if (ret == (char)ELoginResult::PasswordError)
+	//{
+	//	// Password Error
+	//}
 }
 
 void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
@@ -256,7 +261,7 @@ void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
 		//////////////////////////////////////////
 		{
 
-		m_MatchingQueue.push(m_Clients[m_iClientId - 1]);
+		m_MatchingQueue.push(Clients[m_iClientId - 1]);
 			CheckingMatchingQueue();
 		}
 		///////////////////////////////////////////
@@ -284,7 +289,7 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 	switch (packet->PacketType)
 	{
 	case (int)COMP_OP::OP_STARTMATCHING:
-		m_MatchingQueue.push(m_Clients[id]);
+		m_MatchingQueue.push(Clients[id]);
 		cout << id << "번 Ready" << endl;
 		CheckingMatchingQueue();
 		break;

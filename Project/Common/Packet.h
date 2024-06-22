@@ -337,4 +337,11 @@ struct PTryLogin : Packet
 
 	PTryLogin() :Packet(COMP_OP::OP_TRYLOGIN) { PacketSize = sizeof(PTryLogin); }
 };
+
+struct PLoginResult : Packet
+{
+	char LoginResult;
+
+	PLoginResult() :Packet(COMP_OP::OP_LOGINRESULT) { PacketSize = sizeof(PLoginResult); }
+};
 #pragma pack(pop)

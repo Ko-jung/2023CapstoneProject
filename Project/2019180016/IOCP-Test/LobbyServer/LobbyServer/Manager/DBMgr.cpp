@@ -111,29 +111,29 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
                     }
                     else
                     {
-                        return 0;
+                        return (char)ELoginResult::Success;
                     }
                 }
                 else
                 {
                     // Password Error
-                    return 2;
+                    return (char)ELoginResult::PasswordError;
                 }
             }
             else
             {
                 // ID Error
-                return 1;
+                return (char)ELoginResult::IDError;
             }
         }
         else
         {
             SQLCloseCursor(Hstmt);
-            return -1;
+            return (char)ELoginResult::DatabaseError;
         }
     }
     SQLCloseCursor(Hstmt);
-    return -1;
+    return (char)ELoginResult::DatabaseError;
 }
 
 std::wstring DBMgr::EraseEndBlank(const SQLWCHAR* TargetWchar)

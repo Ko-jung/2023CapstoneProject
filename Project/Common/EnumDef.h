@@ -38,6 +38,7 @@ enum class COMP_OP : BYTE
 	OP_FINISHGAME,
 	OP_BREAKOBJECT,
 	OP_TRYLOGIN,
+	OP_LOGINRESULT,
 
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,
@@ -157,4 +158,12 @@ enum class EItemRareLevel : BYTE
 enum class EBreakType : BYTE
 {
 	Window,
+};
+
+enum class ELoginResult : char
+{
+	Success = 0,
+	DatabaseError = -1,
+	IDError = 1,
+	PasswordError = 2,
 };

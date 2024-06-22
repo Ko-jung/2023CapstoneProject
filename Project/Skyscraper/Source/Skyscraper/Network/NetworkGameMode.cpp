@@ -59,7 +59,7 @@ void ANetworkGameMode::Send(const Packet* p, const int pSize)
 
 void ANetworkGameMode::Connect(const char* ip, int port)
 {
-	bIsConnected = m_Socket->Connect(SERVER_IP, GAME_SERVER_PORT);
+	bIsConnected = m_Socket->Connect(ip, port);
 	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), bIsConnected);
 	if (bIsConnected)
 	{

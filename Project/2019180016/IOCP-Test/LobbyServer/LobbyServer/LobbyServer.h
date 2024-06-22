@@ -41,7 +41,7 @@ private:
 	EXP_OVER* m_GameServerOver;
 	LobbyClientInfo* m_GameServerSocket;
 
-	std::array<LobbyClientInfo*, MAXCLIENT> m_Clients;
+	std::array<LobbyClientInfo*, MAXCLIENT> Clients;
 	Concurrency::concurrent_priority_queue< LobbyClientInfo*> m_MatchingQueue;
 
 	std::vector<std::thread> m_tWorkerThreads;

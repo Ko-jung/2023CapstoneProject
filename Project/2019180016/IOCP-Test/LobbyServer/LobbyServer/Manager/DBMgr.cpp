@@ -69,6 +69,8 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
     {
         PrintErr(Hstmt, SQL_NTS, ret);
         SQLCloseCursor(Hstmt);
+        return (char)ELoginResult::DatabaseError;
+
     }
 
 
@@ -76,9 +78,10 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
     SQLLEN CBID, CBPassword;
     ret = SQLBindCol(Hstmt, 1, SQL_C_WCHAR, ID, IDSIZE, &CBID);
     if (ret == SQL_ERROR)       PrintErr(Hstmt, SQL_BIND_TYPE, ret);
-    ret = SQLBindCol(Hstmt, 2, SQL_C_WCHAR, ID, PASSWORDSIZE, &CBPassword);
+    ret = SQLBindCol(Hstmt, 2, SQL_C_WCHAR, Password, PASSWORDSIZE, &CBPassword);
     if (ret == SQL_ERROR)       PrintErr(Hstmt, SQL_BIND_TYPE, ret);
 
+    int Result = (char)ELoginResult::DatabaseError;
     for (int i = 0; ; i++)
     {
         ret = SQLFetch(Hstmt);
@@ -93,7 +96,7 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
             std::wstring TargetID{IDString.begin(), IDString.end() };
 
             std::string PasswordString{ TargetInfo.Password };
-            std::wstring TargetPassword{ IDString.begin(), IDString.end() };
+            std::wstring TargetPassword{ PasswordString.begin(), PasswordString.end() };
 
             // Database Info
             std::wstring IDWString = EraseEndBlank(ID);
@@ -111,29 +114,30 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
                     }
                     else
                     {
-                        return (char)ELoginResult::Success;
+                        Result = (char)ELoginResult::Success;
                     }
                 }
                 else
                 {
                     // Password Error
-                    return (char)ELoginResult::PasswordError;
+                    Result = (char)ELoginResult::PasswordError;
                 }
             }
             else
             {
                 // ID Error
-                return (char)ELoginResult::IDError;
+                Result = (char)ELoginResult::IDError;
             }
         }
         else
         {
-            SQLCloseCursor(Hstmt);
-            return (char)ELoginResult::DatabaseError;
+            Result = (char)ELoginResult::DatabaseError;
         }
     }
     SQLCloseCursor(Hstmt);
-    return (char)ELoginResult::DatabaseError;
+    //Result = (char)ELoginResult::DatabaseError;
+
+    return Result;
 }
 
 std::wstring DBMgr::EraseEndBlank(const SQLWCHAR* TargetWchar)

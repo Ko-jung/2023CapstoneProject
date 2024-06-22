@@ -25,6 +25,9 @@ void ALoginGameMode::BeginPlay()
 	m_Socket->SetState(ENetworkState::Login);
 	m_Socket->SetGamemode(this);
 
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = true;
+
 	if (LoginWidgetClass)
 	{
 		LoginWidget = CreateWidget<ULoginWidget>(GetWorld(), LoginWidgetClass);
@@ -75,6 +78,7 @@ void ALoginGameMode::ProcessFunc()
 	Packet* packet;
 	while (FuncQueue.try_pop(packet))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("ALoginGameMode::ProcessFunc"));
 		switch (packet->PacketType)
 		{
 		case (BYTE)COMP_OP::OP_LOGINRESULT:

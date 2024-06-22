@@ -38,6 +38,8 @@ bool LobbyServer::Init(const int WorkerNum)
 		Clients[i] = new LobbyClientInfo();
 	}
 
+	DBMgr::Instance();
+
 	return true;
 }
 
@@ -199,7 +201,7 @@ bool LobbyServer::ConnectToGameServer()
 void LobbyServer::ProcessTryLogin(int id, PTryLogin* PTL)
 {	
 	PLoginResult PLR;
-	PLR.LoginResult = DBMgr::Instance()->ExecLogin(L"", *PTL);
+	PLR.LoginResult = DBMgr::Instance()->ExecLogin(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
 
 	Clients[id]->SendProcess(&PLR);
 
@@ -284,8 +286,8 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 		ProcessRecvFromGame(id, bytes, exp);
 		return;
 	}
-	Packet* packet = reinterpret_cast<Packet*>(exp->_wsa_buf.buf);
 
+	Packet* packet = reinterpret_cast<Packet*>(exp->_wsa_buf.buf);
 	switch (packet->PacketType)
 	{
 	case (int)COMP_OP::OP_STARTMATCHING:
@@ -303,6 +305,7 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 	default:
 		break;
 	}
+	Clients[id]->Recv();
 }
 
 void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)

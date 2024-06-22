@@ -116,6 +116,8 @@ public:
 	void CollapseLevel3(uint8 CenterIndex);
 
 	UFUNCTION()
+		FVector2D GetAlignmentByLocation(const FVector& ActorLocation);
+	UFUNCTION()
 	FVector2D GetTileWidgetAlignment(int index) const;
 	ETileImageType GetTileImageType(int index);
 

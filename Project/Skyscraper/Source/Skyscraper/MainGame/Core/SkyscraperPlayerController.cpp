@@ -4,6 +4,7 @@
 #include "SkyscraperPlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
@@ -157,12 +158,20 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 		}
 	}
 
+	if (MiniMapWidget && MiniMapWidget->GetPlayerImage() && HexagonTile)
+	{
+		FVector ForwardVector = GetControlRotation().Vector();
+		FRotator RotationValue = UKismetMathLibrary::FindLookAtRotation(FVector{ 0.0f,0.0f,0.0f }, ForwardVector);
+		MiniMapWidget->SetPlayerImageAlignment(HexagonTile->GetAlignmentByLocation(PossessingPawn->GetActorLocation()), RotationValue.Yaw);
+	}
+
 }
 
 void ASkyscraperPlayerController::UpdateImage()
 {
-	AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 
+	// 육각 타일 이미지 배치
 	if (HexagonTile)
 	{
 		for (int i = 0; i < 37; ++i)
@@ -179,7 +188,7 @@ void ASkyscraperPlayerController::UpdateImage()
 
 void ASkyscraperPlayerController::UpdateImage(int index)
 {
-	AHexagonTile* HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 
 	if (HexagonTile)
 	{

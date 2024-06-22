@@ -29,6 +29,16 @@ public:
 	UFUNCTION()
 		void CollapseTileImage(int index);
 
+	UFUNCTION()
+		UImage* GetPlayerImage()const { return PlayerImage; }
+
+	// 플레이어 캐릭터의 위치를 갱신시키는 함수
+	UFUNCTION(BlueprintCallable)
+		void SetPlayerImageAlignment(FVector2D NewAlignment, float NewAngle);
+
+	// 플레이어 외 아군 캐릭터나 적군 캐릭터 위치를 갱신시키는 함수
+	UFUNCTION(BlueprintCallable)
+		void SetOtherPlayerImageAlignment(UImage* TargetPlayerImage, FVector2D NewAlignment);
 protected:
 	virtual void NativePreConstruct() override;
 	
@@ -45,6 +55,9 @@ protected:
 
 	UPROPERTY()
 		TArray<UTexture2D*> TileTextures;
+
+	UPROPERTY()
+		UImage* PlayerImage;
 private:
 
 };

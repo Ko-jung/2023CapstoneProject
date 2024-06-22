@@ -8,6 +8,7 @@
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "SkyscraperPlayerController.generated.h"
 
+class AHexagonTile;
 class UGameResultWidget;
 class UChangeWeaponWidget;
 class UMiniMapWidget;
@@ -92,6 +93,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 		bool bCanLookInput = false;
 
+	UPROPERTY()
+		TObjectPtr<AHexagonTile> HexagonTile;
 private:
 	UPROPERTY()
 		FRotator LastRotator;

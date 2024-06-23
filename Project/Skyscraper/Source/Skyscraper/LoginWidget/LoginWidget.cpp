@@ -56,35 +56,58 @@ void ULoginWidget::OnRegisterButtonClick()
 
 	FString IDFString = IDText.ToString();
 	std::string IDString = TCHAR_TO_UTF8(*IDFString);
-	FString PasswordFString = IDText.ToString();
+	FString PasswordFString = PasswordText.ToString();
 	std::string PasswordString = TCHAR_TO_UTF8(*PasswordFString);
 
 	PTryLogin PTL;
 	strcpy_s(PTL.ID, IDString.c_str());
 	strcpy_s(PTL.Password, PasswordString.c_str());
-	PTL.IsRegister = false;
+	PTL.IsRegister = true;
 
-
+	ALoginGameMode* LoginGameMode = Cast<ALoginGameMode>(UGameplayStatics::GetGameMode(this));
+	LoginGameMode->Send(&PTL, sizeof(PTL));
 }
 
-void ULoginWidget::SetExtraMessage(int8 ErrorCode)
+void ULoginWidget::SetExtraMessage(PLoginResult* PLR)
 {
 	FText ExtraMess;
-	switch (ErrorCode)
+	int8 ErrorCode = PLR->LoginResult;
+	if (PLR->IsRegister)
 	{
-	case (int8)ELoginResult::DatabaseError:
-		ExtraMess = FText::FromString(TEXT("DatabaseError"));
-		break;
-	case (int8)ELoginResult::IDError:
-		ExtraMess = FText::FromString(TEXT("IDError"));
-		break;
-	case (int8)ELoginResult::PasswordError:
-		ExtraMess = FText::FromString(TEXT("PasswordError"));
-		break;
-	default:
-		break;
+		switch (ErrorCode)
+		{
+		case (int8)ELoginResult::DatabaseError:
+			ExtraMess = FText::FromString(TEXT("DatabaseError"));
+			break;
+		case (int8)ELoginResult::IDError:
+			ExtraMess = FText::FromString(TEXT("Duplicate ID"));
+			break;
+		case (int8)ELoginResult::PasswordError:
+			ExtraMess = FText::FromString(TEXT(""));
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		switch (ErrorCode)
+		{
+		case (int8)ELoginResult::DatabaseError:
+			ExtraMess = FText::FromString(TEXT("DatabaseError"));
+			break;
+		case (int8)ELoginResult::IDError:
+			ExtraMess = FText::FromString(TEXT("IDError"));
+			break;
+		case (int8)ELoginResult::PasswordError:
+			ExtraMess = FText::FromString(TEXT("PasswordError"));
+			break;
+		default:
+			break;
+		}
 	}
 
+	//ExtraMessage->SetColorAndOpacity();
 	ExtraMessage->SetVisibility(ESlateVisibility::Visible);
 	ExtraMessage->SetText(ExtraMess);
 }

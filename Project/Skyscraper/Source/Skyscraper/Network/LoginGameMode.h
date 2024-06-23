@@ -26,6 +26,9 @@ public:
 
 	virtual void ProcessFunc();
 
+	void ProcessLoginResult(PLoginResult* PLR);
+	void ProcessRegisterResult(PLoginResult* PLR);
+
 	UPROPERTY()
 	TSubclassOf<ULoginWidget> LoginWidgetClass;
 	UPROPERTY()

@@ -128,8 +128,37 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
 {
 	PLoginResult PLR;
-	PLR.LoginResult = DBMgr::Instance()->ExecLogin(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
+	if (PTL->IsRegister)
+	{	// REGISTER
 
+		// ID Duplication Checking
+		int Result = DBMgr::Instance()->ExecRegister(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
+		if (Result == (int)ELoginResult::Success || Result == (int)ELoginResult::PasswordError)
+		{
+
+		}
+
+		wchar_t query[150];
+		int WCharSize = MultiByteToWideChar(CP_ACP, 0, PTL->ID, -1, NULL, NULL);
+		wchar_t* WID = new wchar_t[WCharSize];
+		MultiByteToWideChar(CP_ACP, 0, PTL->ID, strlen(PTL->ID) + 1, WID, WCharSize);
+
+		WCharSize = MultiByteToWideChar(CP_ACP, 0, PTL->Password, -1, NULL, NULL);
+		wchar_t* WPassword = new wchar_t[WCharSize];
+		MultiByteToWideChar(CP_ACP, 0, PTL->Password, strlen(PTL->Password) + 1, WPassword, WCharSize);
+
+		wsprintf(query, L"INSERT INTO [2024_CapstoneProject].[dbo].[Login_Table] VALUES ('%s', '%s')", WID, WPassword);
+		PLR.LoginResult = DBMgr::Instance()->ExecRegister(query, *PTL);
+		PLR.IsRegister = true;
+
+		delete[] WID;
+		delete[] WPassword;
+	}
+	else
+	{	// LOGIN
+		PLR.LoginResult = DBMgr::Instance()->ExecLogin(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
+		PLR.IsRegister = false;
+	}
 	Target->SendProcess(&PLR);
 }
 

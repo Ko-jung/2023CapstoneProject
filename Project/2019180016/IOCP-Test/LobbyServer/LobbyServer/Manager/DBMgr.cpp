@@ -141,6 +141,23 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
     return Result;
 }
 
+int DBMgr::ExecRegister(const wchar_t* Query, const PTryLogin& TargetInfo)
+{
+    SQLRETURN ret;
+    ret = SQLExecDirect(Hstmt, (SQLWCHAR*)Query, SQL_NTS);
+    if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
+    {
+        PrintErr(Hstmt, SQL_NTS, ret);
+        SQLCloseCursor(Hstmt);
+        return (char)ELoginResult::DatabaseError;
+
+    }
+
+    SQLCloseCursor(Hstmt);
+    //Result = (char)ELoginResult::DatabaseError;
+    return (char)ELoginResult::Success;
+}
+
 std::wstring DBMgr::EraseEndBlank(const SQLWCHAR* TargetWchar)
 {
     std::wstring ReturnWString{ TargetWchar };

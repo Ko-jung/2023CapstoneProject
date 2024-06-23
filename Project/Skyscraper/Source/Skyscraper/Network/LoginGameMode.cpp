@@ -84,19 +84,13 @@ void ALoginGameMode::ProcessFunc()
 		case (BYTE)COMP_OP::OP_LOGINRESULT:
 		{
 			PLoginResult* PLR = reinterpret_cast<PLoginResult*>(packet);
-			if (PLR->LoginResult == (char)ELoginResult::Success)
+			if (PLR->IsRegister)
 			{
-				UE_LOG(LogClass, Warning, TEXT("Level Transate"));
-				UGameplayStatics::OpenLevel(this, FName("LobbyLevel"));
+				ProcessRegisterResult(PLR);
 			}
 			else
 			{
-				if (!LoginWidget)
-				{
-					delete packet;
-					continue;
-				}
-				LoginWidget->SetExtraMessage(PLR->LoginResult);
+				ProcessLoginResult(PLR);
 			}
 			break;
 		}
@@ -105,4 +99,26 @@ void ALoginGameMode::ProcessFunc()
 		}
 		delete packet;
 	}
+}
+
+void ALoginGameMode::ProcessLoginResult(PLoginResult* PLR)
+{
+	if (PLR->LoginResult == (char)ELoginResult::Success)
+	{
+		UE_LOG(LogClass, Warning, TEXT("Level Transate"));
+		UGameplayStatics::OpenLevel(this, FName("LobbyLevel"));
+	}
+	else
+	{
+		if (!LoginWidget)
+		{
+			return;
+		}
+		LoginWidget->SetExtraMessage(PLR);
+	}
+}
+
+void ALoginGameMode::ProcessRegisterResult(PLoginResult* PLR)
+{
+	LoginWidget->SetExtraMessage(PLR);
 }

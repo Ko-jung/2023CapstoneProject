@@ -27,7 +27,7 @@ public:
 	UFUNCTION()
 	void OnRegisterButtonClick();
 
-	void SetExtraMessage(int8 ErrorCode);
+	void SetExtraMessage(PLoginResult* PLR);
 
 private:
 	UPROPERTY(meta = (BindWidget))

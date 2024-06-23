@@ -392,6 +392,7 @@ struct PTryLogin : Packet
 struct PLoginResult : Packet
 {
 	char LoginResult;
+	bool IsRegister;
 
 	PLoginResult() :Packet(COMP_OP::OP_LOGINRESULT) { PacketSize = sizeof(PLoginResult); }
 };

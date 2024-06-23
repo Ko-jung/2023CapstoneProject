@@ -18,6 +18,7 @@ public:
 	void PrintErr(SQLHANDLE hHandle, SQLSMALLINT hType, RETCODE RetCode);
 
 	int ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo);
+	int ExecRegister(const wchar_t* Query, const PTryLogin& TargetInfo);
 
 	// UTIL
 	static std::wstring EraseEndBlank(const SQLWCHAR* TargetWchar);

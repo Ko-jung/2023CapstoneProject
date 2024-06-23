@@ -19,7 +19,6 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_TimeAndKillCountRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/TimeAndKillCount/WBP_TimeAndKillCount.WBP_TimeAndKillCount_C'"));
 	TimeAndKillCountWidgetClass = WBP_TimeAndKillCountRef.Class;
 
-
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MiniMapRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Map/WBP_Map.WBP_Map_C'"));
 	MiniMapWidgetClass = WBP_MiniMapRef.Class;
 
@@ -114,6 +113,32 @@ void ASkyscraperPlayerController::SetObserveMode(bool bToObserveMode)
 
 }
 
+void ASkyscraperPlayerController::SetSpectatorMode(bool bSetMode, AActor* NewDamageCauser)
+{
+	if(bSetMode)
+	{
+		bSpectatorMode = true;
+		DamageCauser = NewDamageCauser;
+	}
+	else
+	{
+		bSpectatorMode = false;
+		DamageCauser = nullptr;
+	}
+}
+
+void ASkyscraperPlayerController::PressSetSpecatatorButton()
+{
+	ChangeWeaponWidget->SetChangeWeaponWidgetVisibility(ESlateVisibility::Hidden);
+	SetViewTargetWithBlend(DamageCauser);
+}
+
+void ASkyscraperPlayerController::PressChangeWeaponButton()
+{
+	ChangeWeaponWidget->SetChangeWeaponWidgetVisibility(ESlateVisibility::Visible);
+	SetViewTargetWithBlend(PossessingPawn);
+}
+
 void ASkyscraperPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -158,6 +183,7 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 		}
 	}
 
+	// 미니맵 내 액터 위치 설정
 	if (MiniMapWidget && MiniMapWidget->GetPlayerImage() && HexagonTile)
 	{
 		FVector ForwardVector = GetControlRotation().Vector();
@@ -165,6 +191,15 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 		MiniMapWidget->SetPlayerImageAlignment(HexagonTile->GetAlignmentByLocation(PossessingPawn->GetActorLocation()), RotationValue.Yaw);
 	}
 
+	// 관전 모드로 진입을 위한 코드
+	if(bSpectatorMode && DamageCauser)
+	{
+		if(WasInputKeyJustPressed(EKeys::Eight))
+		{
+			bSpectatorMode = false;
+			SetViewTargetWithBlend(DamageCauser);
+		}
+	}
 }
 
 void ASkyscraperPlayerController::UpdateImage()

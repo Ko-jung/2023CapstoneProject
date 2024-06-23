@@ -79,7 +79,7 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 }
 
-void UHealthComponent::GetDamaged(float fBaseDamage)
+void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCauser)
 {
 	// 무적 상태라면 대미지 안받도록
 	if (bIsGodMode) return;
@@ -87,7 +87,7 @@ void UHealthComponent::GetDamaged(float fBaseDamage)
 	CurrentHealth = FMath::Max(CurrentHealth - fBaseDamage, 0.0f);
 	if(CurrentHealth<=0.0f)
 	{
-		SetPlayerDie();
+		SetPlayerDie(DamageCauser);
 	}
 
 	//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth/MaxHealth);
@@ -206,7 +206,7 @@ void UHealthComponent::AddWidget()
 	}
 }
 
-void UHealthComponent::SetPlayerDie()
+void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 {
 	LivingState = EHealthState::EHS_DEAD;
 
@@ -214,8 +214,8 @@ void UHealthComponent::SetPlayerDie()
 	{
 		// == For player (with player controller)
 		OwnerCharacter->DisableInput(OwnerPlayerController);
-		// 사망 몽타쥬 플레이시키기
 
+		// 사망 몽타쥬 플레이시키기
 		if (UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Death))
 		{
 			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0, 0, FName(TEXT("Death_Bwd")));
@@ -223,7 +223,14 @@ void UHealthComponent::SetPlayerDie()
 
 		if(ASkyscraperPlayerController* PC = Cast<ASkyscraperPlayerController>(OwnerPlayerController))
 		{
+			// 무기교체 UI 추가
 			PC->AddChangeWeaponWidget();
+
+			// 관전 모드로 변경할 수 있도록 설정
+			if(DamageCauser)
+			{
+				PC->SetSpectatorMode(true, DamageCauser);
+			}
 		}
 
 

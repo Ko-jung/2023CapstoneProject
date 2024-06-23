@@ -5,6 +5,8 @@
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Button.h"
+#include "Components/CanvasPanel.h"
+#include "Engine/Canvas.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
 void UChangeWeaponWidget::InitializeWeaponState(EMeleeSelect NowMeleeSelect, ERangeSelect NowRangeSelect)
@@ -12,6 +14,11 @@ void UChangeWeaponWidget::InitializeWeaponState(EMeleeSelect NowMeleeSelect, ERa
 	
 	CurrentMeleeSelect = (NowMeleeSelect);
 	CurrentRangeSelect = (NowRangeSelect);
+}
+
+void UChangeWeaponWidget::SetChangeWeaponWidgetVisibility(ESlateVisibility NewVisibility)
+{
+	WeaponSelectCanvas->SetVisibility(NewVisibility);
 }
 
 void UChangeWeaponWidget::FindButtonData()

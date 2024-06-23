@@ -28,7 +28,7 @@ public:
 	UHealthComponent();
 
 private:
-	// Ã¼·Â »óÅÂ º¯¼ö
+	// ì²´ë ¥ ìƒíƒœ ë³€ìˆ˜
 	UPROPERTY(VisibleAnywhere, Category = Health)
 		float CurrentHealth;
 	UPROPERTY(EditAnywhere, Category = Health)
@@ -37,11 +37,11 @@ private:
 		float OriginMaxHealth;
 	EHealthState LivingState;
 
-	// ÄÄÆÛ³ÍÆ® ¼ÒÀ¯ Ä³¸¯ÅÍ
+	// ì»´í¼ë„ŒíŠ¸ ì†Œìœ  ìºë¦­í„°
 	UPROPERTY()
 		ASkyscraperCharacter* OwnerCharacter;
 
-	// À§Á¬ ÄÄÆÛ³ÍÆ® °ü·Ã º¯¼ö
+	// ìœ„ì ¯ ì»´í¼ë„ŒíŠ¸ ê´€ë ¨ ë³€ìˆ˜
 	UPROPERTY()
 		UWidgetComponent* HealthBarWidgetComponent;
 	UPROPERTY(VisibleAnywhere)
@@ -49,21 +49,21 @@ private:
 	UPROPERTY()
 		UHealthBar* HealthProgressBar;
 
-	// Ä³¸¯ÅÍ ¹«Àû bool º¯¼ö
+	// ìºë¦­í„° ë¬´ì  bool ë³€ìˆ˜
 	UPROPERTY()
 		bool bIsGodMode;
 	UPROPERTY()
 		UTextRenderComponent* GodModeTextRender;
 
-	// Ä³¸¯ÅÍ ¹«Àû Å¸ÀÌ¸Ó ÇÚµé
+	// ìºë¦­í„° ë¬´ì  íƒ€ì´ë¨¸ í•¸ë“¤
 	UPROPERTY()
 		FTimerHandle GodModeTimerHandle;
 
-	// Ã¼·Â Áõ°¡ Å¸ÀÌ¸Ó ÇÚµé
+	// ì²´ë ¥ ì¦ê°€ íƒ€ì´ë¨¸ í•¸ë“¤
 	UPROPERTY()
 		FTimerHandle PlusHealthBuffTimerHandle;
 
-	// MyHealth À§Á¬¿¡ ´ëÇÑ Å¬·¡½º ¹× º¯¼ö
+	// MyHealth ìœ„ì ¯ì— ëŒ€í•œ í´ë˜ìŠ¤ ë° ë³€ìˆ˜
 	TSubclassOf<UUserWidget> MyHealthWidgetClass;
 	UPROPERTY()
 		UMyHealthWidget* MyHealthWidget;
@@ -72,35 +72,35 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	// Ä³¸¯ÅÍ ¹«Àû ½Ã°£(Å¸ÀÌ¸Ó) Á¾·á½Ã ½ÇÇàµÉ ÇÔ¼ö
+	// ìºë¦­í„° ë¬´ì  ì‹œê°„(íƒ€ì´ë¨¸) ì¢…ë£Œì‹œ ì‹¤í–‰ë  í•¨ìˆ˜
 	UFUNCTION()
 		void DeactivateGodMode();
-	// Ä³¸¯ÅÍ Ãß°¡ Ã¼·Â ½Ã°£(Å¸ÀÌ¸Ó) Á¾·á½Ã ½ÇÇàµÉ ÇÔ¼ö
+	// ìºë¦­í„° ì¶”ê°€ ì²´ë ¥ ì‹œê°„(íƒ€ì´ë¨¸) ì¢…ë£Œì‹œ ì‹¤í–‰ë  í•¨ìˆ˜
 	UFUNCTION()
 		void DeactivatePlusHealth();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	// Ä³¸¯ÅÍ »ıÁ¸ »óÅÂ º¯¼ö Getter
+	// ìºë¦­í„° ìƒì¡´ ìƒíƒœ ë³€ìˆ˜ Getter
 	FORCEINLINE EHealthState GetLivingState() const { return LivingState; }
 
-	// ´ë¹ÌÁö Ã³¸® ÇÔ¼ö
-	void GetDamaged(float fBaseDamage);
+	// ëŒ€ë¯¸ì§€ ì²˜ë¦¬ í•¨ìˆ˜
+	void GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCauser);
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç¿¡¼­ Ä³¸¯ÅÍÀÇ Ã¼·Â ÆÛ¼¾Æ® ¹Ş´Â ÇÔ¼ö
+	// ì• ë‹ˆë©”ì´ì…˜ì—ì„œ ìºë¦­í„°ì˜ ì²´ë ¥ í¼ì„¼íŠ¸ ë°›ëŠ” í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 		float GetHealthPercent() const;
 
-	// Ä³¸¯ÅÍ ¹«Àû »óÅÂ º¯¼ö Setter <- Å¸ÀÌ¸Ó Àü¿ë
+	// ìºë¦­í„° ë¬´ì  ìƒíƒœ ë³€ìˆ˜ Setter <- íƒ€ì´ë¨¸ ì „ìš©
 	UFUNCTION(BlueprintCallable)
 		void ActivateGodMode(float GodModeTime);
 
-	// Ä³¸¯ÅÍ Ã¼·Â Ãß°¡ ½ÇÇà ÇÔ¼ö
+	// ìºë¦­í„° ì²´ë ¥ ì¶”ê°€ ì‹¤í–‰ í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 		void ActivatePlusHealthBuff(float PlusHealthPercent, float PlusHealthTime);
 
-	// ¹«Àû»óÅÂ ¹İÈ¯ ÇÔ¼ö(getter) ¹× setter
+	// ë¬´ì ìƒíƒœ ë°˜í™˜ í•¨ìˆ˜(getter) ë° setter
 	FORCEINLINE bool IsGodMode() const { return bIsGodMode; }
 	FORCEINLINE void SetGodMode(bool bNewGodMode) { bIsGodMode = bNewGodMode; }
 
@@ -113,5 +113,5 @@ public:
 	// ==================
 	
 private:
-	void SetPlayerDie();
+	void SetPlayerDie(TObjectPtr<AActor> DamageCauser = nullptr);
 };

@@ -219,7 +219,11 @@ float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 
 	// https://mingyu0403.tistory.com/258 PointDamage / RadialDamage ...
 
-	HealthComponent->GetDamaged(DamageAmount);
+	if(HealthComponent)
+	{
+		HealthComponent->GetDamaged(DamageAmount, DamageCauser);
+	}
+	
 	
 	return Damage;
 }

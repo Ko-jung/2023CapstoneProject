@@ -50,6 +50,13 @@ public:
 
 	UFUNCTION()
 		void SetObserveMode(bool bToObserveMode);
+
+	UFUNCTION()
+		void SetSpectatorMode(bool bSetMode, AActor* DamageCauser = nullptr);
+	UFUNCTION()
+		void PressSetSpecatatorButton();
+	UFUNCTION()
+		void PressChangeWeaponButton();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -95,6 +102,13 @@ protected:
 
 	UPROPERTY()
 		TObjectPtr<AHexagonTile> HexagonTile;
+
+	// 관전 가능에 대한 bool 변수
+	UPROPERTY()
+		bool bSpectatorMode;
+	// 사망시킨 플레이어
+	UPROPERTY()
+		AActor* DamageCauser;
 private:
 	UPROPERTY()
 		FRotator LastRotator;

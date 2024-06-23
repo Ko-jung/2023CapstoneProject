@@ -179,7 +179,6 @@ void UMainRangeComponent::PlayFireAnim()
 {
 	if (!OwnerCharacter->InputEnabled()) return;
 	if (!CanFire()) return;
-	UE_LOG(LogTemp, Warning, TEXT("이때가 키 눌리기고, %f %f"),CurrentFireCoolTime,FireMaxCoolTime);
 	 
 	CurrentFireCoolTime = FireMaxCoolTime;
 
@@ -261,6 +260,7 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			}
 			//UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
 
+
 			if (OutHit.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
 			{
 				{ // 대미지 소환 액터 소환
@@ -312,7 +312,7 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 		if (HitResult)
 		{
 			AActor* HitActor = OutHit.GetActor();
-			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, OwnerCharacter, nullptr);
 		}
 	}
 }

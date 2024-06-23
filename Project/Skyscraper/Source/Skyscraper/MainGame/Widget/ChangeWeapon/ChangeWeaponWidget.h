@@ -8,6 +8,7 @@
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "ChangeWeaponWidget.generated.h"
 
+class UCanvasPanel;
 class ASkyscraperPlayerController;
 class UButton;
 /**
@@ -21,7 +22,9 @@ class SKYSCRAPER_API UChangeWeaponWidget : public UUserWidget
 
 public:
 	void InitializeWeaponState(EMeleeSelect NowMeleeSelect, ERangeSelect NowRangeSelect);
-	
+
+	void SetChangeWeaponWidgetVisibility(ESlateVisibility NewVisibility);
+
 protected:
 	void FindButtonData();
 	void ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect);
@@ -67,6 +70,9 @@ protected:
 		UButton* RifleButton;
 	UPROPERTY(meta = (BindWidget)) 
 		UButton* RPGButton;
+
+	UPROPERTY(meta = (BindWidget))
+		UCanvasPanel* WeaponSelectCanvas;
 
 	UPROPERTY()
 		TObjectPtr<ASkyscraperPlayerController> OwnerPlayerController;

@@ -57,10 +57,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Construct")
 		FVector CalculateRelativeLocation(int32 AngleCount, int32 Distance);
 
-
-	
-
-
 	///* 붕괴 1단계/2단계 함수 */
 	UFUNCTION(BlueprintCallable, Category = "Collapse")
 		void CollapseTilesAndActors(int CollapseLevel);
@@ -73,7 +69,8 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "Collapse")
 	//	void CollapseLevel3();
 
-
+	UFUNCTION()
+		FORCEINLINE float GetTileOffsetValue() const { return offset; }
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

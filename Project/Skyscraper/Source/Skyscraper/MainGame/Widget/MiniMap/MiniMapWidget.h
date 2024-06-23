@@ -82,6 +82,7 @@ protected:
 
 	virtual void NativeConstruct() override;
 
+	bool CheckEnemyPlayerIsVisible(TObjectPtr<AActor> Actor);
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	
 private:

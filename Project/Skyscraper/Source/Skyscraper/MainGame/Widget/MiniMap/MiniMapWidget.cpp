@@ -177,6 +177,42 @@ void UMiniMapWidget::NativeConstruct()
 	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 }
 
+bool UMiniMapWidget::CheckEnemyPlayerIsVisible(TObjectPtr<AActor> Actor)
+{
+	// 75도 반경을 관찰 영역으로 측정
+	// 거리는 타일 반지름 * 3
+	float CosHalfAngle = UKismetMathLibrary::DegCos(75.0f / 2.0f);
+	
+	float Distance = pow(HexagonTile->GetTileOffsetValue() * 3/2,2) ;
+
+	AActor* Player = PlayerImageAndActor.Actor;
+
+	FVector2D PlayerLocation2D = FVector2D{ Player->GetActorLocation() };
+	FVector2D EnemyLocation2D = FVector2D{ Actor->GetActorLocation() };
+
+	FVector2D PlayerForwardVector2D = FVector2D{ Player->GetActorForwardVector() };
+	PlayerForwardVector2D.Normalize();
+
+	FVector2D TargetVector2D = (EnemyLocation2D - PlayerLocation2D);
+	TargetVector2D.Normalize();
+
+	float CosAngleDiff = UKismetMathLibrary::DotProduct2D(PlayerForwardVector2D, TargetVector2D);
+
+	// 시야각 외 구역에 존재
+	if(CosAngleDiff < CosHalfAngle)
+	{
+		return false;
+	}
+
+	// 시야 거리 외 구역에 존재
+	if (UKismetMathLibrary::DistanceSquared2D(PlayerLocation2D, EnemyLocation2D) > Distance)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void UMiniMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
@@ -207,11 +243,21 @@ void UMiniMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 			}
 		}
 
+		// 적군 캐릭터에 대해서는 일정 거리 내, 특정 각도 내 있는 캐릭터에 대해서만 관찰 가능하게 설정
 		for (FImageAndActor& ImageAndActor : EnemyPlayerImagesAndActors)
 		{
 			if (ImageAndActor.Actor)
 			{
-				SetOtherPlayerImageAlignment(ImageAndActor.ImageWidget, HexagonTile->GetAlignmentByLocation(ImageAndActor.Actor->GetActorLocation()));
+				if (CheckEnemyPlayerIsVisible(ImageAndActor.Actor))
+				{
+					ImageAndActor.ImageWidget->SetVisibility(ESlateVisibility::Visible);
+					SetOtherPlayerImageAlignment(ImageAndActor.ImageWidget, HexagonTile->GetAlignmentByLocation(ImageAndActor.Actor->GetActorLocation()));
+				}
+				else
+				{
+					ImageAndActor.ImageWidget->SetVisibility(ESlateVisibility::Hidden);
+				}
+				
 			}
 		}
 	}

@@ -7,6 +7,9 @@
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
 
 void UMiniMapWidget::SetTileImageAlignment(int index, FVector2D NewAlignment)
 {
@@ -39,11 +42,11 @@ void UMiniMapWidget::CollapseTileImage(int index)
 
 void UMiniMapWidget::SetPlayerImageAlignment(FVector2D NewAlignment, float NewAngle)
 {
-	if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(PlayerImage->Slot))
+	if (UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(PlayerImageAndActor.ImageWidget->Slot))
 	{
 		CanvasPanelSlot->SetAlignment(NewAlignment);
 	}
-	PlayerImage->SetRenderTransformAngle(NewAngle);
+	PlayerImageAndActor.ImageWidget->SetRenderTransformAngle(NewAngle);
 }
 
 void UMiniMapWidget::SetOtherPlayerImageAlignment(UImage* TargetPlayerImage, FVector2D NewAlignment)
@@ -52,6 +55,57 @@ void UMiniMapWidget::SetOtherPlayerImageAlignment(UImage* TargetPlayerImage, FVe
 	{
 		CanvasPanelSlot->SetAlignment(NewAlignment);
 	}
+}
+
+void UMiniMapWidget::AddPlayerToImage(AActor* Player)
+{
+	if(!Player)
+	{
+		return;
+	}
+
+	// 새로운 캐릭터로 바로 적용될 수 있도록 그냥 대입
+	//if(PlayerImageAndActor.Actor)
+	PlayerImageAndActor.Actor = Player;
+	
+}
+
+void UMiniMapWidget::AddFriendlyPlayerToImage(AActor* FriendlyPlayer)
+{
+	if (!FriendlyPlayer) 
+	{
+		return;
+	}
+
+	for(FImageAndActor& ImageAndActor : FriendlyPlayerImagesAndActors)
+	{
+		if(! ImageAndActor.Actor)
+		{
+			ImageAndActor.Actor = FriendlyPlayer;
+			return;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("이미 모든 아군 이미지를 사용중"));
+}
+
+void UMiniMapWidget::AddEnemyPlayerToImage(AActor* EnemyPlayer)
+{
+	if (!EnemyPlayer)
+	{
+		return;
+	}
+
+	for (FImageAndActor& ImageAndActor : EnemyPlayerImagesAndActors)
+	{
+		if (!ImageAndActor.Actor)
+		{
+			ImageAndActor.Actor = EnemyPlayer;
+			return;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("이미 모든 적군 이미지를 사용중"));
 }
 
 
@@ -99,22 +153,66 @@ void UMiniMapWidget::NativePreConstruct()
 
 	// 플레이어 이미지 찾기
 	{
-		PlayerImage = Cast<UImage>(GetWidgetFromName(TEXT("PlayerImageWidget")));
+		PlayerImageAndActor.ImageWidget = Cast<UImage>(GetWidgetFromName(TEXT("PlayerImageWidget")));
 	}
 
 	// 아군 플레이어 이미지
 	{
-		FriendlyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("FriendlyPlayerWidget_1")));
-		FriendlyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("FriendlyPlayerWidget_2")));
+		FriendlyPlayerImagesAndActors.Add(FImageAndActor{ Cast<UImage>(GetWidgetFromName("FriendlyPlayerWidget_1")) , nullptr });
+		FriendlyPlayerImagesAndActors.Add(FImageAndActor{ Cast<UImage>(GetWidgetFromName("FriendlyPlayerWidget_2")) , nullptr });
 	}
 
 	// 적군 플레이어 이미지
 	{
-		EnemyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_1")));
-		EnemyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_2")));
-		EnemyPlayerImages.Add(Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_3")));
+		EnemyPlayerImagesAndActors.Add(FImageAndActor{ Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_1")) , nullptr });
+		EnemyPlayerImagesAndActors.Add(FImageAndActor{ Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_2")) , nullptr });
+		EnemyPlayerImagesAndActors.Add(FImageAndActor{ Cast<UImage>(GetWidgetFromName("EnemyPlayerWidget_3")) , nullptr });
+	}
+}
+
+void UMiniMapWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
+}
+
+void UMiniMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if(! HexagonTile)
+	{
+		return;
 	}
 
-	
+	// 자신 플레이어 위치 및 회전 적용
+	{
+		// 미니맵 내 액터 위치 설정
+		if (PlayerImageAndActor.IsValid())
+		{
+			FVector ForwardVector = PlayerImageAndActor.Actor->GetActorRotation().Vector();
+			FRotator RotationValue = UKismetMathLibrary::FindLookAtRotation(FVector{ 0.0f,0.0f,0.0f }, ForwardVector);
+			SetPlayerImageAlignment(HexagonTile->GetAlignmentByLocation(PlayerImageAndActor.Actor->GetActorLocation()), RotationValue.Yaw);
+		}
+	}
 
+	// 아군 및 적군 플레이어 위치 적용
+	{
+		for(FImageAndActor& ImageAndActor : FriendlyPlayerImagesAndActors)
+		{
+			if(ImageAndActor.Actor)
+			{
+				SetOtherPlayerImageAlignment(ImageAndActor.ImageWidget, HexagonTile->GetAlignmentByLocation(ImageAndActor.Actor->GetActorLocation()));
+			}
+		}
+
+		for (FImageAndActor& ImageAndActor : EnemyPlayerImagesAndActors)
+		{
+			if (ImageAndActor.Actor)
+			{
+				SetOtherPlayerImageAlignment(ImageAndActor.ImageWidget, HexagonTile->GetAlignmentByLocation(ImageAndActor.Actor->GetActorLocation()));
+			}
+		}
+	}
 }

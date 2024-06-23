@@ -35,7 +35,7 @@ public:
 	FORCEINLINE UTimeAndKillCountWidget* GetTimeAndKillCountWidget() const { return TimeAndKillCountWidget; }
 
 	UFUNCTION(BlueprintCallable)
-		FORCEINLINE UMiniMapWidget* GetMiniMapWidget() const { return MiniMapWidget; }
+		UMiniMapWidget* GetMiniMapWidget() const;
 
 	UFUNCTION(BlueprintCallable)
 	void AddChangeWeaponWidget();

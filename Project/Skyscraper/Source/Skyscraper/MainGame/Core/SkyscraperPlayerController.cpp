@@ -29,6 +29,11 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 	GameResultWidgetClass = WBP_GameResult.Class;
 }
 
+UMiniMapWidget* ASkyscraperPlayerController::GetMiniMapWidget() const
+{
+	return MiniMapWidget;
+}
+
 void ASkyscraperPlayerController::AddChangeWeaponWidget()
 {
 	if(!ChangeWeaponWidget)
@@ -154,6 +159,7 @@ void ASkyscraperPlayerController::BeginPlay()
 	if(MiniMapWidget)
 	{
 		MiniMapWidget->AddToViewport();
+		MiniMapWidget->AddPlayerToImage(PossessingPawn);
 	}
 
 	UpdateImage();
@@ -183,13 +189,7 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 		}
 	}
 
-	// 미니맵 내 액터 위치 설정
-	if (MiniMapWidget && MiniMapWidget->GetPlayerImage() && HexagonTile)
-	{
-		FVector ForwardVector = GetControlRotation().Vector();
-		FRotator RotationValue = UKismetMathLibrary::FindLookAtRotation(FVector{ 0.0f,0.0f,0.0f }, ForwardVector);
-		MiniMapWidget->SetPlayerImageAlignment(HexagonTile->GetAlignmentByLocation(PossessingPawn->GetActorLocation()), RotationValue.Yaw);
-	}
+	
 
 	// 관전 모드로 진입을 위한 코드
 	if(bSpectatorMode && DamageCauser)

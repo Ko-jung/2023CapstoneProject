@@ -115,6 +115,7 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
                     else
                     {
                         Result = (char)ELoginResult::Success;
+                        break;
                     }
                 }
                 else

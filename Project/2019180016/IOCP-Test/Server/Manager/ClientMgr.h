@@ -14,7 +14,8 @@ public:
 	ClientMgr();
 
 	void Disconnect(int SerialNum);
-	void RecvProcess(int id, const DWORD& bytes, EXP_OVER* exp);
+	void Recv(int id, const DWORD& bytes, EXP_OVER* exp);
+	void Send(int id, Packet* p, int size);
 
 	bool CheckSelectDuplication(int id, ECharacter c);
 	bool CheckFallDie(int id, PPlayerPosition PPP);
@@ -25,7 +26,6 @@ public:
 	void Heal(int id, float damage);
 	void ItemHeal(int id, EItemRareLevel level);
 
-	void Send(int id, Packet* p, int size);
 	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
 	void SendPacketToAllExceptSelf(int id, Packet* p, int packetSize);
 

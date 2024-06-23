@@ -3,6 +3,7 @@
 #include "../../Common/LogUtil.h"
 
 #include "Manager/DBMgr.h"
+#include "Manager/ClientMgr.h"
 
 LobbyServer::LobbyServer()
 {
@@ -31,12 +32,6 @@ bool LobbyServer::Init(const int WorkerNum)
 	else
 		m_iWorkerNum = 1;
 
-	m_GameServerSocket = new LobbyClientInfo();
-	m_GameServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));
-	for (int i = 0; i < MAXCLIENT; i++)
-	{
-		Clients[i] = new LobbyClientInfo();
-	}
 
 	DBMgr::Instance();
 
@@ -97,7 +92,7 @@ void LobbyServer::error_display(int err_no)
 
 void LobbyServer::StartServer()
 {
-	if (!ConnectToGameServer())
+	if (!ClientMgr::Instance()->ConnectToGameServer(m_hIocp))
 	{
 		exit(-1);
 	}
@@ -153,120 +148,25 @@ void LobbyServer::Worker()
 	}
 }
 
-LobbyClientInfo* LobbyServer::GetEmptyClient()
-{
-	auto it = std::find_if(Clients.begin(), Clients.end(), [](LobbyClientInfo* a) {return a->GetClientNum() == -1; });
-	if (it != Clients.end())
-	{
-		return *it;
-	}
-	else
-	{
-		return nullptr;
-	}
-}
-
-void LobbyServer::CheckingMatchingQueue()
-{
-	//if (m_MatchingQueue.size() >= MAXPLAYER)
-	if (m_MatchingQueue.size() >= MAXPLAYER)
-	{
-		PEmptyRoomNum PER;
-		m_GameServerSocket->SendProcess(&PER);
-	}
-}
-
-bool LobbyServer::ConnectToGameServer()
-{
-	sockaddr_in serveraddr;
-	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	int a = inet_pton(AF_INET, GAMESERVERIP, &serveraddr.sin_addr.s_addr);
-	serveraddr.sin_port = htons(GAMESERVERPORT);
-	int retval = connect(m_GameServerSocket->GetSocket(), (sockaddr*)&serveraddr, sizeof(sockaddr));
-
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_GameServerSocket->GetSocket()), m_hIocp, GAMESERVER, 0);
-	m_GameServerSocket->Recv();
-
-	if (retval == SOCKET_ERROR)
-	{
-		LogUtil::error_display("LobbyServer::ConnectToGameServer() GameServer connect FAILED");
-		return false;
-	}
-
-	cout << "Connect Success to Game Server" << endl;
-	return true;
-}
-
-void LobbyServer::ProcessTryLogin(int id, PTryLogin* PTL)
-{	
-	PLoginResult PLR;
-	PLR.LoginResult = DBMgr::Instance()->ExecLogin(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
-
-	Clients[id]->SendProcess(&PLR);
-
-	//int ret = DBMgr::Instance()->ExecLogin(L"", *PTL);
-	//if (ret == (char)ELoginResult::DatabaseError)
-	//{
-	//	// Database Error
-	//}
-	//else if (ret == (char)ELoginResult::IDError)
-	//{
-	//	// ID Error
-	//}
-	//else if (ret == (char)ELoginResult::PasswordError)
-	//{
-	//	// Password Error
-	//}
-}
-
 void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
 {
-	if (m_iClientCount < MAXCLIENT)
+	if (ClientMgr::Instance()->ClientCount < MAXCLIENT)
 	{
 		// ��� Ŭ���� ���� ��ȣ�� ����??
 
-		LobbyClientInfo* socket = GetEmptyClient();
-		socket->SetClientNum(m_iClientId);
+		int ClientNum;
+		LobbyClientInfo* socket = ClientMgr::Instance()->GetEmptyClient(ClientNum);
+		socket->SetClientNum(ClientNum);
 		socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
 
-		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, m_iClientId, 0);
+		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, ClientNum, 0);
 
 		socket->Recv();
 		//socket->Send();
 
-		cout << m_iClientId << "번 Accept" << endl;
+		cout << ClientNum << "번 Accept" << endl;
 
-		m_iClientId++;
-		m_iClientCount++;
-
-		SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
-		*(reinterpret_cast<SOCKET*>(&m_AcceptExpOver._net_buf)) = c_socket;
-		ZeroMemory(&m_AcceptExpOver._wsa_over, sizeof(m_AcceptExpOver._wsa_over));
-
-		int ret = AcceptEx(m_ListenSocket,				
-			c_socket/*socket->GetSocket()*/,			
-			m_AcceptExpOver._net_buf + 8,				
-			0,											
-			sizeof(SOCKADDR_IN) + 16,					
-			sizeof(SOCKADDR_IN) + 16,					
-			0,											
-			(LPWSAOVERLAPPED)&m_AcceptExpOver._wsa_over);
-
-		if (0 != ret)
-		{
-			cout << "AcceptEx����\n";
-			error_display(WSAGetLastError());
-			return;
-		}
-
-		//////////////////////////////////////////
-		{
-
-		m_MatchingQueue.push(Clients[m_iClientId - 1]);
-			CheckingMatchingQueue();
-		}
-		///////////////////////////////////////////
+		ReadyToNextAccept();
 	}
 	else
 	{
@@ -283,63 +183,33 @@ void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 {
 	if (id == GAMESERVER)
 	{
-		ProcessRecvFromGame(id, bytes, exp);
+		ClientMgr::Instance()->ProcessRecvFromGame(id, bytes, exp);
 		return;
 	}
 
-	Packet* packet = reinterpret_cast<Packet*>(exp->_wsa_buf.buf);
-	switch (packet->PacketType)
-	{
-	case (int)COMP_OP::OP_STARTMATCHING:
-		m_MatchingQueue.push(Clients[id]);
-		cout << id << "번 Ready" << endl;
-		CheckingMatchingQueue();
-		break;
-	case (int)COMP_OP::OP_CANCLEMATCHING:
-		//m_MatchingQueue.push(m_Clients[id]);
-		//CheckingMatchingQueue();
-		break;
-	case (int)COMP_OP::OP_TRYLOGIN:
-		ProcessTryLogin(id, reinterpret_cast<PTryLogin*>(packet));
-		break;
-	default:
-		break;
-	}
-	Clients[id]->Recv();
+	ClientMgr::Instance()->Recv(id, bytes, exp);
 }
 
-void LobbyServer::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
+bool LobbyServer::ReadyToNextAccept()
 {
-	Packet* packet = reinterpret_cast<Packet*>(exp->_wsa_buf.buf);
-	switch (packet->PacketType)
+	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+	*(reinterpret_cast<SOCKET*>(&m_AcceptExpOver._net_buf)) = c_socket;
+	ZeroMemory(&m_AcceptExpOver._wsa_over, sizeof(m_AcceptExpOver._wsa_over));
+
+	int ret = AcceptEx(m_ListenSocket,
+		c_socket/*socket->GetSocket()*/,
+		m_AcceptExpOver._net_buf + 8,
+		0,
+		sizeof(SOCKADDR_IN) + 16,
+		sizeof(SOCKADDR_IN) + 16,
+		0,
+		(LPWSAOVERLAPPED)&m_AcceptExpOver._wsa_over);
+
+	if (0 != ret)
 	{
-	case(int)COMP_OP::OP_SS_EMPTYROOMNUM:
-	{
-		// Get Room num from Gameserver
-		PEmptyRoomNum PER;
-		memcpy(&PER, exp->_wsa_buf.buf, sizeof(PER));
-
-		// Notify Room Num to Clients
-		PConnectToGameserver SPS;
-		//SPS.RoomNum = 0;
-		//SPS.RoomNum = PER.RoomNum;
-
-		LobbyClientInfo* client;
-
-		// TODO: m_MatchingQueue 에 Lock을 걸고 진행.
-		// 6개가 되어 pop 진행 중 매칭 취소가 들어오면 안되므로
-		for (int i = 0; i < MAXPLAYER; )
-		{
-			while (m_MatchingQueue.try_pop(client))
-			{
-				client->SendProcess(&SPS);
-
-				i++;
-			}
-		}
+		cout << "AcceptEx Error\n";
+		error_display(WSAGetLastError());
+		return false;
 	}
-		break;
-	default:
-		break;
-	}
+	return true;
 }

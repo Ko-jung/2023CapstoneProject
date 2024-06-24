@@ -187,7 +187,7 @@ protected:
 	UPROPERTY()
 		TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
 
-	UPROPERTY(EditAnywhere, Category = "Boost")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boost")
 		USkeletalMeshComponent* BoostMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Skirt")

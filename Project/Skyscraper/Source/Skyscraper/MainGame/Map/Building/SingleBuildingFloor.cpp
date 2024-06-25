@@ -154,7 +154,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 	{
 		UStaticMeshComponent* FloorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Floor"));
 		SetRootComponent(FloorMesh);
-		ConstructorHelpers::FObjectFinder<UStaticMesh> FloorMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_floor_002.map_3_floor_002'"));
+		ConstructorHelpers::FObjectFinder<UStaticMesh> FloorMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/map_4_floor_re001.map_4_floor_re001'"));
 		if (FloorMeshRef.Succeeded())
 		{
 			FloorMesh->SetStaticMesh(FloorMeshRef.Object);
@@ -184,7 +184,8 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 	{
 		UStaticMeshComponent* AirconStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("AirCon" + FString::FromInt(i)));
 		AirconStaticMesh->SetupAttachment(GetRootComponent());
-
+		// 2024 06 25 4번째 맵 메쉬에 대해서 추가
+		AirconStaticMesh->SetRelativeRotation(FRotator{ 0,90,0 });
 		FString FileName = "map_3_airCon00" + FString::FromInt(i + 1);
 		FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
 		ConstructorHelpers::FObjectFinder<UStaticMesh> AirconMeshRef(*FilePath);
@@ -201,6 +202,13 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		UStaticMeshComponent* LightStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Light" + FString::FromInt(i)));
 		LightStaticMesh->SetupAttachment(GetRootComponent());
 
+		// 2024 06 25 4번째 맵 메쉬에 대해서 추가
+		{
+			if(i%3 == 1)
+			{
+				LightStaticMesh->SetRelativeRotation(FRotator{ 0,90,0 });
+			}
+		}
 		FString FileName = "map_3_light00" + FString::FromInt(i + 1);
 		FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
 		ConstructorHelpers::FObjectFinder<UStaticMesh> LightMeshRef(*FilePath);
@@ -215,6 +223,8 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 	{
 		UStaticMeshComponent* ventilatorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("ventilator"));
 		ventilatorMesh->SetupAttachment(GetRootComponent());
+		// 2024 06 25 4번째 맵 메쉬에 대해서 추가
+		ventilatorMesh->SetRelativeRotation(FRotator{ 0,90,0 });
 
 		ConstructorHelpers::FObjectFinder<UStaticMesh> VentilatorMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_ventilator001.map_3_ventilator001'"));
 		if (VentilatorMeshRef.Succeeded())
@@ -229,7 +239,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		UStaticMeshComponent* StairMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Stair"));
 		StairMesh->SetupAttachment(GetRootComponent());
 
-		ConstructorHelpers::FObjectFinder<UStaticMesh> StairMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_stair.map_3_stair'"));
+		ConstructorHelpers::FObjectFinder<UStaticMesh> StairMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/stair.stair'"));
 		if (StairMeshRef.Succeeded())
 		{
 			StairMesh->SetStaticMesh(StairMeshRef.Object);
@@ -242,7 +252,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		UStaticMeshComponent* StairWallMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("StairWall"));
 		StairWallMesh->SetupAttachment(GetRootComponent());
 
-		ConstructorHelpers::FObjectFinder<UStaticMesh> StairWallMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_stair_wall.map_3_stair_wall'"));
+		ConstructorHelpers::FObjectFinder<UStaticMesh> StairWallMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/map_4_wall_stair_re.map_4_wall_stair_re'"));
 		if (StairWallMeshRef.Succeeded())
 		{
 			StairWallMesh->SetStaticMesh(StairWallMeshRef.Object);
@@ -260,7 +270,7 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 			WindowWallStaticMesh->SetupAttachment(GetRootComponent());
 			WindowWallStaticMesh->SetRelativeRotation(FRotator(0.0f, 90.0f * WallCount, 0.0f));
 
-			ConstructorHelpers::FObjectFinder<UStaticMesh> WindowWallMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_wall.map_3_wall'"));
+			ConstructorHelpers::FObjectFinder<UStaticMesh> WindowWallMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/map_4_wall_window_re.map_4_wall_window_re'"));
 			if (WindowWallMeshRef.Succeeded())
 			{
 				WindowWallStaticMesh->SetStaticMesh(WindowWallMeshRef.Object);
@@ -272,9 +282,8 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 			{
 				UStaticMeshComponent* WindowStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Window_Wall" + FString::FromInt(WallCount) + "_" + FString::FromInt(WindowCount)));
 				WindowStaticMesh->SetupAttachment(WindowWallStaticMesh);
-
-				FString FileName = "map_3_window_00" + FString::FromInt(WindowCount + 1);
-				FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
+				FString FileName = "map_4_window_re00" + FString::FromInt(WindowCount);
+				FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/" + FileName + "." + FileName + "'";
 				ConstructorHelpers::FObjectFinder<UStaticMesh> WindowMeshRef(*FilePath);
 				if (WindowMeshRef.Succeeded())
 				{
@@ -284,5 +293,19 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 				WindowStaticMeshes.Add(WindowStaticMesh);
 			}
 		}
+	}
+
+	// 2024.06.25 4번째 맵 수정 새로 추가된 보조 바닥
+	{
+		UStaticMeshComponent* AssistFloor = CreateDefaultSubobject<UStaticMeshComponent>(FName("AssistFloor"));
+		AssistFloor->SetupAttachment(GetRootComponent());
+
+		ConstructorHelpers::FObjectFinder<UStaticMesh> AssistFloorMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/map_4_floor_assist_re.map_4_floor_assist_re'"));
+		if (AssistFloorMeshRef.Succeeded())
+		{
+			AssistFloor->SetStaticMesh(AssistFloorMeshRef.Object);
+		}
+
+		FloorStaticMeshes.Add(AssistFloor);
 	}
 }

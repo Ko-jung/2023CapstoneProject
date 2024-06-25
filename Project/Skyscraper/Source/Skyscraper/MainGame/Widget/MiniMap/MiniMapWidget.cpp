@@ -221,6 +221,10 @@ void UMiniMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	{
 		return;
 	}
+	if (!PlayerImageAndActor.IsValid())
+	{
+		return;
+	}
 
 	// 자신 플레이어 위치 및 회전 적용
 	{
@@ -246,7 +250,7 @@ void UMiniMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		// 적군 캐릭터에 대해서는 일정 거리 내, 특정 각도 내 있는 캐릭터에 대해서만 관찰 가능하게 설정
 		for (FImageAndActor& ImageAndActor : EnemyPlayerImagesAndActors)
 		{
-			if (ImageAndActor.Actor)
+			if (ImageAndActor.IsValid() && ImageAndActor.Actor)
 			{
 				if (CheckEnemyPlayerIsVisible(ImageAndActor.Actor))
 				{

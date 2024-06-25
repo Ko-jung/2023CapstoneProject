@@ -15,12 +15,12 @@ AFloatingTile::AFloatingTile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// static mesh 에셋 로드
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> TileAsset(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_tile.map_3_tile'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> TileAsset(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/tile_float.tile_float'"));
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FloatingTile"));
 	SetRootComponent(StaticMesh);
 	StaticMesh->SetStaticMesh(TileAsset.Object);
 
-	ConstructorHelpers::FClassFinder<AActor> GC_TileRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/HexagonTile/BP_GC_Tile.BP_GC_Tile_C'"));
+	ConstructorHelpers::FClassFinder<AActor> GC_TileRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/FlotingTile/BP_GC_Floatingtile.BP_GC_Floatingtile_C'"));
 	GC_Tile = GC_TileRef.Class;
 }
 

@@ -27,7 +27,7 @@ public:
 	UFUNCTION()
 	void OnRegisterButtonClick();
 
-	void SetExtraMessage(PLoginResult* PLR);
+	void SetExtraMessage(struct PLoginResult* PLR);
 
 private:
 	UPROPERTY(meta = (BindWidget))

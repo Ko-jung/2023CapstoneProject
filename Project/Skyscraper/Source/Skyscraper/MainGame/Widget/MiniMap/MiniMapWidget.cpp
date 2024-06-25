@@ -134,20 +134,20 @@ void UMiniMapWidget::NativePreConstruct()
 			TileTextures.AddDefaulted();
 		}
 
-		static UTexture2D* BuildingTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/MAP_BUILDING.MAP_BUILDING'"));
+		static UTexture2D* BuildingTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_BUILDING.MAP_BUILDING'"));
 		TileTextures[(int8)ETileImageType::ETIT_Building] = BuildingTexture;
 
-		static UTexture2D* ItemTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/MAP_ITEM.MAP_ITEM'"));
+		static UTexture2D* ItemTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_ITEM.MAP_ITEM'"));
 		TileTextures[(int8)ETileImageType::ETIT_Item] = ItemTexture;
 
-		static UTexture2D* NormalTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/MAP_NORMAL_TILE.MAP_NORMAL_TILE'"));
+		static UTexture2D* NormalTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_NORMAL_TILE.MAP_NORMAL_TILE'"));
 		TileTextures[(int8)ETileImageType::ETIT_Normal] = NormalTexture;
 
 
 		static UTexture2D* CollapseTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/EMPTY_BACKGROUND.EMPTY_BACKGROUND'"));
 		TileTextures[(int8)ETileImageType::ETIT_Collapse] = CollapseTexture;
 
-		static UTexture2D* FloatTileTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/MAP_FLOAT.MAP_FLOAT'"));
+		static UTexture2D* FloatTileTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_FLOAT.MAP_FLOAT'"));
 		TileTextures[(int8)ETileImageType::ETIT_FloatTile] = FloatTileTexture;
 	}
 

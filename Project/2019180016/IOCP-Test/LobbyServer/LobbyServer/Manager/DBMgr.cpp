@@ -106,22 +106,14 @@ int DBMgr::ExecLogin(const wchar_t* Query, const PTryLogin& TargetInfo)
             {
                 if (TargetPassword == PasswordWString)
                 {
-                    // Succ
-                    if (TargetInfo.IsRegister)
-                    {
-                        // INSTERT Query
-
-                    }
-                    else
-                    {
-                        Result = (char)ELoginResult::Success;
-                        break;
-                    }
+                    Result = (char)ELoginResult::Success;
+                    break;
                 }
                 else
                 {
                     // Password Error
                     Result = (char)ELoginResult::PasswordError;
+                    break;
                 }
             }
             else

@@ -130,12 +130,15 @@ void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
 	PLoginResult PLR;
 	if (PTL->IsRegister)
 	{	// REGISTER
+		PLR.IsRegister = true;
 
 		// ID Duplication Checking
-		int Result = DBMgr::Instance()->ExecRegister(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
+		int Result = DBMgr::Instance()->ExecLogin(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
 		if (Result == (int)ELoginResult::Success || Result == (int)ELoginResult::PasswordError)
 		{
-
+			PLR.LoginResult = (char)ELoginResult::IDError;
+			Target->SendProcess(&PLR);
+			return;
 		}
 
 		wchar_t query[150];
@@ -149,7 +152,6 @@ void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
 
 		wsprintf(query, L"INSERT INTO [2024_CapstoneProject].[dbo].[Login_Table] VALUES ('%s', '%s')", WID, WPassword);
 		PLR.LoginResult = DBMgr::Instance()->ExecRegister(query, *PTL);
-		PLR.IsRegister = true;
 
 		delete[] WID;
 		delete[] WPassword;

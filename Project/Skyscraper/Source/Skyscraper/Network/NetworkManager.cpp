@@ -122,7 +122,7 @@ void NetworkManager::ProcessRecvFromLogin(Packet* p)
 		Gamemode->PushQueue(PLR);
 
 
-		if (PLR->LoginResult == (char)ELoginResult::Success)
+		if (!PLR->IsRegister && PLR->LoginResult == (char)ELoginResult::Success)
 		{
 			State = ENetworkState::Lobby;
 			IsChangingGameMode = true;

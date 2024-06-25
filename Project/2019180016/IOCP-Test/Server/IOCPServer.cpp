@@ -300,7 +300,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 		return;
 	}
 
-	ClientMgr::Instance()->RecvProcess(id, bytes, exp);
+	ClientMgr::Instance()->Recv(id, bytes, exp);
 }
 
 void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)

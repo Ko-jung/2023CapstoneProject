@@ -37,7 +37,7 @@ void ClientMgr::SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSi
 	}
 }
 
-void ClientMgr::RecvProcess(int id, const DWORD& bytes, EXP_OVER* exp)
+void ClientMgr::Recv(int id, const DWORD& bytes, EXP_OVER* exp)
 {
 	m_Clients[id]->RecvProcess(bytes, exp);
 }

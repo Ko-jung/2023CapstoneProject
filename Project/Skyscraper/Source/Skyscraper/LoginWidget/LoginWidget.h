@@ -27,6 +27,8 @@ public:
 	UFUNCTION()
 	void OnRegisterButtonClick();
 
+	void SetExtraMessage(PLoginResult* PLR);
+
 private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ExtraMessage;

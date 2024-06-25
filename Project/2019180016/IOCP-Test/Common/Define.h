@@ -29,6 +29,8 @@
 #define LOBBYSERVERPORT 9001
 
 constexpr int SELECTTIMESECOND = 40;
+constexpr int IDSIZE = 30;
+constexpr int PASSWORDSIZE = 30;
 
 //#define MEMCPYBUFTOPACKET(packet, bytes) memcpy(&packet, (exp->_wsa_buf.buf + bytes), sizeof(packet))
 

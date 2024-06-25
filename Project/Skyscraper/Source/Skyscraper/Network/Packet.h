@@ -14,6 +14,7 @@
 #include "../Enum/ECharacterAnimMontage.h"
 #include "../Enum/ESwapWeapon.h"
 #include "../Enum/EBreakType.h"
+#include "../Enum/ELoginResult.h"
 
 // USTRUCT()
 struct PVector
@@ -383,8 +384,17 @@ struct PTryLogin : Packet
 {
 	char ID[30];
 	char Password[30];
+	bool IsRegister;
 
 	PTryLogin() :Packet(COMP_OP::OP_TRYLOGIN) { PacketSize = sizeof(PTryLogin); }
+};
+
+struct PLoginResult : Packet
+{
+	char LoginResult;
+	bool IsRegister;
+
+	PLoginResult() :Packet(COMP_OP::OP_LOGINRESULT) { PacketSize = sizeof(PLoginResult); }
 };
 
 #pragma pack(pop)

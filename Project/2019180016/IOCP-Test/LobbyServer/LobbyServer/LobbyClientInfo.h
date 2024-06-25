@@ -11,30 +11,28 @@ public:
 
 	void Init();
 
-	void RecvProcess(const DWORD& bytes, EXP_OVER* exp);
+	void RecvPacketReassemble(const DWORD& bytes, EXP_OVER* exp);
 
-	void SendProcess(int PacketSize, Packet* PacketData);
+	void SendProcess(Packet* PacketData);
 	void Recv();
 
-	SOCKET& GetSocket() { return m_sClientSocket; }
-	int GetRemainDataLen() { return m_iRemainDataLen; }
-	const int GetClientNum() { return m_iClientNum; }
-	int GetRoomNum() { return m_iRoomNum; }
-	EXP_OVER* GetExp() { return &m_Exp; }
+	SOCKET& GetSocket() { return ClientSocket; }
+	int GetRemainDataLen() { return RemainDataLen; }
+	const int GetClientNum() { return ClientNum; }
+	EXP_OVER* GetExp() { return &Exp; }
+	
+	void SetSocket(const SOCKET& s) { ClientSocket = s; }
+	void SetRemainDataLen(int len) { RemainDataLen = len; }
+	void SetClientNum(int num) { ClientNum = num; }
+	// 
+	// protected:
 
-	void SetSocket(const SOCKET& s) { m_sClientSocket = s; }
-	void SetRemainDataLen(int len) { m_iRemainDataLen = len; }
-	void SetClientNum(int num) { m_iClientNum = num; }
-	void SetRoomNum(int num) { m_iRoomNum = num; }
+	SOCKET ClientSocket;
 
-protected:
-	SOCKET m_sClientSocket;
+	int RemainDataLen;
 
-	int m_iRemainDataLen;
+	int ClientNum;
 
-	int m_iClientNum;
-	int m_iRoomNum;
-
-	EXP_OVER m_Exp;
+	EXP_OVER Exp;
 };
 

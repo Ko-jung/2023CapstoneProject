@@ -94,6 +94,9 @@ void NetworkManager::ProcessRecv(Packet* p)
 
 	switch (State)
 	{
+	case ENetworkState::Login:
+		ProcessRecvFromLogin(p);
+		break;
 	case ENetworkState::Lobby:
 		ProcessRecvFromLobby(p);
 		break;
@@ -108,11 +111,36 @@ void NetworkManager::ProcessRecv(Packet* p)
 	}
 }
 
+void NetworkManager::ProcessRecvFromLogin(Packet* p)
+{
+	switch (p->PacketType)
+	{
+	case (BYTE)COMP_OP::OP_LOGINRESULT:
+	{
+		PLoginResult* PLR = new PLoginResult;
+		memcpy(PLR, p, sizeof(*PLR));
+		Gamemode->PushQueue(PLR);
+
+
+		if (!PLR->IsRegister && PLR->LoginResult == (char)ELoginResult::Success)
+		{
+			State = ENetworkState::Lobby;
+			IsChangingGameMode = true;
+			StopListen();
+		}
+		break;
+	}
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("ProcessRecvFromLogin OP Error!"));
+		break;
+	}
+}
+
 void NetworkManager::ProcessRecvFromLobby(Packet* p)
 {
 	switch (p->PacketType)
 	{
-	case(int)COMP_OP::OP_CONNECTTOGAMESERVER:
+	case(BYTE)COMP_OP::OP_CONNECTTOGAMESERVER:
 	{
 		PConnectToGameserver* PCTG= new PConnectToGameserver();
 		memcpy(PCTG, p, sizeof(*PCTG));
@@ -135,14 +163,14 @@ void NetworkManager::ProcessRecvFromSelectGame(Packet* p)
 	// Select Game Mode
 	switch (p->PacketType)
 	{
-	case(int)COMP_OP::OP_SELECTWEAPONINFO:
+	case(BYTE)COMP_OP::OP_SELECTWEAPONINFO:
 	{
 		PPlayerSelectInfo* PPP = new PPlayerSelectInfo();
 		memcpy(PPP, p, sizeof(PPlayerSelectInfo));
 		Gamemode->PushQueue(PPP);
 	}
 	break;
-	case (int)COMP_OP::OP_PLAYERJOIN:
+	case (BYTE)COMP_OP::OP_PLAYERJOIN:
 	{
 		PPlayerJoin* PPJ = new PPlayerJoin();
 		memcpy(PPJ, p, sizeof(*PPJ));
@@ -161,7 +189,7 @@ void NetworkManager::ProcessRecvFromSelectGame(Packet* p)
 		}
 	}
 	break;
-	case (int)COMP_OP::OP_SETTIMER:
+	case (BYTE)COMP_OP::OP_SETTIMER:
 	{
 		PSetTimer* PST = new PSetTimer();
 		memcpy(PST, p, sizeof(*PST));
@@ -170,7 +198,7 @@ void NetworkManager::ProcessRecvFromSelectGame(Packet* p)
 		UE_LOG(LogTemp, Warning, TEXT("New Timer Push, Time is %f s"), PST->SecondsUntilActivation);
 	}
 	break;
-	case(int)COMP_OP::OP_STARTGAME:
+	case(BYTE)COMP_OP::OP_STARTGAME:
 	{
 		PStartGame* PSG = new PStartGame();
 		Gamemode->PushQueue(PSG);
@@ -194,63 +222,63 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 
 	switch (p->PacketType)
 	{
-	case (int)COMP_OP::OP_BUILDINGINFO:
+	case (BYTE)COMP_OP::OP_BUILDINGINFO:
 	{
 		PBuildingInfo* PBI = new PBuildingInfo();
 		memcpy(PBI, p, sizeof(*PBI));
 		Gamemode->PushQueue(PBI);
 		break;
 	}
-	case (int)COMP_OP::OP_PLAYERPOSITION:
+	case (BYTE)COMP_OP::OP_PLAYERPOSITION:
 	{
 		PPlayerPosition* PPP = new PPlayerPosition();
 		memcpy(PPP, p, sizeof(*PPP));
 		Gamemode->PushQueue(PPP);
 		break;
 	}
-	case (int)COMP_OP::OP_CHANGEDPLAYERHP:
+	case (BYTE)COMP_OP::OP_CHANGEDPLAYERHP:
 	{
 		PChangedPlayerHP* PCPHP = new PChangedPlayerHP();
 		memcpy(PCPHP, p, sizeof(*PCPHP));
 		Gamemode->PushQueue(PCPHP);
 		break;
 	}
-	case (int)COMP_OP::OP_CHANGEDPLAYERSTATE:
+	case (BYTE)COMP_OP::OP_CHANGEDPLAYERSTATE:
 	{
 		PChangedPlayerState* PCPS = new PChangedPlayerState();
 		memcpy(PCPS, p, sizeof(*PCPS));
 		Gamemode->PushQueue(PCPS);
 		break;
 	}
-	case (int)COMP_OP::OP_SPAWNOBJECT:
+	case (BYTE)COMP_OP::OP_SPAWNOBJECT:
 	{
 		PSpawnObject* PSO = new PSpawnObject();
 		memcpy(PSO, p, sizeof(*PSO));
 		Gamemode->PushQueue(PSO);
 		break;
 	}
-	case (int)COMP_OP::OP_CHANGEANIMMONTAGE:
+	case (BYTE)COMP_OP::OP_CHANGEANIMMONTAGE:
 	{
 		PChangeAnimMontage* PCAM = new PChangeAnimMontage();
 		memcpy(PCAM, p, sizeof(*PCAM));
 		Gamemode->PushQueue(PCAM);
 		break; 
 	}
-	case (int)COMP_OP::OP_SWAPWEAPON:
+	case (BYTE)COMP_OP::OP_SWAPWEAPON:
 	{
 		PSwapWeapon* PSW = new PSwapWeapon();
 		memcpy(PSW, p, sizeof(*PSW));
 		Gamemode->PushQueue(PSW);
 		break;
 	}
-	case (int)COMP_OP::OP_STUNDOWNSTATE:
+	case (BYTE)COMP_OP::OP_STUNDOWNSTATE:
 	{
 		PStunDownState* PSDS = new PStunDownState();
 		memcpy(PSDS, p, sizeof(*PSDS));
 		Gamemode->PushQueue(PSDS);
 		break;
 	}
-	case (int)COMP_OP::OP_SETTIMER:
+	case (BYTE)COMP_OP::OP_SETTIMER:
 	{
 		PSetTimer* PST = new PSetTimer();
 		memcpy(PST, p, sizeof(*PST));
@@ -259,31 +287,31 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		UE_LOG(LogTemp, Warning, TEXT("New Timer Push, Time is %f s"), PST->SecondsUntilActivation);
 		break;
 	}
-	case (int)COMP_OP::OP_TILEDROP:
+	case (BYTE)COMP_OP::OP_TILEDROP:
 	{
 		PTileDrop* PTD = new PTileDrop();
 		memcpy(PTD, p, sizeof(*PTD));
 		Gamemode->PushQueue(PTD);
 		break;
 	}
-	case (int)COMP_OP::OP_SPAWNITEM:
+	case (BYTE)COMP_OP::OP_SPAWNITEM:
 	{
 		PSpawnItem* PSI = new PSpawnItem();
 		memcpy(PSI, p, sizeof(*PSI));
 		Gamemode->PushQueue(PSI);
 		break;
 	}
-	case (int)COMP_OP::OP_USEITEM:
+	case (BYTE)COMP_OP::OP_USEITEM:
 	{
 		COPYPACKET(PUseItem);
 		break;
 	}
-	case (int)COMP_OP::OP_GETITEM:
+	case (BYTE)COMP_OP::OP_GETITEM:
 	{
 		COPYPACKET(PSpawnItem);
 		break;
 	}
-	case (int)COMP_OP::OP_FINISHGAME:
+	case (BYTE)COMP_OP::OP_FINISHGAME:
 	{
 		COPYPACKET(PFinishGame);
 
@@ -291,7 +319,7 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		State = ENetworkState::Lobby;
 		break;
 	}
-	case (int)COMP_OP::OP_BREAKOBJECT:
+	case (BYTE)COMP_OP::OP_BREAKOBJECT:
 	{
 		COPYPACKET(PBreakObject);
 		break;

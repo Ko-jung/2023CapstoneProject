@@ -11,20 +11,20 @@ ABuilding::ABuilding()
  	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = false;
 
-	// ±âº» °ª ¼³Á¤
+	// ê¸°ë³¸ ê°’ ì„¤ì •
 	FloorDistance = 1000.0f;
 	CurrentFloor = InitialFloor;
 	InitialFloor = 5;
 
-	// ÃÖ»ó´Ü ÃµÀå ¹èÄ¡
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CeilingRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_3_floor_001.map_3_floor_001'"));
+	// ìµœìƒë‹¨ ì²œì¥ ë°°ì¹˜
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CeilingRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/map/map_refine/map_4_floor_re000.map_4_floor_re000'"));
 	if (CeilingRef.Succeeded()) {
 		Building_Ceiling = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ceiling"));
 		Building_Ceiling->SetStaticMesh(CeilingRef.Object);
 	}
 	SetRootComponent(Building_Ceiling);
 
-	// °Ç¹° Ãş¿¡ ´ëÇÑ ¾×ÅÍ Å¬·¡½º ·Îµå
+	// ê±´ë¬¼ ì¸µì— ëŒ€í•œ ì•¡í„° í´ë˜ìŠ¤ ë¡œë“œ
 	//static ConstructorHelpers::FClassFinder<ASingleBuildingFloor> SingleBuildingFloorRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/SingleBuildingFloor.SingleBuildingFloor_C'"));
 	//if (SingleBuildingFloorRef.Succeeded()) SingleBuildingClass = SingleBuildingFloorRef.Class;
 
@@ -49,7 +49,7 @@ void ABuilding::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// °Ç¹° Ãş µé child actor ¹èÄ¡
+	// ê±´ë¬¼ ì¸µ ë“¤ child actor ë°°ì¹˜
 	for (int i = 0; i < InitialFloor; ++i)
 	{
 		FString title = "Floor" + FString::FromInt(i);

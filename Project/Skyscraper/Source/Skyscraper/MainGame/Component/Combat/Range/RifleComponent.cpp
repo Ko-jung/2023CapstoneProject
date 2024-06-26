@@ -47,5 +47,8 @@ void URifleComponent::SetInitialValue()
 	{
 		FireMaxCoolTime = CombatComponent->AR_FireTime;
 		ReloadSpeedTime = CombatComponent->AR_ReloadTime;
+
+		EffectiveDistance = CombatComponent->AR_EffectiveDistance;
+		
 	}
 }

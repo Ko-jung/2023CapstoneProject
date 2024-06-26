@@ -28,6 +28,10 @@ class SKYSCRAPER_API ARPGBullet : public AActor
 		float InitSpeed;
 	UPROPERTY(VisibleAnywhere)
 		float Damage;
+	UPROPERTY(EditAnywhere)
+		float EffectiveDistance;
+	UPROPERTY()
+		float CurrentDistance;
 
 	UPROPERTY(VisibleAnywhere)
 		AActor* FireCharacter;
@@ -44,14 +48,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// StaticMesh Overlap ÀÌº¥Æ® ¹ß»ı½Ã ½ÇÇàµÉ ÇÔ¼ö
+	// StaticMesh Overlap ì´ë²¤íŠ¸ ë°œìƒì‹œ ì‹¤í–‰ë  í•¨ìˆ˜
 	UFUNCTION()
 		void OverlapExplode(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	// StaticMesh Hit ÀÌº¥Æ® ¹ß»ı½Ã ½ÇÇàµÉ ÇÔ¼ö
+	// StaticMesh Hit ì´ë²¤íŠ¸ ë°œìƒì‹œ ì‹¤í–‰ë  í•¨ìˆ˜
 	UFUNCTION()
 		void HitExplode(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	// Åº Æø¹ß¿¡ ´ëÇÑ ÇÔ¼ö
+	// íƒ„ í­ë°œì— ëŒ€í•œ í•¨ìˆ˜
 	void BulletExplode();
 	
 public:	

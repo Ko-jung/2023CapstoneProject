@@ -86,12 +86,15 @@ UCombatSystemComponent::UCombatSystemComponent()
 
 		SMG_FireTime = 0.2f;
 		SMG_ReloadTime = 1.0f;
+		SMG_EffectiveDistance = 4000.0f;
 
 		AR_FireTime = 0.3f;
 		AR_ReloadTime = 3.0f;
+		AR_EffectiveDistance = 6000.0f;
 
 		RPG_FireTime = 1.0f;
 		RPG_ReloadTime = 5.0f;
+
 	}
 
 }

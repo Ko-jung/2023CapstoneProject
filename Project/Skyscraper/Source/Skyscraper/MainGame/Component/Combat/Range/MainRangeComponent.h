@@ -92,6 +92,10 @@ protected:
 	UPROPERTY()
 		bool bIsBulletInfinity;
 
+	// 유효사거리 관련 변수
+	UPROPERTY(EditAnywhere, Category = EffectiveDistance)
+		float EffectiveDistance;
+
 	// 총기 반동 관련 변수
 	UPROPERTY(EditAnywhere, Category = Recoil)
 		float RecoilAboveAmount;

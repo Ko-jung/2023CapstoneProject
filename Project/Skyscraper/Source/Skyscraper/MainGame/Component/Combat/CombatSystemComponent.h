@@ -76,6 +76,11 @@ public:
 		float RPG_ReloadTime;
 	UPROPERTY(EditAnywhere, Category = RangeValue)
 		float RPG_FireTime;
+
+	UPROPERTY(EditAnywhere, Category = RangeDistanceValue)
+		float SMG_EffectiveDistance;
+	UPROPERTY(EditAnywhere, Category = RangeDistanceValue)
+		float AR_EffectiveDistance;
 	
 
 protected:

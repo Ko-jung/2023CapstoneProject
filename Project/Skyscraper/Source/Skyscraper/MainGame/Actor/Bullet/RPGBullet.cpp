@@ -36,6 +36,9 @@ ARPGBullet::ARPGBullet()
 	ProjectileMovementComponent->bShouldBounce = true;
 	ProjectileMovementComponent->Bounciness = 0.001;
 
+	EffectiveDistance = 8000.0f;
+	CurrentDistance = 0.0f;
+
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleRef(TEXT("/Script/Engine.ParticleSystem'/Game/StarterContent/Particles/P_Explosion.P_Explosion'"));
 	ExplodeParticle = ParticleRef.Object;
 
@@ -139,5 +142,11 @@ void ARPGBullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	CurrentDistance += DeltaTime * GetVelocity().Length();
+	if(CurrentDistance >= EffectiveDistance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Bullet Bomb"));
+		BulletExplode();
+	}
 }
 

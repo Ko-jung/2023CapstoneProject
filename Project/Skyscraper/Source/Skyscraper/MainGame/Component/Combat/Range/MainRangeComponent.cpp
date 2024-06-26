@@ -234,7 +234,7 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 	{ // == Line Trace
 		FVector Start = OwnerCharacter->GetCameraBoom()->GetComponentLocation();
 		FVector End = Start +
-			GetOwnerPlayerController()->GetControlRotation().Vector() * 10000.0f;
+			GetOwnerPlayerController()->GetControlRotation().Vector() * EffectiveDistance;
 		TArray<AActor*> IgnoreActors;
 
 		FHitResult OutHit;

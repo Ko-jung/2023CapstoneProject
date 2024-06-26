@@ -38,5 +38,6 @@ void USMGComponent::SetInitialValue()
 	{
 		FireMaxCoolTime = CombatComponent->SMG_FireTime;
 		ReloadSpeedTime = CombatComponent->SMG_ReloadTime;
+		EffectiveDistance = CombatComponent->SMG_EffectiveDistance;
 	}
 }

@@ -197,19 +197,14 @@ void ASingleBuildingFloor::CreateFloorStaticMeshes()
 		FloorStaticMeshes.Add(AirconStaticMesh);
 	}
 	// 조명 6개
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		UStaticMeshComponent* LightStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Light" + FString::FromInt(i)));
 		LightStaticMesh->SetupAttachment(GetRootComponent());
-
+		LightStaticMesh->SetRelativeRotation(FRotator{ 0,90,0 });
+		
 		// 2024 06 25 4번째 맵 메쉬에 대해서 추가
-		{
-			if(i%3 == 1)
-			{
-				LightStaticMesh->SetRelativeRotation(FRotator{ 0,90,0 });
-			}
-		}
-		FString FileName = "map_3_light00" + FString::FromInt(i + 1);
+		FString FileName = "map_3_light00" + FString::FromInt((i+1) * 3 - 1);
 		FString FilePath = "/Script/Engine.StaticMesh'/Game/2016180023/map/" + FileName + "." + FileName + "'";
 		ConstructorHelpers::FObjectFinder<UStaticMesh> LightMeshRef(*FilePath);
 		if (LightMeshRef.Succeeded())

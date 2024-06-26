@@ -98,7 +98,7 @@ public:
 	void InitialSettings(BYTE* BuildingInfo, uint8 size);	// Setting Building From Server
 	void Init();								// Call InitialSettings(BYTE* BuildingInfo) or InitialSettings()
 
-	void SpawnItem(struct ItemInfo* Items, const uint8 SpawnCount);
+	void SpawnItem(struct PItemInfo* Items, const uint8 SpawnCount);
 	void RemoveItem(BYTE SerialNum);
 	BYTE FindItemSerialNum(const class AActor* LootingActor);
 

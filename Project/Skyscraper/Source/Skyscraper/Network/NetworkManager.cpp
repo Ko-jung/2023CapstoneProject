@@ -421,7 +421,7 @@ uint32 NetworkManager::Run()
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
 
 	//Thread->WaitForCompletion();
-	//Thread->Kill();
+	Thread->Kill();
 	delete Thread;
 	Thread = nullptr;
 	StopTaskCounter.Reset();

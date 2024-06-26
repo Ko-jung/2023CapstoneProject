@@ -109,7 +109,7 @@ void RoomMgr::RequestSendItemSpawn(int roomId)
 
 void RoomMgr::SendItemSpawn(int roomId)
 {
-	std::vector<ItemInfo> Items;
+	std::vector<PItemInfo> Items;
 	Rooms[roomId]->SpawnItem(Items);
 
    	if (Items.empty())

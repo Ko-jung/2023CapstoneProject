@@ -240,7 +240,7 @@ struct PSetTimer : Packet
 	PSetTimer(ETimer type, float secondTime) : Packet(COMP_OP::OP_SETTIMER), TimerType(type), SecondsUntilActivation(secondTime) { PacketSize = sizeof(PSetTimer); }
 };
 
-struct ItemInfo
+struct PItemInfo
 {
 	BYTE ItemSerialNum;
 	BYTE TileIndex;
@@ -248,13 +248,13 @@ struct ItemInfo
 	BYTE Effect;
 	BYTE ItemLevel;
 
-	ItemInfo() {};
-	ItemInfo(BYTE ItemSerialNum, BYTE TileIndex, BYTE Floor, BYTE Effect, BYTE ItemLevel) :
+	PItemInfo() {};
+	PItemInfo(BYTE ItemSerialNum, BYTE TileIndex, BYTE Floor, BYTE Effect, BYTE ItemLevel) :
 		ItemSerialNum(ItemSerialNum), TileIndex(TileIndex), Floor(Floor), Effect(Effect), ItemLevel(ItemLevel){}
 };
 struct PSpawnItem : Packet
 {
-	ItemInfo Item[5];
+	PItemInfo Item[5];
 	BYTE SpawnCount;
 
 	PSpawnItem() : Packet(COMP_OP::OP_SPAWNITEM), SpawnCount(0) { PacketSize = sizeof(PSpawnItem); }

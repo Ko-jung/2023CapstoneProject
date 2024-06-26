@@ -220,7 +220,7 @@ float Room::GetRoomElapsedTime()
 	return std::chrono::duration<float>(Now - RoomStartTime).count();
 }
 
-void Room::SpawnItem(std::vector<ItemInfo>& TileIndex)
+void Room::SpawnItem(std::vector<PItemInfo>& TileIndex)
 {
 	int ItemCount = 5 - (TileDropLevel * 2);
 

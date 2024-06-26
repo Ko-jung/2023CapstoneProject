@@ -61,7 +61,7 @@ public:
 	void GetTilePos(const int Index, float& X, float& Y);
 	double Distance(float x1, float y1, float x2, float y2);
 
-	void SpawnItem(std::vector<struct ItemInfo>& TileIndex);
+	void SpawnItem(std::vector<struct PItemInfo>& TileIndex);
 
 private:
 	std::array<std::atomic<int>, 2> KillScore;

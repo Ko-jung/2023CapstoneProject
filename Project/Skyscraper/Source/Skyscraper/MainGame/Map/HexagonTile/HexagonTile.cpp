@@ -555,7 +555,7 @@ void AHexagonTile::Init()
 		InitialSettings();
 }
 
-void AHexagonTile::SpawnItem(ItemInfo* Items, const uint8 SpawnCount)
+void AHexagonTile::SpawnItem(PItemInfo* Items, const uint8 SpawnCount)
 {
 	//int SpawnCount = 5 - (TileDropLevel * 2);
 	ABuilding* Building = nullptr;

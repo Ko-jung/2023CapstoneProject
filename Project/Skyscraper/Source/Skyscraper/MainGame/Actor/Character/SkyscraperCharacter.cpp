@@ -43,9 +43,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	GetCapsuleComponent()->InitCapsuleSize(42.f, CapsuleHeightSize);
 
 	bIsHover = false;
-	CharacterMaxWalkSpeed = 600.0f;
-	CharacterBwdMaxWalkSpeed = 300.0f;
-	CharacterBesideMaxWalkSpeed = 450.0f;
+	CharacterMaxWalkSpeed = 480.0f;
+	CharacterBwdMaxWalkSpeed = 110.0f;
+	CharacterBesideMaxWalkSpeed = 150.0f;
 	SpeedBuffValue = 1.0f;
 	PowerBuffValue = 1.0f;
 
@@ -596,7 +596,7 @@ void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 			Crouch();
 			GetCharacterMovement()->MaxWalkSpeedCrouched = CharacterBwdMaxWalkSpeed;
 		}
-		else if ( !(MovementVector.X <= FLT_EPSILON)  &&  (!((MovementVector.Y - 1.0f) <= FLT_EPSILON)) ) // 좌우 이동중이며, 전방이동 하지 않을 시
+		else if ( (abs(MovementVector.X) >= FLT_EPSILON)  &&  MovementVector.Y <= FLT_EPSILON ) // 좌우 이동중이며, 전방이동 하지 않을 시
 		{
 			Crouch();
 			GetCharacterMovement()->MaxWalkSpeedCrouched = CharacterBesideMaxWalkSpeed;

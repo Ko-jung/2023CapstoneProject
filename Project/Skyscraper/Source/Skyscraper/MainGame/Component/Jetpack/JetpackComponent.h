@@ -7,6 +7,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "JetpackComponent.generated.h"
 
+class UEnhancedInputLocalPlayerSubsystem;
 class UJetpackGaugeBar;
 
 enum class EDodgeKeys
@@ -87,9 +88,10 @@ public:
 	UFUNCTION()
 		void DoDescent();
 
-	//========== 2019180016 ==========
-		void AddInputMappingContext();
-	//================================
+	void RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem);
+
+	void AddInputMappingContext();
+	
 
 protected:
 	// == Owner 캐릭터 관련

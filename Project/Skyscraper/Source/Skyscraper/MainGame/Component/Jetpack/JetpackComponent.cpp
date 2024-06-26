@@ -360,18 +360,27 @@ void UJetpackComponent::DoDescent()
 	}
 }
 
+void UJetpackComponent::RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem)
+{
+	Subsystem->RemoveMappingContext(IMC_Jetpack);
+}
+
 void UJetpackComponent::AddInputMappingContext()
 {
-	{// == UI 연결하기
-		if (OwnerCharacter && OwnerCharacter->GetPlayerController())
-		{
-			JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(OwnerCharacter->GetPlayerController(), JetpackWidgetClass));
-			JetpackWidget->AddToViewport();
+	if(!JetpackWidget)
+	{
+		{// == UI 연결하기
+			if (OwnerCharacter && OwnerCharacter->GetPlayerController())
+			{
+				JetpackWidget = Cast<UJetpackGaugeBar>(CreateWidget(OwnerCharacter->GetPlayerController(), JetpackWidgetClass));
+				JetpackWidget->AddToViewport();
+			}
 		}
 
+		JetpackFuel = MaxJetpackFuel;
 	}
+	
 
-	JetpackFuel = MaxJetpackFuel;
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())

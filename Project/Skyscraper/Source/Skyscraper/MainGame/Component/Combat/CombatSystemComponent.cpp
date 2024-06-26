@@ -450,6 +450,35 @@ void UCombatSystemComponent::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
 	SwapToRangeWeapon(FInputActionValue());
 }
 
+void UCombatSystemComponent::RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem)
+{
+	Subsystem->RemoveMappingContext(IMC_CombatSystem);
+
+	if(UMainMeleeComponent* MeleeComponent = Cast<UMainMeleeComponent>(MainWeaponComponent))
+	{
+		MeleeComponent->RemoveInputMappingContext();
+	}
+	else if(UMainRangeComponent* RangeComponent = Cast<UMainRangeComponent>(MainWeaponComponent))
+	{
+		RangeComponent->RemoveInputMappingContext();
+	}
+}
+
+void UCombatSystemComponent::AddAllInputMappingContext(UEnhancedInputLocalPlayerSubsystem* Subsystem)
+{
+	//Subsystem->AddMappingContext(IMC_CombatSystem, 0);
+	AddInputMappingContext();
+
+	if (UMainMeleeComponent* MeleeComponent = Cast<UMainMeleeComponent>(MainWeaponComponent))
+	{
+		MeleeComponent->AddInputMappingContext();
+	}
+	else if (UMainRangeComponent* RangeComponent = Cast<UMainRangeComponent>(MainWeaponComponent))
+	{
+		RangeComponent->AddInputMappingContext();
+	}
+}
+
 
 
 

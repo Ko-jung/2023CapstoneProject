@@ -133,6 +133,17 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_ObserveModeRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefault_ObserveMode.IA_GameDefault_ObserveMode'"));
 		IA_ObserveMode = IA_ObserveModeRef.Object;
+
+
+		// Observe
+		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_ObserveRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/ObserveMode/IMC_Observe.IMC_Observe'"));
+		IMC_Observe = IMC_ObserveRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_CameraZoomRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/ObserveMode/IA_Observe_CameraZoom.IA_Observe_CameraZoom'"));
+		IA_Observe_CameraZoom = IA_CameraZoomRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Observe_LookRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/ObserveMode/IA_Observe_Look.IA_Observe_Look'"));
+		IA_Observe_Look = IA_Observe_LookRef.Object;
 	}		 
 
 	{ // == Set components
@@ -337,6 +348,47 @@ void ASkyscraperCharacter::AddCharacterMappingContext()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			
+		}
+	}
+}
+
+void ASkyscraperCharacter::ObserveLook(const FInputActionValue& InputActionValue)
+{
+	// input is a Vector2D
+	FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		GetPlayerController()->SetControlRotation(GetPlayerController()->GetControlRotation().Add(-LookAxisVector.Y, LookAxisVector.X, 0.0f));
+	}
+}
+
+void ASkyscraperCharacter::AddObserveInputMappingContext()
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(IMC_Observe, 0);
+
+			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+			{
+				EnhancedInputComponent->BindAction(IA_Observe_CameraZoom, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::SetCameraZoomUpDown);
+				EnhancedInputComponent->BindAction(IA_Observe_Look, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ObserveLook);
+				EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Completed, this, &ASkyscraperCharacter::EndObserveMode);
+			}
+		}
+	}
+}
+
+void ASkyscraperCharacter::RemoveObserveInputMappingContext()
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(IMC_Observe);
 		}
 	}
 }
@@ -481,11 +533,39 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
 		EnhancedInputComponent->BindAction(IA_ItemUsing, ETriggerEvent::Started, this, &ASkyscraperCharacter::UseItem);
 		EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Started, this, &ASkyscraperCharacter::StartObserveMode);
-		EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Completed, this, &ASkyscraperCharacter::EndObserveMode);
+		
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	}
+}
+
+void ASkyscraperCharacter::RemoveAllInputMappingTemporary()
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(DefaultMappingContext);
+			if (CombatSystemComponent) CombatSystemComponent->RemoveAllInputMappingTemporary(Subsystem);
+			if (JetpackComponent) JetpackComponent->RemoveAllInputMappingTemporary(Subsystem);
+
+		}
+	}
+}
+
+void ASkyscraperCharacter::AddAllInputMappingContext()
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			if (CombatSystemComponent) CombatSystemComponent->AddAllInputMappingContext(Subsystem);
+			if (JetpackComponent) JetpackComponent->AddInputMappingContext();
+
+		}
 	}
 }
 
@@ -598,4 +678,17 @@ void ASkyscraperCharacter::StartObserveMode()
 void ASkyscraperCharacter::EndObserveMode()
 {
 	GetPlayerController()->SetObserveMode(false);
+}
+
+void ASkyscraperCharacter::SetCameraZoomUpDown(const FInputActionValue& Value)
+{
+	float ZoomValue = Value.Get<float>();
+
+	UE_LOG(LogTemp, Warning, TEXT("%f"), ZoomValue);
+
+	float ZoomSpeed = 10.0f;
+	float MaxArmLength = InitialCameraArmLength + 150.0f;
+	float MinArmLength = InitialCameraArmLength - 50.0f;
+
+	CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength +  ZoomSpeed * -ZoomValue, MinArmLength, MaxArmLength);
 }

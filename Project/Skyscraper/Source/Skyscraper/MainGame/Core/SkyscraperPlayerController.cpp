@@ -96,23 +96,23 @@ void ASkyscraperPlayerController::SetObserveMode(bool bToObserveMode)
 {
 	if(bToObserveMode)
 	{
-		if (PossessingPawn->GetAnimInstance() && PossessingPawn->GetAnimInstance()->IsAnyMontagePlaying()) return;
+		//if (PossessingPawn->GetAnimInstance() && PossessingPawn->GetAnimInstance()->IsAnyMontagePlaying()) return;
 
 		PossessingPawn->bUseControllerRotationYaw = false;
-		SetCanLookInput(true);
-		PossessingPawn->DisableInput(this);
+		PossessingPawn->RemoveAllInputMappingTemporary();
+
 		LastRotator = GetControlRotation();
+		PossessingPawn->AddObserveInputMappingContext();
 	}
 	else
 	{
-		if (!bCanLookInput) return;
-
 		SetControlRotation(LastRotator);
 		LastRotator = FRotator{};
 
+		PossessingPawn->RemoveObserveInputMappingContext();
 		PossessingPawn->bUseControllerRotationYaw = true;
-		SetCanLookInput(false);
-		PossessingPawn->EnableInput(this);
+		PossessingPawn->AddAllInputMappingContext();
+		
 
 	}
 
@@ -171,35 +171,6 @@ void ASkyscraperPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// 캐릭터 - 컨트롤러 yaw 분리시(Separate Camera 모드) && 인풋 입력 제한 시 직접 회전 처리
-	// if (bCanLookInput && !(Cast<ASkyscraperCharacter>(GetOwner())->InputEnabled()))
-	if(bCanLookInput && PossessingPawn && !PossessingPawn->InputEnabled())
-	{
-		if(IsInputKeyDown(EKeys::LeftAlt))
-		{
-			FVector2D MouseDeltaValue{};
-			GetInputMouseDelta(MouseDeltaValue.X, MouseDeltaValue.Y);
-
-			SetControlRotation(GetControlRotation().Add(MouseDeltaValue.Y, MouseDeltaValue.X, 0.0f));
-		}
-		else
-		{
-			SetObserveMode(false);
-			UE_LOG(LogTemp, Warning, TEXT("놨음"));
-		}
-	}
-
-	
-
-	// 관전 모드로 진입을 위한 코드
-	if(bSpectatorMode && DamageCauser)
-	{
-		if(WasInputKeyJustPressed(EKeys::Eight))
-		{
-			bSpectatorMode = false;
-			SetViewTargetWithBlend(DamageCauser);
-		}
-	}
 }
 
 void ASkyscraperPlayerController::UpdateImage()

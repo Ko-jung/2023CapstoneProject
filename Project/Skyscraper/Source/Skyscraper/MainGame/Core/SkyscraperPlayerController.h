@@ -25,10 +25,6 @@ class SKYSCRAPER_API ASkyscraperPlayerController : public APlayerController
 public:
 	ASkyscraperPlayerController();
 
-	UFUNCTION(BlueprintCallable)
-		FORCEINLINE void SetCanLookInput(bool NewCanLookInput) { bCanLookInput = NewCanLookInput; }
-	UFUNCTION(BlueprintCallable)
-		FORCEINLINE bool GetCanLookInput() const { return bCanLookInput; }
 
 
 	UFUNCTION(BlueprintCallable)
@@ -48,7 +44,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddGameResultWidget(const FText& WinnerText);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void SetObserveMode(bool bToObserveMode);
 
 	UFUNCTION()
@@ -57,6 +53,8 @@ public:
 		void PressSetSpecatatorButton();
 	UFUNCTION()
 		void PressChangeWeaponButton();
+
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -96,9 +94,6 @@ protected:
 	UPROPERTY()
 		TObjectPtr<UGameResultWidget> GameResultWidget;
 
-	// 캐릭터와 컨트롤러를 분리한 ECharacterCameraMode::ECCM_SeparateController 시 bool 값 변경을 통해 사용
-	UPROPERTY(EditAnywhere)
-		bool bCanLookInput = false;
 
 	UPROPERTY()
 		TObjectPtr<AHexagonTile> HexagonTile;
@@ -112,6 +107,7 @@ protected:
 private:
 	UPROPERTY()
 		FRotator LastRotator;
+
 
 // ========== 2019180016 ========== 
 public:

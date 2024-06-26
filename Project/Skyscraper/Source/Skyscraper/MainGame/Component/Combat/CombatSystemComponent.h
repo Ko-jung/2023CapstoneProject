@@ -13,6 +13,8 @@
 #include "CombatSystemComponent.generated.h"
 
 
+class UEnhancedInputLocalPlayerSubsystem;
+
 UCLASS
 ( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SKYSCRAPER_API UCombatSystemComponent : public UActorComponent
@@ -52,6 +54,8 @@ public:
 	EMeleeSelect GetCurrentMeleeSelect() const { return MeleeSelect; }
 	ERangeSelect GetCurrentRangeSelect() const { return RangeSelect; }
 
+	void RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem);
+	void AddAllInputMappingContext(UEnhancedInputLocalPlayerSubsystem* Subsystem);
 
 	UPROPERTY(EditAnywhere, Category = MeleeValue)
 		TArray<float> DaggerAttackTime;

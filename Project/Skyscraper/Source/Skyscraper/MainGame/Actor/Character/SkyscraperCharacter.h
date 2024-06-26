@@ -116,6 +116,10 @@ public:
 	void AddInputMappingContext();
 	void AddCharacterMappingContext();
 
+	void ObserveLook(const FInputActionValue& InputActionValue);
+	void AddObserveInputMappingContext();
+	void RemoveObserveInputMappingContext();
+
 	void SyncTransformAndAnim(FTransform t, float s, float r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum);
 
@@ -123,6 +127,11 @@ public:
 	void SetXRotate(float r) { XRotate = r; }
 	int  GetSpeed() { return Speed; }
 	float GetXRotate() { return XRotate; }
+
+	// 현재의 모든 인풋 컨텍스트를 지우는 함수
+	void RemoveAllInputMappingTemporary();
+	// 현재 사용 가능한 모든 인풋 컨텍스트(디폴트 입력들)를 추가하는 함수
+	void AddAllInputMappingContext();
 	// ==================
 
 protected:
@@ -138,6 +147,8 @@ protected:
 	// ObserveMode로 변경
 	void StartObserveMode();
 	void EndObserveMode();
+	// 휠 업다운(alt 중)
+	void SetCameraZoomUpDown(const FInputActionValue& Value);
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -164,6 +175,7 @@ protected:
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)
 		float XRotate;
+	
 
 	UFUNCTION(BlueprintCallable)
 		void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
@@ -184,6 +196,9 @@ public:
 		ULiquidWetComponent* LiquidWetComponent;
 
 protected:
+	UPROPERTY()
+		float InitialCameraArmLength = 350.0f;
+
 	UPROPERTY()
 		TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
 
@@ -256,7 +271,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_ObserveMode;
 
-
 	// 아이템 상호작용 Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_ItemInteraction;
@@ -264,5 +278,16 @@ private:
 	// 아이템 사용 Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_ItemUsing;
+
+	// Observe
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputMappingContext* IMC_Observe;
+
+	// alt(Observe Mode) 중 휠 시 카메라 줌 업다운
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_Observe_CameraZoom;
+	// alt(Observe Mode) 중 카메라 회전
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_Observe_Look;
 };
 

@@ -29,7 +29,7 @@ public:
 	const int GetClientNum()					{ return m_iClientNum; }
 	int GetRoomNum()							{ return m_iRoomNum; }
 	//void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
-	EXP_OVER* GetExp() { return &m_Exp; }
+	EXP_OVER* GetExp() { return &Exp; }
 
 	void SetSocket(const SOCKET& s)			{ m_sClientSocket = s; }
 	void SetRemainDataLen(int len)			{ m_iRemainDataLen = len; }
@@ -47,7 +47,7 @@ public:
 private:
 	void Send();
 
-protected:
+public:
 	SOCKET m_sClientSocket;
 
 	int m_iRemainDataLen;
@@ -55,7 +55,7 @@ protected:
 	int m_iClientNum;
 	int m_iRoomNum;
 
-	EXP_OVER m_Exp;
+	EXP_OVER Exp;
 
 	// Gaming data, later separated
 	float MaxHP;

@@ -14,8 +14,18 @@ ClientMgr::ClientMgr()
 	m_GameServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));
 }
 
+void ClientMgr::Disconnect(int SerialNum)
+{
+	PDisconnect PD;
+	Clients[SerialNum]->SendProcess(&PD);
+
+	Clients[SerialNum]->Init();
+	ClientCount--;
+}
+
 void ClientMgr::Send(int id, Packet* p)
 {
+	Clients[id]->SendProcess(p);
 }
 
 void ClientMgr::Recv(int id, const DWORD& bytes, EXP_OVER* exp)

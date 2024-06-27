@@ -37,9 +37,14 @@ void ANetworkGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	case EEndPlayReason::Type::EndPlayInEditor:
 	case EEndPlayReason::Type::RemovedFromWorld:
 	case EEndPlayReason::Type::Quit:
+	{
+		PDisconnect PD;
+		m_Socket->Send(&PD, PD.PacketSize);
+
 		UE_LOG(LogTemp, Warning, TEXT("Level non Transition"));
-		m_Socket->StopListen();
+		//m_Socket->StopListen();
 		FuncQueue.clear();
+	}
 		break;
 	default:
 		break;

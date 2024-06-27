@@ -257,6 +257,7 @@ void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 
 			socket->SetClientNum(NowClientNum);
 			socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
+			ZeroMemory(&socket->Exp, sizeof(socket->Exp));
 
 			CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, NowClientNum, 0);
 

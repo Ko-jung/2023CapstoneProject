@@ -1,6 +1,7 @@
 #include "PacketMgr.h"
 
 #include "ClientMgr.h"
+#include "../LobbyClientInfo.h"
 
 PacketMgr::PacketMgr()
 {
@@ -10,6 +11,9 @@ void PacketMgr::ProcessPacket(Packet* p, LobbyClientInfo* c)
 {
 	switch (p->PacketType)
 	{
+	case (int)COMP_OP::OP_DISCONNECT:
+		ClientMgr::Instance()->Disconnect(c->ClientNum);
+		break;
 	case (int)COMP_OP::OP_STARTMATCHING:
 		ClientMgr::Instance()->ProcessTryLogin(c, reinterpret_cast<PTryLogin*>(p));
 		break;

@@ -55,22 +55,24 @@ void ALoginGameMode::Tick(float Deltatime)
 
 void ALoginGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	switch (EndPlayReason)
-	{
-	case EEndPlayReason::Type::LevelTransition:
-		UE_LOG(LogTemp, Warning, TEXT("Level Transition"));
-		break;
-	case EEndPlayReason::Type::Destroyed:
-	case EEndPlayReason::Type::EndPlayInEditor:
-	case EEndPlayReason::Type::RemovedFromWorld:
-	case EEndPlayReason::Type::Quit:
-		UE_LOG(LogTemp, Warning, TEXT("Level non Transition"));
-		m_Socket->StopListen();
-		FuncQueue.clear();
-		break;
-	default:
-		break;
-	}
+	Super::EndPlay(EndPlayReason);
+
+	// switch (EndPlayReason)
+	// {
+	// case EEndPlayReason::Type::LevelTransition:
+	// 	UE_LOG(LogTemp, Warning, TEXT("Level Transition"));
+	// 	break;
+	// case EEndPlayReason::Type::Destroyed:
+	// case EEndPlayReason::Type::EndPlayInEditor:
+	// case EEndPlayReason::Type::RemovedFromWorld:
+	// case EEndPlayReason::Type::Quit:
+	// 	UE_LOG(LogTemp, Warning, TEXT("Level non Transition"));
+	// 	m_Socket->StopListen();
+	// 	FuncQueue.clear();
+	// 	break;
+	// default:
+	// 	break;
+	// }
 }
 
 void ALoginGameMode::ProcessFunc()

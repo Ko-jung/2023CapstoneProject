@@ -14,7 +14,7 @@ void LobbyClientInfo::Init()
 	closesocket(ClientSocket);
 	RemainDataLen = 0;
 	ClientNum = -1;
-	ZeroMemory(&Exp, sizeof(Exp));
+	//ZeroMemory(&Exp, sizeof(Exp));
 }
 
 void LobbyClientInfo::RecvPacketReassemble(const DWORD& bytes, EXP_OVER* exp)

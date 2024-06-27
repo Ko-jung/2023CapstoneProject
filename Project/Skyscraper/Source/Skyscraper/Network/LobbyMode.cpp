@@ -48,6 +48,7 @@ void ALobbyMode::Tick(float Deltatime)
 
 void ALobbyMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	Super::EndPlay(EndPlayReason);
 	//m_Socket->StopListen();
 	//FuncQueue.clear();
 }

@@ -185,14 +185,10 @@ struct PPlayerJoin : Packet
 // USTRUCT()
 struct PDisconnect : Packet
 {
-	// GENERATED_BODY()
-
-	WORD DisconnectPlayerSerial;
-
-	//PDisconnect() : Packet(COMP_OP::OP_DISCONNECT) { PlayerSerial = -1; }
-	PDisconnect(WORD serial) : Packet(COMP_OP::OP_DISCONNECT) {
-		DisconnectPlayerSerial = serial; PacketSize = sizeof(PDisconnect);
-	}
+	PDisconnect() : Packet(COMP_OP::OP_DISCONNECT) { PacketSize = sizeof(PDisconnect); }
+	//PDisconnect(WORD serial) : Packet(COMP_OP::OP_DISCONNECT) {
+	//	DisconnectPlayerSerial = serial; PacketSize = sizeof(PDisconnect);
+	//}
 };
 
 // USTRUCT()

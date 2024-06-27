@@ -130,9 +130,9 @@ void LobbyServer::Worker()
 			cout << "GQCS Error : ";
 			error_display(err_no);
 			cout << endl;
-			//Disconnect(client_id);
-			//if (exp_over->_comp_op == COMP_OP::OP_SEND)
-			//	delete exp_over;
+			ClientMgr::Instance()->Disconnect(client_id);
+			if (exp_over->_comp_op == COMP_OP::OP_SEND)
+				delete exp_over;
 			continue;
 		}
 
@@ -158,6 +158,7 @@ void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
 		LobbyClientInfo* socket = ClientMgr::Instance()->GetEmptyClient(ClientNum);
 		socket->SetClientNum(ClientNum);
 		socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
+		ZeroMemory(&socket->Exp, sizeof(socket->Exp));
 
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, ClientNum, 0);
 

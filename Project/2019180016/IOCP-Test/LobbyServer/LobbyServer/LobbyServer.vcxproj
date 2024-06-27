@@ -136,6 +136,7 @@
     <ClCompile Include="Manager\PacketMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Common\Packet.h" />
     <ClInclude Include="..\..\Common\LogUtil.h" />
     <ClInclude Include="LobbyClientInfo.h" />
     <ClInclude Include="LobbyServer.h" />

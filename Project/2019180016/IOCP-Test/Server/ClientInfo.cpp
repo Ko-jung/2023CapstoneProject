@@ -20,7 +20,7 @@ ClientInfo::ClientInfo(int ClientNum):
 	//	std::cout << "ClientInfo Socket Create FAIL" << std::endl;
 	//	IOCPServer::error_display(WSAGetLastError());
 	//}
-	ZeroMemory(&m_Exp, sizeof(m_Exp));
+	ZeroMemory(&Exp, sizeof(Exp));
 }
 
 ClientInfo::ClientInfo(const SOCKET& s) :
@@ -36,18 +36,18 @@ void ClientInfo::Init()
 	m_iClientNum = -1;
 	m_iRoomNum = -1;
 	CurrentHp = MaxHP;
-	ZeroMemory(&m_Exp, sizeof(m_Exp));
+	//ZeroMemory(&m_Exp, sizeof(m_Exp));
 }
 
 void ClientInfo::Recv()
 {
 	DWORD recv_flag = 0;
 
-	ZeroMemory(&m_Exp._wsa_over, sizeof(m_Exp._wsa_over));
-	m_Exp._wsa_buf.buf = reinterpret_cast<char*>(m_Exp._net_buf + m_iRemainDataLen);
-	m_Exp._wsa_buf.len = sizeof(m_Exp._net_buf) - m_iRemainDataLen;
+	ZeroMemory(&Exp._wsa_over, sizeof(Exp._wsa_over));
+	Exp._wsa_buf.buf = reinterpret_cast<char*>(Exp._net_buf + m_iRemainDataLen);
+	Exp._wsa_buf.len = sizeof(Exp._net_buf) - m_iRemainDataLen;
 
-	int ret = WSARecv(m_sClientSocket, &m_Exp._wsa_buf, 1, 0, &recv_flag, &m_Exp._wsa_over, NULL);
+	int ret = WSARecv(m_sClientSocket, &Exp._wsa_buf, 1, 0, &recv_flag, &Exp._wsa_over, NULL);
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)

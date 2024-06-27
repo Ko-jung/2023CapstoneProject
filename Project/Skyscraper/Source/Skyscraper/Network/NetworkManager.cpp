@@ -352,19 +352,20 @@ bool NetworkManager::StartListen()
 	}
 
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
-	//StopTaskCounter.Reset();
+	StopTaskCounter.Reset();
 	bStopSwich = true;
 	return (Thread != nullptr);
 }
 
 void NetworkManager::StopListen()
 {
-	if (not bIsConnected)
-	{
-		return;
-	}
-
 	bIsConnected = false;
+
+	//Thread->WaitForCompletion();
+	Thread->Kill(false);
+	delete Thread;
+	Thread = nullptr;
+	StopTaskCounter.Reset();
 
 	Stop();
 }
@@ -378,8 +379,8 @@ uint32 NetworkManager::Run()
 {
 	FPlatformProcess::Sleep(0.03);
 
-	//while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
-	while (bStopSwich)
+	while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
+	//while (bStopSwich)
 	{
 		// 재조립을 위해 recv 인자 수정
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)(m_sRecvBuffer + RemainDataLen), MAX_BUFFER - RemainDataLen, 0);
@@ -403,6 +404,15 @@ uint32 NetworkManager::Run()
 		{
 			Packet* p = reinterpret_cast<Packet*>(ReciveData);
 
+			if (p->PacketType == (BYTE)COMP_OP::OP_DISCONNECT)
+			{
+				Stop();
+				UE_LOG(LogTemp, Warning, TEXT("Server Sending OP_DISCONNECT"));
+				ReciveData += p->PacketSize;
+				RemainLen -= p->PacketSize;
+				break;
+			}
+
 			if (RemainLen >= p->PacketSize)
 			{
 				ProcessRecv(p);
@@ -419,20 +429,15 @@ uint32 NetworkManager::Run()
 		}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));
-
-	//Thread->WaitForCompletion();
-	Thread->Kill();
-	delete Thread;
-	Thread = nullptr;
-	StopTaskCounter.Reset();
+	StopListen();
 
 	return 0;
 }
 
 void NetworkManager::Stop()
 {
-	//StopTaskCounter.Increment();
-	bStopSwich = false;
+	StopTaskCounter.Increment();
+	//bStopSwich = false;
 }
 
 void NetworkManager::Exit()

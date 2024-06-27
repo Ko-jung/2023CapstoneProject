@@ -15,6 +15,9 @@ ClientMgr::ClientMgr() :
 
 void ClientMgr::Disconnect(int id)
 {
+	PDisconnect PD;
+	m_Clients[id]->SendProcess(PD.PacketSize, &PD);
+
 	m_Clients[id]->Init();
 	m_iClientCount--;
 }

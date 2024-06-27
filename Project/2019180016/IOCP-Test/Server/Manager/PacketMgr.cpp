@@ -30,10 +30,10 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	}
 	case (int)COMP_OP::OP_DISCONNECT:
 	{
-		PDisconnect disconnect(-1);
+		PDisconnect disconnect;
 		MEMCPYBUFTOPACKET(disconnect);
-		ClientMgr::Instance()->Disconnect(disconnect.DisconnectPlayerSerial);
-	break;
+		ClientMgr::Instance()->Disconnect(c->GetClientNum());
+		break;
 	}
 	case (int)COMP_OP::OP_SELECTWEAPONINFO:
 	{

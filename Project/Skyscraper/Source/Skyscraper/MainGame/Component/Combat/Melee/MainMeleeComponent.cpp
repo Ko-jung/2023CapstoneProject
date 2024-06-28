@@ -15,6 +15,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
@@ -277,20 +278,25 @@ void UMainMeleeComponent::Attack()
 	}
 }
 
-
-void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, float fBaseDamage, bool bDoDown)
+void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Distance, FVector StartOffset, float Angle,
+	float fStunTime, float fBaseDamage, bool bDoDown)
 {
 	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
-	FVector Start = OwnerCharacter->GetActorLocation();
+
+	FVector Start = OwnerCharacter->GetActorLocation()
+						+ OwnerCharacter->GetActorRotation().RotateVector(StartOffset);
+
 	// == if set attack range, fix this line to variable
-	FVector End = Start + OwnerCharacter->GetActorForwardVector() * 150;
+	FRotator AngleToRotator = FRotator{ 0.0f,Angle,0.0f };
+	FVector End = Start + AngleToRotator.RotateVector(OwnerCharacter->GetActorForwardVector() * Distance);
 
 	TArray<AActor*> IgnoreActors;
 	IgnoreActors.Add(OwnerCharacter);
 	TArray<FHitResult> OutHits;
 
+	FVector vHitSize{ 1.0f,Width,Height };
 	// == TODO: Delete Debug Later
-	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation(), UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors,EDrawDebugTrace::ForDuration,OutHits,true);
+	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHits, true);
 
 	TArray<FHitResult*> UniqueOutHits;
 	for (FHitResult& HitResult : OutHits)
@@ -301,20 +307,20 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 		}
 	}
 
-	
+
 
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
 
 	bool bDoHitLag = false;
-	for(FHitResult* HitResult : UniqueOutHits)
+	for (FHitResult* HitResult : UniqueOutHits)
 	{
 		UPrimitiveComponent* PrimitiveComponent = HitResult->GetComponent();
 		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
 			&& PrimitiveComponent->GetName().StartsWith("Window_"))
 		{
 			//PrimitiveComponent->DestroyComponent();
-			if(GameMode)
-			 	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+			if (GameMode)
+				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
 		}
 
 		AActor* HitActor = HitResult->GetActor();
@@ -322,22 +328,23 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 
 		bDoHitLag = true;
 		// == TODO: Stun And Down Later
-		if(bDoDown)
+		if (bDoDown)
 		{
-			if(ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
+			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
 			{
 				TargetCharacter->DoDown(OwnerCharacter, OwnerCharacter->GetActorForwardVector());
 			}
-			
-		}else
+
+		}
+		else
 		{
 			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
 			{
 				Cast<ASkyscraperCharacter>(HitActor)->DoStun(OwnerCharacter, fStunTime, OwnerCharacter->GetActorForwardVector());
 			}
-			
-		}		
-		
+
+		}
+
 		// Execute on Sever
 		if (GameMode)
 		{
@@ -348,7 +355,7 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 			}
 		}
 
-		if(HitResult->GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
+		if (HitResult->GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
 		{
 			{ // 대미지 소환 액터 소환
 				FTransform SpawnTransform;
@@ -365,7 +372,7 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 				}
 			}
 		}
-		
+
 	}
 	// 적중된 적이 있으므로 역경직
 	if (bDoHitLag)
@@ -373,6 +380,8 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 		DoHitLag();
 	}
 }
+
+
 
 void UMainMeleeComponent::DoHitLag()
 {

@@ -69,6 +69,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 10.0f, 0.0f);
 
 	{// Create a camera boom (pulls in towards the player if there is a collision)
 		CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

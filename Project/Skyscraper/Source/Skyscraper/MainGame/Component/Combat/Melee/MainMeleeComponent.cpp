@@ -241,7 +241,7 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 	
 
 	// 선입력이 0.2초 내에 있었을 경우 바로 공격하도록
-	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - BufferedInput < 0.2f)
+	if (UGameplayStatics::GetTimeSeconds(GetWorld()) - BufferedInput < 0.4f)
 	{
 		PlayAttackAnimMontage();
 		return;

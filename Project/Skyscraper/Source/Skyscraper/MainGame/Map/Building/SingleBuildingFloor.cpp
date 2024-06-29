@@ -3,13 +3,15 @@
 
 #include "SingleBuildingFloor.h"
 
+#include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
+
 // Sets default values
 ASingleBuildingFloor::ASingleBuildingFloor()
 {
 	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = false;
 
-	// 건물에 대한 static mesh 생성 //TODO: geometry component에 대해서도 추가해줘야 함
+	// 건물에 대한 static mesh 생성
 	{
 		CreateFloorStaticMeshes();
 	}
@@ -41,6 +43,15 @@ void ASingleBuildingFloor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 가구 액터 로드
+	{
+		FurnitureActor = Cast<AFurniture>(GetComponentByClass<UChildActorComponent>()->GetChildActor());
+		if (FurnitureActor)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("load complete"));
+		}
+	}
+	
 }
 
 // Called every frame

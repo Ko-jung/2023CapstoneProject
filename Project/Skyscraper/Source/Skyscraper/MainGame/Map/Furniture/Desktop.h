@@ -4,17 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Furniture.generated.h"
-
-class ADesktop;
+#include "Desktop.generated.h"
 
 UCLASS()
-class SKYSCRAPER_API AFurniture : public AActor
+class SKYSCRAPER_API ADesktop : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	AFurniture();
+public:
+	ADesktop();
 
 protected:
 	virtual void BeginPlay() override;
@@ -26,9 +23,7 @@ private:
 public:
 protected:
 	UPROPERTY()
-		TArray<TObjectPtr<UStaticMeshComponent>> FurnitureObjects;
-	UPROPERTY()
-		TArray<TObjectPtr<ADesktop>> DeskActors;
+		TArray<TObjectPtr<UStaticMeshComponent>> Desktops;
 
 private:
 

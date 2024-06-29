@@ -6,11 +6,33 @@
 #include "GameFramework/Actor.h"
 #include "SingleBuildingFloor.generated.h"
 
+class AFurniture;
+
 UCLASS()
 class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 {
 	GENERATED_BODY()
 
+public:
+	ASingleBuildingFloor();
+
+	void CreateFloorStaticMeshes();
+
+	void DoCollapse();
+
+	// ====== 2019180016 ======
+	void DoCollapseWindow(UStaticMeshComponent* Target, FVector ForceDirection);
+	// ========================
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+private:
+
+public:
+
+protected:
 	// 건물 한 충의 스태틱 메시에 대한 배열
 	UPROPERTY(EditAnywhere)
 		TArray<UStaticMeshComponent*> FloorStaticMeshes;
@@ -23,33 +45,19 @@ class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 	UPROPERTY()
 		UClass* GC_BuildingClass;
 
+	// 가구들에 대한 액터 및 클래스
+	UPROPERTY()
+		TObjectPtr<AFurniture> FurnitureActor;
+
+private:
 	// ====== 2019180016 ======
 	UPROPERTY()
-	TArray<UClass*> GC_WindowClass;
+		TArray<UClass*> GC_WindowClass;
 
 	UPROPERTY()
-	UClass* BPGCWindowActorClass;
+		UClass* BPGCWindowActorClass;
 
 	// UPROPERTY()
 	// TArray<UObject*> GC_WindowObject;
-	// ========================
-public:
-
-	void CreateFloorStaticMeshes();
-	// Sets default values for this actor's properties
-	ASingleBuildingFloor();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	void DoCollapse();
-
-	// ====== 2019180016 ======
-	void DoCollapseWindow(UStaticMeshComponent* Target, FVector ForceDirection);
 	// ========================
 };

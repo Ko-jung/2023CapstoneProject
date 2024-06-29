@@ -45,11 +45,15 @@ void ASingleBuildingFloor::BeginPlay()
 
 	// 가구 액터 로드
 	{
-		FurnitureActor = Cast<AFurniture>(GetComponentByClass<UChildActorComponent>()->GetChildActor());
-		if (FurnitureActor)
+		if(UChildActorComponent* ChildActor = GetComponentByClass<UChildActorComponent>())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("load complete"));
+			FurnitureActor = Cast<AFurniture>(ChildActor->GetChildActor());
+			if (FurnitureActor)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("load complete"));
+			}
 		}
+		
 	}
 	
 }

@@ -20,7 +20,7 @@ public:
 	// Double Tap Limit Time
 	// TODO: Make it editable in option.
 	UPROPERTY(EditAnywhere, Config, BlueprintReadWrite, Category = "Trigger Settings")
-		float TimeLimit = 0.3f;
+		float TimeLimit = 0.15f;
 
 	UPROPERTY()
 		float LastInputTime = 0.0f;

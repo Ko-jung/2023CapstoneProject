@@ -35,7 +35,7 @@ public:
 
 // Network Function
 public:
-	void Connect(const char* ip, int port);
+	bool Connect(const char* ip, int port);
 	void SetOwnSerialNum(int serial);
 	int GetSerialNum() { return SerialNum; }
 	bool GetIsConnected() { return bIsConnected; }

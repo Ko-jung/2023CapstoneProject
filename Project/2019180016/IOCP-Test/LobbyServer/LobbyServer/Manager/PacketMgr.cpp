@@ -11,7 +11,7 @@ void PacketMgr::ProcessPacket(Packet* p, LobbyClientInfo* c)
 	switch (p->PacketType)
 	{
 	case (int)COMP_OP::OP_STARTMATCHING:
-		ClientMgr::Instance()->ProcessTryLogin(c, reinterpret_cast<PTryLogin*>(p));
+		ClientMgr::Instance()->ProcessStartMatching(c);
 		break;
 	case (int)COMP_OP::OP_CANCLEMATCHING:
 		//m_MatchingQueue.push(m_Clients[id]);

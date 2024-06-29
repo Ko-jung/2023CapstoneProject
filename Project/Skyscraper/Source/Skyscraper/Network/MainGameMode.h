@@ -54,9 +54,9 @@ public:
 	void SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 	void SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section);
 	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
-	void SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	void SendGetItem(const AActor* Sender, const AActor* Item);
 	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType);
+	bool SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
 	
 

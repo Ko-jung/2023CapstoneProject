@@ -16,7 +16,6 @@ void ANetworkGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	m_Socket = NetworkManager::Instance();
-	m_Socket->InitSocket();
 }
 
 void ANetworkGameMode::Tick(float Deltatime)
@@ -57,22 +56,23 @@ void ANetworkGameMode::Send(const Packet* p, const int pSize)
 		m_Socket->Send(p, pSize);
 }
 
-void ANetworkGameMode::Connect(const char* ip, int port)
+bool ANetworkGameMode::Connect(const char* ip, int port)
 {
 	bIsConnected = m_Socket->Connect(ip, port);
-	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), bIsConnected);
+	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %s"), bIsConnected ? *FString("True") : *FString("False"));
 	if (bIsConnected)
 	{
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
 		SerialNum = m_Socket->GetSerialNum();
 
-		UE_LOG(LogClass, Log, TEXT("IOCP Game Server connect success!"));
+		UE_LOG(LogClass, Log, TEXT("IOCP Game Server connect Success!"));
 	}
 	else
 	{
 		UE_LOG(LogClass, Warning, TEXT("IOCP Game Server connect FAIL!"));
 	}
+	return bIsConnected;
 }
 
 void ANetworkGameMode::SetOwnSerialNum(int serial)

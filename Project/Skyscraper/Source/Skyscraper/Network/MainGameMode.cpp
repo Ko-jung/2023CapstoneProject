@@ -83,7 +83,7 @@ void AMainGameMode::BeginPlay()
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
 	m_Socket->Send(&PRP, PRP.PacketSize);
-	// For Get Building Info
+
 	PRequestPacket PRP2(COMP_OP::OP_SETTIMER);
 	m_Socket->Send(&PRP2, PRP2.PacketSize);
 
@@ -579,7 +579,7 @@ void AMainGameMode::GetWindowsOnLevel()
 		// Find Window
 		for (UStaticMeshComponent* MeshComponent : MeshComponents)
 		{
-			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_3_window"))
+			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_4_window"))
 			{
 				WindowMeshComponents.Add(MeshComponent);
 			}
@@ -732,12 +732,13 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 	m_Socket->Send(&PSDS, sizeof(PSDS));
 }
 
-void AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
+bool AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
 {
-	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return false;
 
 	PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
 	m_Socket->Send(&PUI, sizeof(PUI));
+	return true;
 }
 
 void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)

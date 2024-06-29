@@ -16,7 +16,7 @@
 #define	MAX_BUFFER				256
 #define GAME_SERVER_PORT		9000
 #define LOBBY_SERVER_PORT		9001
-#define SERVER_IP				"1.242.205.234"
+#define GAME_SERVER_IP			"1.242.205.234"
 #define LOBBY_SERVER_IP			"127.0.0.1"
 
 class ANetworkGameMode;
@@ -40,6 +40,7 @@ public:
 
 // Socket Fuction
 public:
+	bool InitializeManager();
 	bool InitSocket();
 	bool Connect(const char* pszIP, int nPort);
 	void Disconnect();
@@ -55,7 +56,7 @@ public:
 public:
 	FRunnableThread* Thread;
 	FThreadSafeCounter StopTaskCounter;
-	bool bStopSwich;
+	//bool bStopSwich;
 
 	bool StartListen();
 	void StopListen();
@@ -89,6 +90,7 @@ private:
 
 	ANetworkGameMode* Gamemode;
 	bool bIsConnected;
+	bool IsWSAInitialize;
 
 	ENetworkState State;
 

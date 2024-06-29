@@ -16,9 +16,10 @@ void ALobbyMode::BeginPlay()
 	IsConnectToLobby = true;
 	IsReady = false;
 
-	m_Socket = new NetworkManager();
-	m_Socket->InitSocket();
-	bIsConnected = m_Socket->Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
+	Super::BeginPlay();
+	//m_Socket = new NetworkManager();
+	//m_Socket->InitSocket();
+	//bIsConnected = m_Socket->Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
 
 	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), bIsConnected);
 

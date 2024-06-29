@@ -78,6 +78,8 @@ void ASkyscraperGameMode::ProcessFunc()
 void ASkyscraperGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	m_Socket->InitializeManager();
+	Connect(GAME_SERVER_IP, GAME_SERVER_PORT);
 }
 
 void ASkyscraperGameMode::Tick(float Deltatime)

@@ -119,10 +119,10 @@ void AHexagonTile::InitialSettings()
 			3, FName("Section1")));
 		ATeamBuildings.Add(SpawnTeamBuilding(
 			GetLineTileFromAngleAndDistance((CollapseDirectionAngle + 3) % 6, 1),
-			7, FName("Section3")));
+			5, FName("Section3")));
 		ATeamBuildings.Add(SpawnTeamBuilding(
 			GetLineTileFromAngleAndDistance(CollapseDirectionAngle, 1),
-			7, FName("Section3")));
+			5, FName("Section3")));
 
 		BTeamBuildings.Add(SpawnTeamBuilding(
 			GetLineTileFromAngleAndDistance(CollapseDirectionAngle, 3),
@@ -133,9 +133,9 @@ void AHexagonTile::InitialSettings()
 	// 각 구역별 빌딩 생성
 	{
 		SpawnBuildings(6, FName("Section1"), 3);
-		SpawnBuildings(4, FName("Section2"), 5);
+		SpawnBuildings(4, FName("Section2"), 4);
 
-		SpawnBuildings(1, FName("MiddleTile"), 9);
+		SpawnBuildings(1, FName("MiddleTile"), 6);
 	}
 
 	// 각 구역별 부유 타일 생성

@@ -8,11 +8,11 @@
 UDaggerComponent::UDaggerComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_DaggerAttack;
-	AttackBlendOutTime.Add(0.1f);
-	AttackBlendOutTime.Add(0.1f);
-	AttackBlendOutTime.Add(0.1f);
-	AttackBlendOutTime.Add(0.1f);
-	AttackBlendOutTime.Add(0.2f);
+	AttackBlendOutTime.Add(0.00f);
+	AttackBlendOutTime.Add(0.00f);
+	AttackBlendOutTime.Add(0.00f);
+	AttackBlendOutTime.Add(0.00f);
+	AttackBlendOutTime.Add(0.02f);
 
 	// Skeletal Mesh 소켓 이름 설정
 	WeaponSocketName = TEXT("DaggerRightSocket");

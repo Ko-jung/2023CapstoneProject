@@ -127,7 +127,6 @@ void AHexagonTile::InitialSettings()
 		BTeamBuildings.Add(SpawnTeamBuilding(
 			GetLineTileFromAngleAndDistance(CollapseDirectionAngle, 3),
 			3, FName("Section1")));
-
 	}
 
 	// 각 구역별 빌딩 생성

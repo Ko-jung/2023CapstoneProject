@@ -64,4 +64,19 @@ ABoomerangCharacter::ABoomerangCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Boomerang/Boost/AM_Boom_Boost.AM_Boom_Boost'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
+
+	// 부메랑 로드 및 생성
+	{
+		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,true };
+
+		ConstructorHelpers::FObjectFinder<UStaticMesh> BigBoomerangRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/character/3_boomerang/boom_BOOMERANG_big.boom_BOOMERANG_big'"));
+		Boomerang_R = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Boomerang_R"));
+		Boomerang_R->SetStaticMesh(BigBoomerangRef.Object);
+		Boomerang_R->SetupAttachment(BoostMesh, TEXT("DriverRSocket"));
+
+		ConstructorHelpers::FObjectFinder<UStaticMesh> SmallBoomerangRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/character/3_boomerang/boom_BOOMERANG_small.boom_BOOMERANG_small'"));
+		Boomerang_L = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Boomerang_L"));
+		Boomerang_L->SetStaticMesh(SmallBoomerangRef.Object);
+		Boomerang_L->SetupAttachment(BoostMesh, TEXT("DriverLSocket"));
+	}
 }

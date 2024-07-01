@@ -297,6 +297,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	if (id == LOBBYSERVER)
 	{
 		ProcessRecvFromLobby(id, bytes, exp);
+		m_LobbyServerSocket->Recv();
 		return;
 	}
 

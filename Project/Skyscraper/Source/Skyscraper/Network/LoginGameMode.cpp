@@ -35,6 +35,7 @@ void ALoginGameMode::BeginPlay()
 		if (LoginWidget)
 		{
 			LoginWidget->AddToViewport();
+			GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
 		}
 		else
 		{

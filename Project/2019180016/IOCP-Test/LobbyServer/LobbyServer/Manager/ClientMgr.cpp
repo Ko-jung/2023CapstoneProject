@@ -129,6 +129,8 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 	default:
 		break;
 	}
+
+	m_GameServerSocket->Recv();
 }
 
 void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)

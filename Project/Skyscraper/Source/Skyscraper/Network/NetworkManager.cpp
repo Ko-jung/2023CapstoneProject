@@ -382,6 +382,7 @@ bool NetworkManager::StartListen()
 	}
 
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
+	UE_LOG(LogTemp, Warning, TEXT("BlockingConnectThread Created!"));
 	StopTaskCounter.Reset();
 	return (Thread != nullptr);
 }

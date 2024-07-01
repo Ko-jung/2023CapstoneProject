@@ -53,7 +53,10 @@ void LobbyClientInfo::SendProcess(Packet* PacketData)
 	if (SOCKET_ERROR == ret) {
 		int error_num = WSAGetLastError();
 		if (ERROR_IO_PENDING != error_num)
+		{
+			cout << "[" << ClientNum << "] Send ERROR -> ";
 			LogUtil::error_display(error_num);
+		}
 	}
 }
 

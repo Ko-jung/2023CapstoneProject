@@ -7,36 +7,35 @@
 
 void ALobbyMode::BeginPlay()
 {
-	if (bIsConnected)
-	{
-		UE_LOG(LogClass, Warning, TEXT("Server already CONEECT!"));
-		return;
-	}
-
-	IsConnectToLobby = true;
-	IsReady = false;
-
 	Super::BeginPlay();
-	//m_Socket = new NetworkManager();
-	//m_Socket->InitSocket();
-	//bIsConnected = m_Socket->Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
 
-	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), bIsConnected);
+	IsReady = false;
+	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), GetIsConnected());
 
-	// Lobby Gamemode에선 Super를 호출하지 않는다
-
-	if (bIsConnected)
+	if (GetIsConnected())
 	{
 		m_Socket->SetState(ENetworkState::Lobby);
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
 		SerialNum = m_Socket->GetSerialNum();
 
-		UE_LOG(LogClass, Warning, TEXT("IOCP lobby Server connect success!"));
+		UE_LOG(LogClass, Warning, TEXT("Server already CONEECT!"));
+		return;
 	}
 	else
 	{
-		UE_LOG(LogClass, Warning, TEXT("IOCP lobby Server connect FAIL!"));
+		m_Socket = new NetworkManager();
+		m_Socket->InitSocket();
+		m_Socket->Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
+
+		if (GetIsConnected())
+		{
+			UE_LOG(LogClass, Warning, TEXT("IOCP lobby Server connect success!"));
+		}
+		else
+		{
+			UE_LOG(LogClass, Warning, TEXT("IOCP lobby Server connect FAIL!"));
+		}
 	}
 }
 

@@ -66,6 +66,7 @@ bool NetworkManager::InitializeManager()
 	IsChangingGameMode = false;
 	SerialNum = -1;
 	RemainDataLen = 0;
+	bIsConnected = false;
 
 	closesocket(m_ServerSocket);
 	m_ServerSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -365,7 +366,7 @@ void NetworkManager::Send(const Packet* packet, int packetsize)
 	int nSendLen = send(m_ServerSocket, m_sSendBuffer, packetsize, 0);
 	if (nSendLen == -1)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("send Error PacketType is %d"), packet->PacketType);
+		UE_LOG(LogTemp, Warning, TEXT("send Error PacketType is %d, Error Code is %d"), packet->PacketType, WSAGetLastError());
 	}
 }
 
@@ -412,8 +413,8 @@ uint32 NetworkManager::Run()
 {
 	FPlatformProcess::Sleep(0.03);
 
-	//while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
-	while (bStopSwich)
+	while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
+	//while (bStopSwich)
 	{
 		// �������� ���� recv ���� ����
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)(m_sRecvBuffer + RemainDataLen), MAX_BUFFER - RemainDataLen, 0);
@@ -474,8 +475,8 @@ uint32 NetworkManager::Run()
 
 void NetworkManager::Stop()
 {
-	//StopTaskCounter.Increment();
-	bStopSwich = false;
+	StopTaskCounter.Increment();
+	//bStopSwich = false;
 }
 
 void NetworkManager::Exit()

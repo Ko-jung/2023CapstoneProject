@@ -13,6 +13,7 @@ class ClientMgr
 public:
 	ClientMgr();
 
+	void Disconnect(int id);
 	void Send(int id, Packet* p);
 	void Recv(int id, const DWORD& bytes, EXP_OVER* exp);
 

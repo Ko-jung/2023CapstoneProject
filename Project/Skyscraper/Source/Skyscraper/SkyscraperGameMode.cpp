@@ -58,7 +58,7 @@ void ASkyscraperGameMode::ProcessFunc()
 			USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
 			instance->SetSelectInfo(PlayerSelectInfo);
 			instance->SetSocket(m_Socket);
-			instance->SetIsConnect(bIsConnected);
+			instance->SetIsConnect(GetIsConnected());
 			instance->SetSerialNum(SerialNum);
 
 			//FString Level = L"/Game/MainGame/Level/MapCreateLevel";
@@ -79,6 +79,7 @@ void ASkyscraperGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	m_Socket->InitializeManager();
+	m_Socket->SetState(ENetworkState::SelectGame);
 	Connect(GAME_SERVER_IP, GAME_SERVER_PORT);
 }
 
@@ -132,18 +133,39 @@ void ASkyscraperGameMode::SendSelectInfo()
 
 void ASkyscraperGameMode::UpdateSelectInfo(ECharacterSelect Character)
 {
-	PlayerSelectInfo[SerialNum]->PickedCharacter = Character;
-	SendSelectInfo();
+	if (PlayerSelectInfo.IsValidIndex(SerialNum))
+	{
+		PlayerSelectInfo[SerialNum]->PickedCharacter = Character;
+		SendSelectInfo();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerSelectInfo.IsValidIndex(SerialNum) is FALSE"));
+	}
 }
 
 void ASkyscraperGameMode::UpdateSelectInfo(EMeleeSelect MeleeWeapon)
 {
-	PlayerSelectInfo[SerialNum]->PickedMeleeWeapon = MeleeWeapon;
-	SendSelectInfo();
+	if (PlayerSelectInfo.IsValidIndex(SerialNum))
+	{
+		PlayerSelectInfo[SerialNum]->PickedMeleeWeapon = MeleeWeapon;
+		SendSelectInfo();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerSelectInfo.IsValidIndex(SerialNum) is FALSE"));
+	}
 }
 
 void ASkyscraperGameMode::UpdateSelectInfo(ERangeSelect RangeWeapon)
 {
-	PlayerSelectInfo[SerialNum]->PickedRangeWeapon = RangeWeapon;
-	SendSelectInfo();
+	if (PlayerSelectInfo.IsValidIndex(SerialNum))
+	{
+		PlayerSelectInfo[SerialNum]->PickedRangeWeapon = RangeWeapon;
+		SendSelectInfo();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerSelectInfo.IsValidIndex(SerialNum) is FALSE"));
+	}
 }

@@ -40,10 +40,11 @@ void AMainGameMode::BeginPlay()
 
 	GetHexagonTileOnLevel();
 
+	Super::BeginPlay();
+
 	// Get Socket Instance
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
-	bIsConnected = instance->GetIsConnect();
-	if (!bIsConnected)
+	if (!instance->GetIsConnect())
 	{
 		// Super::BeginPlay();
 		HexagonTile->Init();
@@ -55,8 +56,6 @@ void AMainGameMode::BeginPlay()
 	SerialNum = instance->GetSerialNum();
 	m_Socket->SetGamemode(this);
 	m_Socket->StartListen();
-
-	Super::BeginPlay();
 
 	// Set FullScreen Mode
 	PlayerController = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
@@ -97,7 +96,7 @@ void AMainGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 
-	if (!bIsConnected)
+	if (!GetIsConnected())
 	{
 		return;
 	}
@@ -116,7 +115,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMainGameMode::ProcessFunc()
 {
-	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
 	Packet* packet;
 	while (FuncQueue.try_pop(packet))
 	{
@@ -287,7 +286,7 @@ void AMainGameMode::ProcessFunc()
 		}
 		delete packet;
 	}
-	UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
 }
 
 //void AMainGameMode::ProcessPosition()
@@ -649,6 +648,8 @@ void AMainGameMode::SendPlayerLocation()
 
 void AMainGameMode::SendPlayerSwapWeaponInfo()
 {
+	if (!Characters.IsValidIndex(SerialNum)) return;
+
 	ASkyscraperCharacter* PossessCharacter = Characters[SerialNum];
 
 	ESwapWeapon WeaponType;
@@ -678,7 +679,7 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
-	if (!bIsConnected)
+	if (!GetIsConnected())
 		return;
 
 	if (Sender != Characters[SerialNum])

@@ -72,6 +72,7 @@ public:
 	void SetState(ENetworkState s) { State = s; }
 
 	const int& GetSerialNum() { return SerialNum; }
+	const bool& GetIsConnected() { return bIsConnected; };
 
 	bool TryPush(Packet* p);
 

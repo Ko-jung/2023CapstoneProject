@@ -139,8 +139,18 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		break;
 	}
 	default:
-		LogUtil::PrintLog("PacketMgr::ProcessPacket p->PacketType is DEFAULT");
+	{
+		if (p->PacketSize == 0)
+		{
+			cout << "[" << c->ClientNum << "] Recv PacketSize : 0" << endl;
+			ClientMgr::Instance()->Disconnect(c->ClientNum);
+		}
+		else
+		{
+			LogUtil::PrintLog("PacketMgr::ProcessPacket p->PacketType is DEFAULT");
+		}
 		break;
+	}
 	}
 }
 

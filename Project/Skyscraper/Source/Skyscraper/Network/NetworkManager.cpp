@@ -22,11 +22,15 @@ NetworkManager::NetworkManager() :
 NetworkManager::~NetworkManager()
 {
 	closesocket(m_ServerSocket);
+	if (bIsConnected)
+	{
+		WSACleanup();
+	}
 }
 
 bool NetworkManager::InitSocket()
 {
-	if (bIsConnected)
+	if (IsWSAInitialize)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Socket Early Init"));
 		return false;
@@ -47,7 +51,33 @@ bool NetworkManager::InitSocket()
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Socket Init Success"));
+	IsWSAInitialize = true;
+
 	return true;
+}
+
+bool NetworkManager::InitializeManager()
+{
+	StopListen();
+	ZeroMemory(m_sRecvBuffer, sizeof(m_sRecvBuffer));
+	ZeroMemory(m_sSendBuffer, sizeof(m_sSendBuffer));
+	Gamemode = nullptr;
+	State = ENetworkState::Login;
+	IsChangingGameMode = false;
+	SerialNum = -1;
+	RemainDataLen = 0;
+	bIsConnected = false;
+
+	closesocket(m_ServerSocket);
+	m_ServerSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	if (m_ServerSocket == INVALID_SOCKET)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TCP Socket Error"));
+		return false;
+	}
+
+	if (InitSocket()) return true;
+	return false;
 }
 
 bool NetworkManager::Connect(const char* pszIP, int nPort)
@@ -126,7 +156,7 @@ void NetworkManager::ProcessRecvFromLogin(Packet* p)
 		{
 			State = ENetworkState::Lobby;
 			IsChangingGameMode = true;
-			StopListen();
+			//StopListen();
 		}
 		break;
 	}
@@ -217,7 +247,7 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 {
 	// Main Game Mode
 	
-	// p´Â RecvBufÀÇ Æ÷ÀÎÅÍ. PacketÀÇ º¯¼ö¸¦ ¸¸µé¾î¾ßÇÑ´Ù.
+	// pï¿½ï¿½ RecvBufï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. Packetï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	//Gamemode->PushQueue(p);
 
 	switch (p->PacketType)
@@ -336,7 +366,7 @@ void NetworkManager::Send(const Packet* packet, int packetsize)
 	int nSendLen = send(m_ServerSocket, m_sSendBuffer, packetsize, 0);
 	if (nSendLen == -1)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("send Error PacketType is %d"), packet->PacketType);
+		UE_LOG(LogTemp, Warning, TEXT("send Error PacketType is %d, Error Code is %d"), packet->PacketType, WSAGetLastError());
 	}
 }
 
@@ -352,22 +382,27 @@ bool NetworkManager::StartListen()
 	}
 
 	Thread = FRunnableThread::Create(this, TEXT("BlockingConnectThread"), 0, TPri_BelowNormal);
+	UE_LOG(LogTemp, Warning, TEXT("BlockingConnectThread Created!"));
 	StopTaskCounter.Reset();
-	bStopSwich = true;
 	return (Thread != nullptr);
 }
 
 void NetworkManager::StopListen()
 {
-	bIsConnected = false;
+	if (not bIsConnected)
+	{
+		return;
+	}
 
 	//Thread->WaitForCompletion();
-	Thread->Kill(false);
-	delete Thread;
-	Thread = nullptr;
+	if (Thread)
+	{
+		Thread->Kill(false);
+		delete Thread;
+		Thread = nullptr;
+	}
 	StopTaskCounter.Reset();
-
-	Stop();
+	//Stop();
 }
 
 bool NetworkManager::Init()
@@ -382,7 +417,7 @@ uint32 NetworkManager::Run()
 	while (StopTaskCounter.GetValue() == 0 /*&& m_PlayerController != nullptr*/)
 	//while (bStopSwich)
 	{
-		// ÀçÁ¶¸³À» À§ÇØ recv ÀÎÀÚ ¼öÁ¤
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ recv ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		int nRecvLen = recv(m_ServerSocket, (CHAR*)(m_sRecvBuffer + RemainDataLen), MAX_BUFFER - RemainDataLen, 0);
 
 		if (nRecvLen == 0)
@@ -397,7 +432,7 @@ uint32 NetworkManager::Run()
 			break;
 		}
 
-		// ÆÐÅ¶ ÀçÁ¶¸³
+		// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		int RemainLen = nRecvLen + RemainDataLen;
 		char* ReciveData = m_sRecvBuffer;
 		while (RemainLen > 0)
@@ -406,7 +441,7 @@ uint32 NetworkManager::Run()
 
 			if (p->PacketType == (BYTE)COMP_OP::OP_DISCONNECT)
 			{
-				Stop();
+				StopListen();
 				UE_LOG(LogTemp, Warning, TEXT("Server Sending OP_DISCONNECT"));
 				ReciveData += p->PacketSize;
 				RemainLen -= p->PacketSize;

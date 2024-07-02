@@ -40,10 +40,11 @@ void AMainGameMode::BeginPlay()
 
 	GetHexagonTileOnLevel();
 
+	Super::BeginPlay();
+
 	// Get Socket Instance
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
-	bIsConnected = instance->GetIsConnect();
-	if (!bIsConnected)
+	if (!instance->GetIsConnect())
 	{
 		// Super::BeginPlay();
 		HexagonTile->Init();
@@ -55,8 +56,6 @@ void AMainGameMode::BeginPlay()
 	SerialNum = instance->GetSerialNum();
 	m_Socket->SetGamemode(this);
 	m_Socket->StartListen();
-
-	Super::BeginPlay();
 
 	// Set FullScreen Mode
 	PlayerController = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
@@ -83,7 +82,7 @@ void AMainGameMode::BeginPlay()
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
 	m_Socket->Send(&PRP, PRP.PacketSize);
-	// For Get Building Info
+
 	PRequestPacket PRP2(COMP_OP::OP_SETTIMER);
 	m_Socket->Send(&PRP2, PRP2.PacketSize);
 
@@ -97,7 +96,7 @@ void AMainGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 
-	if (!bIsConnected)
+	if (!GetIsConnected())
 	{
 		return;
 	}
@@ -116,7 +115,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMainGameMode::ProcessFunc()
 {
-	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
 	Packet* packet;
 	while (FuncQueue.try_pop(packet))
 	{
@@ -287,7 +286,7 @@ void AMainGameMode::ProcessFunc()
 		}
 		delete packet;
 	}
-	UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
 }
 
 //void AMainGameMode::ProcessPosition()
@@ -379,7 +378,20 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	}
 
 	// Set Weapon
-	character->CombatSystemComponent->SetInitialSelect(PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon, PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon);
+	if (PlayerSelectInfo.IsValidIndex(TargetSerialNum))
+	{
+		if (PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon == EMeleeSelect::EMS_NONE)
+		{
+			PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon = (EMeleeSelect)FMath::RandRange((uint8)EMeleeSelect::EMS_Dagger, (uint8)EMeleeSelect::EMS_GreatSword);
+		}
+		if (PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon == ERangeSelect::ERS_NONE)
+		{
+			PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon = (ERangeSelect)FMath::RandRange((uint8)ERangeSelect::ERS_SMG, (uint8)ERangeSelect::ERS_RPG);
+		}
+
+		character->CombatSystemComponent->SetInitialSelect(	PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon,
+															PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon);
+	}
 
 	Characters[TargetSerialNum] = character;
 }
@@ -520,6 +532,7 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 {
 	//Characters[PUI.UsePlayerSerial];
 	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
+	UE_LOG(LogClass, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
 }
 
 void AMainGameMode::ProcessGetItem(PGetItem PGI)
@@ -579,7 +592,7 @@ void AMainGameMode::GetWindowsOnLevel()
 		// Find Window
 		for (UStaticMeshComponent* MeshComponent : MeshComponents)
 		{
-			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_3_window"))
+			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_4_window"))
 			{
 				WindowMeshComponents.Add(MeshComponent);
 			}
@@ -649,6 +662,8 @@ void AMainGameMode::SendPlayerLocation()
 
 void AMainGameMode::SendPlayerSwapWeaponInfo()
 {
+	if (!Characters.IsValidIndex(SerialNum)) return;
+
 	ASkyscraperCharacter* PossessCharacter = Characters[SerialNum];
 
 	ESwapWeapon WeaponType;
@@ -678,7 +693,7 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
-	if (!bIsConnected)
+	if (!GetIsConnected())
 		return;
 
 	if (Sender != Characters[SerialNum])
@@ -732,12 +747,17 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 	m_Socket->Send(&PSDS, sizeof(PSDS));
 }
 
-void AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
+bool AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
 {
-	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
-
 	PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum])
+	{
+		ProcessUseItem(PUI);
+		return false;
+	}
+
 	m_Socket->Send(&PUI, sizeof(PUI));
+	return true;
 }
 
 void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)

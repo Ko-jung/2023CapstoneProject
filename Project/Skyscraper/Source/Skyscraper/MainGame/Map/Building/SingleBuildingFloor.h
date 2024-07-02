@@ -16,8 +16,6 @@ class SKYSCRAPER_API ASingleBuildingFloor : public AActor
 public:
 	ASingleBuildingFloor();
 
-	void CreateFloorStaticMeshes();
-
 	void DoCollapse();
 
 	// ====== 2019180016 ======

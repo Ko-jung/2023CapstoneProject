@@ -4,9 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Furniture.generated.h"
 
-class ADesktop;
+class UBoxComponent;
+class USpotLightComponent;
+class UHierarchicalInstancedStaticMeshComponent;
+class ADesk;
 
 UCLASS()
 class SKYSCRAPER_API AFurniture : public AActor
@@ -17,6 +21,15 @@ public:
 	AFurniture();
 
 protected:
+	void SettingSpotLight();
+	UFUNCTION()
+	void BoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void BoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+		void FindStartOverlapActors();
+
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
@@ -25,10 +38,29 @@ private:
 
 public:
 protected:
+	// =============== 컴퍼넌트 ===============
+	UPROPERTY(BlueprintReadWrite)
+		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Table;
+	UPROPERTY(BlueprintReadWrite)
+		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Sofa;
+	UPROPERTY(BlueprintReadWrite)
+		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Flowerpot;
+
+	UPROPERTY(BlueprintReadWrite)
+		TArray<TObjectPtr<USpotLightComponent>> SpotLights;
+
+	UPROPERTY(BlueprintReadWrite)
+		TObjectPtr<UBoxComponent> BoxCollision;
+
+	UPROPERTY(BlueprintReadWrite)
+		TArray<TObjectPtr<ADesk>> DeskActors;
+	// =======================================
+
 	UPROPERTY()
-		TArray<TObjectPtr<UStaticMeshComponent>> FurnitureObjects;
+		TArray<TObjectPtr<AActor>> InsidePlayers;
+
 	UPROPERTY()
-		TArray<TObjectPtr<ADesktop>> DeskActors;
+		FTimerHandle StartOverlapTimerHandle;
 
 private:
 

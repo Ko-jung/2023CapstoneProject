@@ -3,7 +3,9 @@
 
 #include "Furniture.h"
 
-#include "Desktop.h"
+#include "Desk.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/SpotLightComponent.h"
 
 // Sets default values
 AFurniture::AFurniture()
@@ -21,24 +23,27 @@ void AFurniture::BeginPlay()
 	// 컴퍼넌트 로드
 	{
 		// 가구 static mesh
-		GetComponents<UStaticMeshComponent>(FurnitureObjects);
+		HISM_Sofa = Cast<UHierarchicalInstancedStaticMeshComponent>(GetDefaultSubobjectByName(TEXT("HISM_Sofa1")));
+		HISM_Table = Cast<UHierarchicalInstancedStaticMeshComponent>(GetDefaultSubobjectByName(TEXT("HISM_Table1")));
+		HISM_Flowerpot = Cast<UHierarchicalInstancedStaticMeshComponent>(GetDefaultSubobjectByName(TEXT("HISM_Flowerpot1")));
+
+		SpotLights.Add(Cast<USpotLightComponent>(GetDefaultSubobjectByName(TEXT("SpotLight1"))));
+		SpotLights.Add(Cast<USpotLightComponent>(GetDefaultSubobjectByName(TEXT("SpotLight2"))));
+		
+
 
 		// 책상 child actor component
 		{
 			TArray<TObjectPtr<UChildActorComponent>> DeskChildActorComponents; GetComponents<UChildActorComponent>(DeskChildActorComponents);
 			for (UChildActorComponent* ChildComp : DeskChildActorComponents)
 			{
-				if (ADesktop* Desktop = Cast<ADesktop>(ChildComp->GetChildActor()))
+				if (ADesk* Desktop = Cast<ADesk>(ChildComp->GetChildActor()))
 				{
 					DeskActors.Add(Desktop);
 				}
 			}
 		}
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("가구 갯수: %d"), FurnitureObjects.Num());
-	UE_LOG(LogTemp, Warning, TEXT("데스크톱 개수: %d"), DeskActors.Num());
-	
 }
 
 // Called every frame

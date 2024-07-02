@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Furniture.generated.h"
 
-class ADesktop;
+class USpotLightComponent;
+class UHierarchicalInstancedStaticMeshComponent;
+class ADesk;
 
 UCLASS()
 class SKYSCRAPER_API AFurniture : public AActor
@@ -25,10 +27,23 @@ private:
 
 public:
 protected:
+	// =============== 컴퍼넌트 ===============
 	UPROPERTY()
-		TArray<TObjectPtr<UStaticMeshComponent>> FurnitureObjects;
+		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Table;
 	UPROPERTY()
-		TArray<TObjectPtr<ADesktop>> DeskActors;
+		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Sofa;
+	UPROPERTY()
+		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Flowerpot;
+
+	UPROPERTY()
+		TArray<TObjectPtr<USpotLightComponent>> SpotLights;
+
+	UPROPERTY()
+		TArray<TObjectPtr<ADesk>> DeskActors;
+	// =======================================
+
+
+	
 
 private:
 

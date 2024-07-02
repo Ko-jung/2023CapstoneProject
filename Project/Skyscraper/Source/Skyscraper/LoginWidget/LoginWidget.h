@@ -40,6 +40,9 @@ private:
 	UButton* PlayButton;
 
 	UPROPERTY(meta = (BindWidget))
+	UButton* QuitButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UEditableText* IdEditable;
 
 	UPROPERTY(meta = (BindWidget))

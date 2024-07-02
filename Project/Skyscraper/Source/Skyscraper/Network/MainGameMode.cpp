@@ -378,7 +378,20 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	}
 
 	// Set Weapon
-	character->CombatSystemComponent->SetInitialSelect(PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon, PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon);
+	if (PlayerSelectInfo.IsValidIndex(TargetSerialNum))
+	{
+		if (PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon == EMeleeSelect::EMS_NONE)
+		{
+			PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon = (EMeleeSelect)FMath::RandRange((uint8)EMeleeSelect::EMS_Dagger, (uint8)EMeleeSelect::EMS_GreatSword);
+		}
+		if (PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon == ERangeSelect::ERS_NONE)
+		{
+			PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon = (ERangeSelect)FMath::RandRange((uint8)ERangeSelect::ERS_SMG, (uint8)ERangeSelect::ERS_RPG);
+		}
+
+		character->CombatSystemComponent->SetInitialSelect(	PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon,
+															PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon);
+	}
 
 	Characters[TargetSerialNum] = character;
 }
@@ -519,6 +532,7 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 {
 	//Characters[PUI.UsePlayerSerial];
 	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
+	UE_LOG(LogClass, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
 }
 
 void AMainGameMode::ProcessGetItem(PGetItem PGI)
@@ -735,9 +749,13 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 
 bool AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
 {
-	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return false;
-
 	PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum])
+	{
+		ProcessUseItem(PUI);
+		return false;
+	}
+
 	m_Socket->Send(&PUI, sizeof(PUI));
 	return true;
 }

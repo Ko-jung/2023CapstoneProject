@@ -45,7 +45,7 @@ public:
 	void SetECharacter(ECharacter c) { SelectInfo = c; }
 	void SetState(ECharacterState state)	{ State = state; }
 
-protected:
+//protected:
 	SOCKET ClientSocket;
 
 	int RemainDataLen;

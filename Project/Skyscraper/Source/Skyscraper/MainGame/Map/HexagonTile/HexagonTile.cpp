@@ -610,11 +610,11 @@ void AHexagonTile::RemoveItem(BYTE SerialNum)
 
 BYTE AHexagonTile::FindItemSerialNum(const AActor* LootingActor)
 {
-	for (int i = 0; i < ItemMap.Num(); i++)
+	for (const auto& Item : ItemMap)
 	{
-		if (ItemMap[i] == LootingActor)
+		if (Item.Value == LootingActor)
 		{
-			return i;
+			return Item.Key;
 		}
 	}
 	return (BYTE)(-1);

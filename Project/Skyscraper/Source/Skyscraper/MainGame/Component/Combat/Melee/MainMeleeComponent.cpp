@@ -319,8 +319,9 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 			&& PrimitiveComponent->GetName().StartsWith("Window_"))
 		{
 			//PrimitiveComponent->DestroyComponent();
-			if (GameMode)
-				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+			if(GameMode)
+			 	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+			continue;
 		}
 
 		AActor* HitActor = HitResult->GetActor();

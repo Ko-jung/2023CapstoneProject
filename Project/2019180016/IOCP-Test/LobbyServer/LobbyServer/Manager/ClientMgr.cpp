@@ -117,8 +117,8 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 
 		LobbyClientInfo* client;
 
-		// TODO: m_MatchingQueue ¿¡ LockÀ» °É°í ÁøÇà.
-		// 6°³°¡ µÇ¾î pop ÁøÇà Áß ¸ÅÄª Ãë¼Ò°¡ µé¾î¿À¸é ¾ÈµÇ¹Ç·Î
+		// TODO: m_MatchingQueue ï¿½ï¿½ Lockï¿½ï¿½ ï¿½É°ï¿½ ï¿½ï¿½ï¿½ï¿½.
+		// 6ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ pop ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Äª ï¿½ï¿½Ò°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÇ¹Ç·ï¿½
 		for (int i = 0; i < MAXPLAYER; )
 		{
 			while (m_MatchingQueue.try_pop(client))
@@ -133,6 +133,8 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 	default:
 		break;
 	}
+
+	m_GameServerSocket->Recv();
 }
 
 void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
@@ -177,6 +179,6 @@ void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
 void ClientMgr::ProcessStartMatching(LobbyClientInfo* Target)
 {
 	m_MatchingQueue.push(Target);
-	cout << Target->ClientNum << "¹ø Ready" << endl;
+	cout << Target->ClientNum << "ï¿½ï¿½ Ready" << endl;
 	CheckingMatchingQueue();
 }

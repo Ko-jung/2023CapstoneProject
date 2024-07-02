@@ -24,17 +24,17 @@ public:
 	void Heal(float HealAmount);
 
 
-	SOCKET& GetSocket()							{ return m_sClientSocket; }
-	int GetRemainDataLen()						{ return m_iRemainDataLen; }
-	const int GetClientNum()					{ return m_iClientNum; }
-	int GetRoomNum()							{ return m_iRoomNum; }
+	SOCKET& GetSocket()							{ return ClientSocket; }
+	int GetRemainDataLen()						{ return RemainDataLen; }
+	const int GetClientNum()					{ return ClientNum; }
+	//int GetRoomNum()							{ return m_iRoomNum; }
 	//void GetPos(float& x, float& y, float& z)	{ x = PosX; y = PosY; z = PosZ; }
-	EXP_OVER* GetExp() { return &Exp; }
+	EXP_OVER* GetExp() { return &ExpOver; }
 
-	void SetSocket(const SOCKET& s)			{ m_sClientSocket = s; }
-	void SetRemainDataLen(int len)			{ m_iRemainDataLen = len; }
-	void SetClientNum(int num)				{ m_iClientNum = num; }
-	void SetRoomNum(int num)				{ m_iRoomNum = num; }
+	void SetSocket(const SOCKET& s)			{ ClientSocket = s; }
+	void SetRemainDataLen(int len)			{ RemainDataLen = len; }
+	void SetClientNum(int num)				{ ClientNum = num; }
+	//void SetRoomNum(int num)				{ m_iRoomNum = num; }
 	//void SetPos(float x, float y, float z)	{ PosX = x; PosY = y; PosZ = z; }
 
 	// Gaming data, later separated
@@ -44,18 +44,16 @@ public:
 
 	void SetECharacter(ECharacter c) { SelectInfo = c; }
 	void SetState(ECharacterState state)	{ State = state; }
-private:
-	void Send();
 
-public:
-	SOCKET m_sClientSocket;
+protected:
+	SOCKET ClientSocket;
 
-	int m_iRemainDataLen;
+	int RemainDataLen;
 
-	int m_iClientNum;
-	int m_iRoomNum;
+	int ClientNum;
+	//int m_iRoomNum;
 
-	EXP_OVER Exp;
+	EXP_OVER ExpOver;
 
 	// Gaming data, later separated
 	float MaxHP;

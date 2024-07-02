@@ -6,17 +6,10 @@
 
 void ANetworkGameMode::BeginPlay()
 {
-	if (bIsConnected)
-	{
-		UE_LOG(LogClass, Warning, TEXT("Server already CONEECT!"));
-		return;
-	}
-
 	// Call Blueprint BeginPlay
 	Super::BeginPlay();
 
 	m_Socket = NetworkManager::Instance();
-	m_Socket->InitSocket();
 }
 
 void ANetworkGameMode::Tick(float Deltatime)
@@ -58,29 +51,36 @@ void ANetworkGameMode::PushQueue(Packet* etc)
 
 void ANetworkGameMode::Send(const Packet* p, const int pSize)
 {
-	if (bIsConnected)
+	if (GetIsConnected())
 		m_Socket->Send(p, pSize);
 }
 
-void ANetworkGameMode::Connect(const char* ip, int port)
+bool ANetworkGameMode::Connect(const char* ip, int port)
 {
-	bIsConnected = m_Socket->Connect(ip, port);
-	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), bIsConnected);
-	if (bIsConnected)
+	m_Socket->Connect(ip, port);
+	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %s"), GetIsConnected() ? *FString("True") : *FString("False"));
+	if (GetIsConnected())
 	{
 		m_Socket->StartListen();
 		m_Socket->SetGamemode(this);
-		SerialNum = m_Socket->GetSerialNum();
 
-		UE_LOG(LogClass, Log, TEXT("IOCP Game Server connect success!"));
+		UE_LOG(LogTemp, Warning, TEXT("IOCP Game Server connect Success!"));
+		return true;
 	}
 	else
 	{
 		UE_LOG(LogClass, Warning, TEXT("IOCP Game Server connect FAIL!"));
+		return false;
 	}
 }
 
 void ANetworkGameMode::SetOwnSerialNum(int serial)
 {
 	SerialNum = serial;
+	UE_LOG(LogClass, Warning, TEXT("ANetworkGameMode's SerialNum : %d"), SerialNum);
+}
+
+bool ANetworkGameMode::GetIsConnected()
+{
+	return m_Socket->GetIsConnected();
 }

@@ -23,6 +23,7 @@ bool LobbyServer::Init(const int WorkerNum)
 	m_ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (INVALID_SOCKET == m_ListenSocket)
 	{
+		cout << "[LobbyServer::Init WSASocket Error] ";
 		error_display(WSAGetLastError());
 		return false;
 	}
@@ -49,6 +50,7 @@ bool LobbyServer::BindListen(const int PortNum)
 	int retval = bind(m_ListenSocket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
 	if (0 != retval)
 	{
+		cout << "[LobbyServer::BindListen bind Error] ";
 		error_display(WSAGetLastError());
 		return false;
 	}
@@ -56,6 +58,7 @@ bool LobbyServer::BindListen(const int PortNum)
 	retval = listen(m_ListenSocket, SOMAXCONN);
 	if (0 != retval)
 	{
+		cout << "[LobbyServer::BindListen listen Error] ";
 		error_display(WSAGetLastError());
 		return false;
 	}
@@ -134,6 +137,12 @@ void LobbyServer::Worker()
 			if (exp_over->_comp_op == COMP_OP::OP_SEND)
 				delete exp_over;
 			continue;
+		}
+
+		if (0 == num_byte)
+		{
+			if (exp_over->_comp_op == COMP_OP::OP_SEND || exp_over->_comp_op == COMP_OP::OP_RECV)
+				ClientMgr::Instance()->Disconnect(client_id);
 		}
 
 		auto FuncIt = m_IocpFunctionMap.find(exp_over->_comp_op);

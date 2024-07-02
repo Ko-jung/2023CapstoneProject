@@ -40,10 +40,11 @@ void AMainGameMode::BeginPlay()
 
 	GetHexagonTileOnLevel();
 
+	Super::BeginPlay();
+
 	// Get Socket Instance
 	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
-	bIsConnected = instance->GetIsConnect();
-	if (!bIsConnected)
+	if (!instance->GetIsConnect())
 	{
 		// Super::BeginPlay();
 		HexagonTile->Init();
@@ -55,8 +56,6 @@ void AMainGameMode::BeginPlay()
 	SerialNum = instance->GetSerialNum();
 	m_Socket->SetGamemode(this);
 	m_Socket->StartListen();
-
-	Super::BeginPlay();
 
 	// Set FullScreen Mode
 	PlayerController = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
@@ -83,7 +82,7 @@ void AMainGameMode::BeginPlay()
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
 	m_Socket->Send(&PRP, PRP.PacketSize);
-	// For Get Building Info
+
 	PRequestPacket PRP2(COMP_OP::OP_SETTIMER);
 	m_Socket->Send(&PRP2, PRP2.PacketSize);
 
@@ -97,7 +96,7 @@ void AMainGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 
-	if (!bIsConnected)
+	if (!GetIsConnected())
 	{
 		return;
 	}
@@ -116,7 +115,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMainGameMode::ProcessFunc()
 {
-	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
 	Packet* packet;
 	while (FuncQueue.try_pop(packet))
 	{
@@ -287,7 +286,7 @@ void AMainGameMode::ProcessFunc()
 		}
 		delete packet;
 	}
-	UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
 }
 
 //void AMainGameMode::ProcessPosition()
@@ -579,7 +578,7 @@ void AMainGameMode::GetWindowsOnLevel()
 		// Find Window
 		for (UStaticMeshComponent* MeshComponent : MeshComponents)
 		{
-			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_3_window"))
+			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_4_window"))
 			{
 				WindowMeshComponents.Add(MeshComponent);
 			}
@@ -649,6 +648,8 @@ void AMainGameMode::SendPlayerLocation()
 
 void AMainGameMode::SendPlayerSwapWeaponInfo()
 {
+	if (!Characters.IsValidIndex(SerialNum)) return;
+
 	ASkyscraperCharacter* PossessCharacter = Characters[SerialNum];
 
 	ESwapWeapon WeaponType;
@@ -678,7 +679,7 @@ void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLoc
 
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
-	if (!bIsConnected)
+	if (!GetIsConnected())
 		return;
 
 	if (Sender != Characters[SerialNum])
@@ -732,12 +733,13 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 	m_Socket->Send(&PSDS, sizeof(PSDS));
 }
 
-void AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
+bool AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
 {
-	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return false;
 
 	PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
 	m_Socket->Send(&PUI, sizeof(PUI));
+	return true;
 }
 
 void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)

@@ -51,6 +51,7 @@ bool IOCPServer::Init(const int WorkerNum)
 	m_ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (INVALID_SOCKET == m_ListenSocket)
 	{
+		cout << "[IOCPServer::Init m_ListenSocket WSASocket Error] ";
 		LogUtil::error_display(WSAGetLastError());
 		return false;
 	}
@@ -73,6 +74,7 @@ bool IOCPServer::BindListen(const int PortNum)
 	int retval = bind(m_ListenSocket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
 	if (0 != retval)
 	{
+		cout << "[IOCPServer::BindListen bind Error] ";
 		LogUtil::error_display(WSAGetLastError());
 		return false;
 	}
@@ -80,6 +82,7 @@ bool IOCPServer::BindListen(const int PortNum)
 	retval = listen(m_ListenSocket, SOMAXCONN);
 	if (0 != retval)
 	{
+		cout << "[IOCPServer::BindListen listen Error] ";
 		LogUtil::error_display(WSAGetLastError());
 		return false;
 	}
@@ -136,7 +139,7 @@ void IOCPServer::Worker()
 		if (FALSE == ret)
 		{
 			int err_no = WSAGetLastError();
-			cout << "GQCS Error : ";
+			cout << "[" << client_id << "] GQCS Error : ";
 			LogUtil::error_display(err_no);
 			cout << endl;
 			//Disconnect(client_id);

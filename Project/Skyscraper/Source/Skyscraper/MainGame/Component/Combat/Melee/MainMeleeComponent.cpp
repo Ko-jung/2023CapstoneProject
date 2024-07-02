@@ -315,6 +315,7 @@ void UMainMeleeComponent::CreateAttackArea(FVector vHitSize, float fStunTime, fl
 			//PrimitiveComponent->DestroyComponent();
 			if(GameMode)
 			 	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+			continue;
 		}
 
 		AActor* HitActor = HitResult->GetActor();

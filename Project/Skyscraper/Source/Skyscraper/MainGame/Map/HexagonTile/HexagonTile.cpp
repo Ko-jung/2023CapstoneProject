@@ -593,7 +593,18 @@ void AHexagonTile::SpawnItem(PItemInfo* Items, const uint8 SpawnCount)
 			LootingActor->Initialize((EItemEffect)Items[i].Effect, (EItemRareLevel)Items[i].ItemLevel);
 			LootingActor->FinishSpawning(FTransform(FRotator(), Result.Location));
 
-			ItemMap.Add({ ItemSerial++, LootingActor });
+			ItemMap.Add({ ItemSerial, LootingActor });
+			
+			if (TileActorItem.Find(ItemSerial))
+			{
+				UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem TileActorItem ItemSerial Already Exist"));
+			}
+			else
+			{
+				TileActorItem.Add({ ItemSerial, Items[i].TileIndex });
+			}
+
+			++ItemSerial;
 		}
 	}
 }
@@ -605,6 +616,8 @@ void AHexagonTile::RemoveItem(BYTE SerialNum)
 	//	int Index = ItemMap[SerialNum]->
 		ItemMap[SerialNum]->Destroy();
 		ItemMap.Remove(SerialNum);
+
+		TileActorItem.Remove(SerialNum);
 	}
 }
 
@@ -712,7 +725,10 @@ ETileImageType AHexagonTile::GetTileImageType(int index)
 	if (index >= Tiles.Num()) return ETileImageType::ETIT_Normal;
 
 	{//  TODO: 만약 해당 타일 자식이 아이템을 가지고 있다면 아이템 으로 반환시키기
-
+		for (const auto& TAI : TileActorItem)
+		{
+			if (TAI.Value == index) return ETileImageType::ETIT_Item;
+		}
 	}
 	
 	if(Tile_Actor.Contains(Tiles[index]))
@@ -729,6 +745,12 @@ ETileImageType AHexagonTile::GetTileImageType(int index)
 	}
 
 	return ETileImageType::ETIT_Normal;
+}
+
+const int8 AHexagonTile::GetItemTileIndex(int SerialNum)
+{
+	if (!TileActorItem.Find(SerialNum)) return -1;
+	return TileActorItem[SerialNum];
 }
 
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)

@@ -117,6 +117,7 @@ public:
 	UFUNCTION()
 	FVector2D GetTileWidgetAlignment(int index) const;
 	ETileImageType GetTileImageType(int index);
+	const int8 GetItemTileIndex(int SerialNum);
 
 protected:
 	enum class ESectionCount : uint8 { MIDDLE = 1, SECTION3 = 6, SECTION2 = 12, SECTION1 = 18, };
@@ -125,6 +126,7 @@ protected:
 	BYTE BuildInfo[(uint8)ESectionCount::MIDDLE + (uint8)ESectionCount::SECTION3 + (uint8)ESectionCount::SECTION2 + (uint8)ESectionCount::SECTION1];
 	int TileDropLevel;
 	TMap<BYTE, class ALootingItemActor*> ItemMap;
+	TMap<BYTE, BYTE> TileActorItem;	// Pair <SerialNum, TileActorNum>
 	int ItemSerial;
 	// ===========================
 };

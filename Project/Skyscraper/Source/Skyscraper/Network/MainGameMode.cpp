@@ -538,9 +538,13 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 
 void AMainGameMode::ProcessGetItem(PGetItem PGI)
 {
+	int8 Index = HexagonTile->GetItemTileIndex(PGI.ItemSerialNum);
+	UE_LOG(LogClass, Warning, TEXT("%d Item Removed on Map!"), Index);
+	if (Index == -1) return;
+
 	HexagonTile->RemoveItem(PGI.ItemSerialNum);
 
-	//PlayerController->UpdateImage(PGI.)
+	PlayerController->UpdateImage(Index);
 }
 
 void AMainGameMode::ProcessBreakObject(PBreakObject PBO)

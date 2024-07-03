@@ -452,6 +452,11 @@ void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLe
 		UE_LOG(LogTemp, Warning, TEXT("character earn item"));
 	}
 
+	if(GetPlayerController())
+	{
+		GetPlayerController()->SetItemImage(ItemEffect);
+	}
+
 	if(MainGameMode)
 		MainGameMode->SendGetItem(this, Item);
 }
@@ -653,8 +658,6 @@ void ASkyscraperCharacter::ItemInteraction()
 
 void ASkyscraperCharacter::UseItem() 
 {
-
-
 	UE_LOG(LogTemp, Warning, TEXT("no item has"));
 	if(OwningItem.Key != EItemEffect::EIE_NONE)
 	{
@@ -669,6 +672,10 @@ void ASkyscraperCharacter::UseItem()
 		}
 		OwningItem.Key = EItemEffect::EIE_NONE;
 		OwningItem.Value = EItemRareLevel::EIRL_NONE;
+		if(GetPlayerController())
+		{
+			GetPlayerController()->SetItemImage(EItemEffect::EIE_NONE);
+		}
 	}
 }
 

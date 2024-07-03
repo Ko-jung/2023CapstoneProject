@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Skyscraper/Enum/EItemEffect.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "SkyscraperPlayerController.generated.h"
 
+class UItemWidget;
 class AHexagonTile;
 class UGameResultWidget;
 class UChangeWeaponWidget;
@@ -54,6 +56,9 @@ public:
 	UFUNCTION()
 		void PressChangeWeaponButton();
 
+	UFUNCTION(BlueprintCallable)
+		void SetItemImage(EItemEffect ItemEffect);
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -94,6 +99,11 @@ protected:
 	UPROPERTY()
 		TObjectPtr<UGameResultWidget> GameResultWidget;
 
+	// Item Widget 클래스 및 변수
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> ItemWidgetClass;
+	UPROPERTY()
+		TObjectPtr<UItemWidget> ItemWidget;
 
 	UPROPERTY()
 		TObjectPtr<AHexagonTile> HexagonTile;

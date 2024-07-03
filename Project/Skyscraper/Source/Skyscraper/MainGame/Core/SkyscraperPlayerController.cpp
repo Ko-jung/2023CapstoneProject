@@ -10,6 +10,7 @@
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
 #include "Skyscraper/MainGame/Widget/ChangeWeapon/ChangeWeaponWidget.h"
 #include "Skyscraper/MainGame/Widget/GameResult/GameResultWidget.h"
+#include "Skyscraper/MainGame/Widget/Item/ItemWidget.h"
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
@@ -27,6 +28,9 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_GameResult(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/GameResult/WBP_GameResult.WBP_GameResult_C'"));
 	GameResultWidgetClass = WBP_GameResult.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_ItemRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Item/WBP_Item.WBP_Item_C'"));
+	ItemWidgetClass = WBP_ItemRef.Class;
 }
 
 UMiniMapWidget* ASkyscraperPlayerController::GetMiniMapWidget() const
@@ -144,6 +148,14 @@ void ASkyscraperPlayerController::PressChangeWeaponButton()
 	SetViewTargetWithBlend(PossessingPawn);
 }
 
+void ASkyscraperPlayerController::SetItemImage(EItemEffect ItemEffect)
+{
+	if(ItemWidget)
+	{
+		ItemWidget->SetItemImageTexture(ItemEffect);
+	}
+}
+
 void ASkyscraperPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -156,6 +168,12 @@ void ASkyscraperPlayerController::BeginPlay()
 	if(TimeAndKillCountWidget)
 	{
 		TimeAndKillCountWidget->AddToViewport();
+	}
+
+	ItemWidget = Cast<UItemWidget>(CreateWidget(this, ItemWidgetClass));
+	if (ItemWidget)
+	{
+		ItemWidget->AddToViewport();
 	}
 
 	MiniMapWidget = Cast<UMiniMapWidget>(CreateWidget(this, MiniMapWidgetClass));

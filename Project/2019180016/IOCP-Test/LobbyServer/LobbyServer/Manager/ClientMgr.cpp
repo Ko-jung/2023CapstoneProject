@@ -16,6 +16,12 @@ ClientMgr::ClientMgr()
 
 void ClientMgr::Disconnect(int SerialNum)
 {
+	if (SerialNum == GAMESERVER)
+	{
+		m_GameServerSocket->Init();
+		return;
+	}
+
 	PDisconnect PD;
 	Clients[SerialNum]->SendProcess(&PD);
 

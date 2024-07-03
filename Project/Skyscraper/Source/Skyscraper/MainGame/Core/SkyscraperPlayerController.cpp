@@ -210,3 +210,33 @@ void ASkyscraperPlayerController::SetPossessingPawn()
 {
 	PossessingPawn = Cast<ASkyscraperCharacter>(GetPawn());
 }
+
+void ASkyscraperPlayerController::SetPlayerImage(int MaxPlayer, TArray<ASkyscraperCharacter*> PlayerCharacter, int SerialNum)
+{
+	MiniMapWidget->AddPlayerToImage(PlayerCharacter[SerialNum]);
+
+	if (SerialNum < MaxPlayer)
+	{
+		for (int i = 0; i < MaxPlayer / 2; i++)
+		{
+			if(i != SerialNum)
+				MiniMapWidget->AddFriendlyPlayerToImage(PlayerCharacter[i]);
+		}
+		for (int i = MaxPlayer / 2; i < MaxPlayer; i++)
+		{
+			MiniMapWidget->AddEnemyPlayerToImage(PlayerCharacter[i]);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < MaxPlayer / 2; i++)
+		{
+			MiniMapWidget->AddEnemyPlayerToImage(PlayerCharacter[i]);
+		}
+		for (int i = MaxPlayer / 2; i < MaxPlayer; i++)
+		{
+			if (i != SerialNum)
+				MiniMapWidget->AddFriendlyPlayerToImage(PlayerCharacter[i]);
+		}
+	}
+}

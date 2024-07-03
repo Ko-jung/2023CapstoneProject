@@ -112,5 +112,6 @@ private:
 // ========== 2019180016 ========== 
 public:
 	void SetPossessingPawn();
+	void SetPlayerImage(int MaxPlayer, TArray<class ASkyscraperCharacter*> PlayerSelect, int SerialNum);
 //=================================
 };

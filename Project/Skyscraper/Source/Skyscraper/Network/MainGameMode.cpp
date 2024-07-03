@@ -500,10 +500,11 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 
 	for (int i = 0; i < PlayerSelectInfo.Num(); i++)
 	{
-		SpawnCharacter(i);
+		SpawnCharacter(i); 
 	}
 
 	PlayerController->UpdateImage();
+	PlayerController->SetPlayerImage(MAXPLAYER, Characters, SerialNum);
 }
 
 void AMainGameMode::ProcessTileDrop(PTileDrop PTD)

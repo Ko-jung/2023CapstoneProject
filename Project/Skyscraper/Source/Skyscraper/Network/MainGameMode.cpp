@@ -151,8 +151,7 @@ void AMainGameMode::ProcessFunc()
 		}
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERSTATE:
 		{
-			PChangedPlayerState* PCPS = static_cast<PChangedPlayerState*>(packet);
-			ProcessChangedCharacterState(PCPS);
+			ProcessChangedCharacterState(static_cast<PChangedPlayerState*>(packet));
 			break;
 		}
 		//case (BYTE)COMP_OP::OP_DAMAGEDPLAYER:
@@ -484,6 +483,7 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 
 		// ReSpawn and On INVINCIBILITY
 		SpawnCharacter(PCPS->ChangedPlayerSerial);
+		PlayerController->RemoveChangeWeaponWidget();
 	}
 	//else if (PCPS->State == EHealthState::EHS_LIVING)
 	//{

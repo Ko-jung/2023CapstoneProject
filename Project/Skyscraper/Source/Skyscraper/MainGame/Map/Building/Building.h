@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Building.generated.h"
 
+class AFurniture;
 class ASingleBuildingFloor;
 
 UENUM(BlueprintType)
@@ -27,10 +28,10 @@ public:
 	// Sets default values for this actor's properties
 	ABuilding();
 
-	// SpawnActorDeferred ÀÌÈÄ ½ÇÇà ÇÔ¼ö
+	// SpawnActorDeferred ì´í›„ ì‹¤í–‰ í•¨ìˆ˜
 	void Initialize(int32 GetFloor);
 
-	// °Ç¹° ºØ±«½ÃÅ°´Â ÇÔ¼ö
+	// ê±´ë¬¼ ë¶•ê´´ì‹œí‚¤ëŠ” í•¨ìˆ˜
 	void CollapseBuilding(int CollapseStartFloor);
 
 
@@ -43,49 +44,43 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	///* °Ç¹° ºØ±« ÁøÇà ½Ã È£Ãâ ÇÔ¼ö */
+	///* ê±´ë¬¼ ë¶•ê´´ ì§„í–‰ ì‹œ í˜¸ì¶œ í•¨ìˆ˜ */
 	//UFUNCTION(BlueprintCallable)
 	//	void CollapseBuilding(int32 CollapseStartFloor);
 
-	///* °Ç¹° ºØ±« Àû¿ë ÇÔ¼ö */
+	///* ê±´ë¬¼ ë¶•ê´´ ì ìš© í•¨ìˆ˜ */
 	////UFUNCTION(BlueprintCallable)
 	//void SwapStaticToGeometry(UStaticMeshComponent* Target, BuildingComposition Composition);
 
 
-	/* °Ç¹°ÀÇ ÃÊ±â(ÃÖ´ë) Ãş¼ö */
+	/* ê±´ë¬¼ì˜ ì´ˆê¸°(ìµœëŒ€) ì¸µìˆ˜ */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default", meta = (ExposeOnSpawn = "true"))
 		int32 InitialFloor = 5;
 
-	/* Ãş °£ ³ôÀÌ */
+	/* ì¸µ ê°„ ë†’ì´ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		double FloorDistance;
 
 
-	/* ÃÖ»ó´Ü ÃµÀå¿¡ ´ëÇÑ static mesh º¯¼ö */
+	/* ìµœìƒë‹¨ ì²œì¥ì— ëŒ€í•œ static mesh ë³€ìˆ˜ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		UStaticMeshComponent* Building_Ceiling;
-	/* Ãş µé¿¡ ´ëÇÑ Â÷ÀÏµå ¾×ÅÍ ÄÄÆÛ³ÍÆ® ¹è¿­ */
+	/* ì¸µ ë“¤ì— ëŒ€í•œ ì°¨ì¼ë“œ ì•¡í„° ì»´í¼ë„ŒíŠ¸ ë°°ì—´ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
-		TArray<AActor*> Building_Floors;
+		TArray<ASingleBuildingFloor*> Building_Floors;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
+		TArray<AFurniture*> FurnitureActors;
 	
-	/* °ÔÀÓÁøÇàÁß ÇöÀç Ãş ¼ö¿¡ ´ëÇÑ º¯¼ö */
+	/* ê²Œì„ì§„í–‰ì¤‘ í˜„ì¬ ì¸µ ìˆ˜ì— ëŒ€í•œ ë³€ìˆ˜ */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		int32 CurrentFloor;
 
-	///* ¹Ù´Ú/º® ¿¡ ´ëÇÑ Geometry Actor */
-	//UPROPERTY(EditDefaultsOnly)
-	//	TSubclassOf<AActor> GC_Floor;
-	//UPROPERTY(EditDefaultsOnly)
-	//	TSubclassOf<AActor> GC_Wall01;
-	//UPROPERTY(EditDefaultsOnly)
-	//	TSubclassOf<AActor> GC_Wall02;
-	//UPROPERTY(EditDefaultsOnly)
-	//	TSubclassOf<AActor> GC_Wall03;
-	//UPROPERTY(EditDefaultsOnly)
-	//	TSubclassOf<AActor> GC_Wall04;
 
 	UPROPERTY()
 		TSubclassOf<ASingleBuildingFloor> SingleBuildingClass;
+	UPROPERTY()
+		TSubclassOf<AFurniture> FurnitureClass;
 
 public:
 	/* ICollapsible Interface */

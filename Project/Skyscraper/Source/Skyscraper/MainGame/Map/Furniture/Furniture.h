@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Interface/Destructible/Collapsible.h"
 #include "Furniture.generated.h"
 
 class UBoxComponent;
@@ -13,13 +14,14 @@ class UHierarchicalInstancedStaticMeshComponent;
 class ADesk;
 
 UCLASS()
-class SKYSCRAPER_API AFurniture : public AActor
+class SKYSCRAPER_API AFurniture : public AActor, public ICollapsible
 {
 	GENERATED_BODY()
 	
 public:	
 	AFurniture();
 
+	virtual void DoCollapse();
 protected:
 	void SettingSpotLight();
 	UFUNCTION()
@@ -29,6 +31,11 @@ protected:
 
 	UFUNCTION()
 		void FindStartOverlapActors();
+
+	UFUNCTION()
+		void ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index = 0);
+	UFUNCTION()
+		void AllHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM);
 
 	virtual void BeginPlay() override;
 
@@ -61,6 +68,11 @@ protected:
 
 	UPROPERTY()
 		FTimerHandle StartOverlapTimerHandle;
+
+	UPROPERTY(BlueprintReadWrite)
+		TArray<TObjectPtr<UStaticMeshComponent>> DummyStaticMeshComp;
+	UPROPERTY()
+		TArray<TObjectPtr<UStaticMeshComponent>> PhysicsFurniture;
 
 private:
 

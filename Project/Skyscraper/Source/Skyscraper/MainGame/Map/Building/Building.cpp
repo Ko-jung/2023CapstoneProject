@@ -4,6 +4,7 @@
 #include "Building.h"
 
 #include "SingleBuildingFloor.h"
+#include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
 
 // Sets default values
 ABuilding::ABuilding()
@@ -34,6 +35,9 @@ ABuilding::ABuilding()
 	{
 		SingleBuildingClass = SingleBuildingFloorRef.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<AActor> FurnitureRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Furniture/BP_Furnitures.BP_Furnitures_C'"));
+	FurnitureClass = FurnitureRef.Class;
 	
 }
 
@@ -53,13 +57,22 @@ void ABuilding::BeginPlay()
 	for (int i = 0; i < InitialFloor; ++i)
 	{
 		FString title = "Floor" + FString::FromInt(i);
-		AActor* NewFloorActor = GetWorld()->SpawnActor(SingleBuildingClass);
+		ASingleBuildingFloor* NewFloorActor = Cast<ASingleBuildingFloor>(GetWorld()->SpawnActor(SingleBuildingClass));
 		if(NewFloorActor)
 		{
 			NewFloorActor->SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y, -FloorDistance * i));
 			NewFloorActor->SetActorRotation(GetActorRotation());
 		}
 		Building_Floors.Add(NewFloorActor);
+
+		// 가구 추가 배치
+		AFurniture* NewFurnitureActor = Cast<AFurniture>(GetWorld()->SpawnActor(FurnitureClass));
+		if(NewFurnitureActor)
+		{
+			NewFurnitureActor->SetActorLocation(NewFloorActor->GetActorLocation());
+			NewFurnitureActor->SetActorRotation(GetActorRotation());
+		}
+		FurnitureActors.Add(NewFurnitureActor);
 	}
 }
 
@@ -67,7 +80,8 @@ void ABuilding::CollapseBuilding(int CollapseStartFloor)
 {
 	for (int i = CollapseStartFloor; i < CurrentFloor; ++i)
 	{
-		Cast<ASingleBuildingFloor>(Building_Floors[i])->DoCollapse();
+		Building_Floors[i]->DoCollapse();
+		FurnitureActors[i]->DoCollapse();
 	}
 	CurrentFloor = CollapseStartFloor - 1;
 }

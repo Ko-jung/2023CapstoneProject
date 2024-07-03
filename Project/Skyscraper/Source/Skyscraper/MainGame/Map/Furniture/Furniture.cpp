@@ -15,6 +15,57 @@ AFurniture::AFurniture()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// Sofa + Table + Flowerpot + Desk([Desk, Chair, Monitor, Partition, Desktop], 7 desks, 5 group)
+	int NumberOfFurniture = 5 + 2 + 4 + (5 * 7 * 5);
+	for(int i =0; i<NumberOfFurniture; ++i)
+	{
+		FString NameString = "PhysicsStaticMesh" + FString::FromInt(i);
+		UStaticMeshComponent* TempStaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(FName(NameString));
+		TempStaticMeshComp->SetMobility(EComponentMobility::Type::Movable);
+		TempStaticMeshComp->SetupAttachment(GetRootComponent());
+		TempStaticMeshComp->SetHiddenInGame(true);
+		DummyStaticMeshComp.Add(TempStaticMeshComp);
+	}
+}
+
+
+void AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s , %d index to SM"), *HISM->GetName(), Index);
+	int CurrentLastIndex = DummyStaticMeshComp.Num() - 1;
+	UStaticMeshComponent* SMComp = DummyStaticMeshComp[CurrentLastIndex];
+	DummyStaticMeshComp.RemoveAt(CurrentLastIndex);
+
+	FTransform Transform{};
+	HISM->GetInstanceTransform(Index, Transform);
+	HISM->RemoveInstance(Index);
+	
+	SMComp->SetStaticMesh(HISM->GetStaticMesh());
+	SMComp->SetWorldLocation(GetActorLocation() + Transform.GetLocation());
+	SMComp->SetRelativeRotation(Transform.GetRotation());
+	SMComp->SetHiddenInGame(false);
+	SMComp->SetSimulatePhysics(true);
+	PhysicsFurniture.Add(SMComp);
+}
+
+void AFurniture::AllHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM)
+{
+	int InstanceCount = HISM->GetInstanceCount();
+
+	for(int i =0; i< InstanceCount; ++i)
+	{
+		ChangeHISMToPhysicsSM(HISM, 0);
+	}
+
+	HISM->DestroyComponent();
+}
+
+void AFurniture::DoCollapse()
+{
+	AllHISMToPhysicsSM(HISM_Sofa);
+	AllHISMToPhysicsSM(HISM_Table);
+	AllHISMToPhysicsSM(HISM_Flowerpot);
+	
 }
 
 void AFurniture::SettingSpotLight()
@@ -63,6 +114,7 @@ void AFurniture::FindStartOverlapActors()
 	BoxCollision->GetOverlappingActors(InsidePlayers, ASkyscraperCharacter::StaticClass());
 	SettingSpotLight();
 }
+
 
 // Called when the game starts or when spawned
 void AFurniture::BeginPlay()

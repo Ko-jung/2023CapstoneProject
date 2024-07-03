@@ -67,6 +67,8 @@ ABoomerangCharacter::ABoomerangCharacter()
 
 	// 부메랑 로드 및 생성
 	{
+		BoostMesh->SetupAttachment(GetMesh(), FName("BoostSocket"));
+
 		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,true };
 
 		ConstructorHelpers::FObjectFinder<UStaticMesh> BigBoomerangRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/character/3_boomerang/boom_BOOMERANG_big.boom_BOOMERANG_big'"));

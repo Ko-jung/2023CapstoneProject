@@ -149,6 +149,9 @@ void ASkyscraperPlayerController::BeginPlay()
 	Super::BeginPlay();
 	SetPossessingPawn();
 
+	PlayerCameraManager->ViewPitchMin = -45.0f;
+	PlayerCameraManager->ViewPitchMax = 45.0f;
+
 	TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
 	if(TimeAndKillCountWidget)
 	{

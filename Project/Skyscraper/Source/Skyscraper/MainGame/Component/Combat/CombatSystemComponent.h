@@ -141,7 +141,7 @@ protected:
 	void DEBUG_ChangeToNextWeapon();
 
 public:	
-	FORCEINLINE APlayerController* GetOwnerPlayerController() const { return Cast<APlayerController>(OwnerCharacter->GetController()); }
+	FORCEINLINE ASkyscraperPlayerController* GetOwnerPlayerController() const;
 	FORCEINLINE UMainRangeComponent* GetRangeComponent() const { return Cast<UMainRangeComponent>(MainRangeWeaponComponent); }
 	FORCEINLINE UMainMeleeComponent* GetMeleeComponent() const { return Cast<UMainMeleeComponent>(MainMeleeWeaponComponent); }
 

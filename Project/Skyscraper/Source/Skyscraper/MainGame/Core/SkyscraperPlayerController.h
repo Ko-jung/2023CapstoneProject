@@ -9,6 +9,7 @@
 #include "Skyscraper/Enum/ERangeSelect.h"
 #include "SkyscraperPlayerController.generated.h"
 
+class ULockOnWidget;
 class UItemWidget;
 class AHexagonTile;
 class UGameResultWidget;
@@ -34,6 +35,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		UMiniMapWidget* GetMiniMapWidget() const;
+	UFUNCTION(BlueprintCallable)
+		ULockOnWidget* GetLockOnWidget() const;
 
 	UFUNCTION(BlueprintCallable)
 	void AddChangeWeaponWidget();
@@ -104,6 +107,12 @@ protected:
 		TSubclassOf<UUserWidget> ItemWidgetClass;
 	UPROPERTY()
 		TObjectPtr<UItemWidget> ItemWidget;
+
+	// LockOn Widget 클래스 및 변수
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> LockOnWidgetClass;
+	UPROPERTY()
+		TObjectPtr<ULockOnWidget> LockOnWidget;
 
 	UPROPERTY()
 		TObjectPtr<AHexagonTile> HexagonTile;

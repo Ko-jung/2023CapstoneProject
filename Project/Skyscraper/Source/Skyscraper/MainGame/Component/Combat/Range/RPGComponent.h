@@ -6,6 +6,7 @@
 #include "MainRangeComponent.h"
 #include "RPGComponent.generated.h"
 
+class UNiagaraSystem;
 class ARPGBullet;
 /**
  * 
@@ -21,4 +22,14 @@ public:
 
 	virtual void Fire(float fBaseDamage) override;
 	virtual void SetInitialValue() override;
+protected:
+
+private:
+
+public:
+
+protected:
+
+private:
+
 };

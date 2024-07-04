@@ -9,6 +9,9 @@
 
 #include "GameFramework/Character.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values
@@ -42,7 +45,10 @@ ARPGBullet::ARPGBullet()
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleRef(TEXT("/Script/Engine.ParticleSystem'/Game/StarterContent/Particles/P_Explosion.P_Explosion'"));
 	ExplodeParticle = ParticleRef.Object;
 
-	
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_ExplosionRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/Explosion/NS_Explosion.NS_Explosion'"));
+		NS_Explosion = NS_ExplosionRef.Object;
+	}
 }
 
 void ARPGBullet::PostInitializeComponents()
@@ -120,6 +126,14 @@ void ARPGBullet::BulletExplode()
 
 	// == TODO: Delete Debug Later
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 100.0f, 10, FColor::Black, true, 3.0f, 0, 3);
+
+	{
+		UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(), NS_Explosion,
+			GetActorLocation(), GetActorRotation(), GetActorScale());
+	}
+	
+
 
 	Destroy();
 	

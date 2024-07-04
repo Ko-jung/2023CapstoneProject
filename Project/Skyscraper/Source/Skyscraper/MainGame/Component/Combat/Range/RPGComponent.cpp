@@ -36,8 +36,6 @@ URPGComponent::URPGComponent()
 	}
 
 	
-	
-	
 }
 
 void URPGComponent::Fire(float fBaseDamage)

@@ -11,6 +11,7 @@
 #include "Skyscraper/MainGame/Widget/ChangeWeapon/ChangeWeaponWidget.h"
 #include "Skyscraper/MainGame/Widget/GameResult/GameResultWidget.h"
 #include "Skyscraper/MainGame/Widget/Item/ItemWidget.h"
+#include "Skyscraper/MainGame/Widget/LockOn/LockOnWidget.h"
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
@@ -31,11 +32,19 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_ItemRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Item/WBP_Item.WBP_Item_C'"));
 	ItemWidgetClass = WBP_ItemRef.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_LockOnWidgetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Lockon/WBP_LockOn.WBP_LockOn_C'"));
+	LockOnWidgetClass = WBP_LockOnWidgetRef.Class;
 }
 
 UMiniMapWidget* ASkyscraperPlayerController::GetMiniMapWidget() const
 {
 	return MiniMapWidget;
+}
+
+ULockOnWidget* ASkyscraperPlayerController::GetLockOnWidget() const
+{
+	return LockOnWidget;
 }
 
 void ASkyscraperPlayerController::AddChangeWeaponWidget()
@@ -181,10 +190,15 @@ void ASkyscraperPlayerController::BeginPlay()
 	{
 		MiniMapWidget->AddToViewport();
 		MiniMapWidget->AddPlayerToImage(PossessingPawn);
+		UpdateImage();
 	}
-
-	UpdateImage();
 	
+	LockOnWidget = Cast<ULockOnWidget>(CreateWidget(this, LockOnWidgetClass));
+	if(LockOnWidget)
+	{
+		LockOnWidget->AddToViewport();
+		LockOnWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 
 }
 

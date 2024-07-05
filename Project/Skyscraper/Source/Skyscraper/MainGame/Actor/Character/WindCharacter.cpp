@@ -17,6 +17,8 @@ AWindCharacter::AWindCharacter()
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/1_wind/wind_boost.wind_boost'"));
 		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
 
+		BoostMesh->SetupAttachment(GetMesh(), FName("BoostSocket"));
+
 		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Wind/Boost/ABP_Wind_Boost.ABP_Wind_Boost_C'"));
 		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}

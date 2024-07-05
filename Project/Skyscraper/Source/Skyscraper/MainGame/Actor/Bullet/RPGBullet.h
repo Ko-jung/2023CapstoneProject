@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "RPGBullet.generated.h"
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 class UProjectileMovementComponent;
 
 UCLASS()
@@ -13,31 +15,7 @@ class SKYSCRAPER_API ARPGBullet : public AActor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UStaticMeshComponent> BulletStaticMesh;
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UParticleSystemComponent> FireParticleComponent;
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UParticleSystemComponent> SteamParticleComponent;
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-
-	UPROPERTY(VisibleAnywhere)
-		FVector InitVelocity;
-	UPROPERTY(VisibleAnywhere)
-		float InitSpeed;
-	UPROPERTY(VisibleAnywhere)
-		float Damage;
-	UPROPERTY(EditAnywhere)
-		float EffectiveDistance;
-	UPROPERTY()
-		float CurrentDistance;
-
-	UPROPERTY(VisibleAnywhere)
-		AActor* FireCharacter;
-
-	UPROPERTY(EditAnywhere)
-		TObjectPtr<UParticleSystem> ExplodeParticle;
+	
 public:	
 	// Sets default values for this actor's properties
 	ARPGBullet();
@@ -61,5 +39,37 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public:
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+		TObjectPtr<UStaticMeshComponent> BulletStaticMesh;
+	
+	UPROPERTY(VisibleAnywhere)
+		TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TObjectPtr<UNiagaraComponent> NS_RPG;
+
+	UPROPERTY(EditAnywhere)
+		FVector InitVelocity;
+	UPROPERTY(VisibleAnywhere)
+		float InitSpeed;
+	UPROPERTY(VisibleAnywhere)
+		float Damage;
+	UPROPERTY(EditAnywhere)
+		float EffectiveDistance;
+	UPROPERTY()
+		float CurrentDistance;
+
+	UPROPERTY(VisibleAnywhere)
+		AActor* FireCharacter;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UNiagaraSystem> NS_Explosion;
+
+
+private:
 
 };

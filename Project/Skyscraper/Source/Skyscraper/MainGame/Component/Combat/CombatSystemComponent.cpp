@@ -24,6 +24,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Skyscraper/MainGame/Widget/LockOn/LockOnWidget.h"
 
 // Sets default values for this component's properties
 UCombatSystemComponent::UCombatSystemComponent()
@@ -225,11 +226,15 @@ void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 	if(bKeyDown)
 	{
 		LockOnStartTime = GetWorld()->GetTimeSeconds();
-
+		if(GetOwnerPlayerController())
+		{
+			GetOwnerPlayerController()->GetLockOnWidget()->SetVisibility(ESlateVisibility::Visible);
+		}
 	}else
 	{
 		LockOnActor = nullptr;
 		CloseTargetDistance = InitTargetDistance;
+		GetOwnerPlayerController()->GetLockOnWidget()->SetVisibility(ESlateVisibility::Hidden);
 	}
 	
 }
@@ -239,6 +244,8 @@ void UCombatSystemComponent::LockOn()
 	TArray<AActor*> OutActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASkyscraperCharacter::StaticClass(), OutActors);
 	int32 LockOnActorCount = 0;
+	FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(GetWorld());
+	FVector2D TargetActorScreenLocation{};
 
 	// == find nearest TargetActor in LockOnRange
 	for(AActor* TargetActor : OutActors)
@@ -247,11 +254,11 @@ void UCombatSystemComponent::LockOn()
 		if(TargetActor != OwnerCharacter)
 		{
 			// == Get TargetActor Screen Location
-			FVector2D ScreenLocation(0.0f, 0.0f);;
+			FVector2D ScreenLocation(0.0f, 0.0f);
 			UGameplayStatics::ProjectWorldToScreen(OwnerCharacter->GetPlayerController(), TargetActor->GetActorLocation(),ScreenLocation);
 
 			// == Get Player Viewport size
-			FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(GetWorld());
+			//FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(GetWorld());
 
 			// == Get distance from TargetActor's ScreenLocation and Viewport center
 			float Distance = UKismetMathLibrary::Distance2D(ScreenLocation, ViewportSize / 2);
@@ -263,10 +270,11 @@ void UCombatSystemComponent::LockOn()
 			LockOnActorCount += 1;
 
 			// == find nearest TargetActor
-			if (Distance < CloseTargetDistance) 
+			if (Distance < CloseTargetDistance || TargetActor == LockOnActor) 
 			{
 				LockOnActor = TargetActor;
 				CloseTargetDistance = Distance;
+				TargetActorScreenLocation = ScreenLocation;
 			}
 		}
 	}
@@ -275,10 +283,20 @@ void UCombatSystemComponent::LockOn()
 	{
 		CloseTargetDistance = InitTargetDistance;
 		LockOnActor = nullptr;
+		if (GetOwnerPlayerController() && GetOwnerPlayerController()->GetLockOnWidget())
+		{
+			GetOwnerPlayerController()->GetLockOnWidget()->SetTargetLockImageVisibie(false);
+		}
 	}
 
 	if(LockOnActor)
 	{
+		if(GetOwnerPlayerController() && GetOwnerPlayerController()->GetLockOnWidget())
+		{
+			GetOwnerPlayerController()->GetLockOnWidget()->SetTargetLockImageVisibie(true);
+			GetOwnerPlayerController()->GetLockOnWidget()->SetTargetLockImageAlignment(ViewportSize, TargetActorScreenLocation);
+		}
+
 		float LockOnSpeed{};
 		// == In first 0.5 sec, fast else slow
 		if((GetWorld()->GetTimeSeconds() - LockOnStartTime)< 0.5f)
@@ -439,6 +457,11 @@ void UCombatSystemComponent::DEBUG_ChangeToNextWeapon()
 	ERangeSelect NewRangeSelect = (ERangeSelect)(((uint8)(RangeSelect)+1) % ((uint8)(ERangeSelect::ERS_NONE)));
 	SetInitialSelect(NewMeleeSelect, NewRangeSelect);
 	SwapToMeleeWeapon(FInputActionValue());
+}
+
+ASkyscraperPlayerController* UCombatSystemComponent::GetOwnerPlayerController() const
+{
+	return OwnerCharacter->GetPlayerController(); 
 }
 
 void UCombatSystemComponent::ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect)

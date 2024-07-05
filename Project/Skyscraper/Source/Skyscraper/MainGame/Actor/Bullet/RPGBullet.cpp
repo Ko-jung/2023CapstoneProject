@@ -9,6 +9,9 @@
 
 #include "GameFramework/Character.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values
@@ -21,11 +24,14 @@ ARPGBullet::ARPGBullet()
 	BulletStaticMesh->SetupAttachment(GetRootComponent());
 	BulletStaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 
-	FireParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FireParticle"));
-	FireParticleComponent->SetupAttachment(BulletStaticMesh);
-	SteamParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SteamParticle"));
-	SteamParticleComponent->SetupAttachment(FireParticleComponent);
+	NS_RPG = CreateDefaultSubobject<UNiagaraComponent>(TEXT("RPGNiagaraSystem"));
+	NS_RPG->SetupAttachment(BulletStaticMesh);
 
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_ExplosionRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/Explosion/NS_Explosion.NS_Explosion'"));
+		NS_Explosion = NS_ExplosionRef.Object;
+	}
+	
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	
 	ProjectileMovementComponent->InitialSpeed = 3250.0f;
@@ -39,10 +45,7 @@ ARPGBullet::ARPGBullet()
 	EffectiveDistance = 8000.0f;
 	CurrentDistance = 0.0f;
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleRef(TEXT("/Script/Engine.ParticleSystem'/Game/StarterContent/Particles/P_Explosion.P_Explosion'"));
-	ExplodeParticle = ParticleRef.Object;
 
-	
 }
 
 void ARPGBullet::PostInitializeComponents()
@@ -121,6 +124,18 @@ void ARPGBullet::BulletExplode()
 	// == TODO: Delete Debug Later
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 100.0f, 10, FColor::Black, true, 3.0f, 0, 3);
 
+	{
+		if(NS_Explosion)
+		{
+			InitVelocity.Normalize();
+			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				GetWorld(), NS_Explosion,
+				GetActorLocation(), GetActorRotation(), GetActorScale()*5);
+
+			
+		}
+	}
+
 	Destroy();
 	
 	
@@ -141,8 +156,11 @@ void ARPGBullet::HitExplode(UPrimitiveComponent* HitComponent, AActor* OtherActo
 void ARPGBullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	CurrentDistance += DeltaTime * GetVelocity().Length();
+	FVector Direction = GetVelocity();
+	Direction.Normalize();
+	NS_RPG->SetVariableVec3(TEXT("Direction"), Direction);
 	if(CurrentDistance >= EffectiveDistance)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bullet Bomb"));

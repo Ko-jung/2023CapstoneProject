@@ -10,6 +10,7 @@ AAssassinCharacter::AAssassinCharacter()
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/4_assassin/assassin_boost.assassin_boost'"));
 	BoostMesh->SetSkeletalMesh(MeshAsset.Object);
 
+	BoostMesh->SetupAttachment(GetMesh(), FName("BoostSocket"));
 
 	static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Assassin/Boost/ABP_Assassin_Boost.ABP_Assassin_Boost_C'"));
 	BoostMesh->SetAnimClass(ABP_BoostAsset.Class);

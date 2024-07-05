@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "RPGBullet.generated.h"
 
+class UNiagaraComponent;
 class UNiagaraSystem;
 class UProjectileMovementComponent;
 
@@ -44,12 +45,12 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere)
 		TObjectPtr<UStaticMeshComponent> BulletStaticMesh;
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UParticleSystemComponent> FireParticleComponent;
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UParticleSystemComponent> SteamParticleComponent;
+	
 	UPROPERTY(VisibleAnywhere)
 		TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TObjectPtr<UNiagaraComponent> NS_RPG;
 
 	UPROPERTY(VisibleAnywhere)
 		FVector InitVelocity;
@@ -66,9 +67,7 @@ protected:
 		AActor* FireCharacter;
 
 	UPROPERTY(EditAnywhere)
-		TObjectPtr<UParticleSystem> ExplodeParticle;
-
-	TObjectPtr<UNiagaraSystem> NS_Explosion;
+		TObjectPtr<UNiagaraSystem> NS_Explosion;
 
 
 private:

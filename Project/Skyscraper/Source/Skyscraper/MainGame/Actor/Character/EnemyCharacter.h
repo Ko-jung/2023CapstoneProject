@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SkyscraperCharacter.h"
+#include "Skyscraper/Enum/ERangeSelect.h"
 #include "EnemyCharacter.generated.h"
 
 class URifleComponent;
@@ -29,6 +30,6 @@ private:
 		void FirePer1Sec();
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UMainRangeComponent* RangeComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Component)
+		ERangeSelect RangeSelect;
 };

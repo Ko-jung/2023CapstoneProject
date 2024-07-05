@@ -52,7 +52,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TObjectPtr<UNiagaraComponent> NS_RPG;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		FVector InitVelocity;
 	UPROPERTY(VisibleAnywhere)
 		float InitSpeed;

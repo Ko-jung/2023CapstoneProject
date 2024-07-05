@@ -127,10 +127,12 @@ void ARPGBullet::BulletExplode()
 	{
 		if(NS_Explosion)
 		{
+			InitVelocity.Normalize();
 			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 				GetWorld(), NS_Explosion,
 				GetActorLocation(), GetActorRotation(), GetActorScale()*5);
-			FX->SetVariableVec3(TEXT("Direction"), InitVelocity);
+
+			
 		}
 	}
 
@@ -154,8 +156,11 @@ void ARPGBullet::HitExplode(UPrimitiveComponent* HitComponent, AActor* OtherActo
 void ARPGBullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	CurrentDistance += DeltaTime * GetVelocity().Length();
+	FVector Direction = GetVelocity();
+	Direction.Normalize();
+	NS_RPG->SetVariableVec3(TEXT("Direction"), Direction);
 	if(CurrentDistance >= EffectiveDistance)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bullet Bomb"));

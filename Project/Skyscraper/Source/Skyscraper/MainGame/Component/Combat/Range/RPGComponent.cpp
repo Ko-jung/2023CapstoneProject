@@ -41,7 +41,23 @@ URPGComponent::URPGComponent()
 void URPGComponent::Fire(float fBaseDamage)
 {
 	if (!OwnerCharacter->InputEnabled()) return;
-	if (!GetOwnerPlayerController()) return;
+	if (!GetOwnerPlayerController())
+	{
+		FVector Location = OwnerCharacter->GetActorLocation() +
+			OwnerCharacter->GetActorForwardVector() * 100 + FVector{0.0f,0.0f,70.0f};
+		FTransform SpawnTransform{};
+		SpawnTransform.SetLocation(Location);
+		ARPGBullet* BulletActor = GetWorld()->SpawnActorDeferred<ARPGBullet>(RPGBulletBPClass, SpawnTransform);
+		if (BulletActor)
+		{
+
+			BulletActor->Initialize(OwnerCharacter, OwnerCharacter->GetActorForwardVector(), 5000.0f, fBaseDamage);
+			BulletActor->FinishSpawning(SpawnTransform);
+		}
+		return;
+	}
+		
+		
 
 	UseBullet();
 

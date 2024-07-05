@@ -18,6 +18,8 @@ AElectricCharacter::AElectricCharacter()
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/2_electric/elec_boost.elec_boost'"));
 		BoostMesh->SetSkeletalMesh(MeshAsset.Object);
 
+		BoostMesh->SetupAttachment(GetMesh(), FName("BoostSocket"));
+
 		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/Boost/ABP_Electric_Boost.ABP_Electric_Boost_C'"));
 		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}

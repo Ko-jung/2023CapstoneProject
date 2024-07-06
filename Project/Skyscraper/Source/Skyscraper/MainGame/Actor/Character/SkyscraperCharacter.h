@@ -134,7 +134,10 @@ public:
 	void AddAllInputMappingContext();
 
 	UFUNCTION(BlueprintCallable)
-	virtual void CastingSkill(bool IsSpecialSkill) PURE_VIRTUAL(ASkyscraperCharacter::CastingSkill, ;);
+	//virtual void CastingSkill(bool IsSpecialSkill) PURE_VIRTUAL(ASkyscraperCharacter::CastingSkill, ;);
+	void CastingSkill(bool IsSpecialSkill);
+	UFUNCTION(BlueprintNativeEvent)
+	void ActiveSkill(bool IsSpecialSkill);
 	// ==================
 
 protected:

@@ -79,3 +79,7 @@ AElectricCharacter::AElectricCharacter()
 	}
 
 }
+
+void AElectricCharacter::CastingSkill(bool IsSpecialSkill)
+{
+}

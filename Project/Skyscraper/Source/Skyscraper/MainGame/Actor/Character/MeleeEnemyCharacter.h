@@ -24,7 +24,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float EnemyMaxHealth;
-	
+
+	// 2019180016
+	virtual void CastingSkill(bool IsSpecialSkill);
+	// ==========
 protected:
 	virtual void BeginPlay() override;
 

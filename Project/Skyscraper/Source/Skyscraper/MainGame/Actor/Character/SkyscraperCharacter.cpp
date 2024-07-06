@@ -575,6 +575,15 @@ void ASkyscraperCharacter::AddAllInputMappingContext()
 	}
 }
 
+void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
+{
+	ActiveSkill(IsSpecialSkill);
+}
+
+void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)
+{
+}
+
 void ASkyscraperCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D

@@ -76,3 +76,7 @@ AShieldCharacter::AShieldCharacter()
 		SkirtMaterialValue = 13;
 	}
 }
+
+void AShieldCharacter::CastingSkill(bool IsSpecialSkill)
+{
+}

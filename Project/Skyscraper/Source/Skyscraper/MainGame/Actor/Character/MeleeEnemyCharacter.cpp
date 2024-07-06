@@ -16,6 +16,10 @@ AMeleeEnemyCharacter::AMeleeEnemyCharacter()
 	
 }
 
+void AMeleeEnemyCharacter::CastingSkill(bool IsSpecialSkill)
+{
+}
+
 void AMeleeEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();

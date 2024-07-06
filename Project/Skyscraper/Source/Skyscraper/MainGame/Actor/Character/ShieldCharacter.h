@@ -15,4 +15,8 @@ class SKYSCRAPER_API AShieldCharacter : public ASkyscraperCharacter
 	GENERATED_BODY()
 public:
 	AShieldCharacter();
+
+	// 2019180016
+	virtual void CastingSkill(bool IsSpecialSkill);
+	// ==========
 };

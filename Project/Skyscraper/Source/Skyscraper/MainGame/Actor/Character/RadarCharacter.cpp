@@ -77,3 +77,7 @@ ARadarCharacter::ARadarCharacter()
 		SkirtMaterialValue = 13;
 	}
 }
+
+void ARadarCharacter::CastingSkill(bool IsSpecialSkill)
+{
+}

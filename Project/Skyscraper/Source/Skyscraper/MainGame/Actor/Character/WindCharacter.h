@@ -15,4 +15,8 @@ class SKYSCRAPER_API AWindCharacter : public ASkyscraperCharacter
 	GENERATED_BODY()
 public:
 	AWindCharacter();
+
+	// 2019180016
+	virtual void CastingSkill(bool IsSpecialSkill);
+	// ==========
 };

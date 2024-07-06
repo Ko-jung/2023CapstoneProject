@@ -25,3 +25,7 @@ AAssassinCharacter::AAssassinCharacter()
 		SkirtMaterialValue = 11;
 	}
 }
+
+void AAssassinCharacter::CastingSkill(bool IsSpecialSkill)
+{
+}

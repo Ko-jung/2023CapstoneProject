@@ -12,6 +12,10 @@ AEnemyCharacter::AEnemyCharacter()
 	
 }
 
+void AEnemyCharacter::CastingSkill(bool IsSpecialSkill)
+{
+}
+
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();

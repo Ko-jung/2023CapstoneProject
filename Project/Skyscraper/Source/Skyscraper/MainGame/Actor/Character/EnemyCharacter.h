@@ -15,7 +15,9 @@ class SKYSCRAPER_API AEnemyCharacter : public ASkyscraperCharacter
 
 public:
 	AEnemyCharacter();
-	
+	// 2019180016
+	virtual void CastingSkill(bool IsSpecialSkill);
+	// ==========
 
 
 protected:

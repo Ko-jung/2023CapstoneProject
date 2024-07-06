@@ -16,4 +16,8 @@ class SKYSCRAPER_API AAssassinCharacter : public ASkyscraperCharacter
 
 public:
 	AAssassinCharacter();
+
+	// 2019180016
+	virtual void CastingSkill(bool IsSpecialSkill);
+	// ==========
 };

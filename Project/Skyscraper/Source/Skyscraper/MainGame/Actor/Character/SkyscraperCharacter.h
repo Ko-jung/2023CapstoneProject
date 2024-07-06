@@ -132,6 +132,9 @@ public:
 	void RemoveAllInputMappingTemporary();
 	// 현재 사용 가능한 모든 인풋 컨텍스트(디폴트 입력들)를 추가하는 함수
 	void AddAllInputMappingContext();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void CastingSkill(bool IsSpecialSkill) PURE_VIRTUAL(ASkyscraperCharacter::CastingSkill, ;);
 	// ==================
 
 protected:

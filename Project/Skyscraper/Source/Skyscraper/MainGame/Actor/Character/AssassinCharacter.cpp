@@ -27,6 +27,8 @@ AAssassinCharacter::AAssassinCharacter()
 	}
 }
 
-void AAssassinCharacter::CastingSkill(bool IsSpecialSkill)
+void AAssassinCharacter::BuffUsingSkill()
 {
+	SetSpeedBuffValue(1.2f, 10.f);
+	SetPowerBuffValue(1.25f, 10.f);
 }

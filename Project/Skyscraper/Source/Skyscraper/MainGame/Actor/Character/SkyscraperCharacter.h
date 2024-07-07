@@ -134,6 +134,9 @@ public:
 	void AddAllInputMappingContext();
 
 	UFUNCTION(BlueprintCallable)
+	void ChangeMappingContext(bool IsOnlyMouseMode);
+
+	UFUNCTION(BlueprintCallable)
 	//virtual void CastingSkill(bool IsSpecialSkill) PURE_VIRTUAL(ASkyscraperCharacter::CastingSkill, ;);
 	void CastingSkill(bool IsSpecialSkill);
 	UFUNCTION(BlueprintNativeEvent)
@@ -295,5 +298,10 @@ private:
 	// alt(Observe Mode) 중 카메라 회전
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_Observe_Look;
+
+	// =================== 2019180016 ===================
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* OnlyMouseMappingContext;
+	// ==================================================
 };
 

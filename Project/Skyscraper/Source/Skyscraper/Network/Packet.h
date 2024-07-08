@@ -393,4 +393,13 @@ struct PLoginResult : Packet
 	PLoginResult() :Packet(COMP_OP::OP_LOGINRESULT) { PacketSize = sizeof(PLoginResult); }
 };
 
+struct PJoinPlayerInSkillTest : Packet
+{
+	ECharacterSelect PickedCharacter;
+	EMeleeSelect PickedMeleeWeapon;
+	ERangeSelect PickedRangeWeapon;
+	BYTE ClientNum;
+
+	PJoinPlayerInSkillTest() : Packet(COMP_OP::OP_JOINPLAYERINSKILLTEST) { PacketSize = sizeof(PPlayerJoin); }
+};
 #pragma pack(pop)

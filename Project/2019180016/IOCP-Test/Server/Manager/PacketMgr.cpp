@@ -206,6 +206,13 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PFG, sizeof(PFG));
 		break;
 	}
+	case COMP_OP::OP_JOINPLAYERINSKILLTEST:
+	{
+		PJoinPlayerInSkillTest NewPlayer;
+		NewPlayer.ClientNum = id % MAXPLAYER;
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id, &NewPlayer, NewPlayer.PacketSize);
+		break;
+	}
 	default:
 		break;
 	}

@@ -29,7 +29,7 @@ public:
 	virtual void PushQueue(Packet* etc);
 
 	// Called by Gamemode thread
-	virtual void ProcessFunc() {};
+	virtual void ProcessFunc() PURE_VIRTUAL(ANetworkGameMode::ProcessFunc, ;);
 
 	void Send(const Packet* p, const int pSize);
 

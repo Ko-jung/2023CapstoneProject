@@ -8,6 +8,7 @@
 #include "MainRangeComponent.generated.h"
 
 
+class UNiagaraSystem;
 class UMyAmmoWidget;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
@@ -130,6 +131,9 @@ protected:
 		TSubclassOf<UUserWidget> MainRangeWidgetClass;
 	UPROPERTY()
 		UUserWidget* MainRangeWidget;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UNiagaraSystem> NS_MuzzleFlash;
 
 protected:
 	//FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }

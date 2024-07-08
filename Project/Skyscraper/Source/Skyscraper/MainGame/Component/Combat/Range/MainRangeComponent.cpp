@@ -7,6 +7,8 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "PlayMontageCallbackProxy.h"
 #include "Components/InputComponent.h"
 
@@ -69,6 +71,13 @@ UMainRangeComponent::UMainRangeComponent()
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MainRangeWidgetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Combat/Range/MainRangeWidget.MainRangeWidget_C'"));
 		MainRangeWidgetClass = WBP_MainRangeWidgetRef.Class;
 	}
+
+	
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_MuzzleFlashRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/MuzzleFlash/NS_MuzzleFlash.NS_MuzzleFlash'"));
+		NS_MuzzleFlash = NS_MuzzleFlashRef.Object;
+	}
+	
 }
 
 
@@ -278,6 +287,16 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 					}
 				}
 			}
+		}
+
+		// Muzzle Flash Effect
+		if (NS_MuzzleFlash)
+		{
+			//FVector FireLocation = WeaponMeshComponent->GetSocketLocation(TEXT("FireSocket"));
+			//
+			//UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MuzzleFlash,, GetActorRotation(), GetActorScale() * 5);
+
+
 		}
 	}
 

@@ -105,7 +105,8 @@ public:
 	bool CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon);
 
 	void SwapWeapon(ESwapWeapon WeaponType);
-
+	
+	UFUNCTION(BlueprintCallable)
 	void SendAnimMontageStatus(ECharacterAnimMontage eMontage, int Section);
 
 	// == Stun / Down

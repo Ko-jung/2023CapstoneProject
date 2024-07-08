@@ -4,7 +4,6 @@
 #include "SkillSyncTestGameMode.h"
 #include "NetworkManager.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
-
 void ASkillSyncTestGameMode::BeginPlay()
 {
 	Super::BeginPlay();

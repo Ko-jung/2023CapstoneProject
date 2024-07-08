@@ -212,8 +212,13 @@ void UJetpackComponent::DashFast()
 {
 	if(JetpackFuel >0.0f)
 	{
+		if(!bIsDashing)
+		{
+			bIsDashing = true;
+			OwnerCharacter->SetDashEffectHiddenInGame(false);
+		}
 		SetHoveringMode(true);
-		bIsDashing = true;
+		
 		SetCharacterMaxSpeed();
 		SetFuel(JetpackFuel - GetWorld()->GetDeltaSeconds() * DashGaugePerSec);
 	}
@@ -226,7 +231,7 @@ void UJetpackComponent::DashFast()
 void UJetpackComponent::DashStop()
 {
 	ToGlidingSpeed();
-
+	OwnerCharacter->SetDashEffectHiddenInGame(true);
 	bIsDashing = false;
 	SetCharacterMaxSpeed();
 	//GetOwnerCharacterMovement()->Velocity = ClampToMaxWalkSpeed(GetOwnerCharacterMovement()->Velocity);

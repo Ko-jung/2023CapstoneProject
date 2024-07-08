@@ -16,6 +16,7 @@
 #include "Skyscraper/MainGame/Animation/SkyscraperAnimInstance.h"
 #include "SkyscraperCharacter.generated.h"
 
+class UNiagaraComponent;
 class ASkyscraperPlayerController;
 class USkyscraperAnimInstance;
 class UJetpackComponent;
@@ -96,6 +97,9 @@ public:
 	FORCEINLINE UStaticMesh* GetSkirtStaticMesh()const { return SkirtStaticMesh; }
 	FORCEINLINE UMaterial* GetSkirtMaterial() const { return SkirtMaterial; }
 	FORCEINLINE float GetSkirtMaterialValue() const { return SkirtMaterialValue; }
+
+	UFUNCTION()
+		void SetDashEffectHiddenInGame(bool NewHidden) const;
 
 	// 2019180016
 public:
@@ -211,6 +215,9 @@ protected:
 		UMaterial* SkirtMaterial;
 	UPROPERTY(EditAnywhere, Category = "Skirt")
 		float SkirtMaterialValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+		TObjectPtr<UNiagaraComponent> NS_DashEffect;
 
 private:
 	/** Camera boom positioning the camera behind the character */

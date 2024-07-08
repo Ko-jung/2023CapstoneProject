@@ -143,7 +143,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		if (p->PacketSize == 0)
 		{
 			cout << "[" << c->ClientNum << "] Recv PacketSize : 0" << endl;
-			ClientMgr::Instance()->Disconnect(c->ClientNum);
+			ClientMgr::Instance()->Init(c->ClientNum);
 		}
 		else
 		{

@@ -17,9 +17,19 @@ void ClientMgr::Disconnect(int id)
 {
 	if (id < 0) return;		// INIT이 호출되어 id가 -1이 될 경우가 있음
 
-	PDisconnect PD;
-	m_Clients[id]->SendProcess(PD.PacketSize, &PD);
+	m_Clients[id]->Init();
+	m_iClientCount--;
 
+	//PDisconnect PD;
+	//m_Clients[id]->SendProcess(PD.PacketSize, &PD);
+
+	// Process On ClientMgr::Init()
+	//m_Clients[id]->Init();
+	//m_iClientCount--;
+}
+
+void ClientMgr::Init(int id)
+{
 	m_Clients[id]->Init();
 	m_iClientCount--;
 }

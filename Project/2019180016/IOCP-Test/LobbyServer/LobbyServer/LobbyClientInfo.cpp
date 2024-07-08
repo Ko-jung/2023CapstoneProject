@@ -6,6 +6,7 @@ LobbyClientInfo::LobbyClientInfo(int ClientNum) :
 	RemainDataLen(0),
 	ClientNum(ClientNum)
 {
+	ClientSocket = INVALID_SOCKET;
 	ZeroMemory(&Exp, sizeof(Exp));
 }
 

@@ -14,6 +14,7 @@ public:
 	ClientMgr();
 
 	void Disconnect(int SerialNum);
+	void Init(int id);
 	void Recv(int id, const DWORD& bytes, EXP_OVER* exp);
 	void Send(int id, Packet* p, int size);
 

@@ -9,9 +9,12 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Net/RepLayout.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Jetpack/JetpackGaugeBar.h"
@@ -64,6 +67,11 @@ UJetpackComponent::UJetpackComponent()
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_JetpackClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Jetpack/WBP_JetpackGaugeBar.WBP_JetpackGaugeBar_C'"));
 		JetpackWidgetClass = WBP_JetpackClass.Class;
 	}
+
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_LandDustRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/LandDust/NS_LandDust.NS_LandDust'"));
+		NS_LandDust = NS_LandDustRef.Object;
+	}
 }
 
 
@@ -72,6 +80,8 @@ UJetpackComponent::UJetpackComponent()
 void UJetpackComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetComponentTickInterval(0.1f);
 
 	{ // == Get Owner Character
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
@@ -88,7 +98,38 @@ void UJetpackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if(OwnerCharacter->GetIsHover())
+	{
+		static float TriggerDistance = 150.0f;
+		
+		FVector Start = OwnerCharacter->GetActorLocation() - FVector(0.0f, 0.0f, 75.0f);
+		FVector End = Start - FVector(0.0f, 0.0f, TriggerDistance);
+
+		TArray<AActor*> IgnoreActors;
+		IgnoreActors.Add(OwnerCharacter);
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+		ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel2));
+
+		EDrawDebugTrace::Type DrawDebugType{EDrawDebugTrace::ForDuration};
+
+		FHitResult OutHit{};
+		bool HitResult = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true, IgnoreActors, DrawDebugType, OutHit, true, FLinearColor::Red, FLinearColor::Blue, 5.0f);
+
+
+		if (HitResult)
+		{
+			if(NS_LandDust)
+			{
+				UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					GetWorld(), NS_LandDust,
+					OutHit.Location + FVector(0.0f,0.0f,10.0f),
+					FRotator{0.0f,0.0f,0.0f},
+					FVector(1));
+
+			}
+			
+		}
+	}
 }
 
 void UJetpackComponent::OnLandJetpack()

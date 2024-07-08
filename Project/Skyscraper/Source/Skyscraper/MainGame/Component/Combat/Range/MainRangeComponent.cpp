@@ -337,7 +337,6 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 
 			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MuzzleFlash, FireLocation, (TargetLocation - FireLocation).Rotation(), FVector{ 1.0f,1.0f,1.0f });
 			float Distance = FVector::Distance(FireLocation, TargetLocation);
-			UE_LOG(LogTemp, Warning, TEXT("Distance : %f"), Distance);
 			FX->SetVariableFloat(FName("Distance"), Distance);
 
 		}

@@ -85,6 +85,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 		FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 		FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+		DefaultFOV = 90.0f;
+		DashFOV = 120.0f;
 	}
 
 	// Dash Effect Niagara System
@@ -281,6 +284,11 @@ UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharac
 	return *CharacterAnimMontages.Find(eCharacterAnimMontage);
 }
 
+void ASkyscraperCharacter::SetIsHover(bool NewIsHover)
+{
+	bIsHover = NewIsHover;
+}
+
 
 void ASkyscraperCharacter::SetDashEffectHiddenInGame(bool NewHidden) const
 {
@@ -289,6 +297,19 @@ void ASkyscraperCharacter::SetDashEffectHiddenInGame(bool NewHidden) const
 		NS_DashEffect->SetHiddenInGame(NewHidden);
 	}
 	
+}
+
+void ASkyscraperCharacter::SetCameraFOVToDash(bool bToDash, float Alpha)
+{
+	if(bToDash)
+	{
+		
+		FollowCamera->SetFieldOfView(FMath::Lerp(DefaultFOV, DashFOV, Alpha));
+	}
+	else
+	{
+		FollowCamera->SetFieldOfView(FMath::Lerp(DashFOV, DefaultFOV, Alpha));
+	}
 }
 
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)

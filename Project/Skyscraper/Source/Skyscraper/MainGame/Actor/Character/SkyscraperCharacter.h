@@ -58,7 +58,7 @@ public:
 	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
 
 	// bIsHover 값 setter / getter
-	FORCEINLINE void SetIsHover(bool NewIsHover) { bIsHover = NewIsHover; }
+	void SetIsHover(bool NewIsHover);
 	FORCEINLINE bool GetIsHover() const { return bIsHover; }
 
 	// 캐릭터 기본 걷기 최대 속도 반환 함수
@@ -100,6 +100,9 @@ public:
 
 	UFUNCTION()
 		void SetDashEffectHiddenInGame(bool NewHidden) const;
+
+	UFUNCTION()
+		void SetCameraFOVToDash(bool bToDash, float Alpha = 1.0f);
 
 	// 2019180016
 public:
@@ -198,6 +201,11 @@ public:
 		UJetpackComponent* JetpackComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		ULiquidWetComponent* LiquidWetComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FOV")
+		float DefaultFOV;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FOV")
+		float DashFOV;
 
 protected:
 	UPROPERTY()

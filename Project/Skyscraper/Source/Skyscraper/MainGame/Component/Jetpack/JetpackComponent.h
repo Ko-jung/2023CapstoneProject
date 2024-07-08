@@ -147,6 +147,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TObjectPtr<UNiagaraSystem> NS_LandDust;
 
+	UPROPERTY(VisibleAnywhere)
+		bool bChangeCameraFOV;
+	UPROPERTY(VisibleAnywhere)
+		bool bStartDash;
+	UPROPERTY(VisibleAnywhere)
+		float ChangeFOVAlpha;
+
+	UPROPERTY(VisibleAnywhere)
+		double LastCreateLandDustTime;
+
 protected:
 	UFUNCTION()
 	FORCEINLINE UCharacterMovementComponent* GetOwnerCharacterMovement() const { return OwnerCharacter->GetCharacterMovement(); }

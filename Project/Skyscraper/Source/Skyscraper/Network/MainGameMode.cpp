@@ -639,7 +639,7 @@ int AMainGameMode::GetWindowsIndex(const UPrimitiveComponent* Target)
 
 void AMainGameMode::SendPlayerLocation()
 {
-	if (!Characters[SerialNum]) return;
+	if (!Characters.IsValidIndex(SerialNum) || !Characters[SerialNum]) return;
 
 	FVector location = Characters[SerialNum]->GetActorLocation();
 	FRotator rotate = Characters[SerialNum]->GetActorRotation();

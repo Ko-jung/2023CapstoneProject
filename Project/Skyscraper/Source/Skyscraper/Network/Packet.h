@@ -400,6 +400,6 @@ struct PJoinPlayerInSkillTest : Packet
 	ERangeSelect PickedRangeWeapon;
 	BYTE ClientNum;
 
-	PJoinPlayerInSkillTest() : Packet(COMP_OP::OP_JOINPLAYERINSKILLTEST) { PacketSize = sizeof(PPlayerJoin); }
+	PJoinPlayerInSkillTest() : Packet(COMP_OP::OP_JOINPLAYERINSKILLTEST) { PacketSize = sizeof(PJoinPlayerInSkillTest); }
 };
 #pragma pack(pop)

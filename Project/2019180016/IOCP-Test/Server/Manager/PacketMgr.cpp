@@ -210,7 +210,8 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 	{
 		PJoinPlayerInSkillTest NewPlayer;
 		NewPlayer.ClientNum = id % MAXPLAYER;
-		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id, &NewPlayer, NewPlayer.PacketSize);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / MAXPLAYER, &NewPlayer, NewPlayer.PacketSize);
+		ClientMgr::Instance()->SendOldPlayerList(id);
 		break;
 	}
 	default:

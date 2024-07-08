@@ -29,6 +29,7 @@ public:
 
 	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
 	void SendPacketToAllExceptSelf(int id, Packet* p, int packetSize);
+	void SendOldPlayerList(int id);
 
 	ClientInfo* GetEmptyClient();
 	ClientInfo* GetEmptyClient(int& clientNum);

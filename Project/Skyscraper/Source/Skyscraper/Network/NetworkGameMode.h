@@ -9,7 +9,7 @@
 #include <concurrent_queue.h>
 #include <atomic>
 
-#define MAXPLAYER 6
+#define MAXPLAYER 2
 
 #include "NetworkGameMode.generated.h"
 /**
@@ -29,7 +29,7 @@ public:
 	virtual void PushQueue(Packet* etc);
 
 	// Called by Gamemode thread
-	virtual void ProcessFunc() {};
+	virtual void ProcessFunc() PURE_VIRTUAL(ANetworkGameMode::ProcessFunc, ;);
 
 	void Send(const Packet* p, const int pSize);
 

@@ -18,6 +18,7 @@ public:
 	AAssassinCharacter();
 
 	// 2019180016
-	virtual void CastingSkill(bool IsSpecialSkill);
+	UFUNCTION(BlueprintCallable)
+	void BuffUsingSkill();
 	// ==========
 };

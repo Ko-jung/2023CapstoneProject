@@ -143,7 +143,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		if (p->PacketSize == 0)
 		{
 			cout << "[" << c->ClientNum << "] Recv PacketSize : 0" << endl;
-			ClientMgr::Instance()->Disconnect(c->ClientNum);
+			ClientMgr::Instance()->Init(c->ClientNum);
 		}
 		else
 		{
@@ -204,6 +204,14 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 		int RoomNum = id / MAXPLAYER;
 		PFinishGame PFG;
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PFG, sizeof(PFG));
+		break;
+	}
+	case COMP_OP::OP_JOINPLAYERINSKILLTEST:
+	{
+		PJoinPlayerInSkillTest NewPlayer;
+		NewPlayer.ClientNum = id % MAXPLAYER;
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / MAXPLAYER, &NewPlayer, NewPlayer.PacketSize);
+		ClientMgr::Instance()->SendOldPlayerList(id);
 		break;
 	}
 	default:

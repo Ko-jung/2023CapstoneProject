@@ -17,9 +17,20 @@ void ClientMgr::Disconnect(int id)
 {
 	if (id < 0) return;		// INIT이 호출되어 id가 -1이 될 경우가 있음
 
-	PDisconnect PD;
-	m_Clients[id]->SendProcess(PD.PacketSize, &PD);
+	cout << "[" << id << "] Disconnect\n";
+	m_Clients[id]->Init();
+	m_iClientCount--;
 
+	//PDisconnect PD;
+	//m_Clients[id]->SendProcess(PD.PacketSize, &PD);
+
+	// Process On ClientMgr::Init()
+	//m_Clients[id]->Init();
+	//m_iClientCount--;
+}
+
+void ClientMgr::Init(int id)
+{
 	m_Clients[id]->Init();
 	m_iClientCount--;
 }
@@ -83,6 +94,20 @@ void ClientMgr::SendPacketToAllExceptSelf(int id, Packet* p, int packetSize)
 			|| RoomNum * MAXPLAYER + i == id) continue;
 
 		m_Clients[RoomNum * MAXPLAYER + i]->SendProcess(packetSize, p);
+	}
+}
+
+void ClientMgr::SendOldPlayerList(int id)
+{
+	int RoomNum = id / MAXPLAYER;
+	PJoinPlayerInSkillTest NewPlayer;
+	for (int i = 0; i < MAXPLAYER; i++)
+	{
+		if (m_Clients[RoomNum * MAXPLAYER + i]->GetSocket() == INVALID_SOCKET
+			|| RoomNum * MAXPLAYER + i == id) continue;
+
+		NewPlayer.ClientNum = i;
+		m_Clients[id]->SendProcess(NewPlayer.PacketSize, &NewPlayer);
 	}
 }
 

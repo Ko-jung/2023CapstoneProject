@@ -3,6 +3,7 @@
 
 #include "SocketGameInstance.h"
 #include "Packet.h"
+#include "Skyscraper/Network/NetworkGameMode.h"
 
 
 void USocketGameInstance::Init()
@@ -35,10 +36,10 @@ void USocketGameInstance::Init()
 	}
 	else
 	{
-			for (int i = 0; i < 6; i++)
-			{
-				SelectInfo.Add(new PPlayerSelectInfo());
-			}
+		for (int i = 0; i < MAXPLAYER; i++)
+		{
+			SelectInfo.Add(new PPlayerSelectInfo());
+		}
 	}
 }
 

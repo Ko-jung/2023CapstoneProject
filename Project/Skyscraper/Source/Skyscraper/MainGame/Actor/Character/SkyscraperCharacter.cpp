@@ -132,6 +132,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_DefaultAsset(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Default/IMC_Default.IMC_Default'"));
 		DefaultMappingContext = IMC_DefaultAsset.Object;
 
+		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_OnlyMouseAsset(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180016/Input/IMC_OnlyMouse.IMC_OnlyMouse'"));
+		OnlyMouseMappingContext = IMC_OnlyMouseAsset.Object;
+
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_MoveAsset(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Default/IA_GameDefaultMove.IA_GameDefaultMove'"));
 		MoveAction = IA_MoveAsset.Object;
 
@@ -226,6 +229,8 @@ void ASkyscraperCharacter::BeginPlay()
 
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	MainGameMode = Cast<AMainGameMode>(gamemode);
+	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::BeginPlay() Cast<AMainGameMode>(gamemode) result: %d"), MainGameMode ? 1 : 0);
+
 }
 
 void ASkyscraperCharacter::Landed(const FHitResult& Hit)
@@ -445,8 +450,16 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
 
 void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum)
 {
-	const auto& AnimMontage = *CharacterAnimMontages.Find(eAnimMontage);
-	PlayAnimMontage(AnimMontage, 1.f, AnimMontage->GetSectionName(SectionNum));
+	const auto AnimMontage = CharacterAnimMontages.Find(eAnimMontage);
+	if (AnimMontage)
+	{
+		PlayAnimMontage(*AnimMontage, 1.f, (*AnimMontage)->GetSectionName(SectionNum));
+	}
+	else
+	{	// Play Montage On Blueprint
+		CastingSkill(eAnimMontage == ECharacterAnimMontage::ECAM_SpecialSkill);
+		UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::SetMontage() play Skill Montage"));
+	}
 }
 
 void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime)
@@ -612,14 +625,43 @@ void ASkyscraperCharacter::AddAllInputMappingContext()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 			if (CombatSystemComponent) CombatSystemComponent->AddAllInputMappingContext(Subsystem);
 			if (JetpackComponent) JetpackComponent->AddInputMappingContext();
-
 		}
 	}
+}
+
+void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)
+{
+	//if (IsOnlyMouseMode)
+	//{
+	//	RemoveAllInputMappingTemporary(false);
+	//	AddAllInputMappingContext(true);
+	//}
+	//else
+	//{
+	//	RemoveAllInputMappingTemporary(true);
+	//	AddAllInputMappingContext(false);
+	//}
 }
 
 void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 {
 	ActiveSkill(IsSpecialSkill);
+}
+
+bool ASkyscraperCharacter::IsAlliance(AActor* Target)
+{
+	const auto& TargetTags = Target->Tags;
+	const auto& MyTags = Tags;
+
+	// Check Target Is Self
+	if (this == Target) return true;
+
+	// If has no Tag, is Enemy
+	if (!TargetTags.IsValidIndex(0) || !MyTags.IsValidIndex(0)) return false;
+
+	// Check Alliance
+	if (TargetTags[0] == MyTags[0]) return true;
+	return false;
 }
 
 void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)

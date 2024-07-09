@@ -90,7 +90,7 @@ public:
 	 UFUNCTION(Exec)
 	 void RequestFinishGame();
 
-private:
+protected:
 	TArray<ASkyscraperCharacter*> Characters;
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
 

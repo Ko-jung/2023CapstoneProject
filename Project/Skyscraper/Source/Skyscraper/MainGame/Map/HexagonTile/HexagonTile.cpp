@@ -550,7 +550,7 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 void AHexagonTile::Init()
 {	
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-	if(!GameMode->GetIsConnected())
+	if(!GameMode || !GameMode->GetIsConnected())
 		InitialSettings();
 }
 

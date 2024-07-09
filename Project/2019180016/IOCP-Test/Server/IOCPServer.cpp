@@ -142,9 +142,9 @@ void IOCPServer::Worker()
 			cout << "[" << client_id << "] GQCS Error : ";
 			LogUtil::error_display(err_no);
 			cout << endl;
-			//Disconnect(client_id);
-			//if (exp_over->_comp_op == COMP_OP::OP_SEND)
-			//	delete exp_over;
+			ClientMgr::Instance()->Disconnect(client_id);
+			if (exp_over->_comp_op == COMP_OP::OP_SEND)
+				delete exp_over;
 			continue;
 		}
 

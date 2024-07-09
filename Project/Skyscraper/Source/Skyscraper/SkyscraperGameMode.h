@@ -33,6 +33,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	double SelectTimer;
 private:
+	// Memory Leak
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
 };
 

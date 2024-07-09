@@ -38,7 +38,7 @@ void ClientInfo::Init()
 		cout << "[" << ClientNum << "] ";
 		LogUtil::error_display("ClientInfo::Init() closesocket Error");
 	}
-	//ClientSocket = INVALID_SOCKET;
+	ClientSocket = INVALID_SOCKET;
 	RemainDataLen = 0;
 	ClientNum = -1;
 	//m_iRoomNum = -1;

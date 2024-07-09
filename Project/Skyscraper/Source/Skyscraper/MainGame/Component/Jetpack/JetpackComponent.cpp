@@ -9,9 +9,12 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Net/RepLayout.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Jetpack/JetpackGaugeBar.h"
@@ -25,6 +28,10 @@ UJetpackComponent::UJetpackComponent()
 
 	MaxJetpackFuel = 1.0f;
 	JetpackFuel = 0.0f;
+	bChangeCameraFOV = false;
+	bStartDash = false;
+	ChangeFOVAlpha = 0.0f;
+	LastCreateLandDustTime = 0.0f;
 
 	bHoverStoping = false;
 	HoveringMaxSpeed = 600.0f;
@@ -64,6 +71,11 @@ UJetpackComponent::UJetpackComponent()
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_JetpackClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Jetpack/WBP_JetpackGaugeBar.WBP_JetpackGaugeBar_C'"));
 		JetpackWidgetClass = WBP_JetpackClass.Class;
 	}
+
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_LandDustRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/LandDust/NS_LandDust.NS_LandDust'"));
+		NS_LandDust = NS_LandDustRef.Object;
+	}
 }
 
 
@@ -88,7 +100,70 @@ void UJetpackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if( (GetWorld()->GetTimeSeconds() - LastCreateLandDustTime) >= 0.25f && OwnerCharacter->GetIsHover())
+	{
+		LastCreateLandDustTime = GetWorld()->GetTimeSeconds();
+
+		static float TriggerDistance = 150.0f;
+		
+		FVector Start = OwnerCharacter->GetActorLocation() - FVector(0.0f, 0.0f, 75.0f);
+		FVector End = Start - FVector(0.0f, 0.0f, TriggerDistance);
+
+		TArray<AActor*> IgnoreActors;
+		IgnoreActors.Add(OwnerCharacter);
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+		ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel2));
+
+		EDrawDebugTrace::Type DrawDebugType{EDrawDebugTrace::ForDuration};
+
+		FHitResult OutHit{};
+		bool HitResult = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true, IgnoreActors, DrawDebugType, OutHit, true, FLinearColor::Red, FLinearColor::Blue, 5.0f);
+
+
+		if (HitResult)
+		{
+			if(NS_LandDust)
+			{
+				UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					GetWorld(), NS_LandDust,
+					OutHit.Location + FVector(0.0f,0.0f,10.0f),
+					FRotator{0.0f,0.0f,0.0f},
+					FVector(1));
+
+			}
+			
+		}
+	}
+
+	// Change FOV
+	{ 
+		if (bChangeCameraFOV)
+		{
+			if(bStartDash)
+			{
+				ChangeFOVAlpha += (DeltaTime * 2.0f);
+			}
+			else
+			{
+				ChangeFOVAlpha += (DeltaTime * 3.0f);
+			}
+			
+			if(ChangeFOVAlpha>=1.0f)
+			{
+				bChangeCameraFOV = false;
+			}
+
+			if(bStartDash)
+			{
+				OwnerCharacter->SetCameraFOVToDash(true, ChangeFOVAlpha);
+			}
+			else
+			{
+				OwnerCharacter->SetCameraFOVToDash(false, ChangeFOVAlpha);
+			}
+		}
+	}
+	
 }
 
 void UJetpackComponent::OnLandJetpack()
@@ -141,7 +216,6 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 		if (!OwnerCharacter->GetIsHover())
 		{
 			OwnerCharacter->SetIsHover(true);
-
 			bIsHovering = true;
 			SetCharacterMaxSpeed();
 			GetOwnerCharacterMovement()->GravityScale = 0.0f;
@@ -212,8 +286,16 @@ void UJetpackComponent::DashFast()
 {
 	if(JetpackFuel >0.0f)
 	{
+		if(!bIsDashing)
+		{
+			bIsDashing = true;
+			bChangeCameraFOV = true;
+			ChangeFOVAlpha = 0.0f;
+			bStartDash = true;			
+			OwnerCharacter->SetDashEffectHiddenInGame(false);
+		}
 		SetHoveringMode(true);
-		bIsDashing = true;
+		
 		SetCharacterMaxSpeed();
 		SetFuel(JetpackFuel - GetWorld()->GetDeltaSeconds() * DashGaugePerSec);
 	}
@@ -226,7 +308,12 @@ void UJetpackComponent::DashFast()
 void UJetpackComponent::DashStop()
 {
 	ToGlidingSpeed();
-
+	OwnerCharacter->SetDashEffectHiddenInGame(true);
+	//OwnerCharacter->SetCameraFOVToDash(false);
+	bChangeCameraFOV = true;
+	ChangeFOVAlpha = 0.0f;
+	bStartDash = false;
+	
 	bIsDashing = false;
 	SetCharacterMaxSpeed();
 	//GetOwnerCharacterMovement()->Velocity = ClampToMaxWalkSpeed(GetOwnerCharacterMovement()->Velocity);

@@ -15,6 +15,7 @@
 #include <MotionWarpingComponent.h>
 
 #include "EnhancedPlayerInput.h"
+#include "NiagaraComponent.h"
 #include "PlayMontageCallbackProxy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Actor/LootingItem/LootingItemActor.h"
@@ -78,13 +79,27 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 85.0f));
 	}
-	
-	
 
 	// Create a follow camera
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	{
+		FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+		FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+		FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+		DefaultFOV = 90.0f;
+		DashFOV = 120.0f;
+	}
+
+	// Dash Effect Niagara System
+	{
+		NS_DashEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_DashEffect"));
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_DashEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/DashEffect/NS_DashEffect.NS_DashEffect'"));
+		NS_DashEffect->SetAsset(NS_DashEffectRef.Object);
+		NS_DashEffect->SetupAttachment(FollowCamera);
+		NS_DashEffect->SetRelativeLocation(FVector{ 120.0f,0.f,0.f });
+		NS_DashEffect->SetRelativeRotation(FRotator{ 90.0f,0.0f,0.0f });
+		NS_DashEffect->SetHiddenInGame(true);
+	}
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -269,6 +284,33 @@ UAnimMontage* ASkyscraperCharacter::GetAnimMontage(ECharacterAnimMontage eCharac
 	return *CharacterAnimMontages.Find(eCharacterAnimMontage);
 }
 
+void ASkyscraperCharacter::SetIsHover(bool NewIsHover)
+{
+	bIsHover = NewIsHover;
+}
+
+
+void ASkyscraperCharacter::SetDashEffectHiddenInGame(bool NewHidden) const
+{
+	if(NS_DashEffect)
+	{
+		NS_DashEffect->SetHiddenInGame(NewHidden);
+	}
+	
+}
+
+void ASkyscraperCharacter::SetCameraFOVToDash(bool bToDash, float Alpha)
+{
+	if(bToDash)
+	{
+		
+		FollowCamera->SetFieldOfView(FMath::Lerp(DefaultFOV, DashFOV, Alpha));
+	}
+	else
+	{
+		FollowCamera->SetFieldOfView(FMath::Lerp(DashFOV, DefaultFOV, Alpha));
+	}
+}
 
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)
 {

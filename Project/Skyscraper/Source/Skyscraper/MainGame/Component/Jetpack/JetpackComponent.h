@@ -7,6 +7,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "JetpackComponent.generated.h"
 
+class UNiagaraSystem;
 class UEnhancedInputLocalPlayerSubsystem;
 class UJetpackGaugeBar;
 
@@ -142,6 +143,19 @@ protected:
 	TSubclassOf<UUserWidget> JetpackWidgetClass;
 	UPROPERTY()
 	UJetpackGaugeBar* JetpackWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TObjectPtr<UNiagaraSystem> NS_LandDust;
+
+	UPROPERTY(VisibleAnywhere)
+		bool bChangeCameraFOV;
+	UPROPERTY(VisibleAnywhere)
+		bool bStartDash;
+	UPROPERTY(VisibleAnywhere)
+		float ChangeFOVAlpha;
+
+	UPROPERTY(VisibleAnywhere)
+		double LastCreateLandDustTime;
 
 protected:
 	UFUNCTION()

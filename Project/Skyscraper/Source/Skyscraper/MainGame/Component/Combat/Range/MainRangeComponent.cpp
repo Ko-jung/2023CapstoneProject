@@ -7,6 +7,8 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "PlayMontageCallbackProxy.h"
 #include "Components/InputComponent.h"
 
@@ -69,6 +71,13 @@ UMainRangeComponent::UMainRangeComponent()
 		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MainRangeWidgetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Combat/Range/MainRangeWidget.MainRangeWidget_C'"));
 		MainRangeWidgetClass = WBP_MainRangeWidgetRef.Class;
 	}
+
+	
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_MuzzleFlashRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/MuzzleFlash/NS_MuzzleFlash.NS_MuzzleFlash'"));
+		NS_MuzzleFlash = NS_MuzzleFlashRef.Object;
+	}
+	
 }
 
 
@@ -235,22 +244,20 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		FVector Start = OwnerCharacter->GetCameraBoom()->GetComponentLocation();
 		FVector End = Start +
 			GetOwnerPlayerController()->GetControlRotation().Vector() * EffectiveDistance;
+		FVector TargetLocation = End;
 		TArray<AActor*> IgnoreActors;
 
 		FHitResult OutHit;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerCharacter);
 
-		// DebugDrawTraceTag is not used in shipping and test builds
-#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
-		GetWorld()->DebugDrawTraceTag = TEXT("DebugTraceTag");
-#endif
-
 		QueryParams.TraceTag = TEXT("DebugTraceTag");
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
 		if (HitResult)
 		{
 			AActor* HitActor = OutHit.GetActor();
+
+			TargetLocation = OutHit.Location;
 
 			// Execute on Sever
 			AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
@@ -279,6 +286,18 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 				}
 			}
 		}
+
+		// Muzzle Flash Effect
+		if (NS_MuzzleFlash)
+		{
+			FVector FireLocation = WeaponMeshComponent->GetSocketLocation(TEXT("FireSocket"));
+			DrawDebugSphere(GetWorld(), TargetLocation, 50.0f, 10.0f, FColor::Black, true, 1.0f, 0, 5);
+			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MuzzleFlash, FireLocation, (TargetLocation - FireLocation).Rotation(), FVector{ 1.0f,1.0f,1.0f });
+			float Distance = FVector::Distance(FireLocation, TargetLocation);
+			UE_LOG(LogTemp, Warning, TEXT("Distance : %f"), Distance);
+			FX->SetVariableFloat(FName("Distance"), Distance);
+
+		}
 	}
 
 	// == Recoil
@@ -294,17 +313,12 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 		FVector Start = OwnerCharacter->GetActorLocation();
 		FVector End = Start +
 						OwnerCharacter->GetActorForwardVector() * 10000.0f;
+		FVector TargetLocation = End;
 		TArray<AActor*> IgnoreActors;
 		FHitResult OutHit;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerCharacter);
 
-		// DebugDrawTraceTag is not used in shipping and test builds
-#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
-		GetWorld()->DebugDrawTraceTag = TEXT("DebugTraceTag");
-#endif
-
-		QueryParams.TraceTag = TEXT("DebugTraceTag");
 		
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn,QueryParams);
 		
@@ -312,7 +326,20 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 		if (HitResult)
 		{
 			AActor* HitActor = OutHit.GetActor();
+			TargetLocation = OutHit.Location;
+
 			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, OwnerCharacter, nullptr);
+
+			// Muzzle Flash Effect
+		if (NS_MuzzleFlash)
+		{
+			FVector FireLocation = WeaponMeshComponent->GetSocketLocation(TEXT("FireSocket"));
+
+			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MuzzleFlash, FireLocation, (TargetLocation - FireLocation).Rotation(), FVector{ 1.0f,1.0f,1.0f });
+			float Distance = FVector::Distance(FireLocation, TargetLocation);
+			FX->SetVariableFloat(FName("Distance"), Distance);
+
+		}
 		}
 	}
 }

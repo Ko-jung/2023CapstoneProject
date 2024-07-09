@@ -142,6 +142,9 @@ public:
 	void CastingSkill(bool IsSpecialSkill);
 	UFUNCTION(BlueprintNativeEvent)
 	void ActiveSkill(bool IsSpecialSkill);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAlliance(AActor* Target);
 	// ==================
 
 protected:

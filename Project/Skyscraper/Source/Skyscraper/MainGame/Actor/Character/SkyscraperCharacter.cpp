@@ -408,8 +408,16 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
 
 void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum)
 {
-	const auto& AnimMontage = *CharacterAnimMontages.Find(eAnimMontage);
-	PlayAnimMontage(AnimMontage, 1.f, AnimMontage->GetSectionName(SectionNum));
+	const auto AnimMontage = CharacterAnimMontages.Find(eAnimMontage);
+	if (AnimMontage)
+	{
+		PlayAnimMontage(*AnimMontage, 1.f, (*AnimMontage)->GetSectionName(SectionNum));
+	}
+	else
+	{	// Play Montage On Blueprint
+		CastingSkill(eAnimMontage == ECharacterAnimMontage::ECAM_SpecialSkill);
+		UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::SetMontage() play Skill Montage"));
+	}
 }
 
 void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime)
@@ -596,6 +604,19 @@ void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)
 void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 {
 	ActiveSkill(IsSpecialSkill);
+}
+
+bool ASkyscraperCharacter::IsAlliance(AActor* Target)
+{
+	const auto& TargetTags = Target->Tags;
+	const auto& MyTags = Tags;
+
+	// If has no Tag, is Enemy
+	if (!TargetTags.IsValidIndex(0) || !MyTags.IsValidIndex(0)) return false;
+
+	// Check Alliance
+	if (TargetTags[0] == MyTags[0]) return true;
+	return false;
 }
 
 void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)

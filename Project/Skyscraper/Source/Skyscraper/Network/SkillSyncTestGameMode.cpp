@@ -15,6 +15,10 @@ void ASkillSyncTestGameMode::BeginPlay()
 	Characters.Init(nullptr, MAXPLAYER);
 	PlayerSelectInfo.Init(nullptr, MAXPLAYER);
 
+	// Define Team Name
+	TeamName[(int)ETEAM::A] = FName("TeamA");
+	TeamName[(int)ETEAM::B] = FName("TeamB");
+
 	PRequestPacket JoinRequest(COMP_OP::OP_JOINPLAYERINSKILLTEST);
 	Send(&JoinRequest, JoinRequest.PacketSize);
 }

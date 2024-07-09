@@ -63,11 +63,6 @@ void ClientInfo::Recv()
 			LogUtil::error_display(error_num);
 		}
 	}
-
-	if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
-	{
-		LogUtil::error_display("ClientInfo::Recv() ERROR");
-	}
 }
 
 bool ClientInfo::TakeDamage(float damage)

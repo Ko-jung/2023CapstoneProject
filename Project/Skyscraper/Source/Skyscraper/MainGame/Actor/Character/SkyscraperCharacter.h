@@ -147,8 +147,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	//virtual void CastingSkill(bool IsSpecialSkill) PURE_VIRTUAL(ASkyscraperCharacter::CastingSkill, ;);
 	void CastingSkill(bool IsSpecialSkill);
+
 	UFUNCTION(BlueprintNativeEvent)
 	void ActiveSkill(bool IsSpecialSkill);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void PlaySkillMontage(bool IsSpecialSkill);
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlliance(AActor* Target);

@@ -91,7 +91,11 @@ void ClientMgr::SendPacketToAllExceptSelf(int id, Packet* p, int packetSize)
 	for (int i = 0; i < MAXPLAYER; i++)
 	{
 		if (m_Clients[RoomNum * MAXPLAYER + i]->GetSocket() == INVALID_SOCKET
-			|| RoomNum * MAXPLAYER + i == id) continue;
+			//|| m_Clients[RoomNum * MAXPLAYER + i]->ClientNum == -1
+			|| RoomNum * MAXPLAYER + i == id)
+		{
+			continue;
+		}
 
 		m_Clients[RoomNum * MAXPLAYER + i]->SendProcess(packetSize, p);
 	}

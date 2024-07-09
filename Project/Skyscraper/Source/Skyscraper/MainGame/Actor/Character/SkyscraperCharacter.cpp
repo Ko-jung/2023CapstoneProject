@@ -611,6 +611,9 @@ bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 	const auto& TargetTags = Target->Tags;
 	const auto& MyTags = Tags;
 
+	// Check Target Is Self
+	if (this == Target) return true;
+
 	// If has no Tag, is Enemy
 	if (!TargetTags.IsValidIndex(0) || !MyTags.IsValidIndex(0)) return false;
 

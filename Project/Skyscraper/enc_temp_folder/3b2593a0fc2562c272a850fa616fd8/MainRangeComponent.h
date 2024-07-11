@@ -132,12 +132,8 @@ protected:
 	UPROPERTY()
 		UUserWidget* MainRangeWidget;
 
-	// Muzzle Flash 이펙트
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UNiagaraSystem> NS_MuzzleFlash;
-
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AActor> BP_BloodSpawner;
 
 protected:
 	//FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }

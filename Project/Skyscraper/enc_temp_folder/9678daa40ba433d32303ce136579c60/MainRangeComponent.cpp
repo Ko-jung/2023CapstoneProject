@@ -72,23 +72,12 @@ UMainRangeComponent::UMainRangeComponent()
 		MainRangeWidgetClass = WBP_MainRangeWidgetRef.Class;
 	}
 
-	// Muzzle Flash 이펙트 로드
+	
 	{
 		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_MuzzleFlashRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/MuzzleFlash/NS_MuzzleFlash.NS_MuzzleFlash'"));
-		if(NS_MuzzleFlashRef.Succeeded())
-		{
-			NS_MuzzleFlash = NS_MuzzleFlashRef.Object;
-		}
+		NS_MuzzleFlash = NS_MuzzleFlashRef.Object;
 	}
-
-	// BloodSpawner 로드
-	{
-		static ConstructorHelpers::FClassFinder<AActor> BP_BloodSpawnerRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/BloodSpawner/BP_Blood_Drops.BP_Blood_Drops_C'"));
-		if(BP_BloodSpawnerRef.Succeeded())
-		{
-			BP_BloodSpawner = BP_BloodSpawnerRef.Class;
-		}
-	}
+	
 }
 
 
@@ -261,8 +250,8 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		FHitResult OutHit;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerCharacter);
-		//QueryParams.TraceTag = TEXT("DebugTraceTag");
 
+		QueryParams.TraceTag = TEXT("DebugTraceTag");
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
 		if (HitResult)
 		{
@@ -296,17 +285,6 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 					}
 				}
 			}
-
-			// BloodSpawner 생성
-			{
-				FTransform Transform{ OutHit.Normal.Rotation().Quaternion(), OutHit.Location};
-				AActor* BloodSpawner = GetWorld()->SpawnActorDeferred<AActor>(BP_BloodSpawner, Transform);
-				if(BloodSpawner)
-				{
-					BloodSpawner->FinishSpawning(Transform);
-				}
-			}
-			
 		}
 
 		// Muzzle Flash Effect

@@ -313,7 +313,6 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		if (NS_MuzzleFlash)
 		{
 			FVector FireLocation = WeaponMeshComponent->GetSocketLocation(TEXT("FireSocket"));
-			DrawDebugSphere(GetWorld(), TargetLocation, 50.0f, 10.0f, FColor::Black, true, 1.0f, 0, 5);
 			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MuzzleFlash, FireLocation, (TargetLocation - FireLocation).Rotation(), FVector{ 1.0f,1.0f,1.0f });
 			float Distance = FVector::Distance(FireLocation, TargetLocation);
 			UE_LOG(LogTemp, Warning, TEXT("Distance : %f"), Distance);

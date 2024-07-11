@@ -320,7 +320,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		{
 			//PrimitiveComponent->DestroyComponent();
 			if(GameMode)
-			 	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EBreakType::Window);
+			 	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EObjectType::Window);
 			continue;
 		}
 

@@ -138,6 +138,14 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PBO, sizeof(PBO));
 		break;
 	}
+	case (int)COMP_OP::OP_RELOCATEOBJECT:
+	{
+		PRelocateObject PRO;
+		MEMCPYBUFTOPACKET(PRO);
+		PRO.ObjectSerial = RoomMgr::Instance()->GetNowSkillActorSerial(c->GetClientNum() / MAXPLAYER);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PRO, sizeof(PRO));
+		break;
+	}
 	default:
 	{
 		if (p->PacketSize == 0)

@@ -43,6 +43,7 @@ public:
 	void ProcessUseItem(PUseItem PUI);
 	void ProcessGetItem(PGetItem PGI);
 	void ProcessBreakObject(PBreakObject PBO);
+	void ProcessRelocateObject(PRelocateObject PRO);
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();
@@ -55,10 +56,12 @@ public:
 	void SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section);
 	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
 	void SendGetItem(const AActor* Sender, const AActor* Item);
-	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType);
+	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EObjectType BreakType);
 	bool SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
 	
+	UFUNCTION(BlueprintCallable)
+	void SendRelocateSkillActor(AActor* TargetActor);
 
 	int GetIndex(const AActor* target);
 
@@ -93,6 +96,9 @@ public:
 protected:
 	TArray<ASkyscraperCharacter*> Characters;
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
+
+	TMap<WORD, AActor*> SkillActors;
+	WORD SkillActorSerialNum;
 
 	class AHexagonTile* HexagonTile;
 

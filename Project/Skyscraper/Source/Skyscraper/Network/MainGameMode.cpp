@@ -38,6 +38,8 @@ void AMainGameMode::BeginPlay()
 {
 	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
 
+	SkillActorSerialNum = 0;
+
 	GetHexagonTileOnLevel();
 
 	Super::BeginPlay();
@@ -573,6 +575,22 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 	//TargetObject->DestroyComponent();
 }
 
+void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
+{
+	if (AActor** ppTarget = SkillActors.Find(PRO.ObjectSerial))
+	{
+		AActor* SkillActor = *ppTarget;
+		SkillActor->SetActorLocation(FVector{ PRO.Location.X,PRO.Location.Y,PRO.Location.Z });
+		SkillActor->SetActorRotation(FRotator{ PRO.Rotation.X,PRO.Rotation.Y,PRO.Rotation.Z });
+
+
+	}
+	else
+	{
+		UE_LOG(LogClass, Warning, TEXT("SkillActors Key<%d> Can't FIND!"), PRO.ObjectSerial);
+	}
+}
+
 void AMainGameMode::GetHexagonTileOnLevel()
 {
 	AHexagonTile* Hexagon = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
@@ -741,6 +759,17 @@ bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 	return true;
 }
 
+void AMainGameMode::SendRelocateSkillActor(AActor* TargetActor)
+{
+	// 서버 딜레이로 Serial 번호가 갈릴수도있음
+	// 일단 배제
+	
+	//PRelocateObject PRO;
+	//PRO.
+
+	SkillActors.Add({SkillActorSerialNum++, TargetActor});
+}
+
 void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)
 {
 	int TargetSerialNum = GetIndex(Target);
@@ -773,7 +802,7 @@ void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 	m_Socket->Send(&PGI, sizeof(PGI));
 }
    
-void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType)
+void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EObjectType BreakType)
 {
 	FVector Direction = (BreakTarget->GetComponentLocation() - Sender->GetActorLocation()).GetSafeNormal();
 

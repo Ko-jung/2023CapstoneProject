@@ -50,6 +50,7 @@ public:
 	void AddKillCount(bool IsTeamA);
 	void SetStartTime();
 	int IsEndGame();
+	const WORD GetSkillActorSerialAndIncrease() { return SkillActorSerial++; }
 
 	// 타일드랍 3단계부터 스폰불가, 팀 전체가 죽어있는지 판단
 	int CharacterDead(int SerialNum);
@@ -70,6 +71,7 @@ private:
 	int TileDropLevel;
 	std::chrono::system_clock::time_point RoomStartTime;
 	int ItemSerial;
+	std::atomic<WORD> SkillActorSerial;
 
 	TileProperty* PrevCenterTile;
 

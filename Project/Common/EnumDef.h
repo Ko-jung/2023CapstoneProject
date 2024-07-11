@@ -11,6 +11,8 @@ enum class COMP_OP : BYTE
 	OP_STARTMATCHING,
 	OP_CANCLEMATCHING,
 	OP_CONNECTTOGAMESERVER,
+	OP_TRYLOGIN,			// Using with REGISTER
+	OP_LOGINRESULT,
 
 	// Select
 	OP_STARTGAME,
@@ -37,8 +39,7 @@ enum class COMP_OP : BYTE
 	OP_REQUESTPACKET,
 	OP_FINISHGAME,
 	OP_BREAKOBJECT,
-	OP_TRYLOGIN,			// Using with REGISTER
-	OP_LOGINRESULT,
+	OP_RELOCATEOBJECT,	// 30
 
 	// Skill Sync
 	OP_JOINPLAYERINSKILLTEST,
@@ -158,9 +159,11 @@ enum class EItemRareLevel : BYTE
 	COUNT
 };
 
-enum class EBreakType : BYTE
+enum class EObjectType : BYTE
 {
 	Window,
+
+	SkillActor,
 };
 
 enum class ELoginResult : char

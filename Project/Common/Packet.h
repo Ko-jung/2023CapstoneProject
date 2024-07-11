@@ -320,13 +320,24 @@ struct PRequestPacket : Packet
 
 struct PBreakObject : Packet
 {
-	EBreakType ObjectType;
+	EObjectType ObjectType;
 	WORD ObjectSerial;
 	PVector Direction;
 
-	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EBreakType::Window), ObjectSerial(0), Direction(PVector()) { PacketSize = sizeof(PBreakObject); }
-	PBreakObject(EBreakType type, WORD WindowSerial, PVector Direction) :
+	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EObjectType::Window), ObjectSerial(0), Direction(PVector()) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject(EObjectType type, WORD WindowSerial, PVector Direction) :
 		Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial), Direction(Direction) {	PacketSize = sizeof(PBreakObject);	}
+};
+
+struct PRelocateObject : Packet
+{
+	EObjectType ObjectType;
+	WORD ObjectSerial;
+	PVector Location;
+	PVector Rotation;
+
+	PRelocateObject() : Packet(COMP_OP::OP_RELOCATEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0), Location(PVector()), Rotation(PVector())
+	{ PacketSize = sizeof(PRelocateObject); }
 };
 
 struct PTryLogin : Packet

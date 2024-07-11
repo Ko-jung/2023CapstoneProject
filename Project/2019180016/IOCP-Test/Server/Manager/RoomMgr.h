@@ -31,6 +31,7 @@ public:
 	int GetTileDropLevel(int roomId);
 	float GetRoomElapsedTime(int roomId);
 	int GetTileDropCenterIndex(const int roomId, int& CenterIndex);
+	const WORD GetNowSkillActorSerial(int RoomId);
 
 	void RequestSendItemSpawn(int roomId);
 

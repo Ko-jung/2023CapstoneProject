@@ -70,7 +70,7 @@ void ULiquidWetComponent::BeginPlay()
 
 void ULiquidWetComponent::AddSkirtCollisionMesh()
 {
-	UStaticMeshComponent* SkirtCollisionMesh = Cast<UStaticMeshComponent>(OwnerCharacter->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false));
+	SkirtCollisionMesh = Cast<UStaticMeshComponent>(OwnerCharacter->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false));
 
 	SkirtCollisionMesh->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules{ EAttachmentRule::SnapToTarget,true }, FName{ "SkirtSocket" });
 	SkirtCollisionMesh->SetStaticMesh(OwnerCharacter->GetSkirtStaticMesh());

@@ -82,6 +82,8 @@ protected:
 
 	FTimerHandle LiquidUpdateTimerHandle;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UStaticMeshComponent* SkirtCollisionMesh;
 	
 
 private:

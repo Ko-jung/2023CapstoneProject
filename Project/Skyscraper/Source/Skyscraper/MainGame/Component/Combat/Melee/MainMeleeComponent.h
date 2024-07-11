@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "Components/ActorComponent.h"
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
@@ -57,6 +58,9 @@ protected:
 
 	// == OwnerCharacter's CharacterAnimMontages - key variable
 	ECharacterAnimMontage AnimMontageKey;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UNiagaraSystem> NS_HitEffect;
 
 	// Called when the game starts
 	virtual void BeginPlay() override;

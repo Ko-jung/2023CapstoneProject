@@ -25,8 +25,23 @@ AAssassinCharacter::AAssassinCharacter()
 
 		SkirtMaterialValue = 11;
 	}
+
+
+	// // ============== 2019180016 ==============
+	// Process Blueprint Node
+	// // SKill
+	// {
+	// 	const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_CommonRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Boost/AM_Assassin_Boost.AM_Assassin_Boost'"));
+	// 	CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_CommonSkill, AM_CommonRef.Object);
+	// 
+	// 	// const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SpecialRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Boost/AM_Assassin_Boost.AM_Assassin_Boost'"));
+	// 	// CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SpecialSkill, AM_SpecialRef.Object);
+	// }
+	// // ========================================
 }
 
-void AAssassinCharacter::CastingSkill(bool IsSpecialSkill)
+void AAssassinCharacter::BuffUsingSkill()
 {
+	SetSpeedBuffValue(1.2f, 10.f);
+	SetPowerBuffValue(1.25f, 10.f);
 }

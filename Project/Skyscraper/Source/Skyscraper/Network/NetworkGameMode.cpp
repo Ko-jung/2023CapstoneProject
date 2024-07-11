@@ -9,6 +9,7 @@ void ANetworkGameMode::BeginPlay()
 	// Call Blueprint BeginPlay
 	Super::BeginPlay();
 
+	SerialNum = -1;
 	m_Socket = NetworkManager::Instance();
 }
 

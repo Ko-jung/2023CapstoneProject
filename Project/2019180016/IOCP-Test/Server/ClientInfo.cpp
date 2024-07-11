@@ -20,6 +20,7 @@ ClientInfo::ClientInfo(int ClientNum):
 	//	std::cout << "ClientInfo Socket Create FAIL" << std::endl;
 	//	IOCPServer::error_display(WSAGetLastError());
 	//}
+	ClientSocket = INVALID_SOCKET;
 	ZeroMemory(&ExpOver, sizeof(ExpOver));
 }
 
@@ -31,7 +32,13 @@ ClientInfo::ClientInfo(const SOCKET& s) :
 
 void ClientInfo::Init()
 {
-	closesocket(ClientSocket);
+	int ret = closesocket(ClientSocket);
+	if (ret == SOCKET_ERROR)
+	{
+		cout << "[" << ClientNum << "] ";
+		LogUtil::error_display("ClientInfo::Init() closesocket Error");
+	}
+	ClientSocket = INVALID_SOCKET;
 	RemainDataLen = 0;
 	ClientNum = -1;
 	//m_iRoomNum = -1;
@@ -55,11 +62,6 @@ void ClientInfo::Recv()
 			cout << "[" << ClientNum << "] Recv ERROR -> ";
 			LogUtil::error_display(error_num);
 		}
-	}
-
-	if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
-	{
-		LogUtil::error_display("ClientInfo::Recv() ERROR");
 	}
 }
 
@@ -100,6 +102,12 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 
 		if (p->PacketSize <= remaindata) {
 			PacketMgr::Instance()->ProcessPacket(p, this);
+
+			if (p->PacketSize == 0)
+			{
+				cout << "@@@@" << endl;
+				return;
+			}
 			packet += p->PacketSize;
 			remaindata -= p->PacketSize;
 		}

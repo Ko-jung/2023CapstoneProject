@@ -112,7 +112,8 @@ public:
 	bool CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon);
 
 	void SwapWeapon(ESwapWeapon WeaponType);
-
+	
+	UFUNCTION(BlueprintCallable)
 	void SendAnimMontageStatus(ECharacterAnimMontage eMontage, int Section);
 
 	// == Stun / Down
@@ -141,10 +142,20 @@ public:
 	void AddAllInputMappingContext();
 
 	UFUNCTION(BlueprintCallable)
+	void ChangeMappingContext(bool IsOnlyMouseMode);
+
+	UFUNCTION(BlueprintCallable)
 	//virtual void CastingSkill(bool IsSpecialSkill) PURE_VIRTUAL(ASkyscraperCharacter::CastingSkill, ;);
 	void CastingSkill(bool IsSpecialSkill);
+
 	UFUNCTION(BlueprintNativeEvent)
 	void ActiveSkill(bool IsSpecialSkill);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void PlaySkillMontage(bool IsSpecialSkill);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAlliance(AActor* Target);
 	// ==================
 
 protected:
@@ -310,5 +321,10 @@ private:
 	// alt(Observe Mode) 중 카메라 회전
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_Observe_Look;
+
+	// =================== 2019180016 ===================
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* OnlyMouseMappingContext;
+	// ==================================================
 };
 

@@ -40,6 +40,9 @@ enum class COMP_OP : BYTE
 	OP_TRYLOGIN,			// Using with REGISTER
 	OP_LOGINRESULT,
 
+	// Skill Sync
+	OP_JOINPLAYERINSKILLTEST,
+
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,
 

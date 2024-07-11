@@ -121,7 +121,7 @@ void AMainGameMode::ProcessFunc()
 	{
 		switch (packet->PacketType)
 		{
-		case (int)COMP_OP::OP_BUILDINGINFO:
+		case (BYTE)COMP_OP::OP_BUILDINGINFO:
 		{
 			PBuildingInfo PBI;
 			memcpy(&PBI, packet, sizeof(PBI));
@@ -322,6 +322,8 @@ void AMainGameMode::GoToLobby()
 
 void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 {
+	if (!PlayerSelectInfo.IsValidIndex(TargetSerialNum)) return;
+
 	const auto& p = PlayerSelectInfo[TargetSerialNum];
 
 	TSubclassOf<ASkyscraperCharacter>* Class = (TargetSerialNum == SerialNum) ?
@@ -377,20 +379,18 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	}
 
 	// Set Weapon
-	if (PlayerSelectInfo.IsValidIndex(TargetSerialNum))
+		
+	// Process Weapon Null
+	if (p->PickedMeleeWeapon == EMeleeSelect::EMS_NONE)
 	{
-		if (PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon == EMeleeSelect::EMS_NONE)
-		{
-			PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon = (EMeleeSelect)FMath::RandRange((uint8)EMeleeSelect::EMS_Dagger, (uint8)EMeleeSelect::EMS_GreatSword);
-		}
-		if (PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon == ERangeSelect::ERS_NONE)
-		{
-			PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon = (ERangeSelect)FMath::RandRange((uint8)ERangeSelect::ERS_SMG, (uint8)ERangeSelect::ERS_RPG);
-		}
-
-		character->CombatSystemComponent->SetInitialSelect(	PlayerSelectInfo[TargetSerialNum]->PickedMeleeWeapon,
-															PlayerSelectInfo[TargetSerialNum]->PickedRangeWeapon);
+		p->PickedMeleeWeapon = (EMeleeSelect)FMath::RandRange((uint8)EMeleeSelect::EMS_Dagger, (uint8)EMeleeSelect::EMS_GreatSword);
 	}
+	if (p->PickedRangeWeapon == ERangeSelect::ERS_NONE)
+	{
+		p->PickedRangeWeapon = (ERangeSelect)FMath::RandRange((uint8)ERangeSelect::ERS_SMG, (uint8)ERangeSelect::ERS_RPG);
+	}
+
+	character->CombatSystemComponent->SetInitialSelect(p->PickedMeleeWeapon, p->PickedRangeWeapon);
 
 	Characters[TargetSerialNum] = character;
 }
@@ -639,7 +639,7 @@ int AMainGameMode::GetWindowsIndex(const UPrimitiveComponent* Target)
 
 void AMainGameMode::SendPlayerLocation()
 {
-	if (!Characters[SerialNum]) return;
+	if (!Characters.IsValidIndex(SerialNum) || !Characters[SerialNum]) return;
 
 	FVector location = Characters[SerialNum]->GetActorLocation();
 	FRotator rotate = Characters[SerialNum]->GetActorRotation();

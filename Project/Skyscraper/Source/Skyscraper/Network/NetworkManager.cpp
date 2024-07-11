@@ -354,6 +354,21 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		COPYPACKET(PBreakObject);
 		break;
 	}
+	case (BYTE)COMP_OP::OP_JOINPLAYERINSKILLTEST:
+	{
+		COPYPACKET(PJoinPlayerInSkillTest);
+
+		if (SerialNum == -1)
+		{
+			SerialNum = pack->ClientNum;
+			UE_LOG(LogTemp, Warning, TEXT("Server Join Success!"));
+		}
+		else
+		{
+			// Join New Other Player
+			UE_LOG(LogTemp, Warning, TEXT("New Player Join"));
+		}
+	}
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Recv MainGame OP Error!"));
 		break;
@@ -427,7 +442,7 @@ uint32 NetworkManager::Run()
 		}
 		else if (nRecvLen == -1)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Recv -1 Btye. Server Close"));
+			UE_LOG(LogTemp, Warning, TEXT("Recv -1 Btye. Server Close. Error Code: %d"), WSAGetLastError());
 			StopListen();
 			break;
 		}

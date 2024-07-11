@@ -82,12 +82,3 @@ ABoomerangCharacter::ABoomerangCharacter()
 		Boomerang_L->SetupAttachment(BoostMesh, TEXT("DriverLSocket"));
 	}
 }
-
-void ABoomerangCharacter::CastingSkill(bool IsSpecialSkill)
-{
-	SpawnBoomerangActor(IsSpecialSkill);
-}
-
-void ABoomerangCharacter::SpawnBoomerangActor_Implementation(bool IsSpecialSkill)
-{
-}

@@ -478,6 +478,11 @@ void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuf
 	}
 }
 
+void ASkyscraperCharacter::AddSpeedBuffValue(float AddSpeedBuffValue)
+{
+	SpeedBuffValue += AddSpeedBuffValue;
+}
+
 void ASkyscraperCharacter::ResetSpeedBuffValue()
 {
 	GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);

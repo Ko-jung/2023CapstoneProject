@@ -70,6 +70,7 @@ public:
 
 	// 스피드 증가 적용 해제 함수
 	void SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime);
+	void AddSpeedBuffValue(float AddSpeedBuffValue);
 
 	// 공격력 증가 적용 해제 함수
 	void SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime);

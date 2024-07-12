@@ -149,6 +149,9 @@ public:
 	void CastingSkill(bool IsSpecialSkill);
 
 	UFUNCTION(BlueprintNativeEvent)
+	void SkillActorSpawnUsingPacket(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor);
+
+	UFUNCTION(BlueprintNativeEvent)
 	void ActiveSkill(bool IsSpecialSkill);
 
 	UFUNCTION(BlueprintNativeEvent)
@@ -199,10 +202,15 @@ protected:
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)
 		float XRotate;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> CommonSkillActor;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> SpecialSkillActor;
 	
 
 	UFUNCTION(BlueprintCallable)
-		void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
+		void SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 	// ======
 private:
 

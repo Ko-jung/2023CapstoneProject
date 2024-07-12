@@ -50,7 +50,7 @@ enum class COMP_OP : BYTE
 	//OP_SERVERCLOSE,
 };
 
-enum class EObject : BYTE
+enum class ESkillActor : BYTE
 {
 	BP_NULL,
 	BP_BoomerangGrab,

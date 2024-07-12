@@ -563,13 +563,21 @@ void ASkyscraperCharacter::PlayBoostAnimation(const FString& SectionString) cons
 	}
 }
 
-void ASkyscraperCharacter::SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
+void ASkyscraperCharacter::SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
 	// bool IsTeamA;
 	// (Team == "TeamA") ? IsTeamA = true : IsTeamA = false;
 
-	if(MainGameMode)
-		MainGameMode->SendSkillActorSpawn(SkillActor, SpawnLocation, ForwardVec);
+	if (MainGameMode)
+	{
+		MainGameMode->SendSkillActorSpawn(Sender, SkillActor, SpawnLocation, ForwardVec);
+	}
+	else
+	{	// Single Mode
+		AActor* NewActor;
+		SkillActorSpawnUsingPacket(!(SkillActor == ESkillActor::BP_ElectTrap || SkillActor == ESkillActor::BP_DetectorMine),
+			SpawnLocation, ForwardVec, NewActor	);
+	}
 }
 
 void ASkyscraperCharacter::ResetPowerBuffValue()
@@ -668,6 +676,9 @@ void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)
 {
 }
 void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill)
+{
+}
+void ASkyscraperCharacter::SkillActorSpawnUsingPacket_Implementation(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor)
 {
 }
 

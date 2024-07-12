@@ -131,16 +131,15 @@ struct PStunDownState : Packet
 
 struct PSpawnObject : Packet, PTransform
 {
-	EObject SpawnObject;
+	ESkillActor SpawnObject;
 	PVector ForwardVec;
-	BYTE SerialNum;
+	WORD SerialNum;
+	BYTE ObjectSpawner;
 
-	PSpawnObject() : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(), SerialNum(-1) { SpawnObject = EObject::BP_NULL; Location = PVector{}; PacketSize = sizeof(PSpawnObject); }
-	// PSpawnObject(EObject EO, PVector Location, PVector Forward) : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(Location.X, Location.Y, Location.Z)
-	// {
-	// 	this->SpawnObject = EO;
-	// 	PacketSize = sizeof(PSpawnObject);
-	// }
+	PSpawnObject() : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(), SerialNum(-1), ObjectSpawner(-1), SpawnObject(ESkillActor::BP_NULL)
+	{
+		PacketSize = sizeof(PSpawnObject);
+	}
 };
 
 struct PPlayerJoin : Packet
@@ -337,7 +336,9 @@ struct PRelocateObject : Packet
 	PVector Rotation;
 
 	PRelocateObject() : Packet(COMP_OP::OP_RELOCATEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0), Location(PVector()), Rotation(PVector())
-	{ PacketSize = sizeof(PRelocateObject); }
+	{
+		PacketSize = sizeof(PRelocateObject);
+	}
 };
 
 struct PTryLogin : Packet

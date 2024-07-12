@@ -86,6 +86,8 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	{
 		PSpawnObject PSO;
 		MEMCPYBUFTOPACKET(PSO);
+		PSO.SerialNum = RoomMgr::Instance()->GetNowSkillActorSerial(c->GetClientNum() / MAXPLAYER);
+		//ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PSO, sizeof(PSO));
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSO, sizeof(PSO));
 		break;
 	}
@@ -140,10 +142,9 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	}
 	case (int)COMP_OP::OP_RELOCATEOBJECT:
 	{
-		PRelocateObject PRO;
-		MEMCPYBUFTOPACKET(PRO);
-		PRO.ObjectSerial = RoomMgr::Instance()->GetNowSkillActorSerial(c->GetClientNum() / MAXPLAYER);
-		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PRO, sizeof(PRO));
+		// PRelocateObject PRO;
+		// MEMCPYBUFTOPACKET(PRO);
+		// ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PRO, sizeof(PRO));
 		break;
 	}
 	default:

@@ -167,13 +167,6 @@ void AMainGameMode::ProcessFunc()
 		{
 			PSpawnObject PSO;
 			memcpy(&PSO, packet, sizeof(PSO));
-
-			// if (PSO.SerialNum>= MAXPLAYER || PSO.SerialNum < 0)
-			// {
-			// 	UE_LOG(LogClass, Warning, TEXT("Array Error"));
-			// 	continue;
-			// }
-
 			ProcessSpawnObject(PSO);
 			break;
 		}
@@ -442,21 +435,35 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 
 void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 {
-	if (PSO.SerialNum == SerialNum)
+	AActor* NewActor;
+	bool IsSpecial{ true };
+	if (PSO.SpawnObject == ESkillActor::BP_ElectTrap || PSO.SpawnObject == ESkillActor::BP_DetectorMine)
 	{
-		UE_LOG(LogClass, Warning, TEXT("Skill Actor Spawner Is this!"));
-		return;
+		IsSpecial = false;
 	}
+	Characters[PSO.ObjectSpawner]->SkillActorSpawnUsingPacket(IsSpecial,
+																FVector{PSO.Location.X,PSO.Location. Y,PSO.Location. Z},
+																FVector{ PSO.ForwardVec.X,PSO.ForwardVec.Y,PSO.ForwardVec.Z },
+																NewActor);
 
-	FName Team;
-	if (PSO.SerialNum < MAXPLAYER / 2)	Team = TeamName[(int)ETEAM::A];
-	else								Team = TeamName[(int)ETEAM::B];
+	SkillActors.Add({ PSO.SerialNum, NewActor });
+	UE_LOG(LogClass, Warning, TEXT("SkillActors.Add pair{%d, %s}"), PSO.SerialNum, *UKismetSystemLibrary::GetDisplayName(NewActor));
 
-	FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
-	FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
-	ESkillActor SkillActor = PSO.SpawnObject;
-
-	SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
+	 //if (PSO.SerialNum == SerialNum)
+	 //{
+	 //	UE_LOG(LogClass, Warning, TEXT("Skill Actor Spawner Is this!"));
+	 //	return;
+	 //}
+	 //
+	 //FName Team;
+	 //if (PSO.SerialNum < MAXPLAYER / 2)	Team = TeamName[(int)ETEAM::A];
+	 //else								Team = TeamName[(int)ETEAM::B];
+	 //
+	 //FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
+	 //FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
+	 //ESkillActor SkillActor = PSO.SpawnObject;
+	 //
+	 //SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
 }
 
 void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
@@ -575,21 +582,21 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 	//TargetObject->DestroyComponent();
 }
 
-void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
-{
-	if (AActor** ppTarget = SkillActors.Find(PRO.ObjectSerial))
-	{
-		AActor* SkillActor = *ppTarget;
-		SkillActor->SetActorLocation(FVector{ PRO.Location.X,PRO.Location.Y,PRO.Location.Z });
-		SkillActor->SetActorRotation(FRotator{ PRO.Rotation.X,PRO.Rotation.Y,PRO.Rotation.Z });
-
-
-	}
-	else
-	{
-		UE_LOG(LogClass, Warning, TEXT("SkillActors Key<%d> Can't FIND!"), PRO.ObjectSerial);
-	}
-}
+//void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
+//{
+//	if (AActor** ppTarget = SkillActors.Find(PRO.ObjectSerial))
+//	{
+//		AActor* SkillActor = *ppTarget;
+//		SkillActor->SetActorLocation(FVector{ PRO.Location.X,PRO.Location.Y,PRO.Location.Z });
+//		SkillActor->SetActorRotation(FRotator{ PRO.Rotation.X,PRO.Rotation.Y,PRO.Rotation.Z });
+//
+//
+//	}
+//	else
+//	{
+//		UE_LOG(LogClass, Warning, TEXT("SkillActors Key<%d> Can't FIND!"), PRO.ObjectSerial);
+//	}
+//}
 
 void AMainGameMode::GetHexagonTileOnLevel()
 {
@@ -701,17 +708,28 @@ void AMainGameMode::SendPlayerSwapWeaponInfo()
 	}
 }
 
-void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
+void AMainGameMode::SendSkillActorSpawn(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
-	PSpawnObject PSO;
+	if (Characters[SerialNum] != Sender) return;
 
-	PSO.SpawnObject = SkillActor;
-	PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
-	PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;
-	
-	PSO.SerialNum = SerialNum;
+	 PSpawnObject PSO;
+	 
+	 PSO.SpawnObject = SkillActor;
+	 PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
+	 PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;	 
+	 PSO.ObjectSpawner = SerialNum;
 
-	m_Socket->Send(&PSO, sizeof(PSO));
+
+	 if (m_Socket)
+	 {
+		 m_Socket->Send(&PSO, sizeof(PSO));
+	 }
+	 else
+	 {
+		 static uint16 Serial{0};
+		 PSO.SerialNum = Serial++;
+		 ProcessSpawnObject(PSO);
+	 }
 }
 
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
@@ -764,10 +782,13 @@ void AMainGameMode::SendRelocateSkillActor(AActor* TargetActor)
 	// 서버 딜레이로 Serial 번호가 갈릴수도있음
 	// 일단 배제
 	
-	//PRelocateObject PRO;
-	//PRO.
-
-	SkillActors.Add({SkillActorSerialNum++, TargetActor});
+	// PSpawnObject PRO;
+	// PRO.Location = TargetActor->GetActorLocation();
+	// PRO.Rotate = TargetActor->GetActorRotation();
+	// PRO.ObjectSerial = SkillActorSerialNum;
+	// PRO.ObjectType = EObjectType::SkillActor;
+	// 
+	// SkillActors.Add({SkillActorSerialNum++, TargetActor});
 }
 
 void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)

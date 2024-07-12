@@ -274,8 +274,15 @@ void AMainGameMode::ProcessFunc()
 			ProcessBreakObject(PBO);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_REMOVEOBJECT:
+		{
+			PRemoveObject PRO;
+			memcpy(&PRO, packet, sizeof(PRO));
+			ProcessRemoveObject(PRO);
+			break;
+		}
 		default:
-			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
+			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;
 		}
 		delete packet;
@@ -582,6 +589,27 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 	//TargetObject->DestroyComponent();
 }
 
+void AMainGameMode::ProcessRemoveObject(PRemoveObject PRO)
+{
+	UE_LOG(LogClass, Warning, TEXT("AMainGameMode::ProcessRemoveObject"));
+	if (auto ppActor = SkillActors.Find(PRO.ObjectSerial))
+	{
+		SkillActors.Remove(PRO.ObjectSerial);
+		if (IsValid(*ppActor))
+		{
+			(*ppActor)->Destroy();
+		}
+		else
+		{
+			UE_LOG(LogClass, Warning, TEXT("ppActor is InValid"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogClass, Warning, TEXT("SerialNum %d is not In SkillActors"), PRO.ObjectSerial);
+	}
+}
+
 //void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
 //{
 //	if (AActor** ppTarget = SkillActors.Find(PRO.ObjectSerial))
@@ -777,18 +805,29 @@ bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 	return true;
 }
 
-void AMainGameMode::SendRelocateSkillActor(AActor* TargetActor)
+void AMainGameMode::SendRemoveSkillActor(AActor* TargetActor)
 {
 	// 서버 딜레이로 Serial 번호가 갈릴수도있음
 	// 일단 배제
-	
-	// PSpawnObject PRO;
-	// PRO.Location = TargetActor->GetActorLocation();
-	// PRO.Rotate = TargetActor->GetActorRotation();
-	// PRO.ObjectSerial = SkillActorSerialNum;
-	// PRO.ObjectType = EObjectType::SkillActor;
-	// 
-	// SkillActors.Add({SkillActorSerialNum++, TargetActor});
+
+	uint16 TargetSerialNum{ 0 };
+	if (m_Socket)
+	{
+		for (const auto& SkillActorPair : SkillActors)
+		{
+			if (SkillActorPair.Value == TargetActor)
+			{
+				TargetSerialNum = SkillActorPair.Key;
+				break;
+			}
+		}
+
+		PRemoveObject PRO;
+		PRO.ObjectSerial = TargetSerialNum;
+		PRO.ObjectType = EObjectType::SkillActor;
+		m_Socket->Send(&PRO, PRO.PacketSize);
+	}
+	SkillActors.Remove(TargetSerialNum);
 }
 
 void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)

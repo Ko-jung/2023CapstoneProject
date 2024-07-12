@@ -373,15 +373,13 @@ struct PBreakObject : Packet
 	{ PacketSize = sizeof(PBreakObject); }
 };
 
-struct PRelocateObject : Packet
+struct PRemoveObject : Packet
 {
 	EObjectType ObjectType;
 	WORD ObjectSerial;
-	PVector Location;
-	PVector Rotation;
 
-	PRelocateObject() : Packet(COMP_OP::OP_RELOCATEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0), Location(PVector()), Rotation(PVector())
-	{ PacketSize = sizeof(PRelocateObject);	}
+	PRemoveObject() : Packet(COMP_OP::OP_REMOVEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0)
+	{ PacketSize = sizeof(PRemoveObject); }
 };
 
 struct PTryLogin : Packet

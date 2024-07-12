@@ -328,16 +328,14 @@ struct PBreakObject : Packet
 		Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial), Direction(Direction) {	PacketSize = sizeof(PBreakObject);	}
 };
 
-struct PRelocateObject : Packet
+struct PRemoveObject : Packet
 {
 	EObjectType ObjectType;
 	WORD ObjectSerial;
-	PVector Location;
-	PVector Rotation;
 
-	PRelocateObject() : Packet(COMP_OP::OP_RELOCATEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0), Location(PVector()), Rotation(PVector())
+	PRemoveObject() : Packet(COMP_OP::OP_REMOVEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0)
 	{
-		PacketSize = sizeof(PRelocateObject);
+		PacketSize = sizeof(PRemoveObject);
 	}
 };
 

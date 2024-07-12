@@ -43,7 +43,7 @@ public:
 	void ProcessUseItem(PUseItem PUI);
 	void ProcessGetItem(PGetItem PGI);
 	void ProcessBreakObject(PBreakObject PBO);
-	//void ProcessRelocateObject(PRelocateObject PRO);
+	void ProcessRemoveObject(PRemoveObject PRO);
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();
@@ -61,7 +61,7 @@ public:
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
 	
 	UFUNCTION(BlueprintCallable)
-	void SendRelocateSkillActor(AActor* TargetActor);
+	void SendRemoveSkillActor(AActor* TargetActor);
 
 	//UFUNCTION(BlueprintCallable)
 	//void RemoveSkillActor(AActor* TargetActor);

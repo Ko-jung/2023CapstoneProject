@@ -140,11 +140,11 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PBO, sizeof(PBO));
 		break;
 	}
-	case (int)COMP_OP::OP_RELOCATEOBJECT:
+	case (int)COMP_OP::OP_REMOVEOBJECT:
 	{
-		// PRelocateObject PRO;
-		// MEMCPYBUFTOPACKET(PRO);
-		// ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PRO, sizeof(PRO));
+		PRemoveObject PRO;
+		MEMCPYBUFTOPACKET(PRO);
+		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PRO, sizeof(PRO));
 		break;
 	}
 	default:

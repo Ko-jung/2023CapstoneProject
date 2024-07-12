@@ -42,7 +42,7 @@ void Item_Team_PlusHealth::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 	UE_LOG(LogTemp, Warning, TEXT("Item_Team_PlusHealth - DoItemEffect"));
 	UsedCharacter->HealthComponent->ActivatePlusHealthBuff(ItemBuffValue, ItemBuffTime);
 
-	{ // UsedCharacter ÀÇ ÆÀ¿¡°Ôµµ Àû¿ë½ÃÅ°±â
+	{ // UsedCharacter ì˜ íŒ€ì—ê²Œë„ ì ìš©ì‹œí‚¤ê¸°
 
 	}
 

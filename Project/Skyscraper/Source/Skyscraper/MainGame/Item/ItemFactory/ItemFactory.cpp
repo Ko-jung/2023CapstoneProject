@@ -5,6 +5,8 @@
 
 #include "Skyscraper/MainGame/Item/ItemObject/Item_BoostBulletInfinity.h"
 #include "Skyscraper/MainGame/Item/ItemObject/Item_GodMode.h"
+#include "Skyscraper/MainGame/Item/ItemObject/Item_GravityLow.h"
+#include "Skyscraper/MainGame/Item/ItemObject/Item_GravityHigh.h"
 #include "Skyscraper/MainGame/Item/ItemObject/Item_Team_PlusHealth.h"
 #include "Skyscraper/MainGame/Item/ItemObject/Item_Team_Power.h"
 #include "Skyscraper/MainGame/Item/ItemObject/Item_Team_Speed.h"
@@ -21,7 +23,7 @@ ItemObject* ItemFactory::CreateItem(EItemEffect ItemEffectType, EItemRareLevel R
 {
 	ItemObject* Object = nullptr;
 
-	// EItemEffect ø° ∏¬¥¬ æ∆¿Ã≈€ ª˝º∫
+	// EItemEffect Ïóê ÎßûÎäî ÏïÑÏù¥ÌÖú ÏÉùÏÑ±
 	switch (ItemEffectType)
 	{
 	case EItemEffect::EIE_Single_BoostBulletInfinity:
@@ -42,6 +44,17 @@ ItemObject* ItemFactory::CreateItem(EItemEffect ItemEffectType, EItemRareLevel R
 
 	case EItemEffect::EIE_Team_Speed:
 		Object = new Item_Team_Speed(RareLevel);
+		break;
+
+	case EItemEffect::EIE_Gravity_Up:
+		Object = new Item_GravityHigh();
+		break;
+
+	case EItemEffect::EIE_Gravity_Down:
+		Object = new Item_GravityLow();
+		break;
+
+	case EItemEffect::EIE_Tile_Break:
 		break;
 
 	default:

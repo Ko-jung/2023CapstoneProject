@@ -30,6 +30,7 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "UObject/UnrealTypePrivate.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -213,6 +214,21 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Boost/AM_Assassin_Boost.AM_Assassin_Boost'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Boost, AM_BoostRef.Object);
 	}
+
+	// Gravity Change Area
+	{
+		ConstructorHelpers::FClassFinder<AActor> BP_GravityChangerAreaRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/GravityChanger/BP_GravityChangerArea_Low.BP_GravityChangerArea_Low_C'"));
+		if (BP_GravityChangerAreaRef.Succeeded())
+		{
+			BP_GravityChangerAreaClass = BP_GravityChangerAreaRef.Class;
+		}
+
+		ConstructorHelpers::FClassFinder<AActor> BP_GravityChangerArea2Ref(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/GravityChanger/BP_GravityChangerArea_High.BP_GravityChangerArea_High_C'"));
+		if (BP_GravityChangerAreaRef.Succeeded())
+		{
+			BP_GravityChangerAreaHighClass = BP_GravityChangerArea2Ref.Class;
+		}
+	}
 }
 
 void ASkyscraperCharacter::BeginPlay()
@@ -314,6 +330,21 @@ void ASkyscraperCharacter::SetCameraFOVToDash(bool bToDash, float Alpha)
 	else
 	{
 		FollowCamera->SetFieldOfView(FMath::Lerp(DashFOV, DefaultFOV, Alpha));
+	}
+}
+
+void ASkyscraperCharacter::SpawnGravityChangerArea(bool bGravityLow)
+{
+
+	if(bGravityLow)
+	{
+		AActor* GravityActor = GetWorld()->SpawnActor<AActor>(BP_GravityChangerAreaClass);
+		GravityActor->SetActorLocation(GetActorLocation());
+	}
+	else
+	{
+		AActor* GravityActor = GetWorld()->SpawnActor<AActor>(BP_GravityChangerAreaHighClass);
+		GravityActor->SetActorLocation(GetActorLocation());
 	}
 }
 

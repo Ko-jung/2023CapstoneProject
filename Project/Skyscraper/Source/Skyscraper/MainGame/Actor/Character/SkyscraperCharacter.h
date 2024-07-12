@@ -105,6 +105,9 @@ public:
 	UFUNCTION()
 		void SetCameraFOVToDash(bool bToDash, float Alpha = 1.0f);
 
+	UFUNCTION()
+		void SpawnGravityChangerArea(bool bGravityLow);
+
 	// 2019180016
 public:
 	/// <returns>
@@ -244,6 +247,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
 		TObjectPtr<UNiagaraComponent> NS_DashEffect;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> BP_GravityChangerAreaClass;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> BP_GravityChangerAreaHighClass;
 
 private:
 	/** Camera boom positioning the camera behind the character */

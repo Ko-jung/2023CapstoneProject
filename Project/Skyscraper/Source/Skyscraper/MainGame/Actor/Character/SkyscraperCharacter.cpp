@@ -76,9 +76,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	{// Create a camera boom (pulls in towards the player if there is a collision)
 		CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 		CameraBoom->SetupAttachment(RootComponent);
-		CameraBoom->TargetArmLength = 350.0f; // The camera follows at this distance behind the character	
+		CameraBoom->TargetArmLength = InitialCameraArmLength;// The camera follows at this distance behind the character	
 		CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 85.0f));
+		CameraBoom->SetRelativeLocation(InitialCameraBoomOffset);
 	}
 
 	// Create a follow camera
@@ -829,7 +829,10 @@ void ASkyscraperCharacter::SetCameraZoomUpDown(const FInputActionValue& Value)
 
 	float ZoomSpeed = 10.0f;
 	float MaxArmLength = InitialCameraArmLength + 150.0f;
-	float MinArmLength = InitialCameraArmLength - 50.0f;
+	float MinArmLength = InitialCameraArmLength - 300.0f;
 
 	CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength +  ZoomSpeed * -ZoomValue, MinArmLength, MaxArmLength);
+
+	float LerpAlpha = (CameraBoom->TargetArmLength - MinArmLength) / (MaxArmLength - MinArmLength);
+	CameraBoom->SetRelativeLocation(FMath::Lerp(FVector{ 0.0f,0.0f,0.0f }, InitialCameraBoomOffset, LerpAlpha));
 }

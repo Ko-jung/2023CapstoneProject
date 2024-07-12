@@ -231,6 +231,8 @@ public:
 protected:
 	UPROPERTY()
 		float InitialCameraArmLength = 350.0f;
+	UPROPERTY()
+		FVector InitialCameraBoomOffset = FVector{ 20.0f,0.0f, 85.0f };
 
 	UPROPERTY()
 		TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;

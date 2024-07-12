@@ -31,7 +31,6 @@ AFurniture::AFurniture()
 
 void AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s , %d index to SM"), *HISM->GetName(), Index);
 	int CurrentLastIndex = DummyStaticMeshComp.Num() - 1;
 	UStaticMeshComponent* SMComp = DummyStaticMeshComp[CurrentLastIndex];
 	DummyStaticMeshComp.RemoveAt(CurrentLastIndex);
@@ -68,14 +67,14 @@ void AFurniture::DoCollapse()
 	AllHISMToPhysicsSM(HISM_Flowerpot);
 
 	// 책상 액터
-	for(ADesk* DeskActor : DeskActors)
-	{
-		AllHISMToPhysicsSM(DeskActor->HISM_Chair);
-		AllHISMToPhysicsSM(DeskActor->HISM_Desk);
-		AllHISMToPhysicsSM(DeskActor->HISM_Desktop);
-		AllHISMToPhysicsSM(DeskActor->HISM_Monitor);
-		AllHISMToPhysicsSM(DeskActor->HISM_Partition);
-	}
+	//for(ADesk* DeskActor : DeskActors)
+	//{
+	//	AllHISMToPhysicsSM(DeskActor->HISM_Chair);
+	//	AllHISMToPhysicsSM(DeskActor->HISM_Desk);
+	//	AllHISMToPhysicsSM(DeskActor->HISM_Desktop);
+	//	AllHISMToPhysicsSM(DeskActor->HISM_Monitor);
+	//	AllHISMToPhysicsSM(DeskActor->HISM_Partition);
+	//}
 }
 
 void AFurniture::SettingSpotLight()

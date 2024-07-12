@@ -673,6 +673,8 @@ FVector AHexagonTile::GetSpawnLocation(bool IsTeamA)
 	return FVector();
 }
 
+
+
 void AHexagonTile::CollapseTilesAndActors(int CollapseLevel, int CenterIndex)
 {
 	IncreaseTileDropLevel();
@@ -696,12 +698,23 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel, int CenterIndex)
 			// 파괴 영역 체크
 			if (TileDistance > offset * CollapseRemainDistance)
 			{
-				CollapseTile(i);
-				i -= 1;
-			} 
+				CollapseTileIndexes.Add(i);
+				//CollapseTile(i);
+				//i -= 1;
+			}
+		}
+
+		// 붕괴할 타일이 있다면 타이머를 진행
+		if(!CollapseTileIndexes.IsEmpty())
+		{
+			if(!CollapseTileTimerHandle.IsValid())
+			{
+				GetWorld()->GetTimerManager().SetTimer(CollapseTileTimerHandle, this, &ThisClass::CollapseTileOnDelay, CollapseDelaySeconds, true);
+			}
 		}
 	}
 }
+
 
 FVector2D AHexagonTile::GetTileWidgetAlignment(int index) const
 {
@@ -769,23 +782,65 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 		NewMiddleTileLocation.Y += (offset * UKismetMathLibrary::DegCos(CollapseDirectionAngle * 60 + 30));
 
 		CurrentMiddleTile = GetLineTileFromAngleAndDistance(0, 0, NewMiddleTileLocation);
+
+		DrawDebugBox(GetWorld(), NewMiddleTileLocation, FVector{ 20.0f,20.0f,1000.0f }, FColor::Red, true, 20.0f, 0, 10);
 	}
 
 	// 파괴 영역에 해당하는 육각타일 파괴 및 해당 육각타일 아래 건물 / 부유타일 삭제
 	// 삭제 후 GeometryComponent에 해당하는 타일 생성
 	{
 		//for (UChildActorComponent* Tile : Tiles)
-		for(volatile int i =0; i<Tiles.Num(); ++i)
+		for(int i =0; i<Tiles.Num(); ++i)
 		{
 			float TileDistance = UKismetMathLibrary::Vector_Distance(Tiles[i]->GetRelativeLocation(), CurrentMiddleTile->GetRelativeLocation());
 			// 파괴 영역 체크
 			if (TileDistance > offset * CollapseRemainDistance)
 			{
-				CollapseTile(i);
-				i -= 1;
+				CollapseTileIndexes.Add(i);
+				DrawDebugBox(GetWorld(), Tiles[i]->GetRelativeLocation(), FVector{20.0f,20.0f,1000.0f}, FColor::Blue, true, 20.0f, 0, 10);
+				//CollapseTile(i);
+				//i -= 1;
+			}
+		}
+
+		// 붕괴할 타일이 있다면 타이머를 진행
+		if (!CollapseTileIndexes.IsEmpty())
+		{
+			if (!CollapseTileTimerHandle.IsValid())
+			{
+				GetWorld()->GetTimerManager().SetTimer(CollapseTileTimerHandle, this, &ThisClass::CollapseTileOnDelay, CollapseDelaySeconds, true,0.0f);
 			}
 		}
 	}
+
+}
+
+
+void AHexagonTile::CollapseTileOnDelay()
+{
+	UE_LOG(LogTemp, Warning, TEXT("CollapseTileOnDelay : CollapseTileIndexes.Num() : %d"), CollapseTileIndexes.Num());
+	if (CollapseTileIndexes.IsEmpty())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CollapseTileTimerHandle);
+	}
+
+	for (int i = 0; i < 3; ++i)
+	{
+		if (!CollapseTileIndexes.IsEmpty())
+		{
+			int TileIndex = CollapseTileIndexes[0];
+			UE_LOG(LogTemp, Warning, TEXT("TileIndex: %d"), TileIndex);
+			CollapseTileIndexes.RemoveAt(0);
+
+			CollapseTile(TileIndex);
+
+			for (int& Index : CollapseTileIndexes)
+			{
+				Index -= 1;
+			}
+		}
+	}
+
 
 }
 
@@ -831,6 +886,7 @@ void AHexagonTile::CollapseTile(int CollapseTargetIndex)
 		}
 		Tile_Actor.Remove(Tiles[CollapseTargetIndex]);
 	}
+
 	Tiles[CollapseTargetIndex]->DestroyComponent();
 	Tiles.RemoveAt(CollapseTargetIndex);
 

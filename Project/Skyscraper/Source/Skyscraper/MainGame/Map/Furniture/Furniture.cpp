@@ -62,10 +62,20 @@ void AFurniture::AllHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* H
 
 void AFurniture::DoCollapse()
 {
+	// 모든 HISM 오브젝트
 	AllHISMToPhysicsSM(HISM_Sofa);
 	AllHISMToPhysicsSM(HISM_Table);
 	AllHISMToPhysicsSM(HISM_Flowerpot);
-	
+
+	// 책상 액터
+	for(ADesk* DeskActor : DeskActors)
+	{
+		AllHISMToPhysicsSM(DeskActor->HISM_Chair);
+		AllHISMToPhysicsSM(DeskActor->HISM_Desk);
+		AllHISMToPhysicsSM(DeskActor->HISM_Desktop);
+		AllHISMToPhysicsSM(DeskActor->HISM_Monitor);
+		AllHISMToPhysicsSM(DeskActor->HISM_Partition);
+	}
 }
 
 void AFurniture::SettingSpotLight()

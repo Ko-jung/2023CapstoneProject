@@ -68,7 +68,7 @@ void ARPGBullet::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BulletStaticMesh->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OverlapExplode);
+	//BulletStaticMesh->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OverlapExplode);
 	BulletStaticMesh->OnComponentHit.AddDynamic(this, &ThisClass::HitExplode);
 
 	ProjectileMovementComponent->Velocity = InitVelocity * InitSpeed;

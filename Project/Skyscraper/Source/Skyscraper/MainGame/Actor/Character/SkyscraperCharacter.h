@@ -202,11 +202,6 @@ protected:
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)
 		float XRotate;
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<AActor*> CommonSkillActor;
-	UPROPERTY(BlueprintReadWrite)
-	TArray<AActor*> SpecialSkillActor;
 	
 
 	UFUNCTION(BlueprintCallable)

@@ -457,7 +457,7 @@ void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int Se
 	}
 	else
 	{	// Play Montage On Blueprint
-		PlaySkillMontage(eAnimMontage == ECharacterAnimMontage::ECAM_SpecialSkill);
+		PlaySkillMontage(eAnimMontage == ECharacterAnimMontage::ECAM_SpecialSkill, SectionNum);
 		UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::SetMontage() play Skill Montage"));
 	}
 }
@@ -675,7 +675,7 @@ bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)
 {
 }
-void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill)
+void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill, uint8 SectionNum)
 {
 }
 void ASkyscraperCharacter::SkillActorSpawnUsingPacket_Implementation(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor)

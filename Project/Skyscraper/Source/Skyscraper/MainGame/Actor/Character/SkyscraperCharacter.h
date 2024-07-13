@@ -155,7 +155,7 @@ public:
 	void ActiveSkill(bool IsSpecialSkill);
 
 	UFUNCTION(BlueprintNativeEvent)
-	void PlaySkillMontage(bool IsSpecialSkill);
+	void PlaySkillMontage(bool IsSpecialSkill, uint8 SectionNum);
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlliance(AActor* Target);

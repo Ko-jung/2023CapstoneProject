@@ -763,10 +763,16 @@ void AMainGameMode::SendSkillActorSpawn(const AActor* Sender, ESkillActor SkillA
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
 	if (!GetIsConnected())
+	{
+		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() GetIsConnected() is FALSE"));
 		return;
+	}
 
 	if (Sender != Characters[SerialNum])
+	{
+		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() Sender != Characters[SerialNum]"));
 		return;
+	}
 
 	UE_LOG(LogClass, Warning, TEXT("Sending Anim Motage Status"));
 

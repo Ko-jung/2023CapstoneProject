@@ -70,7 +70,7 @@ public:
 
 	// 아군/적군 플레이어를 이미지에 연결하는 함수
 	// 이미지가 모두 사용 중일 경우 실행하지 않음
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void AddPlayerToImage(AActor* Player);
 	UFUNCTION(BlueprintCallable)
 		void AddFriendlyPlayerToImage(AActor* FriendlyPlayer);

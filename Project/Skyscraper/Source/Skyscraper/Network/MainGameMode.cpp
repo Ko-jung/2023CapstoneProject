@@ -174,7 +174,7 @@ void AMainGameMode::ProcessFunc()
 		{
 			PChangeAnimMontage PCAM;
 			memcpy(&PCAM, packet, sizeof(PCAM));
-			if(Characters[PCAM.ChangedPlayerSerial])
+			if(Characters.IsValidIndex(PCAM.ChangedPlayerSerial) && Characters[PCAM.ChangedPlayerSerial])
 				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage, PCAM.SectionNum);
 			break;
 		}
@@ -182,7 +182,7 @@ void AMainGameMode::ProcessFunc()
 		{
 			PSwapWeapon PSW;
 			memcpy(&PSW, packet, sizeof(PSW));
-			if (Characters[PSW.SwapingPlayer])
+			if (Characters.IsValidIndex(PSW.SwapingPlayer) && Characters[PSW.SwapingPlayer])
 				Characters[PSW.SwapingPlayer]->SwapWeapon(PSW.SwapWeapon);
 			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_SWAPWEAPON"));
 			break;

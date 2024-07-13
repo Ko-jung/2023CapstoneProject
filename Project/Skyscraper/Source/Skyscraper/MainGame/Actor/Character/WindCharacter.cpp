@@ -65,7 +65,3 @@ AWindCharacter::AWindCharacter()
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
 	}
 }
-
-void AWindCharacter::CastingSkill(bool IsSpecialSkill)
-{
-}

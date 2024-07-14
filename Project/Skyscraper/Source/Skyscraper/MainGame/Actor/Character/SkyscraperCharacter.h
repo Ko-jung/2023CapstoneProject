@@ -162,8 +162,8 @@ public:
 	void PlaySkillMontage(bool IsSpecialSkill, uint8 SectionNum);
 
 	// Process Mine Stun
-	UFUNCTION(BlueprintNativeEvent)
-	void UnableToAct(const float Timer);
+	UFUNCTION(BlueprintCallable)
+	void AbleToAct();
 
 	UFUNCTION(BlueprintCallable)
 	void ApplyStun(const float StunTime);
@@ -214,9 +214,10 @@ protected:
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)
 		float XRotate;
+
 	UPROPERTY(BlueprintReadWrite)
-	float UnableActTimer;
-	
+	bool IsUnableAct;
+	FTimerHandle UnableActTimerHandle;
 
 	UFUNCTION(BlueprintCallable)
 		void SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);

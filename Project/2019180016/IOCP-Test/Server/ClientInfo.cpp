@@ -123,7 +123,7 @@ void ClientInfo::SendProcess(int PacketSize, Packet* PacketData)
 {
 	if (ClientSocket == INVALID_SOCKET)
 	{
-		std::cout << "ClientInfo Socket is INVALID_SOCKET" << std::endl;
+		//std::cout << "ClientInfo Socket is INVALID_SOCKET" << std::endl;
 		return;
 	}
 

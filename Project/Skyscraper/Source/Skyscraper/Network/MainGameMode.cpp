@@ -281,6 +281,14 @@ void AMainGameMode::ProcessFunc()
 			ProcessRemoveObject(PRO);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_DETECTING:
+		{
+			UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_DETECTING"));
+			PDetecting PD;
+			memcpy(&PD, packet, sizeof(PD));
+			ProcessDetecting(PD);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;
@@ -360,8 +368,18 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 		if (!character) continue;
 
 		character->Tags.Add(Team);
+
+		{	// Post processing
+			bool IsEnemy = (SerialNum / (MAXPLAYER / 2)) != (TargetSerialNum / (MAXPLAYER / 2));
+
+			// Allience : 0, Enemy : 1
+			character->GetMesh()->CustomDepthStencilValue = IsEnemy;
+			// Allience : true, Enemy : false
+			character->GetMesh()->bRenderCustomDepth = !IsEnemy;
+		}
 		break;
 	}
+
 
 	if (TargetSerialNum == SerialNum)
 	{
@@ -610,6 +628,15 @@ void AMainGameMode::ProcessRemoveObject(PRemoveObject PRO)
 	}
 }
 
+void AMainGameMode::ProcessDetecting(PDetecting PD)
+{
+	if (Characters.IsValidIndex(PD.DetectedSerial))
+	{
+		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::ProcessDetecting"));
+		Characters[PD.DetectedSerial]->CustomDepthOn();
+	}
+}
+
 //void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
 //{
 //	if (AActor** ppTarget = SkillActors.Find(PRO.ObjectSerial))
@@ -809,6 +836,36 @@ bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 	m_Socket->Send(&PDP, sizeof(PDP));
 	UE_LOG(LogClass, Warning, TEXT("Send Weapon Damage"));
 	return true;
+}
+
+void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
+{
+	if (Sender != Characters[SerialNum])
+	{
+		UE_LOG(LogClass, Warning, TEXT("SendDetecting Sender != Characters[SerialNum]"));
+		return;
+	}
+
+	BYTE TargetSerial;
+	for (int i = 0; i < Characters.Num(); i++)
+	{
+		const auto& c = Characters[i];
+		if (c == Target)
+		{
+			TargetSerial = i;
+		}
+	}
+
+	PDetecting PD;
+	PD.DetectedSerial = TargetSerial;
+	if (m_Socket)
+	{
+		Send(&PD, PD.PacketSize);
+	}
+	else
+	{
+		ProcessDetecting(PD);
+	}
 }
 
 void AMainGameMode::SendRemoveSkillActor(AActor* TargetActor)

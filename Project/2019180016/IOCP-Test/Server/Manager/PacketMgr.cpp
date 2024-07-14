@@ -147,6 +147,14 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PRO, sizeof(PRO));
 		break;
 	}
+	case (int)COMP_OP::OP_DETECTING:
+	{
+		PDetecting PD;
+		MEMCPYBUFTOPACKET(PD);
+		ClientMgr::Instance()->SendPacketToAllience(c->GetClientNum(), &PD, sizeof(PD));
+		ClientMgr::Instance()->Send((c->GetClientNum() / MAXPLAYER) * MAXPLAYER + PD.DetectedSerial, &PD, sizeof(PD));
+		break;
+	}
 	default:
 	{
 		if (p->PacketSize == 0)

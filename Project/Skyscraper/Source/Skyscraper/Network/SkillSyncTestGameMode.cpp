@@ -154,6 +154,14 @@ void ASkillSyncTestGameMode::ProcessFunc()
 			ProcessRemoveObject(PRO);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_DETECTING:
+		{
+			UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_DETECTING"));
+			PDetecting PD;
+			memcpy(&PD, packet, sizeof(PD));
+			ProcessDetecting(PD);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("ASkillSyncTestGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;

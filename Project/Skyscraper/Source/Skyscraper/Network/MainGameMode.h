@@ -44,6 +44,7 @@ public:
 	void ProcessGetItem(PGetItem PGI);
 	void ProcessBreakObject(PBreakObject PBO);
 	void ProcessRemoveObject(PRemoveObject PRO);
+	void ProcessDetecting(PDetecting PD);
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();
@@ -59,6 +60,9 @@ public:
 	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EObjectType BreakType);
 	bool SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
+
+	UFUNCTION(BlueprintCallable)
+	void SendDetecting(AActor* Sender, AActor* Target);
 	
 	UFUNCTION(BlueprintCallable)
 	void SendRemoveSkillActor(AActor* TargetActor);

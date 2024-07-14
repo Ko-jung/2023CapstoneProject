@@ -146,6 +146,12 @@ public:
 	// 현재 사용 가능한 모든 인풋 컨텍스트(디폴트 입력들)를 추가하는 함수
 	void AddAllInputMappingContext();
 
+	// 상대의 탐지시 Custom Depth 활성화
+	void CustomDepthOn();
+	void CustomDepthOff();
+	UFUNCTION(BlueprintNativeEvent)
+	void SetCustomDepth(bool On);
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeMappingContext(bool IsOnlyMouseMode);
 
@@ -222,7 +228,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsUnableAct;
+
 	FTimerHandle UnableActTimerHandle;
+	FTimerHandle DetectingTimerHandle;
 
 	UFUNCTION(BlueprintCallable)
 		void SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);

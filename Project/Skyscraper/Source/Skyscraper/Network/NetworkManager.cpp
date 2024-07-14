@@ -356,8 +356,12 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 	}
 	case (BYTE)COMP_OP::OP_REMOVEOBJECT:
 	{
-		UE_LOG(LogClass, Warning, TEXT("NetworkManager::ProcessRecvFromMainGame COMP_OP::OP_REMOVEOBJECT"));
 		COPYPACKET(PRemoveObject);
+		break;
+	}
+	case (BYTE)COMP_OP::OP_DETECTING:
+	{
+		COPYPACKET(PDetecting);
 		break;
 	}
 	case (BYTE)COMP_OP::OP_JOINPLAYERINSKILLTEST:

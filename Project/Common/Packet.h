@@ -339,6 +339,14 @@ struct PRemoveObject : Packet
 	}
 };
 
+struct PDetecting : Packet
+{
+	BYTE DetectedSerial;
+
+	PDetecting() : Packet(COMP_OP::OP_DETECTING), DetectedSerial(0)
+	{ PacketSize = sizeof(PDetecting); }
+};
+
 struct PTryLogin : Packet
 {
 	char ID[30];

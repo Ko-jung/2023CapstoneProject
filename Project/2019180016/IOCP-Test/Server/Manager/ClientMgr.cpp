@@ -101,6 +101,22 @@ void ClientMgr::SendPacketToAllExceptSelf(int id, Packet* p, int packetSize)
 	}
 }
 
+void ClientMgr::SendPacketToAllience(int id, Packet* p, int packetSize)
+{
+	int RoomNum = id / MAXPLAYER;
+	bool IsTeamA = (id % MAXPLAYER) < (MAXPLAYER / 2);
+	for (int i = 0; i < MAXPLAYER / 2; i++)
+	{
+		int NowIndex = RoomNum * MAXPLAYER + i + (!IsTeamA) * (MAXPLAYER / 2);	// 0 or 3
+		if (m_Clients[NowIndex]->GetSocket() == INVALID_SOCKET)
+		{
+			continue;
+		}
+
+		m_Clients[NowIndex]->SendProcess(packetSize, p);
+	}
+}
+
 void ClientMgr::SendOldPlayerList(int id)
 {
 	int RoomNum = id / MAXPLAYER;

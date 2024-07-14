@@ -685,6 +685,21 @@ void ASkyscraperCharacter::AddAllInputMappingContext()
 	}
 }
 
+void ASkyscraperCharacter::CustomDepthOn()
+{
+	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::CustomDepthOn()"));
+	//GetMesh()->bRenderCustomDepth = true;
+	SetCustomDepth(true);
+	GetWorld()->GetTimerManager().SetTimer(DetectingTimerHandle, this, &ThisClass::CustomDepthOff, 5.f, false);
+}
+
+void ASkyscraperCharacter::CustomDepthOff()
+{
+	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::CustomDepthOff()"));
+	//GetMesh()->bRenderCustomDepth = false;
+	SetCustomDepth(false);
+}
+
 void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)
 {
 	//if (IsOnlyMouseMode)
@@ -733,6 +748,9 @@ bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 }
 
 void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)
+{
+}
+void ASkyscraperCharacter::SetCustomDepth_Implementation(bool On)
 {
 }
 void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill, uint8 SectionNum)

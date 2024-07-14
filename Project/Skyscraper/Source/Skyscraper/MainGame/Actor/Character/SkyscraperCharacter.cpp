@@ -249,6 +249,18 @@ void ASkyscraperCharacter::BeginPlay()
 
 }
 
+void ASkyscraperCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (IsUnableAct)
+	{
+		const auto& Montage = GetAnimMontage(ECharacterAnimMontage::ECAM_Stun);
+		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(GetMesh(), Montage, 1.0f, 0.16f);
+
+	}
+}
+
 void ASkyscraperCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);

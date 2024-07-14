@@ -162,11 +162,11 @@ public:
 	void PlaySkillMontage(bool IsSpecialSkill, uint8 SectionNum);
 
 	// Process Mine Stun
-	UFUNCTION(BlueprintCallable)
-	void AbleToAct();
+		UFUNCTION(BlueprintCallable)
+		void AbleToAct();
 
-	UFUNCTION(BlueprintCallable)
-	void ApplyStun(const float StunTime);
+		UFUNCTION(BlueprintCallable)
+		void ApplyStun(const float StunTime);
 	// ==================
 
 	UFUNCTION(BlueprintCallable)
@@ -194,6 +194,10 @@ protected:
 
 	// To add mapping context
 	virtual void BeginPlay() override;
+
+	// 2019180016
+	virtual void Tick(float DeltaSeconds) override;
+	// ==========
 
 	// 캐릭터가 땅에 닿았을 때 실행될 함수
 	virtual void Landed(const FHitResult& Hit) override;

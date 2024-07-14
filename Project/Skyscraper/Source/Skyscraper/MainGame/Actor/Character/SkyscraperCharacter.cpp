@@ -656,6 +656,11 @@ void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 	ActiveSkill(IsSpecialSkill);
 }
 
+void ASkyscraperCharacter::ApplyStun(const float StunTime)
+{
+	UnableToAct(StunTime);
+}
+
 bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 {
 	const auto& TargetTags = Target->Tags;
@@ -679,6 +684,9 @@ void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill, 
 {
 }
 void ASkyscraperCharacter::SkillActorSpawnUsingPacket_Implementation(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor)
+{
+}
+void ASkyscraperCharacter::UnableToAct_Implementation(float Timer)
 {
 }
 

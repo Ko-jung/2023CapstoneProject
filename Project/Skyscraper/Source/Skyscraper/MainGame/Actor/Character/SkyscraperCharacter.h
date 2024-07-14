@@ -157,6 +157,14 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void PlaySkillMontage(bool IsSpecialSkill, uint8 SectionNum);
 
+	// Process Mine Stun
+	UFUNCTION(BlueprintNativeEvent)
+	void UnableToAct(const float Timer);
+
+	UFUNCTION(BlueprintCallable)
+	void ApplyStun(const float StunTime);
+	// ==================
+
 	UFUNCTION(BlueprintCallable)
 	bool IsAlliance(AActor* Target);
 	// ==================
@@ -202,6 +210,8 @@ protected:
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)
 		float XRotate;
+	UPROPERTY(BlueprintReadWrite)
+	float UnableActTimer;
 	
 
 	UFUNCTION(BlueprintCallable)

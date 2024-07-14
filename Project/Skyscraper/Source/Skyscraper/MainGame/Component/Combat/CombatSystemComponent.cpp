@@ -351,6 +351,7 @@ void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 		}
 
 		float AttackAnimPlayRate = Montage->GetSectionLength(SectionNum) / StunTime;
+		UE_LOG(LogClass, Warning, TEXT("UCombatSystemComponent::Stun StunTime is %f"), StunTime);
 		const float DamagedAnimPlayRate = Montage->GetPlayLength();
 		
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, DamagedAnimPlayRate, 0, StartingSection);

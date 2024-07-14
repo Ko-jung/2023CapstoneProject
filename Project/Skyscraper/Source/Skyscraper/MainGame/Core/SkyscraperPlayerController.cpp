@@ -123,7 +123,8 @@ void ASkyscraperPlayerController::SetObserveMode(bool bToObserveMode)
 		SetControlRotation(LastRotator);
 		LastRotator = FRotator{};
 
-		PossessingPawn->RemoveObserveInputMappingContext();
+		//PossessingPawn->RemoveObserveInputMappingContext();
+		PossessingPawn->RemoveAllInputMappingTemporary();
 		PossessingPawn->bUseControllerRotationYaw = true;
 		PossessingPawn->AddAllInputMappingContext();
 		

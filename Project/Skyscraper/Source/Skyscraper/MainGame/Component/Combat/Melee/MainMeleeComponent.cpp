@@ -70,6 +70,8 @@ void UMainMeleeComponent::BeginPlay()
 		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	}
 
+	BindingInputAction();
+
 	{ // 소유 캐릭터에게 무기 부착
 		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
 		WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
@@ -104,12 +106,17 @@ void UMainMeleeComponent::AddInputMappingContext()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(IMC_MeleeInput, 0);
-
-			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-			{
-				EnhancedInputComponent->BindAction(IA_Attack, ETriggerEvent::Started, this, &ThisClass::Attack);
-			}
 		}
+	}
+}
+
+void UMainMeleeComponent::BindingInputAction()
+{
+	if (!OwnerCharacter->GetPlayerController()) return;
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(OwnerCharacter->GetPlayerController()->InputComponent))
+	{
+		EnhancedInputComponent->BindAction(IA_Attack, ETriggerEvent::Started, this, &ThisClass::Attack);
 	}
 }
 

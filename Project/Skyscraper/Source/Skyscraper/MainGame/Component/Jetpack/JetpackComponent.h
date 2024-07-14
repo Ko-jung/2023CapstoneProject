@@ -91,6 +91,8 @@ public:
 
 	void RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem);
 
+	void BindingInputActions();
+
 	void AddInputMappingContext();
 
 	UFUNCTION(BlueprintCallable)

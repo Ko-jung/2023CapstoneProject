@@ -22,6 +22,7 @@ public:
 
 	// InputMappingContext 추가 및 삭제 함수
 	void AddInputMappingContext();
+	void BindingInputAction();
 	void RemoveInputMappingContext();
 
 	// 다시 무기를 장착 하였을 때 키 인풋 추가 및 무기 추가하는 함수

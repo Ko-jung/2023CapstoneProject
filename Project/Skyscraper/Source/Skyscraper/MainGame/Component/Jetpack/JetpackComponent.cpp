@@ -92,6 +92,7 @@ void UJetpackComponent::BeginPlay()
 	}
 	
 	AddInputMappingContext();
+	BindingInputActions();
 
 	OwnerCharacter->PlayBoostAnimation("Default");
 }
@@ -253,7 +254,7 @@ void UJetpackComponent::AddJetpackVelocity(FVector AddVelocity, float FuelReduct
 
 void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("??"));
 	if (JetpackFuel > 0.0f)
 	{
 		AddJetpackVelocity(FVector(0.0f, 0.0f, 50.0f * HoveringGravityScale), HoverGaugePerSec);
@@ -454,6 +455,28 @@ void UJetpackComponent::RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayer
 	Subsystem->RemoveMappingContext(IMC_Jetpack);
 }
 
+void UJetpackComponent::BindingInputActions()
+{
+	if (!OwnerCharacter->GetPlayerController()) return;
+
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(OwnerCharacter->GetPlayerController()->InputComponent))
+	{
+		// Hover InputAction 바인딩
+		EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
+		EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
+		// 대시 InputAction 바인딩
+		EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
+		EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
+		// 회피 InputAction 바인딩
+		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_W)], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
+		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_S)], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
+		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_D)], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
+		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_A)], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
+		EnhancedInputComponent->BindAction(IA_Jetpack_Descent, ETriggerEvent::Started, this, &ThisClass::DoDescent);
+	}
+}
+
 void UJetpackComponent::AddInputMappingContext()
 {
 	if(!JetpackWidget)
@@ -477,22 +500,6 @@ void UJetpackComponent::AddInputMappingContext()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(IMC_Jetpack, 1);
-
-			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-			{
-				// Hover InputAction 바인딩
-				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Triggered, this, &ThisClass::Hover);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Hover, ETriggerEvent::Completed, this, &ThisClass::HoverStop);
-				// 대시 InputAction 바인딩
-				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Triggered, this, &ThisClass::DashFast);
-				EnhancedInputComponent->BindAction(IA_Jetpack_DashFast, ETriggerEvent::Completed, this, &ThisClass::DashStop);
-				// 회피 InputAction 바인딩
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_W)], ETriggerEvent::Started, this, &ThisClass::Dodge_Fwd);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_S)], ETriggerEvent::Started, this, &ThisClass::Dodge_Bwd);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_D)], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_A)], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
-				EnhancedInputComponent->BindAction(IA_Jetpack_Descent, ETriggerEvent::Started, this, &ThisClass::DoDescent);
-			}
 		}
 	}
 }

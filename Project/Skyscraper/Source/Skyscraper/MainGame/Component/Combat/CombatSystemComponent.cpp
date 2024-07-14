@@ -142,6 +142,7 @@ void UCombatSystemComponent::BeginPlay()
 
 	//Add Input Mapping Context
 	AddInputMappingContext();
+	BindingInputActions();
 
 	// ...
 	
@@ -154,16 +155,23 @@ void UCombatSystemComponent::AddInputMappingContext()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(IMC_CombatSystem, 0);
-
-			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-			{
-				EnhancedInputComponent->BindAction(IA_MeleeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToMeleeWeapon);
-				EnhancedInputComponent->BindAction(IA_RangeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToRangeWeapon);
-				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Started, this, &ThisClass::LockOnKeyFunc);
-				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Triggered, this, &ThisClass::LockOn);
-				EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Completed, this, &ThisClass::LockOnKeyFunc);
-			}
+			
+			
 		}
+	}
+}
+
+void UCombatSystemComponent::BindingInputActions()
+{
+	if (!OwnerCharacter->GetPlayerController()) return;
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(OwnerCharacter->GetPlayerController()->InputComponent))
+	{
+		EnhancedInputComponent->BindAction(IA_MeleeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToMeleeWeapon);
+		EnhancedInputComponent->BindAction(IA_RangeWeaponSelect, ETriggerEvent::Started, this, &ThisClass::SwapToRangeWeapon);
+		EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Started, this, &ThisClass::LockOnKeyFunc);
+		EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Triggered, this, &ThisClass::LockOn);
+		EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Completed, this, &ThisClass::LockOnKeyFunc);
 	}
 }
 

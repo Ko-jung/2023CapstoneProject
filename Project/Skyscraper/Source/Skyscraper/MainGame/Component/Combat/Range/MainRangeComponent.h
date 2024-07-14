@@ -22,6 +22,7 @@ public:
 
 	// InputMappingContext 추가 및 삭제 함수
 	void AddInputMappingContext();
+	void BindingInputActions();
 	void RemoveInputMappingContext();
 
 	// 무기 웨폰 skeletal mesh의 visible을 변경해주는 함수

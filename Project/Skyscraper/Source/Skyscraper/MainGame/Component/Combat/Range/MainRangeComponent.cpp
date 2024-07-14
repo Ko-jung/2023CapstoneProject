@@ -19,6 +19,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Ammo/MyAmmoWidget.h"
 
 #include "Skyscraper/Network/MainGameMode.h"
@@ -99,6 +100,7 @@ void UMainRangeComponent::BeginPlay()
 
 	// 소유자 정보 로드
 	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+	BindingInputActions();
 	OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 
 	// 소유자에게 무기 부착
@@ -153,12 +155,19 @@ void UMainRangeComponent::AddInputMappingContext()
 		{
 			Subsystem->AddMappingContext(IMC_RangeInput, 0);
 
-			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-			{
-				EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &ThisClass::PlayFireAnim);
-				EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &ThisClass::PlayReloadAnim);
-			}
+			
 		}
+	}
+}
+
+void UMainRangeComponent::BindingInputActions()
+{
+	if (!OwnerCharacter->GetPlayerController()) return;
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(OwnerCharacter->GetPlayerController()->InputComponent))
+	{
+		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &ThisClass::PlayFireAnim);
+		EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &ThisClass::PlayReloadAnim);
 	}
 }
 

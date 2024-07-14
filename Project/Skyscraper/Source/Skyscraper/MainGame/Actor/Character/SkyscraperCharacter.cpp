@@ -462,13 +462,6 @@ void ASkyscraperCharacter::AddObserveInputMappingContext()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(IMC_Observe, 0);
-
-			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-			{
-				EnhancedInputComponent->BindAction(IA_Observe_CameraZoom, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::SetCameraZoomUpDown);
-				EnhancedInputComponent->BindAction(IA_Observe_Look, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ObserveLook);
-				EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Completed, this, &ASkyscraperCharacter::EndObserveMode);
-			}
 		}
 	}
 }
@@ -652,7 +645,10 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
 		EnhancedInputComponent->BindAction(IA_ItemUsing, ETriggerEvent::Started, this, &ASkyscraperCharacter::UseItem);
 		EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Started, this, &ASkyscraperCharacter::StartObserveMode);
-		
+
+		EnhancedInputComponent->BindAction(IA_Observe_CameraZoom, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::SetCameraZoomUpDown);
+		EnhancedInputComponent->BindAction(IA_Observe_Look, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ObserveLook);
+		EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Completed, this, &ASkyscraperCharacter::EndObserveMode);
 	}
 	else
 	{
@@ -662,13 +658,15 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void ASkyscraperCharacter::RemoveAllInputMappingTemporary()
 {
+	
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->RemoveMappingContext(DefaultMappingContext);
-			if (CombatSystemComponent) CombatSystemComponent->RemoveAllInputMappingTemporary(Subsystem);
-			if (JetpackComponent) JetpackComponent->RemoveAllInputMappingTemporary(Subsystem);
+			Subsystem->ClearAllMappings();
+			//Subsystem->RemoveMappingContext(DefaultMappingContext);
+			//if (CombatSystemComponent) CombatSystemComponent->RemoveAllInputMappingTemporary(Subsystem);
+			//if (JetpackComponent) JetpackComponent->RemoveAllInputMappingTemporary(Subsystem);
 
 		}
 	}

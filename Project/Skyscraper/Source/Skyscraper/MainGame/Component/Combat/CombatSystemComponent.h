@@ -28,6 +28,9 @@ public:
 	// == Call right after construct
 	void SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeSelect eRangeSelect);
 
+	void AddInputMappingContext();
+	void BindingInputActions();
+
 	// == Do Stun / Down Function
 	UFUNCTION(BlueprintCallable)
 		void Stun(float StunTime, FVector StunDirection);
@@ -159,8 +162,4 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_LockOn;
 
-
-// === 2019180016 ===
-public:
-	void AddInputMappingContext();
 };

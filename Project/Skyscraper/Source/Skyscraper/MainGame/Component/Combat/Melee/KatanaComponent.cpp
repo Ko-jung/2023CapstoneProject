@@ -10,10 +10,10 @@ UKatanaComponent::UKatanaComponent()
 	AnimMontageKey = ECharacterAnimMontage::ECAM_KatanaAttack;
 
 
-	AttackBlendOutTime.Add(0.17f);
-	AttackBlendOutTime.Add(0.11f);
-	AttackBlendOutTime.Add(0.17f);
-	AttackBlendOutTime.Add(0.3f);
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.2f);
 
 	WeaponSocketName = TEXT("KatanaSocket");
 

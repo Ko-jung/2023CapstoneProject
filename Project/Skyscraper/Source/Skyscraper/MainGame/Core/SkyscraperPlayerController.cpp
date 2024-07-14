@@ -3,6 +3,7 @@
 
 #include "SkyscraperPlayerController.h"
 
+#include "GameFramework/DefaultPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
@@ -189,7 +190,15 @@ void ASkyscraperPlayerController::BeginPlay()
 	if(MiniMapWidget)
 	{
 		MiniMapWidget->AddToViewport();
-		MiniMapWidget->AddPlayerToImage(PossessingPawn);
+		if(PossessingPawn)
+		{
+			MiniMapWidget->AddPlayerToImage(PossessingPawn);
+		}
+		else if(APawn* DefaultPawn = Cast<ADefaultPawn>(GetPawn()))
+		{
+			MiniMapWidget->AddPlayerToImage(GetPawn());
+		}
+		
 		UpdateImage();
 	}
 	

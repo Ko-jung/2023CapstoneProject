@@ -70,6 +70,7 @@ public:
 
 	// 스피드 증가 적용 해제 함수
 	void SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime);
+	void AddSpeedBuffValue(float AddSpeedBuffValue);
 
 	// 공격력 증가 적용 해제 함수
 	void SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime);
@@ -103,6 +104,9 @@ public:
 
 	UFUNCTION()
 		void SetCameraFOVToDash(bool bToDash, float Alpha = 1.0f);
+
+	UFUNCTION()
+		void SpawnGravityChangerArea(bool bGravityLow);
 
 	// 2019180016
 public:
@@ -240,6 +244,8 @@ public:
 protected:
 	UPROPERTY()
 		float InitialCameraArmLength = 350.0f;
+	UPROPERTY()
+		FVector InitialCameraBoomOffset = FVector{ 20.0f,0.0f, 85.0f };
 
 	UPROPERTY()
 		TMap<ECharacterAnimMontage, UAnimMontage*> CharacterAnimMontages;
@@ -256,6 +262,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
 		TObjectPtr<UNiagaraComponent> NS_DashEffect;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> BP_GravityChangerAreaClass;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> BP_GravityChangerAreaHighClass;
 
 private:
 	/** Camera boom positioning the camera behind the character */

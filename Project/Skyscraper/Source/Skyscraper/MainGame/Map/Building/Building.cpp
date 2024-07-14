@@ -78,6 +78,7 @@ void ABuilding::BeginPlay()
 
 void ABuilding::CollapseBuilding(int CollapseStartFloor)
 {
+	Building_Ceiling->DestroyComponent();
 	for (int i = CollapseStartFloor; i < CurrentFloor; ++i)
 	{
 		Building_Floors[i]->DoCollapse();

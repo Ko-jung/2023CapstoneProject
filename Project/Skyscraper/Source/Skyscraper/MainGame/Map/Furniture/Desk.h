@@ -15,6 +15,7 @@ class SKYSCRAPER_API ADesk : public AActor
 public:
 	ADesk();
 
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -23,7 +24,6 @@ protected:
 private:
 
 public:
-protected:
 	UPROPERTY(BlueprintReadWrite)
 		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Chair;
 	UPROPERTY(BlueprintReadWrite)
@@ -31,10 +31,12 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Monitor;
 	UPROPERTY(BlueprintReadWrite)
-		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Desk;
+		TObjectPtr<UHierarchicalInstancedStaticMeshComponent>
+			HISM_Desk;
 	UPROPERTY(BlueprintReadWrite)
 		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HISM_Desktop;
 
+protected:
 private:
 
 };

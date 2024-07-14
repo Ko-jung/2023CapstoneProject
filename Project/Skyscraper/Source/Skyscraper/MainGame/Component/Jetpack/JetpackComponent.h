@@ -92,6 +92,9 @@ public:
 	void RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem);
 
 	void AddInputMappingContext();
+
+	UFUNCTION(BlueprintCallable)
+		void AddHoveringGravityScale(float AddValue);
 	
 
 protected:
@@ -156,6 +159,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 		double LastCreateLandDustTime;
+
+	// 호버링 중 적용될 gravity scale 변수
+	// 기본값 1.0f, 커질수록 중력이 약하고, 작아질수록 중력이 강해짐
+	UPROPERTY(EditAnywhere)
+		float HoveringGravityScale;
 
 protected:
 	UFUNCTION()

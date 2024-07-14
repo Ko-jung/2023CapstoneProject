@@ -21,7 +21,7 @@ class SKYSCRAPER_API AFurniture : public AActor, public ICollapsible
 public:	
 	AFurniture();
 
-	virtual void DoCollapse();
+	virtual void DoCollapse() override;
 protected:
 	void SettingSpotLight();
 	UFUNCTION()

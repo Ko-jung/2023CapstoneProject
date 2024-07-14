@@ -72,12 +72,23 @@ UMainRangeComponent::UMainRangeComponent()
 		MainRangeWidgetClass = WBP_MainRangeWidgetRef.Class;
 	}
 
-	
+	// Muzzle Flash 이펙트 로드
 	{
 		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_MuzzleFlashRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/MuzzleFlash/NS_MuzzleFlash.NS_MuzzleFlash'"));
-		NS_MuzzleFlash = NS_MuzzleFlashRef.Object;
+		if(NS_MuzzleFlashRef.Succeeded())
+		{
+			NS_MuzzleFlash = NS_MuzzleFlashRef.Object;
+		}
 	}
-	
+
+	// BloodSpawner 로드
+	{
+		static ConstructorHelpers::FClassFinder<AActor> BP_BloodSpawnerRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/BloodSpawner/BP_Blood_Drops.BP_Blood_Drops_C'"));
+		if(BP_BloodSpawnerRef.Succeeded())
+		{
+			BP_BloodSpawner = BP_BloodSpawnerRef.Class;
+		}
+	}
 }
 
 
@@ -250,8 +261,8 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		FHitResult OutHit;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerCharacter);
+		//QueryParams.TraceTag = TEXT("DebugTraceTag");
 
-		QueryParams.TraceTag = TEXT("DebugTraceTag");
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
 		if (HitResult)
 		{
@@ -285,13 +296,23 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 					}
 				}
 			}
+
+			// BloodSpawner 생성
+			{
+				FTransform Transform{ OutHit.Normal.Rotation().Quaternion(), OutHit.Location};
+				AActor* BloodSpawner = GetWorld()->SpawnActorDeferred<AActor>(BP_BloodSpawner, Transform);
+				if(BloodSpawner)
+				{
+					BloodSpawner->FinishSpawning(Transform);
+				}
+			}
+			
 		}
 
 		// Muzzle Flash Effect
 		if (NS_MuzzleFlash)
 		{
 			FVector FireLocation = WeaponMeshComponent->GetSocketLocation(TEXT("FireSocket"));
-			DrawDebugSphere(GetWorld(), TargetLocation, 50.0f, 10.0f, FColor::Black, true, 1.0f, 0, 5);
 			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MuzzleFlash, FireLocation, (TargetLocation - FireLocation).Rotation(), FVector{ 1.0f,1.0f,1.0f });
 			float Distance = FVector::Distance(FireLocation, TargetLocation);
 			UE_LOG(LogTemp, Warning, TEXT("Distance : %f"), Distance);

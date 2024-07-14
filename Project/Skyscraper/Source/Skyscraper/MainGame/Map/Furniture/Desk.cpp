@@ -18,6 +18,7 @@ ADesk::ADesk()
 	//HISM_Partition = CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(TEXT("HISM_Partition"));
 }
 
+
 // Called when the game starts or when spawned
 void ADesk::BeginPlay()
 {

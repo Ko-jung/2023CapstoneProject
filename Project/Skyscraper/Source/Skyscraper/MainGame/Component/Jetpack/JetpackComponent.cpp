@@ -44,6 +44,8 @@ UJetpackComponent::UJetpackComponent()
 		
 	DodgeSlowdownValue = 0.04f;
 
+	HoveringGravityScale = 1.0f;
+
 	{ // == Set Input Asset
 		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_JetpackRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Jetpack/IMC_Jetpack.IMC_Jetpack'"));
 		IMC_Jetpack = IMC_JetpackRef.Object;
@@ -254,7 +256,7 @@ void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 
 	if (JetpackFuel > 0.0f)
 	{
-		AddJetpackVelocity(FVector(0.0f, 0.0f, 50.0f), HoverGaugePerSec);
+		AddJetpackVelocity(FVector(0.0f, 0.0f, 50.0f * HoveringGravityScale), HoverGaugePerSec);
 		bHoverStoping = false;
 	}
 	else
@@ -350,7 +352,7 @@ void UJetpackComponent::SetCharacterMaxSpeed()
 
 	if(bIsHovering)
 	{
-		GetOwnerCharacterMovement()->MaxWalkSpeed = HoveringMaxSpeed * OwnerCharacter->GetSpeedBuffValue();
+		GetOwnerCharacterMovement()->MaxWalkSpeed = HoveringMaxSpeed * OwnerCharacter->GetSpeedBuffValue() * HoveringGravityScale;
 		return;
 	}
 
@@ -493,4 +495,9 @@ void UJetpackComponent::AddInputMappingContext()
 			}
 		}
 	}
+}
+
+void UJetpackComponent::AddHoveringGravityScale(float AddValue)
+{
+	HoveringGravityScale += AddValue;
 }

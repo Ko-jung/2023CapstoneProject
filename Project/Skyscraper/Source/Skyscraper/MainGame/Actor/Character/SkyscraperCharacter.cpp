@@ -30,6 +30,7 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "UObject/UnrealTypePrivate.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -75,9 +76,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	{// Create a camera boom (pulls in towards the player if there is a collision)
 		CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 		CameraBoom->SetupAttachment(RootComponent);
-		CameraBoom->TargetArmLength = 350.0f; // The camera follows at this distance behind the character	
+		CameraBoom->TargetArmLength = InitialCameraArmLength;// The camera follows at this distance behind the character	
 		CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 85.0f));
+		CameraBoom->SetRelativeLocation(InitialCameraBoomOffset);
 	}
 
 	// Create a follow camera
@@ -213,6 +214,21 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Boost/AM_Assassin_Boost.AM_Assassin_Boost'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Boost, AM_BoostRef.Object);
 	}
+
+	// Gravity Change Area
+	{
+		ConstructorHelpers::FClassFinder<AActor> BP_GravityChangerAreaRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/GravityChanger/BP_GravityChangerArea_Low.BP_GravityChangerArea_Low_C'"));
+		if (BP_GravityChangerAreaRef.Succeeded())
+		{
+			BP_GravityChangerAreaClass = BP_GravityChangerAreaRef.Class;
+		}
+
+		ConstructorHelpers::FClassFinder<AActor> BP_GravityChangerArea2Ref(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/GravityChanger/BP_GravityChangerArea_High.BP_GravityChangerArea_High_C'"));
+		if (BP_GravityChangerAreaRef.Succeeded())
+		{
+			BP_GravityChangerAreaHighClass = BP_GravityChangerArea2Ref.Class;
+		}
+	}
 }
 
 void ASkyscraperCharacter::BeginPlay()
@@ -314,6 +330,21 @@ void ASkyscraperCharacter::SetCameraFOVToDash(bool bToDash, float Alpha)
 	else
 	{
 		FollowCamera->SetFieldOfView(FMath::Lerp(DashFOV, DefaultFOV, Alpha));
+	}
+}
+
+void ASkyscraperCharacter::SpawnGravityChangerArea(bool bGravityLow)
+{
+
+	if(bGravityLow)
+	{
+		AActor* GravityActor = GetWorld()->SpawnActor<AActor>(BP_GravityChangerAreaClass);
+		GravityActor->SetActorLocation(GetActorLocation());
+	}
+	else
+	{
+		AActor* GravityActor = GetWorld()->SpawnActor<AActor>(BP_GravityChangerAreaHighClass);
+		GravityActor->SetActorLocation(GetActorLocation());
 	}
 }
 
@@ -476,6 +507,11 @@ void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuf
 		GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(SpeedBuffTimerHandle, this, &ThisClass::ResetSpeedBuffValue, 0.2f, false, fBuffTime);
 	}
+}
+
+void ASkyscraperCharacter::AddSpeedBuffValue(float AddSpeedBuffValue)
+{
+	SpeedBuffValue += AddSpeedBuffValue;
 }
 
 void ASkyscraperCharacter::ResetSpeedBuffValue()
@@ -812,7 +848,10 @@ void ASkyscraperCharacter::SetCameraZoomUpDown(const FInputActionValue& Value)
 
 	float ZoomSpeed = 10.0f;
 	float MaxArmLength = InitialCameraArmLength + 150.0f;
-	float MinArmLength = InitialCameraArmLength - 50.0f;
+	float MinArmLength = InitialCameraArmLength - 300.0f;
 
 	CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength +  ZoomSpeed * -ZoomValue, MinArmLength, MaxArmLength);
+
+	float LerpAlpha = (CameraBoom->TargetArmLength - MinArmLength) / (MaxArmLength - MinArmLength);
+	CameraBoom->SetRelativeLocation(FMath::Lerp(FVector{ 0.0f,0.0f,0.0f }, InitialCameraBoomOffset, LerpAlpha));
 }

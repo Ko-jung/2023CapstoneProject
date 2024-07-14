@@ -49,6 +49,14 @@ protected:
 	UPROPERTY()
 	TArray<AActor*> BTeamBuildings;
 
+	// 붕괴가 진행될 타일의 인덱스를 저장하는 배열
+	UPROPERTY()
+		TArray<int> CollapseTileIndexes;
+	UPROPERTY()
+		FTimerHandle CollapseTileTimerHandle;
+	UPROPERTY(EditAnywhere)
+		float CollapseDelaySeconds = 1.0f;
+
 public:	
 	// 생성자
 	AHexagonTile();
@@ -108,6 +116,9 @@ public:
 	void IncreaseTileDropLevel() { ++TileDropLevel; }
 
 	FVector GetSpawnLocation(bool IsTeamA);
+
+	UFUNCTION()
+	void CollapseTileOnDelay();
 
 	void CollapseTilesAndActors(int CollapseLevel, int CenterIndex);
 	void CollapseLevel3(uint8 CenterIndex);

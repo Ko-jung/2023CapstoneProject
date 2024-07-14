@@ -68,28 +68,27 @@ void URPGComponent::Fire(float fBaseDamage)
 	FVector BulletDestination = GetOwnerPlayerController()->GetControlRotation().Vector() * 8000.0f  
 								+ OwnerCharacter->GetCameraBoom()->GetComponentLocation();
 
-	FVector Direction = (BulletDestination - OwnerCharacter->GetActorLocation());
+	FVector LocationOffset = OwnerCharacter->GetActorForwardVector() * 225.0f + OwnerCharacter->GetActorRightVector() * 15.0f + FVector{0.0f, 0.0f, 50.0f};
+	FVector StartLocation = OwnerCharacter->GetActorLocation() + LocationOffset;
+
+	FVector Direction = (BulletDestination - StartLocation);
 	Direction.Normalize();
-	FVector Location = OwnerCharacter->GetActorLocation() + 
-						Direction * 100;
 	
 
 	FRotator Rotation(0.0f, 0.0f, 0.0f);
 	FActorSpawnParameters SpawnInfo;
 	//AActor* BulletActor = GetWorld()->SpawnActor<ARPGBullet>(RPGBulletBPClass,Location, Rotation, SpawnInfo);
 	FTransform SpawnTransform{};
-	SpawnTransform.SetLocation(Location);
+	SpawnTransform.SetLocation(StartLocation);
 	SpawnTransform.SetRotation(Rotation.Quaternion());
 	SpawnTransform.SetScale3D(FVector(1.0f, 1.0f, 1.0f));
 
 	ARPGBullet* BulletActor = GetWorld()->SpawnActorDeferred<ARPGBullet>(RPGBulletBPClass, SpawnTransform);
 	if(BulletActor)
 	{
-
 		BulletActor->Initialize(OwnerCharacter, Direction, 5000.0f, fBaseDamage);
 		BulletActor->FinishSpawning(SpawnTransform);
 	}
-	//UBlueprint* BulletObject = Cast<UBlueprint>()
 }
 
 void URPGComponent::SetInitialValue()

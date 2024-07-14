@@ -31,7 +31,6 @@ AFurniture::AFurniture()
 
 void AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s , %d index to SM"), *HISM->GetName(), Index);
 	int CurrentLastIndex = DummyStaticMeshComp.Num() - 1;
 	UStaticMeshComponent* SMComp = DummyStaticMeshComp[CurrentLastIndex];
 	DummyStaticMeshComp.RemoveAt(CurrentLastIndex);
@@ -41,7 +40,7 @@ void AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent
 	HISM->RemoveInstance(Index);
 	
 	SMComp->SetStaticMesh(HISM->GetStaticMesh());
-	SMComp->SetWorldLocation(GetActorLocation() + Transform.GetLocation());
+	SMComp->SetWorldLocation(HISM->GetComponentLocation() + Transform.GetLocation());
 	SMComp->SetRelativeRotation(Transform.GetRotation());
 	SMComp->SetHiddenInGame(false);
 	SMComp->SetSimulatePhysics(true);
@@ -62,10 +61,20 @@ void AFurniture::AllHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* H
 
 void AFurniture::DoCollapse()
 {
+	// 모든 HISM 오브젝트
 	AllHISMToPhysicsSM(HISM_Sofa);
 	AllHISMToPhysicsSM(HISM_Table);
 	AllHISMToPhysicsSM(HISM_Flowerpot);
-	
+
+	// 책상 액터
+	for(ADesk* DeskActor : DeskActors)
+	{
+		AllHISMToPhysicsSM(DeskActor->HISM_Chair);
+		AllHISMToPhysicsSM(DeskActor->HISM_Desk);
+		AllHISMToPhysicsSM(DeskActor->HISM_Desktop);
+		AllHISMToPhysicsSM(DeskActor->HISM_Monitor);
+		AllHISMToPhysicsSM(DeskActor->HISM_Partition);
+	}
 }
 
 void AFurniture::SettingSpotLight()

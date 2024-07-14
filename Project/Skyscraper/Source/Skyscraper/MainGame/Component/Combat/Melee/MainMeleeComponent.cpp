@@ -10,6 +10,7 @@
 #include "Components/InputComponent.h"
 
 #include "MotionWarpingComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "PlayMontageCallbackProxy.h"
 #include "PlayMontageCallbackProxy.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -38,12 +39,22 @@ UMainMeleeComponent::UMainMeleeComponent()
 	bCanAttack = true;
 	AttackCoolDownTime = 2.0f;
 
-	{ // == Set Input Asset
+	// Set Input Asset
+	{ 
 		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_MeleeInputRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Combat/Melee/IMC_MainMeleeInput.IMC_MainMeleeInput'"));
 		IMC_MeleeInput = IMC_MeleeInputRef.Object;
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_AttackRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Combat/Melee/IA_Attack.IA_Attack'"));
 		IA_Attack = IA_AttackRef.Object;
+	}
+
+	// Hit Effect
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_HitEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/HitEffect/NS_HitEffect.NS_HitEffect'"));
+		if(NS_HitEffectRef.Succeeded())
+		{
+			NS_HitEffect = NS_HitEffectRef.Object;
+		}
 	}
 }
 
@@ -295,26 +306,35 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	TArray<FHitResult> OutHits;
 
 	FVector vHitSize{ 1.0f,Width,Height };
+
 	// == TODO: Delete Debug Later
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHits, true);
 
-	TArray<FHitResult*> UniqueOutHits;
-	for (FHitResult& HitResult : OutHits)
+	// 노트
+	// UKismetSystemLibrary::BoxTraceMulti 를 사용했으나 OutHits 에 유일하지 않은 데이터로 리턴 됨을 확인
+	// Unique한 데이터로 만드는 과정에서 '==' action이 적절히 작동하지 않음을 확인
+	// 따라서 OutHit.GetActor() 으로 분리하였고, 그러기 위해 배열을 통해 저장
+	TArray<FHitResult> UniqueOutHits;
+	TArray<AActor*> OutHitActor;
+	for(FHitResult OutHitResult : OutHits)
 	{
-		if (!UniqueOutHits.Contains(&HitResult))
+		if (OutHitResult.GetActor()->IsA<ASkyscraperCharacter>())
 		{
-			UniqueOutHits.Add(&HitResult);
+			if (!OutHitActor.Contains(OutHitResult.GetActor()))
+			{
+				OutHitActor.Add(OutHitResult.GetActor());
+				UniqueOutHits.Add(OutHitResult);
+			}
+				
 		}
 	}
-
-
 
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
 
 	bool bDoHitLag = false;
-	for (FHitResult* HitResult : UniqueOutHits)
+	for (FHitResult HitResult : UniqueOutHits)
 	{
-		UPrimitiveComponent* PrimitiveComponent = HitResult->GetComponent();
+		UPrimitiveComponent* PrimitiveComponent = HitResult.GetComponent();
 		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
 			&& PrimitiveComponent->GetName().StartsWith("Window_"))
 		{
@@ -324,27 +344,59 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 			continue;
 		}
 
-		AActor* HitActor = HitResult->GetActor();
+		AActor* HitActor = HitResult.GetActor();
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 
 		bDoHitLag = true;
-		// == TODO: Stun And Down Later
-		if (bDoDown)
+
+		ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor);
+
+		if(TargetCharacter)
 		{
-			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
+			if (bDoDown)
 			{
 				TargetCharacter->DoDown(OwnerCharacter, OwnerCharacter->GetActorForwardVector());
 			}
-
-		}
-		else
-		{
-			if (ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor))
+			else
 			{
-				Cast<ASkyscraperCharacter>(HitActor)->DoStun(OwnerCharacter, fStunTime, OwnerCharacter->GetActorForwardVector());
+				TargetCharacter->DoStun(OwnerCharacter, fStunTime, OwnerCharacter->GetActorForwardVector());
 			}
 
+			// Find near bone to spawn system effect (Hit Effect & Blood Effect)
+			{
+				USkeletalMeshComponent* Mesh = TargetCharacter->GetMesh();
+				FTransform MeshHitTransform = Mesh->GetBoneTransform(Mesh->FindClosestBone(HitResult.Location));
+
+				if(NS_HitEffect)
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						GetWorld(), NS_HitEffect,
+						MeshHitTransform.GetLocation(),
+						FRotator{ 0.0f,0.0f,0.0f },
+						FVector(1));
+				}
+				
+			}
+
+			if (HitResult.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
+			{
+				{ // 대미지 소환 액터 소환
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(HitResult.Location);
+					FRotator rotator = (HitResult.TraceEnd - HitResult.TraceStart).ToOrientationRotator();
+					rotator.Pitch += 180.0f;
+					SpawnTransform.SetRotation(rotator.Quaternion());
+					ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
+					if (DamageSpawner)
+					{
+						DamageSpawner->SetActorLocation(HitResult.Location);
+						DamageSpawner->Initialize(fBaseDamage, 0.6f);
+						DamageSpawner->FinishSpawning(SpawnTransform);
+					}
+				}
+			}
 		}
+		
 
 		// Execute on Sever
 		if (GameMode)
@@ -356,25 +408,10 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 			}
 		}
 
-		if (HitResult->GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
-		{
-			{ // 대미지 소환 액터 소환
-				FTransform SpawnTransform;
-				SpawnTransform.SetLocation(HitResult->Location);
-				FRotator rotator = (HitResult->TraceEnd - HitResult->TraceStart).ToOrientationRotator();
-				rotator.Pitch += 180.0f;
-				SpawnTransform.SetRotation(rotator.Quaternion());
-				ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
-				if (DamageSpawner)
-				{
-					DamageSpawner->SetActorLocation(HitResult->Location);
-					DamageSpawner->Initialize(fBaseDamage, 0.6f);
-					DamageSpawner->FinishSpawning(SpawnTransform);
-				}
-			}
-		}
+		
 
 	}
+
 	// 적중된 적이 있으므로 역경직
 	if (bDoHitLag)
 	{

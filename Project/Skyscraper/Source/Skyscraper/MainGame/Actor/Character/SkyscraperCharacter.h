@@ -116,6 +116,11 @@ public:
 	void DoAbleLockOn();
 	bool DisableLockOn;
 
+	UFUNCTION(BlueprintCallable)
+	void DoCantEnemyLockOnMe(float Timer);
+	void DoCanEnemyLockOnMe();
+	bool CanEnemyLockOnMe;
+
 	/// <returns>
 	/// If Weapon Changed return true
 	/// </returns>
@@ -240,6 +245,7 @@ protected:
 	FTimerHandle UnableActTimerHandle;
 	FTimerHandle DetectingTimerHandle;
 	FTimerHandle LockOnTimerHandle;
+	FTimerHandle EnemyLockOnTimerHandle;
 
 	UFUNCTION(BlueprintCallable)
 		void SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);

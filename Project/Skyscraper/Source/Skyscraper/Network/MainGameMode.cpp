@@ -281,12 +281,12 @@ void AMainGameMode::ProcessFunc()
 			ProcessRemoveObject(PRO);
 			break;
 		}
-		case (BYTE)COMP_OP::OP_DETECTING:
+		case (BYTE)COMP_OP::OP_SKILLINTERACT:
 		{
 			UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_DETECTING"));
-			PDetecting PD;
-			memcpy(&PD, packet, sizeof(PD));
-			ProcessDetecting(PD);
+			PSkillInteract PKI;
+			memcpy(&PKI, packet, sizeof(PKI));
+			ProcessSkillInteract(PKI);
 			break;
 		}
 		default:
@@ -628,12 +628,26 @@ void AMainGameMode::ProcessRemoveObject(PRemoveObject PRO)
 	}
 }
 
-void AMainGameMode::ProcessDetecting(PDetecting PD)
+void AMainGameMode::ProcessSkillInteract(PSkillInteract PKI)
 {
-	if (Characters.IsValidIndex(PD.DetectedSerial))
+	switch (PKI.SkillActor)
+	{
+	case ESkillActor::BP_DetectorMine:
+		ProcessDetecting(PKI.InteractedPlayerSerial);
+		break;
+	case ESkillActor::BP_ShieldSphere:
+		break;
+	default:
+		break;
+	}
+}
+
+void AMainGameMode::ProcessDetecting(const uint8 DetectedSerial)
+{
+	if (Characters.IsValidIndex(DetectedSerial))
 	{
 		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::ProcessDetecting"));
-		Characters[PD.DetectedSerial]->CustomDepthOn();
+		Characters[DetectedSerial]->CustomDepthOn();
 	}
 }
 
@@ -856,15 +870,16 @@ void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
 		}
 	}
 
-	PDetecting PD;
-	PD.DetectedSerial = TargetSerial;
+	PSkillInteract PSI;
+	PSI.SkillActor = ESkillActor::BP_DetectorMine;
+	PSI.InteractedPlayerSerial = TargetSerial;
 	if (m_Socket)
 	{
-		Send(&PD, PD.PacketSize);
+		Send(&PSI, PSI.PacketSize);
 	}
 	else
 	{
-		ProcessDetecting(PD);
+		ProcessSkillInteract(PSI);
 	}
 }
 

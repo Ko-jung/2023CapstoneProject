@@ -154,12 +154,12 @@ void ASkillSyncTestGameMode::ProcessFunc()
 			ProcessRemoveObject(PRO);
 			break;
 		}
-		case (BYTE)COMP_OP::OP_DETECTING:
+		case (BYTE)COMP_OP::OP_SKILLINTERACT:
 		{
 			UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_DETECTING"));
-			PDetecting PD;
-			memcpy(&PD, packet, sizeof(PD));
-			ProcessDetecting(PD);
+			PSkillInteract PSI;
+			memcpy(&PSI, packet, sizeof(PSI));
+			ProcessSkillInteract(PSI);
 			break;
 		}
 		default:

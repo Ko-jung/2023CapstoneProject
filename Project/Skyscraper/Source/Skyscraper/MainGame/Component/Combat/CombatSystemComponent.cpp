@@ -262,12 +262,14 @@ void UCombatSystemComponent::LockOn()
 	// == find nearest TargetActor in LockOnRange
 	for(AActor* TargetActor : OutActors)
 	{
+		ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(TargetActor);	// 2019180016
+																							//	TargetActor -> TargetCharacter
 		// == If not self character,
-		if(TargetActor != OwnerCharacter)
+		if(TargetCharacter != OwnerCharacter && TargetCharacter->CanEnemyLockOnMe)
 		{
 			// == Get TargetActor Screen Location
 			FVector2D ScreenLocation(0.0f, 0.0f);
-			UGameplayStatics::ProjectWorldToScreen(OwnerCharacter->GetPlayerController(), TargetActor->GetActorLocation(),ScreenLocation);
+			UGameplayStatics::ProjectWorldToScreen(OwnerCharacter->GetPlayerController(), TargetCharacter->GetActorLocation(),ScreenLocation);
 
 			// == Get Player Viewport size
 			//FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(GetWorld());
@@ -282,9 +284,9 @@ void UCombatSystemComponent::LockOn()
 			LockOnActorCount += 1;
 
 			// == find nearest TargetActor
-			if (Distance < CloseTargetDistance || TargetActor == LockOnActor) 
+			if (Distance < CloseTargetDistance || TargetCharacter == LockOnActor) 
 			{
-				LockOnActor = TargetActor;
+				LockOnActor = TargetCharacter;
 				CloseTargetDistance = Distance;
 				TargetActorScreenLocation = ScreenLocation;
 			}

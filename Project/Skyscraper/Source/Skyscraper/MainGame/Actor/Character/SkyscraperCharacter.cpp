@@ -229,6 +229,11 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 			BP_GravityChangerAreaHighClass = BP_GravityChangerArea2Ref.Class;
 		}
 	}
+
+	{	// Other Value use to Skill
+		DisableLockOn = false;
+		CanEnemyLockOnMe = true;
+	}
 }
 
 void ASkyscraperCharacter::BeginPlay()
@@ -246,8 +251,6 @@ void ASkyscraperCharacter::BeginPlay()
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	MainGameMode = Cast<AMainGameMode>(gamemode);
 	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::BeginPlay() Cast<AMainGameMode>(gamemode) result: %d"), MainGameMode ? 1 : 0);
-
-	DisableLockOn = false;
 }
 
 void ASkyscraperCharacter::Tick(float DeltaSeconds)
@@ -370,6 +373,17 @@ void ASkyscraperCharacter::DoDisableLockOn(float Timer)
 void ASkyscraperCharacter::DoAbleLockOn()
 {
 	DisableLockOn = false;
+}
+
+void ASkyscraperCharacter::DoCantEnemyLockOnMe(float Timer)
+{
+	GetWorld()->GetTimerManager().SetTimer(EnemyLockOnTimerHandle, this, &ThisClass::DoCanEnemyLockOnMe, Timer, false);
+	CanEnemyLockOnMe = false;
+}
+
+void ASkyscraperCharacter::DoCanEnemyLockOnMe()
+{
+	CanEnemyLockOnMe = true;
 }
 
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)

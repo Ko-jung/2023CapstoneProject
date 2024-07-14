@@ -359,9 +359,9 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		COPYPACKET(PRemoveObject);
 		break;
 	}
-	case (BYTE)COMP_OP::OP_DETECTING:
+	case (BYTE)COMP_OP::OP_SKILLINTERACT:
 	{
-		COPYPACKET(PDetecting);
+		COPYPACKET(PSkillInteract);
 		break;
 	}
 	case (BYTE)COMP_OP::OP_JOINPLAYERINSKILLTEST:

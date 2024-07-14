@@ -147,12 +147,11 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PRO, sizeof(PRO));
 		break;
 	}
-	case (int)COMP_OP::OP_DETECTING:
+	case (int)COMP_OP::OP_SKILLINTERACT:
 	{
-		PDetecting PD;
-		MEMCPYBUFTOPACKET(PD);
-		ClientMgr::Instance()->SendPacketToAllience(c->GetClientNum(), &PD, sizeof(PD));
-		ClientMgr::Instance()->Send((c->GetClientNum() / MAXPLAYER) * MAXPLAYER + PD.DetectedSerial, &PD, sizeof(PD));
+		PSkillInteract PSI;
+		MEMCPYBUFTOPACKET(PSI);
+		ProcessingSkillInteract(c, PSI);
 		break;
 	}
 	default:
@@ -344,6 +343,21 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 	ClientMgr::Instance()->ChangeState(ClientId, ECharacterState::DEAD);
 	PChangedPlayerState PCPS(ClientId % MAXPLAYER, ECharacterState::DEAD);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / MAXPLAYER, &PCPS, sizeof(PCPS));
+}
+
+void PacketMgr::ProcessingSkillInteract(ClientInfo* c, PSkillInteract PSI)
+{
+	switch (PSI.SkillActor)
+	{
+	case ESkillActor::BP_DetectorMine:
+		ClientMgr::Instance()->SendPacketToAllience(c->GetClientNum(), &PSI, sizeof(PSI));
+		ClientMgr::Instance()->Send((c->GetClientNum() / MAXPLAYER) * MAXPLAYER + PSI.InteractedPlayerSerial, &PSI, sizeof(PSI));
+		break;
+	case ESkillActor::BP_ShieldSphere:
+		break;
+	default:
+		break;
+	}
 }
 
 const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)

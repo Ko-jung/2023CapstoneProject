@@ -44,7 +44,8 @@ public:
 	void ProcessGetItem(PGetItem PGI);
 	void ProcessBreakObject(PBreakObject PBO);
 	void ProcessRemoveObject(PRemoveObject PRO);
-	void ProcessDetecting(PDetecting PD);
+	void ProcessSkillInteract(PSkillInteract PKI);
+	void ProcessDetecting(const uint8 DetectedSerial);
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();

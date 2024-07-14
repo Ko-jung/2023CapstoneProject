@@ -69,6 +69,7 @@ public:
 	FORCEINLINE float GetPowerBuffValue() const { return PowerBuffValue; }
 
 	// 스피드 증가 적용 해제 함수
+	UFUNCTION(BlueprintCallable)			// 2019180016 Add To SkillDebuff
 	void SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime);
 	void AddSpeedBuffValue(float AddSpeedBuffValue);
 

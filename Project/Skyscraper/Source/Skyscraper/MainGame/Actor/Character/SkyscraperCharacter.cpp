@@ -530,6 +530,8 @@ void ASkyscraperCharacter::ResetSpeedBuffValue()
 {
 	GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
 	SpeedBuffValue = 1.0f;
+	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;
+	UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::ResetSpeedBuffValue Called. GetCharacterMovement()->MaxWalkSpeed is %f"), GetCharacterMovement()->MaxWalkSpeed);
 }
 
 void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime)

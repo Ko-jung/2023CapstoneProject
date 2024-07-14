@@ -508,3 +508,8 @@ void UJetpackComponent::AddHoveringGravityScale(float AddValue)
 {
 	HoveringGravityScale += AddValue;
 }
+
+void UJetpackComponent::SubtractFuelHalf()
+{
+	SetFuel(JetpackFuel - MaxJetpackFuel / 2);
+}

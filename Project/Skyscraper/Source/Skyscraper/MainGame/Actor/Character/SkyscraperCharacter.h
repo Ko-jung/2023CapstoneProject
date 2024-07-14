@@ -111,6 +111,11 @@ public:
 
 	// 2019180016
 public:
+	UFUNCTION(BlueprintCallable)
+	void DoDisableLockOn(float Timer);
+	void DoAbleLockOn();
+	bool DisableLockOn;
+
 	/// <returns>
 	/// If Weapon Changed return true
 	/// </returns>
@@ -151,6 +156,9 @@ public:
 	void CustomDepthOff();
 	UFUNCTION(BlueprintNativeEvent)
 	void SetCustomDepth(bool On);
+
+	UFUNCTION(BlueprintCallable)
+	void SubtractFuelHalf();
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeMappingContext(bool IsOnlyMouseMode);
@@ -224,13 +232,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)
-		float XRotate;
+		float XRotate; 
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsUnableAct;
 
 	FTimerHandle UnableActTimerHandle;
 	FTimerHandle DetectingTimerHandle;
+	FTimerHandle LockOnTimerHandle;
 
 	UFUNCTION(BlueprintCallable)
 		void SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);

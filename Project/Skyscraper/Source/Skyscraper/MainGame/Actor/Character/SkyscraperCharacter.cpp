@@ -247,6 +247,7 @@ void ASkyscraperCharacter::BeginPlay()
 	MainGameMode = Cast<AMainGameMode>(gamemode);
 	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::BeginPlay() Cast<AMainGameMode>(gamemode) result: %d"), MainGameMode ? 1 : 0);
 
+	DisableLockOn = false;
 }
 
 void ASkyscraperCharacter::Tick(float DeltaSeconds)
@@ -358,6 +359,17 @@ void ASkyscraperCharacter::SpawnGravityChangerArea(bool bGravityLow)
 		AActor* GravityActor = GetWorld()->SpawnActor<AActor>(BP_GravityChangerAreaHighClass);
 		GravityActor->SetActorLocation(GetActorLocation());
 	}
+}
+
+void ASkyscraperCharacter::DoDisableLockOn(float Timer)
+{
+	GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &ThisClass::DoAbleLockOn, Timer, false);
+	DisableLockOn = true;
+}
+
+void ASkyscraperCharacter::DoAbleLockOn()
+{
+	DisableLockOn = false;
 }
 
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)
@@ -698,6 +710,11 @@ void ASkyscraperCharacter::CustomDepthOff()
 	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::CustomDepthOff()"));
 	//GetMesh()->bRenderCustomDepth = false;
 	SetCustomDepth(false);
+}
+
+void ASkyscraperCharacter::SubtractFuelHalf()
+{
+	JetpackComponent->SubtractFuelHalf();
 }
 
 void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)

@@ -230,6 +230,8 @@ void UCombatSystemComponent::SwapToRangeWeapon(const FInputActionValue& Value)
 
 void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 {
+	if (OwnerCharacter->DisableLockOn) return;
+
 	bool bKeyDown = Value.Get<bool>();
 	if(bKeyDown)
 	{
@@ -249,6 +251,8 @@ void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 
 void UCombatSystemComponent::LockOn()
 {
+	if (OwnerCharacter->DisableLockOn) return;
+
 	TArray<AActor*> OutActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASkyscraperCharacter::StaticClass(), OutActors);
 	int32 LockOnActorCount = 0;

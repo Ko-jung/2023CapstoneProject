@@ -91,6 +91,20 @@ UMainRangeComponent::UMainRangeComponent()
 			BP_BloodSpawner = BP_BloodSpawnerRef.Class;
 		}
 	}
+
+	{
+		WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Main Range Weapon"));
+
+		NS_WeaponCreate = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_MainWeaponCreate"));
+		NS_WeaponCreate->SetupAttachment(WeaponMeshComponent);
+
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_WeaponCreateRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/WeaponCreate/NS_WeaponCreate.NS_WeaponCreate'"));
+		if (NS_WeaponCreateRef.Succeeded())
+		{
+			NS_WeaponCreate->SetAsset(NS_WeaponCreateRef.Object);
+			
+		}
+	}
 }
 
 
@@ -98,6 +112,7 @@ UMainRangeComponent::UMainRangeComponent()
 void UMainRangeComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
 
 	// 소유자 정보 로드
 	OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
@@ -107,7 +122,7 @@ void UMainRangeComponent::BeginPlay()
 	// 소유자에게 무기 부착
 	FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget,false};
 	WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
-	WeaponMeshComponent->SetHiddenInGame(true);
+	SetWeaponHiddenInGame(true);
 
 	// 총알 탄수 초기화
 	CurrentBulletCount = BulletMaxCount;
@@ -135,6 +150,7 @@ void UMainRangeComponent::BeginPlay()
 	}
 
 	SetInitialValue();
+
 }
 
 
@@ -186,7 +202,16 @@ void UMainRangeComponent::RemoveInputMappingContext()
 
 void UMainRangeComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 {
-	WeaponMeshComponent->SetHiddenInGame(bNewHidden);
+	if(WeaponMeshComponent)
+	{
+		WeaponMeshComponent->SetHiddenInGame(bNewHidden);
+	}
+	if(NS_WeaponCreate)
+	{
+		NS_WeaponCreate->SetVisibility(!bNewHidden);
+	}
+	
+	
 }
 
 
@@ -195,6 +220,10 @@ void UMainRangeComponent::AddThisWeapon()
 	AddInputMappingContext();
 	SetWeaponHiddenInGame(false);
 	if (MainRangeWidget) MainRangeWidget->AddToViewport();
+	if (NS_WeaponCreate)
+	{
+		NS_WeaponCreate->Activate(true);
+	}
 }
 
 void UMainRangeComponent::RemoveThisWeapon()
@@ -411,8 +440,6 @@ void UMainRangeComponent::PlayReloadAnim()
 			WeaponMeshComponent->PlayAnimation(WeaponReloadAnim, false);
 		}
 	}
-
-
 }
 
 void UMainRangeComponent::Recoil()

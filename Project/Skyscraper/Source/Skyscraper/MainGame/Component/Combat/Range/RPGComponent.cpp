@@ -29,7 +29,6 @@ URPGComponent::URPGComponent()
 	{ // 무기 에셋 로드 
 		WeaponSocketName = TEXT("RPGSocket");
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> RPGSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/gun/rpg.rpg'"));
-		WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RPG Weapon"));
 		WeaponMeshComponent->SetSkeletalMesh(RPGSkeletalMeshRef.Object);
 	}
 

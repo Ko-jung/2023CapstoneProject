@@ -93,11 +93,14 @@ void UMainMeleeComponent::BeginPlay()
 	{ // 소유 캐릭터에게 무기 부착
 		FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
 		WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
-		WeaponMeshComponent->SetHiddenInGame(true);
+		SetWeaponHiddenInGame(true);
 	}
 	// == TODO: Create Melee Widget
 
 	SetInitialValue();
+
+
+
 }
 
 
@@ -500,11 +503,11 @@ void UMainMeleeComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 	}
 	if (NS_MainWeaponCreateEffect)
 	{
-		NS_MainWeaponCreateEffect->SetHiddenInGame(bNewHidden);
+		NS_MainWeaponCreateEffect->SetVisibility(!bNewHidden);
 	}
 	if (NS_SubWeaponCreateEffect)
 	{
-		NS_MainWeaponCreateEffect->SetHiddenInGame(bNewHidden);
+		NS_MainWeaponCreateEffect->SetVisibility(!bNewHidden);
 	}
 }
 

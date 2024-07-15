@@ -28,9 +28,6 @@ UDaggerComponent::UDaggerComponent()
 	// Skeletal Mesh 로드
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerLeftSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/dagger_left.dagger_left'"));
 	SubWeaponMeshComponent->SetSkeletalMesh(DaggerLeftSkeletalMeshRef.Object);
-
-	
-	
 }
 
 void UDaggerComponent::BeginPlay()

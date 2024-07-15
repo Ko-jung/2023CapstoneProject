@@ -142,6 +142,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimSequence> WeaponReloadAnim;
+
+	UPROPERTY()
+		TObjectPtr<UNiagaraComponent> NS_WeaponCreate;
 protected:
 	//FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
 	FORCEINLINE bool CanReload() const { return CurrentReloadCoolTime <= 0.0f; }

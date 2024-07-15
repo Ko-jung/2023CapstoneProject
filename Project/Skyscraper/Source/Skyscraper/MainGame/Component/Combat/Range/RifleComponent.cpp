@@ -20,13 +20,10 @@ URifleComponent::URifleComponent()
 	RecoilTime = 0.1f;
 	RecoilSpeed = 20.0f;
 
-	
-	
-	
+
 	WeaponSocketName = TEXT("RifleSocket");
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> RifleSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/gun/ar.ar'"));
-	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Rifle Weapon"));
 	WeaponMeshComponent->SetSkeletalMesh(RifleSkeletalMeshRef.Object);
 }
 

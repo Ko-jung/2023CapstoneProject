@@ -13,9 +13,6 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
 class SKYSCRAPER_API UMainMeleeComponent : public UActorComponent
 {
 	GENERATED_BODY()
-
-	
-
 public:	
 	// Sets default values for this component's properties
 	UMainMeleeComponent();

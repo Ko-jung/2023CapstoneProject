@@ -64,8 +64,9 @@ UMainMeleeComponent::UMainMeleeComponent()
 		SubWeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sub Weapon"));
 
 		NS_MainWeaponCreateEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_MainWeaponCreate"));
+		NS_MainWeaponCreateEffect->SetupAttachment(WeaponMeshComponent);
 		NS_SubWeaponCreateEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_SubWeaponCreate"));
-
+		NS_SubWeaponCreateEffect->SetupAttachment(SubWeaponMeshComponent);
 		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_WeaponCreateRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/WeaponCreate/NS_WeaponCreate.NS_WeaponCreate'"));
 		if(NS_WeaponCreateRef.Succeeded())
 		{
@@ -152,6 +153,14 @@ void UMainMeleeComponent::AddThisWeapon()
 {
 	AddInputMappingContext();
 	SetWeaponHiddenInGame(false);
+	if(NS_MainWeaponCreateEffect)
+	{
+		NS_MainWeaponCreateEffect->Activate(true);
+	}
+	if(NS_SubWeaponCreateEffect)
+	{
+		NS_SubWeaponCreateEffect->Activate(true);
+	}
 	
 }
 
@@ -159,6 +168,7 @@ void UMainMeleeComponent::RemoveThisWeapon()
 {
 	RemoveInputMappingContext();
 	SetWeaponHiddenInGame(true);
+	
 }
 
 void UMainMeleeComponent::PlayAttackAnimMontage()
@@ -487,6 +497,14 @@ void UMainMeleeComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 	if (SubWeaponMeshComponent)
 	{
 		SubWeaponMeshComponent->SetHiddenInGame(bNewHidden);
+	}
+	if (NS_MainWeaponCreateEffect)
+	{
+		NS_MainWeaponCreateEffect->SetHiddenInGame(bNewHidden);
+	}
+	if (NS_SubWeaponCreateEffect)
+	{
+		NS_MainWeaponCreateEffect->SetHiddenInGame(bNewHidden);
 	}
 }
 

@@ -452,10 +452,11 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	FTransform transform{ Rotate, Location, FVector(1.f,1.f,1.f) };
 
 	float speed = PlayerPosition.PlayerSpeed;
-	float XRotate = PlayerPosition.PlayerXDirection;
+	//float XRotate = PlayerPosition.PlayerXDirection;
+	FRotator ControllerRotator = { PlayerPosition.ControllerRotator.X,PlayerPosition.ControllerRotator.Y ,PlayerPosition.ControllerRotator.Z};
 
 	if(Characters[Serial])
-		Characters[Serial]->SyncTransformAndAnim(transform, speed, XRotate);
+		Characters[Serial]->SyncTransformAndAnim(transform, speed, ControllerRotator);
 }
 
 void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
@@ -753,8 +754,10 @@ void AMainGameMode::SendPlayerLocation()
 
 	PlayerPosition.PlayerSpeed = speed;
 
-	FVector Velo = Characters[SerialNum]->GetVelocity();
-	PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
+	// FVector Velo = Characters[SerialNum]->GetVelocity();
+	// PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
+
+	PlayerPosition.ControllerRotator = Characters[SerialNum]->Controller->GetControlRotation();
 
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
 }

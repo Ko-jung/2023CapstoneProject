@@ -68,7 +68,8 @@ struct PPlayerPosition : Packet, PTransform
 
 	BYTE PlayerSerial;
 	float PlayerSpeed;
-	float PlayerXDirection;
+	//float PlayerXDirection;
+	PVector ControllerRotator;
 
 	// EPlayerState PlayerState;
 

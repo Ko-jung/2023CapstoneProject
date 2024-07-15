@@ -544,11 +544,12 @@ void ASkyscraperCharacter::RemoveObserveInputMappingContext()
 	}
 }
 
-void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
+void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, FRotator r)
 {
 	SetActorTransform(t);
 	SetSpeed(s);
-	SetXRotate(r);
+	//SetXRotate(r);
+	Controller->SetControlRotation(r);
 }
 
 void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum)

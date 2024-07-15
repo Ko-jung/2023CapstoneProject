@@ -146,7 +146,7 @@ public:
 	void AddObserveInputMappingContext();
 	void RemoveObserveInputMappingContext();
 
-	void SyncTransformAndAnim(FTransform t, float s, float r);
+	void SyncTransformAndAnim(FTransform t, float s, FRotator r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum);
 
 	void SetSpeed(float s) { Speed = s; }

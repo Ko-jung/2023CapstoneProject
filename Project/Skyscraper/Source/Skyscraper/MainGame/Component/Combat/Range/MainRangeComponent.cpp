@@ -405,6 +405,13 @@ void UMainRangeComponent::PlayReloadAnim()
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), PlayMontage, PlayRate, 0, StartingSection);
 	}
 
+	{
+		if(WeaponReloadAnim)
+		{
+			WeaponMeshComponent->PlayAnimation(WeaponReloadAnim, false);
+		}
+	}
+
 
 }
 

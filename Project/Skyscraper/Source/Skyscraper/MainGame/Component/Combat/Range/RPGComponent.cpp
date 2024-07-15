@@ -11,8 +11,6 @@ URPGComponent::URPGComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_RPG;
 
-	
-
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 5;
 	FireMaxCoolTime = 1.0f;
@@ -35,6 +33,10 @@ URPGComponent::URPGComponent()
 		WeaponMeshComponent->SetSkeletalMesh(RPGSkeletalMeshRef.Object);
 	}
 
+	{
+		static ConstructorHelpers::FObjectFinder<UAnimSequence> RPG_Reload_AnimRef(TEXT("/Script/Engine.AnimSequence'/Game/2016180023/weapon/gun/rpg_Anim.rpg_Anim'"));
+		WeaponReloadAnim = RPG_Reload_AnimRef.Object;
+	}
 	
 }
 

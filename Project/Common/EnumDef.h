@@ -57,6 +57,7 @@ enum class ESkillActor : BYTE
 	BP_BoomerangGrab,
 	BP_BoomerangCenter,
 	BP_DetectorMine,
+	BP_DetectorEMP,
 	BP_Shield,
 	BP_ShieldSphere,
 	BP_ShieldSphereThrow,

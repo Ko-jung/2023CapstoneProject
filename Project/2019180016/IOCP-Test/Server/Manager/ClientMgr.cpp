@@ -214,6 +214,22 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 	// TimerMgr::Instance()->Insert
 }
 
+void ClientMgr::ProcessShieldSphereHeal(int id, PSkillInteract PSI)
+{
+	if (m_Clients[id]->IsOverlappedShieldSphere)
+	{
+		m_Clients[id]->IsOverlappedShieldSphere = false;
+	}
+	else
+	{
+		m_Clients[id]->IsOverlappedShieldSphere = true;
+
+		TimerEvent TE(std::chrono::seconds(1),
+			std::bind(&ClientMgr::ShieldSphereHeal, this, id));
+		TimerMgr::Instance()->Insert(TE);
+	}
+}
+
 void ClientMgr::Heal(int id, float HealAmount)
 {
 	m_Clients[id]->Heal(HealAmount);
@@ -246,5 +262,25 @@ void ClientMgr::ItemHeal(int id, EItemRareLevel level)
 
 		PChangedPlayerHP PCPH(TargetId, m_Clients[TargetId]->GetCurrnetHp());
 		SendPacketToAllSocketsInRoom(RoomNum, &PCPH, sizeof(PCPH));
+	}
+}
+
+void ClientMgr::ShieldSphereHeal(int id)
+{
+	if (m_Clients[id]->IsOverlappedShieldSphere)
+	{
+		float HealAmount = (m_Clients[id]->GetECharacter() == ECharacter::Shield) ? 100 : 50;
+		Heal(id, HealAmount);
+
+		TimerEvent TE(std::chrono::seconds(1),
+			std::bind(&ClientMgr::ShieldSphereHeal, this, id));
+		TimerMgr::Instance()->Insert(TE);
+
+		cout << "[" << id << "] Client \""<< HealAmount << "\" Healed By Shield Sphere" << endl;
+
+		PChangedPlayerHP PCPH;
+		PCPH.AfterHP = m_Clients[id]->CurrentHp;
+		PCPH.ChangedPlayerSerial = id % MAXPLAYER;
+		Send(id, &PCPH, PCPH.PacketSize);
 	}
 }

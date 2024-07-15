@@ -36,7 +36,7 @@
 
 void AMainGameMode::BeginPlay()
 {
-	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
+	UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
 
 	SkillActorSerialNum = 0;
 
@@ -91,7 +91,7 @@ void AMainGameMode::BeginPlay()
 	TileDropTimer = 0.f;
 	TileDropLevel = 0;
 
-	UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::BeginPlay()"));
+	UE_LOG(LogTemp, Warning, TEXT("End Called AMainGameMode::BeginPlay()"));
 }
 
 void AMainGameMode::Tick(float Deltatime)
@@ -117,7 +117,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMainGameMode::ProcessFunc()
 {
-	//UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
 	Packet* packet;
 	while (FuncQueue.try_pop(packet))
 	{
@@ -138,7 +138,7 @@ void AMainGameMode::ProcessFunc()
 			memcpy(&PPP, packet, sizeof(PPP));
 			//if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
 			//{
-			//	UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
+			//	UE_LOG(LogTemp, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
 			//	continue;
 			//}
 			SetPlayerPosition(PPP);
@@ -283,7 +283,7 @@ void AMainGameMode::ProcessFunc()
 		}
 		case (BYTE)COMP_OP::OP_SKILLINTERACT:
 		{
-			UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_DETECTING"));
+			UE_LOG(LogTemp, Warning, TEXT("COMP_OP::OP_DETECTING"));
 			PSkillInteract PKI;
 			memcpy(&PKI, packet, sizeof(PKI));
 			ProcessSkillInteract(PKI);
@@ -295,7 +295,7 @@ void AMainGameMode::ProcessFunc()
 		}
 		delete packet;
 	}
-	//UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogTemp, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
 }
 
 //void AMainGameMode::ProcessPosition()
@@ -313,7 +313,7 @@ void AMainGameMode::ProcessFunc()
 //				memcpy(&PPP, packet, sizeof(PPP));
 //				if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
 //				{
-//					UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
+//					UE_LOG(LogTemp, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
 //					continue;
 //				}
 //				SetPlayerPosition(PPP);
@@ -343,7 +343,7 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	// Check Null Character
 	if (!Class)
 	{
-		UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), TargetSerialNum);
+		UE_LOG(LogTemp, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), TargetSerialNum);
 		return;
 	}
 
@@ -472,11 +472,11 @@ void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 																NewActor);
 
 	SkillActors.Add({ PSO.SerialNum, NewActor });
-	UE_LOG(LogClass, Warning, TEXT("SkillActors.Add pair{%d, %s}"), PSO.SerialNum, *UKismetSystemLibrary::GetDisplayName(NewActor));
+	UE_LOG(LogTemp, Warning, TEXT("SkillActors.Add pair{%d, %s}"), PSO.SerialNum, *UKismetSystemLibrary::GetDisplayName(NewActor));
 
 	 //if (PSO.SerialNum == SerialNum)
 	 //{
-	 //	UE_LOG(LogClass, Warning, TEXT("Skill Actor Spawner Is this!"));
+	 //	UE_LOG(LogTemp, Warning, TEXT("Skill Actor Spawner Is this!"));
 	 //	return;
 	 //}
 	 //
@@ -567,13 +567,13 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 {
 	//Characters[PUI.UsePlayerSerial];
 	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
-	UE_LOG(LogClass, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
+	UE_LOG(LogTemp, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
 }
 
 void AMainGameMode::ProcessGetItem(PGetItem PGI)
 {
 	int8 Index = HexagonTile->GetItemTileIndex(PGI.ItemSerialNum);
-	UE_LOG(LogClass, Warning, TEXT("%d Item Removed on Map!"), Index);
+	UE_LOG(LogTemp, Warning, TEXT("%d Item Removed on Map!"), Index);
 	if (Index == -1) return;
 
 	HexagonTile->RemoveItem(PGI.ItemSerialNum);
@@ -589,17 +589,17 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 
 	if (!TargetObject)
 	{
-		UE_LOG(LogClass, Warning, TEXT("TargetObject is NULL"));
+		UE_LOG(LogTemp, Warning, TEXT("TargetObject is NULL"));
 		return;
 	}
 
-	UE_LOG(LogClass, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
 
 	// Break Window 
 	ASingleBuildingFloor* SBFloor = Cast<ASingleBuildingFloor>(TargetObject->GetOwner());
 	if (!SBFloor)
 	{
-		UE_LOG(LogClass, Warning, TEXT("SBFloor is nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("SBFloor is nullptr"));
 		return;
 	}
 
@@ -609,7 +609,7 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 
 void AMainGameMode::ProcessRemoveObject(PRemoveObject PRO)
 {
-	UE_LOG(LogClass, Warning, TEXT("AMainGameMode::ProcessRemoveObject"));
+	UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessRemoveObject"));
 	if (auto ppActor = SkillActors.Find(PRO.ObjectSerial))
 	{
 		SkillActors.Remove(PRO.ObjectSerial);
@@ -619,12 +619,12 @@ void AMainGameMode::ProcessRemoveObject(PRemoveObject PRO)
 		}
 		else
 		{
-			UE_LOG(LogClass, Warning, TEXT("ppActor is InValid"));
+			UE_LOG(LogTemp, Warning, TEXT("ppActor is InValid"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogClass, Warning, TEXT("SerialNum %d is not In SkillActors"), PRO.ObjectSerial);
+		UE_LOG(LogTemp, Warning, TEXT("SerialNum %d is not In SkillActors"), PRO.ObjectSerial);
 	}
 }
 
@@ -646,7 +646,7 @@ void AMainGameMode::ProcessDetecting(const uint8 DetectedSerial)
 {
 	if (Characters.IsValidIndex(DetectedSerial))
 	{
-		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::ProcessDetecting"));
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessDetecting"));
 		Characters[DetectedSerial]->CustomDepthOn();
 	}
 }
@@ -663,7 +663,7 @@ void AMainGameMode::ProcessDetecting(const uint8 DetectedSerial)
 //	}
 //	else
 //	{
-//		UE_LOG(LogClass, Warning, TEXT("SkillActors Key<%d> Can't FIND!"), PRO.ObjectSerial);
+//		UE_LOG(LogTemp, Warning, TEXT("SkillActors Key<%d> Can't FIND!"), PRO.ObjectSerial);
 //	}
 //}
 
@@ -672,7 +672,7 @@ void AMainGameMode::GetHexagonTileOnLevel()
 	AHexagonTile* Hexagon = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 	if (!Hexagon)
 	{
-		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::GetHexagonTileOnLevel() AHexagonTIle Cast FAILED!"));
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::GetHexagonTileOnLevel() AHexagonTIle Cast FAILED!"));
 		return;
 	}
 
@@ -773,7 +773,7 @@ void AMainGameMode::SendPlayerSwapWeaponInfo()
 		PSwapWeapon PSW(SerialNum, WeaponType);
 		m_Socket->Send(&PSW, sizeof(PSW));
 
-		UE_LOG(LogClass, Warning, TEXT("Sending Swap Weapon!"));
+		UE_LOG(LogTemp, Warning, TEXT("Sending Swap Weapon!"));
 	}
 }
 
@@ -805,17 +805,17 @@ void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMo
 {
 	if (!GetIsConnected())
 	{
-		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() GetIsConnected() is FALSE"));
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() GetIsConnected() is FALSE"));
 		return;
 	}
 
 	if (Sender != Characters[SerialNum])
 	{
-		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() Sender != Characters[SerialNum]"));
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() Sender != Characters[SerialNum]"));
 		return;
 	}
 
-	UE_LOG(LogClass, Warning, TEXT("Sending Anim Motage Status"));
+	UE_LOG(LogTemp, Warning, TEXT("Sending Anim Motage Status"));
 
 	PChangeAnimMontage PCAM;
 
@@ -831,7 +831,7 @@ bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 
 	if (!m_Socket || Sender != Characters[SerialNum])
 	{
-		UE_LOG(LogClass, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
+		UE_LOG(LogTemp, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
 		return false;
 	}
 
@@ -848,15 +848,29 @@ bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 	PDP.WeaponEnum = equippedWeapon;
 
 	m_Socket->Send(&PDP, sizeof(PDP));
-	UE_LOG(LogClass, Warning, TEXT("Send Weapon Damage"));
+	UE_LOG(LogTemp, Warning, TEXT("Send Weapon Damage"));
 	return true;
+}
+
+void AMainGameMode::SendSkillInteract(const AActor* Sender, const ESkillActor SkillActor)
+{
+	if (!Characters.IsValidIndex(SerialNum) || Sender != Characters[SerialNum])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SendSkillInteract Sender != Characters[SerialNum]"));
+		return;
+	}
+
+	PSkillInteract PSI;
+	PSI.SkillActor = SkillActor;
+	PSI.InteractedPlayerSerial = SerialNum;
+	Send(&PSI, PSI.PacketSize);
 }
 
 void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
 {
 	if (Sender != Characters[SerialNum])
 	{
-		UE_LOG(LogClass, Warning, TEXT("SendDetecting Sender != Characters[SerialNum]"));
+		UE_LOG(LogTemp, Warning, TEXT("SendDetecting Sender != Characters[SerialNum]"));
 		return;
 	}
 
@@ -973,7 +987,7 @@ int AMainGameMode::GetIndex(const AActor* target)
 	// Can't Find
 	if (Index >= MAXPLAYER)
 	{
-		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::GetIndex Cant find Target Actor ID"));
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::GetIndex Cant find Target Actor ID"));
 		return -1;
 	}
 

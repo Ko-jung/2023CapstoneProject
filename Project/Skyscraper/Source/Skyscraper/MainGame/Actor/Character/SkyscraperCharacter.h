@@ -121,6 +121,9 @@ public:
 	void DoCanEnemyLockOnMe();
 	bool CanEnemyLockOnMe;
 
+	UFUNCTION(BlueprintCallable)
+	void SkillInteract(ESkillActor SkillActor, float Timer);
+
 	/// <returns>
 	/// If Weapon Changed return true
 	/// </returns>

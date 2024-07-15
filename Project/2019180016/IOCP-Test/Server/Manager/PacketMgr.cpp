@@ -354,6 +354,7 @@ void PacketMgr::ProcessingSkillInteract(ClientInfo* c, PSkillInteract PSI)
 		ClientMgr::Instance()->Send((c->GetClientNum() / MAXPLAYER) * MAXPLAYER + PSI.InteractedPlayerSerial, &PSI, sizeof(PSI));
 		break;
 	case ESkillActor::BP_ShieldSphere:
+		ClientMgr::Instance()->ProcessShieldSphereHeal(c->GetClientNum(), PSI);
 		break;
 	default:
 		break;

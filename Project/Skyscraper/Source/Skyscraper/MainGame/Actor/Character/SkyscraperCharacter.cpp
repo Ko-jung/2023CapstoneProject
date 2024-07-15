@@ -386,6 +386,47 @@ void ASkyscraperCharacter::DoCanEnemyLockOnMe()
 	CanEnemyLockOnMe = true;
 }
 
+void ASkyscraperCharacter::SkillInteract(ESkillActor SkillActor, float Timer)
+{
+	switch (SkillActor)
+	{
+	case ESkillActor::BP_NULL:
+		break;
+	case ESkillActor::BP_BoomerangGrab:
+		break;
+	case ESkillActor::BP_BoomerangCenter:
+		break;
+	case ESkillActor::BP_DetectorMine:
+		break;
+	case ESkillActor::BP_DetectorEMP:
+		SubtractFuelHalf();
+		GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &ThisClass::DoAbleLockOn, Timer, false);
+		DisableLockOn = true;
+		break;
+	case ESkillActor::BP_Shield:
+		break;
+	case ESkillActor::BP_ShieldSphere:
+	{
+		CanEnemyLockOnMe = bool(1 - CanEnemyLockOnMe);
+		if (MainGameMode)
+		{
+			MainGameMode->SendSkillInteract(this, ESkillActor::BP_ShieldSphere);
+		}
+		break;
+	}
+	case ESkillActor::BP_ShieldSphereThrow:
+		break;
+	case ESkillActor::BP_WindTornado:
+		break;
+	case ESkillActor::BP_ElectSphereBoom:
+		break;
+	case ESkillActor::BP_ElectTrap:
+		break;
+	default:
+		break;
+	}
+}
+
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)
 {
 	// CheckHoldWeapon(ESwapWeapon&) -> CheckHoldWeapon(ESwapWeapon&, uint8&)

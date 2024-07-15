@@ -12,7 +12,8 @@ ClientInfo::ClientInfo(int ClientNum):
 	MaxHP(1000.f),
 	CurrentHp(1000.f),
 	SelectInfo(ECharacter::NullCharacter),
-	State(ECharacterState::LIVING)
+	State(ECharacterState::LIVING),
+	IsOverlappedShieldSphere(false)
 {
 	//m_sClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	//if (INVALID_SOCKET == m_sClientSocket)

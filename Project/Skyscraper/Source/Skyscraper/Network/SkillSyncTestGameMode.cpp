@@ -147,8 +147,23 @@ void ASkillSyncTestGameMode::ProcessFunc()
 			ProcessBreakObject(PBO);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_REMOVEOBJECT:
+		{
+			PRemoveObject PRO;
+			memcpy(&PRO, packet, sizeof(PRO));
+			ProcessRemoveObject(PRO);
+			break;
+		}
+		case (BYTE)COMP_OP::OP_SKILLINTERACT:
+		{
+			UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_DETECTING"));
+			PSkillInteract PSI;
+			memcpy(&PSI, packet, sizeof(PSI));
+			ProcessSkillInteract(PSI);
+			break;
+		}
 		default:
-			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
+			UE_LOG(LogTemp, Warning, TEXT("ASkillSyncTestGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;
 		}
 		delete packet;

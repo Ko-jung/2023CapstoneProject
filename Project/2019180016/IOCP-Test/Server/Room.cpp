@@ -23,7 +23,8 @@
 Room::Room() :
 	TileDropLevel(0),
 	ItemSerial(0),
-	PrevCenterTile(nullptr)
+	PrevCenterTile(nullptr),
+	SkillActorSerial(0)
 {
 	KillScore[0] = KillScore[1] = 0;
 

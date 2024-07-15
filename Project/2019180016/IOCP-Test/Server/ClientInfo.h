@@ -60,5 +60,7 @@ public:
 	std::atomic<float> CurrentHp;
 	ECharacter SelectInfo;
 	ECharacterState State;
+
+	bool IsOverlappedShieldSphere;
 };
 

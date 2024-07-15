@@ -1,7 +1,9 @@
 #pragma once
 
 UENUM()
-enum class EBreakType : uint8
+enum class EObjectType : uint8
 {
 	Window,
+
+	SkillActor,
 };

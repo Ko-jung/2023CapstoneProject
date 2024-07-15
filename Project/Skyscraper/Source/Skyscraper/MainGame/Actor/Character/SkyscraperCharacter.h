@@ -69,6 +69,7 @@ public:
 	FORCEINLINE float GetPowerBuffValue() const { return PowerBuffValue; }
 
 	// 스피드 증가 적용 해제 함수
+	UFUNCTION(BlueprintCallable)			// 2019180016 Add To SkillDebuff
 	void SetSpeedBuffValue(float NewSpeedBuffValue, float fBuffTime);
 	void AddSpeedBuffValue(float AddSpeedBuffValue);
 
@@ -110,6 +111,19 @@ public:
 
 	// 2019180016
 public:
+	UFUNCTION(BlueprintCallable)
+	void DoDisableLockOn(float Timer);
+	void DoAbleLockOn();
+	bool DisableLockOn;
+
+	UFUNCTION(BlueprintCallable)
+	void DoCantEnemyLockOnMe(float Timer);
+	void DoCanEnemyLockOnMe();
+	bool CanEnemyLockOnMe;
+
+	UFUNCTION(BlueprintCallable)
+	void SkillInteract(ESkillActor SkillActor, float Timer);
+
 	/// <returns>
 	/// If Weapon Changed return true
 	/// </returns>
@@ -132,7 +146,7 @@ public:
 	void AddObserveInputMappingContext();
 	void RemoveObserveInputMappingContext();
 
-	void SyncTransformAndAnim(FTransform t, float s, float r);
+	void SyncTransformAndAnim(FTransform t, float s, FRotator r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum);
 
 	void SetSpeed(float s) { Speed = s; }
@@ -145,6 +159,15 @@ public:
 	// 현재 사용 가능한 모든 인풋 컨텍스트(디폴트 입력들)를 추가하는 함수
 	void AddAllInputMappingContext();
 
+	// 상대의 탐지시 Custom Depth 활성화
+	void CustomDepthOn();
+	void CustomDepthOff();
+	UFUNCTION(BlueprintNativeEvent)
+	void SetCustomDepth(bool On);
+
+	UFUNCTION(BlueprintCallable)
+	void SubtractFuelHalf();
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeMappingContext(bool IsOnlyMouseMode);
 
@@ -153,10 +176,21 @@ public:
 	void CastingSkill(bool IsSpecialSkill);
 
 	UFUNCTION(BlueprintNativeEvent)
+	void SkillActorSpawnUsingPacket(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor);
+
+	UFUNCTION(BlueprintNativeEvent)
 	void ActiveSkill(bool IsSpecialSkill);
 
 	UFUNCTION(BlueprintNativeEvent)
-	void PlaySkillMontage(bool IsSpecialSkill);
+	void PlaySkillMontage(bool IsSpecialSkill, uint8 SectionNum);
+
+	// Process Mine Stun
+		UFUNCTION(BlueprintCallable)
+		void AbleToAct();
+
+		UFUNCTION(BlueprintCallable)
+		void ApplyStun(const float StunTime);
+	// ==================
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlliance(AActor* Target);
@@ -184,6 +218,10 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay() override;
 
+	// 2019180016
+	virtual void Tick(float DeltaSeconds) override;
+	// ==========
+
 	// 캐릭터가 땅에 닿았을 때 실행될 함수
 	virtual void Landed(const FHitResult& Hit) override;
 
@@ -202,11 +240,18 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)
-		float XRotate;
-	
+		float XRotate; 
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsUnableAct;
+
+	FTimerHandle UnableActTimerHandle;
+	FTimerHandle DetectingTimerHandle;
+	FTimerHandle LockOnTimerHandle;
+	FTimerHandle EnemyLockOnTimerHandle;
 
 	UFUNCTION(BlueprintCallable)
-		void SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
+		void SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec);
 	// ======
 private:
 

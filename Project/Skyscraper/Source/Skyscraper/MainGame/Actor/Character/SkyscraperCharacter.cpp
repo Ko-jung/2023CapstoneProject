@@ -229,6 +229,11 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 			BP_GravityChangerAreaHighClass = BP_GravityChangerArea2Ref.Class;
 		}
 	}
+
+	{	// Other Value use to Skill
+		DisableLockOn = false;
+		CanEnemyLockOnMe = true;
+	}
 }
 
 void ASkyscraperCharacter::BeginPlay()
@@ -246,7 +251,18 @@ void ASkyscraperCharacter::BeginPlay()
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	MainGameMode = Cast<AMainGameMode>(gamemode);
 	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::BeginPlay() Cast<AMainGameMode>(gamemode) result: %d"), MainGameMode ? 1 : 0);
+}
 
+void ASkyscraperCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (IsUnableAct)
+	{
+		const auto& Montage = GetAnimMontage(ECharacterAnimMontage::ECAM_Stun);
+		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(GetMesh(), Montage, 1.0f, 0.16f);
+
+	}
 }
 
 void ASkyscraperCharacter::Landed(const FHitResult& Hit)
@@ -345,6 +361,69 @@ void ASkyscraperCharacter::SpawnGravityChangerArea(bool bGravityLow)
 	{
 		AActor* GravityActor = GetWorld()->SpawnActor<AActor>(BP_GravityChangerAreaHighClass);
 		GravityActor->SetActorLocation(GetActorLocation());
+	}
+}
+
+void ASkyscraperCharacter::DoDisableLockOn(float Timer)
+{
+	GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &ThisClass::DoAbleLockOn, Timer, false);
+	DisableLockOn = true;
+}
+
+void ASkyscraperCharacter::DoAbleLockOn()
+{
+	DisableLockOn = false;
+}
+
+void ASkyscraperCharacter::DoCantEnemyLockOnMe(float Timer)
+{
+	GetWorld()->GetTimerManager().SetTimer(EnemyLockOnTimerHandle, this, &ThisClass::DoCanEnemyLockOnMe, Timer, false);
+	CanEnemyLockOnMe = false;
+}
+
+void ASkyscraperCharacter::DoCanEnemyLockOnMe()
+{
+	CanEnemyLockOnMe = true;
+}
+
+void ASkyscraperCharacter::SkillInteract(ESkillActor SkillActor, float Timer)
+{
+	switch (SkillActor)
+	{
+	case ESkillActor::BP_NULL:
+		break;
+	case ESkillActor::BP_BoomerangGrab:
+		break;
+	case ESkillActor::BP_BoomerangCenter:
+		break;
+	case ESkillActor::BP_DetectorMine:
+		break;
+	case ESkillActor::BP_DetectorEMP:
+		SubtractFuelHalf();
+		GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &ThisClass::DoAbleLockOn, Timer, false);
+		DisableLockOn = true;
+		break;
+	case ESkillActor::BP_Shield:
+		break;
+	case ESkillActor::BP_ShieldSphere:
+	{
+		CanEnemyLockOnMe = bool(1 - CanEnemyLockOnMe);
+		if (MainGameMode)
+		{
+			MainGameMode->SendSkillInteract(this, ESkillActor::BP_ShieldSphere);
+		}
+		break;
+	}
+	case ESkillActor::BP_ShieldSphereThrow:
+		break;
+	case ESkillActor::BP_WindTornado:
+		break;
+	case ESkillActor::BP_ElectSphereBoom:
+		break;
+	case ESkillActor::BP_ElectTrap:
+		break;
+	default:
+		break;
 	}
 }
 
@@ -465,11 +544,12 @@ void ASkyscraperCharacter::RemoveObserveInputMappingContext()
 	}
 }
 
-void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, float r)
+void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, FRotator r)
 {
 	SetActorTransform(t);
 	SetSpeed(s);
-	SetXRotate(r);
+	//SetXRotate(r);
+	Controller->SetControlRotation(r);
 }
 
 void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum)
@@ -481,7 +561,7 @@ void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int Se
 	}
 	else
 	{	// Play Montage On Blueprint
-		PlaySkillMontage(eAnimMontage == ECharacterAnimMontage::ECAM_SpecialSkill);
+		PlaySkillMontage(eAnimMontage == ECharacterAnimMontage::ECAM_SpecialSkill, SectionNum);
 		UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::SetMontage() play Skill Montage"));
 	}
 }
@@ -511,6 +591,8 @@ void ASkyscraperCharacter::ResetSpeedBuffValue()
 {
 	GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
 	SpeedBuffValue = 1.0f;
+	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;
+	UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::ResetSpeedBuffValue Called. GetCharacterMovement()->MaxWalkSpeed is %f"), GetCharacterMovement()->MaxWalkSpeed);
 }
 
 void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime)
@@ -592,13 +674,21 @@ void ASkyscraperCharacter::PlayBoostAnimation(const FString& SectionString) cons
 	}
 }
 
-void ASkyscraperCharacter::SendSkillActorSpawnPacket(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
+void ASkyscraperCharacter::SendSkillActorSpawnPacket(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
 	// bool IsTeamA;
 	// (Team == "TeamA") ? IsTeamA = true : IsTeamA = false;
 
-	if(MainGameMode)
-		MainGameMode->SendSkillActorSpawn(SkillActor, SpawnLocation, ForwardVec);
+	if (MainGameMode)
+	{
+		MainGameMode->SendSkillActorSpawn(Sender, SkillActor, SpawnLocation, ForwardVec);
+	}
+	else
+	{	// Single Mode
+		AActor* NewActor;
+		SkillActorSpawnUsingPacket(!(SkillActor == ESkillActor::BP_ElectTrap || SkillActor == ESkillActor::BP_DetectorMine),
+			SpawnLocation, ForwardVec, NewActor	);
+	}
 }
 
 void ASkyscraperCharacter::ResetPowerBuffValue()
@@ -663,6 +753,26 @@ void ASkyscraperCharacter::AddAllInputMappingContext()
 	}
 }
 
+void ASkyscraperCharacter::CustomDepthOn()
+{
+	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::CustomDepthOn()"));
+	//GetMesh()->bRenderCustomDepth = true;
+	SetCustomDepth(true);
+	GetWorld()->GetTimerManager().SetTimer(DetectingTimerHandle, this, &ThisClass::CustomDepthOff, 5.f, false);
+}
+
+void ASkyscraperCharacter::CustomDepthOff()
+{
+	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::CustomDepthOff()"));
+	//GetMesh()->bRenderCustomDepth = false;
+	SetCustomDepth(false);
+}
+
+void ASkyscraperCharacter::SubtractFuelHalf()
+{
+	JetpackComponent->SubtractFuelHalf();
+}
+
 void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)
 {
 	//if (IsOnlyMouseMode)
@@ -680,6 +790,18 @@ void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)
 void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 {
 	ActiveSkill(IsSpecialSkill);
+}
+
+void ASkyscraperCharacter::AbleToAct()
+{
+	IsUnableAct = false;
+}
+
+void ASkyscraperCharacter::ApplyStun(const float StunTime)
+{
+	//UnableToAct(StunTime);
+	GetWorld()->GetTimerManager().SetTimer(UnableActTimerHandle, this, &ThisClass::AbleToAct, StunTime, false);
+	IsUnableAct = true;
 }
 
 bool ASkyscraperCharacter::IsAlliance(AActor* Target)
@@ -701,7 +823,13 @@ bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)
 {
 }
-void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill)
+void ASkyscraperCharacter::SetCustomDepth_Implementation(bool On)
+{
+}
+void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill, uint8 SectionNum)
+{
+}
+void ASkyscraperCharacter::SkillActorSpawnUsingPacket_Implementation(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor)
 {
 }
 

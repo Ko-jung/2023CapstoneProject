@@ -98,7 +98,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void AddHoveringGravityScale(float AddValue);
 	
-
+	//2019180016
+	void SubtractFuelHalf();
+	//==========
 protected:
 	// == Owner 캐릭터 관련
 	UPROPERTY()

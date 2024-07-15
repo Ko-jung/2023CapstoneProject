@@ -230,6 +230,8 @@ void UCombatSystemComponent::SwapToRangeWeapon(const FInputActionValue& Value)
 
 void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 {
+	if (OwnerCharacter->DisableLockOn) return;
+
 	bool bKeyDown = Value.Get<bool>();
 	if(bKeyDown)
 	{
@@ -249,6 +251,8 @@ void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 
 void UCombatSystemComponent::LockOn()
 {
+	if (OwnerCharacter->DisableLockOn) return;
+
 	TArray<AActor*> OutActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASkyscraperCharacter::StaticClass(), OutActors);
 	int32 LockOnActorCount = 0;
@@ -258,12 +262,14 @@ void UCombatSystemComponent::LockOn()
 	// == find nearest TargetActor in LockOnRange
 	for(AActor* TargetActor : OutActors)
 	{
+		ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(TargetActor);	// 2019180016
+																							//	TargetActor -> TargetCharacter
 		// == If not self character,
-		if(TargetActor != OwnerCharacter)
+		if(TargetCharacter != OwnerCharacter && TargetCharacter->CanEnemyLockOnMe)
 		{
 			// == Get TargetActor Screen Location
 			FVector2D ScreenLocation(0.0f, 0.0f);
-			UGameplayStatics::ProjectWorldToScreen(OwnerCharacter->GetPlayerController(), TargetActor->GetActorLocation(),ScreenLocation);
+			UGameplayStatics::ProjectWorldToScreen(OwnerCharacter->GetPlayerController(), TargetCharacter->GetActorLocation(),ScreenLocation);
 
 			// == Get Player Viewport size
 			//FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(GetWorld());
@@ -278,9 +284,9 @@ void UCombatSystemComponent::LockOn()
 			LockOnActorCount += 1;
 
 			// == find nearest TargetActor
-			if (Distance < CloseTargetDistance || TargetActor == LockOnActor) 
+			if (Distance < CloseTargetDistance || TargetCharacter == LockOnActor) 
 			{
-				LockOnActor = TargetActor;
+				LockOnActor = TargetCharacter;
 				CloseTargetDistance = Distance;
 				TargetActorScreenLocation = ScreenLocation;
 			}
@@ -359,6 +365,7 @@ void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 		}
 
 		float AttackAnimPlayRate = Montage->GetSectionLength(SectionNum) / StunTime;
+		UE_LOG(LogClass, Warning, TEXT("UCombatSystemComponent::Stun StunTime is %f"), StunTime);
 		const float DamagedAnimPlayRate = Montage->GetPlayLength();
 		
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, DamagedAnimPlayRate, 0, StartingSection);

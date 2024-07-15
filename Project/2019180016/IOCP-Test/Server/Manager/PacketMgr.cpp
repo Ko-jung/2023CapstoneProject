@@ -86,6 +86,8 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	{
 		PSpawnObject PSO;
 		MEMCPYBUFTOPACKET(PSO);
+		PSO.SerialNum = RoomMgr::Instance()->GetNowSkillActorSerial(c->GetClientNum() / MAXPLAYER);
+		//ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PSO, sizeof(PSO));
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSO, sizeof(PSO));
 		break;
 	}
@@ -136,6 +138,20 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PBreakObject PBO;
 		MEMCPYBUFTOPACKET(PBO);
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PBO, sizeof(PBO));
+		break;
+	}
+	case (int)COMP_OP::OP_REMOVEOBJECT:
+	{
+		PRemoveObject PRO;
+		MEMCPYBUFTOPACKET(PRO);
+		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &PRO, sizeof(PRO));
+		break;
+	}
+	case (int)COMP_OP::OP_SKILLINTERACT:
+	{
+		PSkillInteract PSI;
+		MEMCPYBUFTOPACKET(PSI);
+		ProcessingSkillInteract(c, PSI);
 		break;
 	}
 	default:
@@ -327,6 +343,22 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 	ClientMgr::Instance()->ChangeState(ClientId, ECharacterState::DEAD);
 	PChangedPlayerState PCPS(ClientId % MAXPLAYER, ECharacterState::DEAD);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / MAXPLAYER, &PCPS, sizeof(PCPS));
+}
+
+void PacketMgr::ProcessingSkillInteract(ClientInfo* c, PSkillInteract PSI)
+{
+	switch (PSI.SkillActor)
+	{
+	case ESkillActor::BP_DetectorMine:
+		ClientMgr::Instance()->SendPacketToAllience(c->GetClientNum(), &PSI, sizeof(PSI));
+		ClientMgr::Instance()->Send((c->GetClientNum() / MAXPLAYER) * MAXPLAYER + PSI.InteractedPlayerSerial, &PSI, sizeof(PSI));
+		break;
+	case ESkillActor::BP_ShieldSphere:
+		ClientMgr::Instance()->ProcessShieldSphereHeal(c->GetClientNum(), PSI);
+		break;
+	default:
+		break;
+	}
 }
 
 const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)

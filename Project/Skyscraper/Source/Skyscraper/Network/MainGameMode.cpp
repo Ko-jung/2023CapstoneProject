@@ -36,7 +36,9 @@
 
 void AMainGameMode::BeginPlay()
 {
-	UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
+	UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
+
+	SkillActorSerialNum = 0;
 
 	GetHexagonTileOnLevel();
 
@@ -89,7 +91,7 @@ void AMainGameMode::BeginPlay()
 	TileDropTimer = 0.f;
 	TileDropLevel = 0;
 
-	UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::BeginPlay()"));
+	UE_LOG(LogTemp, Warning, TEXT("End Called AMainGameMode::BeginPlay()"));
 }
 
 void AMainGameMode::Tick(float Deltatime)
@@ -115,7 +117,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMainGameMode::ProcessFunc()
 {
-	//UE_LOG(LogClass, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::ProcessFunc()"));
 	Packet* packet;
 	while (FuncQueue.try_pop(packet))
 	{
@@ -136,7 +138,7 @@ void AMainGameMode::ProcessFunc()
 			memcpy(&PPP, packet, sizeof(PPP));
 			//if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
 			//{
-			//	UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
+			//	UE_LOG(LogTemp, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
 			//	continue;
 			//}
 			SetPlayerPosition(PPP);
@@ -165,13 +167,6 @@ void AMainGameMode::ProcessFunc()
 		{
 			PSpawnObject PSO;
 			memcpy(&PSO, packet, sizeof(PSO));
-
-			// if (PSO.SerialNum>= MAXPLAYER || PSO.SerialNum < 0)
-			// {
-			// 	UE_LOG(LogClass, Warning, TEXT("Array Error"));
-			// 	continue;
-			// }
-
 			ProcessSpawnObject(PSO);
 			break;
 		}
@@ -179,7 +174,7 @@ void AMainGameMode::ProcessFunc()
 		{
 			PChangeAnimMontage PCAM;
 			memcpy(&PCAM, packet, sizeof(PCAM));
-			if(Characters[PCAM.ChangedPlayerSerial])
+			if(Characters.IsValidIndex(PCAM.ChangedPlayerSerial) && Characters[PCAM.ChangedPlayerSerial])
 				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage, PCAM.SectionNum);
 			break;
 		}
@@ -187,7 +182,7 @@ void AMainGameMode::ProcessFunc()
 		{
 			PSwapWeapon PSW;
 			memcpy(&PSW, packet, sizeof(PSW));
-			if (Characters[PSW.SwapingPlayer])
+			if (Characters.IsValidIndex(PSW.SwapingPlayer) && Characters[PSW.SwapingPlayer])
 				Characters[PSW.SwapingPlayer]->SwapWeapon(PSW.SwapWeapon);
 			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_SWAPWEAPON"));
 			break;
@@ -279,13 +274,28 @@ void AMainGameMode::ProcessFunc()
 			ProcessBreakObject(PBO);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_REMOVEOBJECT:
+		{
+			PRemoveObject PRO;
+			memcpy(&PRO, packet, sizeof(PRO));
+			ProcessRemoveObject(PRO);
+			break;
+		}
+		case (BYTE)COMP_OP::OP_SKILLINTERACT:
+		{
+			UE_LOG(LogTemp, Warning, TEXT("COMP_OP::OP_DETECTING"));
+			PSkillInteract PKI;
+			memcpy(&PKI, packet, sizeof(PKI));
+			ProcessSkillInteract(PKI);
+			break;
+		}
 		default:
-			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default"));
+			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;
 		}
 		delete packet;
 	}
-	//UE_LOG(LogClass, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
+	//UE_LOG(LogTemp, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
 }
 
 //void AMainGameMode::ProcessPosition()
@@ -303,7 +313,7 @@ void AMainGameMode::ProcessFunc()
 //				memcpy(&PPP, packet, sizeof(PPP));
 //				if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
 //				{
-//					UE_LOG(LogClass, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
+//					UE_LOG(LogTemp, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
 //					continue;
 //				}
 //				SetPlayerPosition(PPP);
@@ -333,7 +343,7 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	// Check Null Character
 	if (!Class)
 	{
-		UE_LOG(LogClass, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), TargetSerialNum);
+		UE_LOG(LogTemp, Warning, TEXT("%d: Client Select Info Is NULLCHARACTER!"), TargetSerialNum);
 		return;
 	}
 
@@ -358,8 +368,18 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 		if (!character) continue;
 
 		character->Tags.Add(Team);
+
+		{	// Post processing
+			bool IsEnemy = (SerialNum / (MAXPLAYER / 2)) != (TargetSerialNum / (MAXPLAYER / 2));
+
+			// Allience : 0, Enemy : 1
+			character->GetMesh()->CustomDepthStencilValue = IsEnemy;
+			// Allience : true, Enemy : false
+			character->GetMesh()->bRenderCustomDepth = !IsEnemy;
+		}
 		break;
 	}
+
 
 	if (TargetSerialNum == SerialNum)
 	{
@@ -432,29 +452,44 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	FTransform transform{ Rotate, Location, FVector(1.f,1.f,1.f) };
 
 	float speed = PlayerPosition.PlayerSpeed;
-	float XRotate = PlayerPosition.PlayerXDirection;
+	//float XRotate = PlayerPosition.PlayerXDirection;
+	FRotator ControllerRotator = { PlayerPosition.ControllerRotator.X,PlayerPosition.ControllerRotator.Y ,PlayerPosition.ControllerRotator.Z};
 
 	if(Characters[Serial])
-		Characters[Serial]->SyncTransformAndAnim(transform, speed, XRotate);
+		Characters[Serial]->SyncTransformAndAnim(transform, speed, ControllerRotator);
 }
 
 void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 {
-	if (PSO.SerialNum == SerialNum)
+	AActor* NewActor;
+	bool IsSpecial{ true };
+	if (PSO.SpawnObject == ESkillActor::BP_ElectTrap || PSO.SpawnObject == ESkillActor::BP_DetectorMine)
 	{
-		UE_LOG(LogClass, Warning, TEXT("Skill Actor Spawner Is this!"));
-		return;
+		IsSpecial = false;
 	}
+	Characters[PSO.ObjectSpawner]->SkillActorSpawnUsingPacket(IsSpecial,
+																FVector{PSO.Location.X,PSO.Location. Y,PSO.Location. Z},
+																FVector{ PSO.ForwardVec.X,PSO.ForwardVec.Y,PSO.ForwardVec.Z },
+																NewActor);
 
-	FName Team;
-	if (PSO.SerialNum < MAXPLAYER / 2)	Team = TeamName[(int)ETEAM::A];
-	else								Team = TeamName[(int)ETEAM::B];
+	SkillActors.Add({ PSO.SerialNum, NewActor });
+	UE_LOG(LogTemp, Warning, TEXT("SkillActors.Add pair{%d, %s}"), PSO.SerialNum, *UKismetSystemLibrary::GetDisplayName(NewActor));
 
-	FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
-	FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
-	ESkillActor SkillActor = PSO.SpawnObject;
-
-	SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
+	 //if (PSO.SerialNum == SerialNum)
+	 //{
+	 //	UE_LOG(LogTemp, Warning, TEXT("Skill Actor Spawner Is this!"));
+	 //	return;
+	 //}
+	 //
+	 //FName Team;
+	 //if (PSO.SerialNum < MAXPLAYER / 2)	Team = TeamName[(int)ETEAM::A];
+	 //else								Team = TeamName[(int)ETEAM::B];
+	 //
+	 //FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
+	 //FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
+	 //ESkillActor SkillActor = PSO.SpawnObject;
+	 //
+	 //SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
 }
 
 void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
@@ -533,13 +568,13 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 {
 	//Characters[PUI.UsePlayerSerial];
 	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
-	UE_LOG(LogClass, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
+	UE_LOG(LogTemp, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
 }
 
 void AMainGameMode::ProcessGetItem(PGetItem PGI)
 {
 	int8 Index = HexagonTile->GetItemTileIndex(PGI.ItemSerialNum);
-	UE_LOG(LogClass, Warning, TEXT("%d Item Removed on Map!"), Index);
+	UE_LOG(LogTemp, Warning, TEXT("%d Item Removed on Map!"), Index);
 	if (Index == -1) return;
 
 	HexagonTile->RemoveItem(PGI.ItemSerialNum);
@@ -555,17 +590,17 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 
 	if (!TargetObject)
 	{
-		UE_LOG(LogClass, Warning, TEXT("TargetObject is NULL"));
+		UE_LOG(LogTemp, Warning, TEXT("TargetObject is NULL"));
 		return;
 	}
 
-	UE_LOG(LogClass, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
 
 	// Break Window 
 	ASingleBuildingFloor* SBFloor = Cast<ASingleBuildingFloor>(TargetObject->GetOwner());
 	if (!SBFloor)
 	{
-		UE_LOG(LogClass, Warning, TEXT("SBFloor is nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("SBFloor is nullptr"));
 		return;
 	}
 
@@ -573,12 +608,72 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 	//TargetObject->DestroyComponent();
 }
 
+void AMainGameMode::ProcessRemoveObject(PRemoveObject PRO)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessRemoveObject"));
+	if (auto ppActor = SkillActors.Find(PRO.ObjectSerial))
+	{
+		SkillActors.Remove(PRO.ObjectSerial);
+		if (IsValid(*ppActor))
+		{
+			(*ppActor)->Destroy();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ppActor is InValid"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SerialNum %d is not In SkillActors"), PRO.ObjectSerial);
+	}
+}
+
+void AMainGameMode::ProcessSkillInteract(PSkillInteract PKI)
+{
+	switch (PKI.SkillActor)
+	{
+	case ESkillActor::BP_DetectorMine:
+		ProcessDetecting(PKI.InteractedPlayerSerial);
+		break;
+	case ESkillActor::BP_ShieldSphere:
+		break;
+	default:
+		break;
+	}
+}
+
+void AMainGameMode::ProcessDetecting(const uint8 DetectedSerial)
+{
+	if (Characters.IsValidIndex(DetectedSerial))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessDetecting"));
+		Characters[DetectedSerial]->CustomDepthOn();
+	}
+}
+
+//void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
+//{
+//	if (AActor** ppTarget = SkillActors.Find(PRO.ObjectSerial))
+//	{
+//		AActor* SkillActor = *ppTarget;
+//		SkillActor->SetActorLocation(FVector{ PRO.Location.X,PRO.Location.Y,PRO.Location.Z });
+//		SkillActor->SetActorRotation(FRotator{ PRO.Rotation.X,PRO.Rotation.Y,PRO.Rotation.Z });
+//
+//
+//	}
+//	else
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("SkillActors Key<%d> Can't FIND!"), PRO.ObjectSerial);
+//	}
+//}
+
 void AMainGameMode::GetHexagonTileOnLevel()
 {
 	AHexagonTile* Hexagon = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 	if (!Hexagon)
 	{
-		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::GetHexagonTileOnLevel() AHexagonTIle Cast FAILED!"));
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::GetHexagonTileOnLevel() AHexagonTIle Cast FAILED!"));
 		return;
 	}
 
@@ -659,8 +754,10 @@ void AMainGameMode::SendPlayerLocation()
 
 	PlayerPosition.PlayerSpeed = speed;
 
-	FVector Velo = Characters[SerialNum]->GetVelocity();
-	PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
+	// FVector Velo = Characters[SerialNum]->GetVelocity();
+	// PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
+
+	PlayerPosition.ControllerRotator = Characters[SerialNum]->Controller->GetControlRotation();
 
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
 }
@@ -679,32 +776,49 @@ void AMainGameMode::SendPlayerSwapWeaponInfo()
 		PSwapWeapon PSW(SerialNum, WeaponType);
 		m_Socket->Send(&PSW, sizeof(PSW));
 
-		UE_LOG(LogClass, Warning, TEXT("Sending Swap Weapon!"));
+		UE_LOG(LogTemp, Warning, TEXT("Sending Swap Weapon!"));
 	}
 }
 
-void AMainGameMode::SendSkillActorSpawn(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
+void AMainGameMode::SendSkillActorSpawn(const AActor* Sender, ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec)
 {
-	PSpawnObject PSO;
+	if (Characters[SerialNum] != Sender) return;
 
-	PSO.SpawnObject = SkillActor;
-	PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
-	PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;
-	
-	PSO.SerialNum = SerialNum;
+	 PSpawnObject PSO;
+	 
+	 PSO.SpawnObject = SkillActor;
+	 PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
+	 PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;	 
+	 PSO.ObjectSpawner = SerialNum;
 
-	m_Socket->Send(&PSO, sizeof(PSO));
+
+	 if (m_Socket)
+	 {
+		 m_Socket->Send(&PSO, sizeof(PSO));
+	 }
+	 else
+	 {
+		 static uint16 Serial{0};
+		 PSO.SerialNum = Serial++;
+		 ProcessSpawnObject(PSO);
+	 }
 }
 
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
 	if (!GetIsConnected())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() GetIsConnected() is FALSE"));
 		return;
+	}
 
 	if (Sender != Characters[SerialNum])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() Sender != Characters[SerialNum]"));
 		return;
+	}
 
-	UE_LOG(LogClass, Warning, TEXT("Sending Anim Motage Status"));
+	UE_LOG(LogTemp, Warning, TEXT("Sending Anim Motage Status"));
 
 	PChangeAnimMontage PCAM;
 
@@ -720,7 +834,7 @@ bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 
 	if (!m_Socket || Sender != Characters[SerialNum])
 	{
-		UE_LOG(LogClass, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
+		UE_LOG(LogTemp, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
 		return false;
 	}
 
@@ -737,8 +851,78 @@ bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 	PDP.WeaponEnum = equippedWeapon;
 
 	m_Socket->Send(&PDP, sizeof(PDP));
-	UE_LOG(LogClass, Warning, TEXT("Send Weapon Damage"));
+	UE_LOG(LogTemp, Warning, TEXT("Send Weapon Damage"));
 	return true;
+}
+
+void AMainGameMode::SendSkillInteract(const AActor* Sender, const ESkillActor SkillActor)
+{
+	if (!Characters.IsValidIndex(SerialNum) || Sender != Characters[SerialNum])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SendSkillInteract Sender != Characters[SerialNum]"));
+		return;
+	}
+
+	PSkillInteract PSI;
+	PSI.SkillActor = SkillActor;
+	PSI.InteractedPlayerSerial = SerialNum;
+	Send(&PSI, PSI.PacketSize);
+}
+
+void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
+{
+	if (Sender != Characters[SerialNum])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SendDetecting Sender != Characters[SerialNum]"));
+		return;
+	}
+
+	BYTE TargetSerial;
+	for (int i = 0; i < Characters.Num(); i++)
+	{
+		const auto& c = Characters[i];
+		if (c == Target)
+		{
+			TargetSerial = i;
+		}
+	}
+
+	PSkillInteract PSI;
+	PSI.SkillActor = ESkillActor::BP_DetectorMine;
+	PSI.InteractedPlayerSerial = TargetSerial;
+	if (m_Socket)
+	{
+		Send(&PSI, PSI.PacketSize);
+	}
+	else
+	{
+		ProcessSkillInteract(PSI);
+	}
+}
+
+void AMainGameMode::SendRemoveSkillActor(AActor* TargetActor)
+{
+	// 서버 딜레이로 Serial 번호가 갈릴수도있음
+	// 일단 배제
+
+	uint16 TargetSerialNum{ 0 };
+	if (m_Socket)
+	{
+		for (const auto& SkillActorPair : SkillActors)
+		{
+			if (SkillActorPair.Value == TargetActor)
+			{
+				TargetSerialNum = SkillActorPair.Key;
+				break;
+			}
+		}
+
+		PRemoveObject PRO;
+		PRO.ObjectSerial = TargetSerialNum;
+		PRO.ObjectType = EObjectType::SkillActor;
+		m_Socket->Send(&PRO, PRO.PacketSize);
+	}
+	SkillActors.Remove(TargetSerialNum);
 }
 
 void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)
@@ -773,7 +957,7 @@ void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 	m_Socket->Send(&PGI, sizeof(PGI));
 }
    
-void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EBreakType BreakType)
+void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EObjectType BreakType)
 {
 	FVector Direction = (BreakTarget->GetComponentLocation() - Sender->GetActorLocation()).GetSafeNormal();
 
@@ -806,7 +990,7 @@ int AMainGameMode::GetIndex(const AActor* target)
 	// Can't Find
 	if (Index >= MAXPLAYER)
 	{
-		UE_LOG(LogClass, Warning, TEXT("AMainGameMode::GetIndex Cant find Target Actor ID"));
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::GetIndex Cant find Target Actor ID"));
 		return -1;
 	}
 

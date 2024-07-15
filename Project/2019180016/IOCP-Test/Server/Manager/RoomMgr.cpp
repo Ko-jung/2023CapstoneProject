@@ -102,6 +102,11 @@ int RoomMgr::GetTileDropCenterIndex(const int roomId, int& CenterIndex)
 	return Rooms[roomId]->GetTileDropCenterIndex(CenterIndex);
 }
 
+const WORD RoomMgr::GetNowSkillActorSerial(int RoomId)
+{
+	return Rooms[RoomId]->GetSkillActorSerialAndIncrease();
+}
+
 void RoomMgr::RequestSendItemSpawn(int roomId)
 {
 	SendItemSpawn(roomId);

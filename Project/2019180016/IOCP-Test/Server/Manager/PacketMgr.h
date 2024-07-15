@@ -20,6 +20,7 @@ public:
 
 	void GameBeginProcessing(int NowClientNum);
 	void ProcessingPlayerDead(int ClientId);
+	void ProcessingSkillInteract(ClientInfo* c, PSkillInteract PSI);
 
 private:
 	// Timer Func

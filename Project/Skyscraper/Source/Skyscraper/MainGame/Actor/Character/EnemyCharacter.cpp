@@ -15,10 +15,6 @@ AEnemyCharacter::AEnemyCharacter()
 	RangeSelect = ERangeSelect::ERS_RPG;
 }
 
-void AEnemyCharacter::CastingSkill(bool IsSpecialSkill)
-{
-}
-
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();

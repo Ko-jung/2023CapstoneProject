@@ -17,6 +17,6 @@ public:
 	ARadarCharacter();
 
 	// 2019180016
-	virtual void CastingSkill(bool IsSpecialSkill);
+	// 
 	// ==========
 };

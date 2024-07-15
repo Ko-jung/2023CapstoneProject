@@ -57,7 +57,8 @@ struct PPlayerPosition : Packet, PTransform
 {
 	BYTE PlayerSerial;
 	float PlayerSpeed;
-	float PlayerXDirection;
+	//float PlayerXDirection;
+	PVector ControllerRotator;
 
 	//EPlayerState PlayerState;
 
@@ -131,16 +132,15 @@ struct PStunDownState : Packet
 
 struct PSpawnObject : Packet, PTransform
 {
-	EObject SpawnObject;
+	ESkillActor SpawnObject;
 	PVector ForwardVec;
-	BYTE SerialNum;
+	WORD SerialNum;
+	BYTE ObjectSpawner;
 
-	PSpawnObject() : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(), SerialNum(-1) { SpawnObject = EObject::BP_NULL; Location = PVector{}; PacketSize = sizeof(PSpawnObject); }
-	// PSpawnObject(EObject EO, PVector Location, PVector Forward) : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(Location.X, Location.Y, Location.Z)
-	// {
-	// 	this->SpawnObject = EO;
-	// 	PacketSize = sizeof(PSpawnObject);
-	// }
+	PSpawnObject() : Packet(COMP_OP::OP_SPAWNOBJECT), PTransform(), SerialNum(-1), ObjectSpawner(-1), SpawnObject(ESkillActor::BP_NULL)
+	{
+		PacketSize = sizeof(PSpawnObject);
+	}
 };
 
 struct PPlayerJoin : Packet
@@ -320,13 +320,35 @@ struct PRequestPacket : Packet
 
 struct PBreakObject : Packet
 {
-	EBreakType ObjectType;
+	EObjectType ObjectType;
 	WORD ObjectSerial;
 	PVector Direction;
 
-	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EBreakType::Window), ObjectSerial(0), Direction(PVector()) { PacketSize = sizeof(PBreakObject); }
-	PBreakObject(EBreakType type, WORD WindowSerial, PVector Direction) :
+	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EObjectType::Window), ObjectSerial(0), Direction(PVector()) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject(EObjectType type, WORD WindowSerial, PVector Direction) :
 		Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial), Direction(Direction) {	PacketSize = sizeof(PBreakObject);	}
+};
+
+struct PRemoveObject : Packet
+{
+	EObjectType ObjectType;
+	WORD ObjectSerial;
+
+	PRemoveObject() : Packet(COMP_OP::OP_REMOVEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0)
+	{
+		PacketSize = sizeof(PRemoveObject);
+	}
+};
+
+struct PSkillInteract : Packet
+{
+	ESkillActor SkillActor;
+	BYTE InteractedPlayerSerial;
+
+	PSkillInteract() : Packet(COMP_OP::OP_SKILLINTERACT), InteractedPlayerSerial(0)
+	{
+		PacketSize = sizeof(PSkillInteract);
+	}
 };
 
 struct PTryLogin : Packet

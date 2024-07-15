@@ -29,7 +29,6 @@ void UDamageComponent::InitializeDamage(int GetDamage)
 	Cast<UDamageWidget>(GetUserWidgetObject())->CreateDamageImage(Damage, LengthOfDamage);
 	SetComponentTickEnabled(true);
 	
-	UE_LOG(LogTemp, Warning, TEXT("%d %d"), Damage, LengthOfDamage);
 }
 
 void UDamageComponent::BeginPlay()
@@ -48,7 +47,6 @@ void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (GetWorld()->GetTimeSeconds() >= StartTime + MaxLifeTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UDamageComp::Tick::Destroy"));;
 		DestroyComponent();
 	}
 }

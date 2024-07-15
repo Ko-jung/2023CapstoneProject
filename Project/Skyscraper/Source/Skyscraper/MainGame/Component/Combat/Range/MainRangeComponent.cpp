@@ -18,6 +18,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Actor/Damage/DamageSpawner.h"
+#include "Skyscraper/MainGame/Component/Damage/DamageComponent.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Ammo/MyAmmoWidget.h"
@@ -290,19 +291,12 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 
 			if (OutHit.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
 			{
-				{ // 대미지 소환 액터 소환
+				{ // 대미지 컴퍼넌트 추가
 					FTransform SpawnTransform;
 					SpawnTransform.SetLocation(OutHit.Location);
-					FRotator rotator = (OutHit.TraceEnd - OutHit.TraceStart).ToOrientationRotator();
-					rotator.Pitch += 180.0f;
-					SpawnTransform.SetRotation(rotator.Quaternion());
-					ADamageSpawner* DamageSpawner = GetWorld()->SpawnActorDeferred<ADamageSpawner>(ADamageSpawner::StaticClass(), SpawnTransform);
-					if (DamageSpawner)
-					{
-						DamageSpawner->SetActorLocation(OutHit.Location);
-						DamageSpawner->Initialize(fBaseDamage, 0.6f);
-						DamageSpawner->FinishSpawning(SpawnTransform);
-					}
+					
+					UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
+					DamageComp->InitializeDamage(fBaseDamage);
 				}
 			}
 

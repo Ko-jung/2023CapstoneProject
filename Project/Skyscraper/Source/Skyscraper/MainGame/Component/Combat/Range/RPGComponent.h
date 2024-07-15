@@ -29,6 +29,8 @@ private:
 public:
 
 protected:
+	UPROPERTY()
+		TObjectPtr<UNiagaraSystem> NS_RPGBackblast;
 
 private:
 

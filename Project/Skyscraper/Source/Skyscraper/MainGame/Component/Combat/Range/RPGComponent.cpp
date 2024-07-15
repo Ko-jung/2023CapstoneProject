@@ -3,6 +3,7 @@
 
 #include "RPGComponent.h"
 
+#include "NiagaraFunctionLibrary.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Skyscraper/MainGame/Actor/Bullet/RPGBullet.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
@@ -35,6 +36,15 @@ URPGComponent::URPGComponent()
 	{
 		static ConstructorHelpers::FObjectFinder<UAnimSequence> RPG_Reload_AnimRef(TEXT("/Script/Engine.AnimSequence'/Game/2016180023/weapon/gun/rpg_Anim.rpg_Anim'"));
 		WeaponReloadAnim = RPG_Reload_AnimRef.Object;
+	}
+
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_RPGBackblastRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/RPGBackblast/NS_RPGBackblast.NS_RPGBackblast'"));
+		if(NS_RPGBackblastRef.Succeeded())
+		{
+			NS_RPGBackblast = NS_RPGBackblastRef.Object;
+		}
+		
 	}
 	
 }
@@ -89,6 +99,16 @@ void URPGComponent::Fire(float fBaseDamage)
 	{
 		BulletActor->Initialize(OwnerCharacter, Direction, 5000.0f, fBaseDamage);
 		BulletActor->FinishSpawning(SpawnTransform);
+	}
+
+	//Backblast Effect
+	{
+		if(NS_RPGBackblast)
+		{
+			FTransform Transform = WeaponMeshComponent->GetSocketTransform(TEXT("BackblastSocket"));
+			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_RPGBackblast, Transform.GetLocation(), Transform.Rotator());
+		}
+		
 	}
 }
 

@@ -14,8 +14,6 @@ class SKYSCRAPER_API UKatanaComponent : public UMainMeleeComponent
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
-	USkeletalMeshComponent* KatanaSheathComponent;
 
 public:
 	UKatanaComponent();

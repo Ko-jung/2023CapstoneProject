@@ -14,9 +14,6 @@ class SKYSCRAPER_API UDaggerComponent : public UMainMeleeComponent
 {
 	GENERATED_BODY()
 
-	// 서브 무기에 대한 변수
-	UPROPERTY()
-		USkeletalMeshComponent* SubWeaponMeshComponent;
 	UPROPERTY()
 		FName SubWeaponSocketName;
 public:

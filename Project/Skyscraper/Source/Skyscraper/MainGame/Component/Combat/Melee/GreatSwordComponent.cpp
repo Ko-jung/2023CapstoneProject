@@ -20,7 +20,6 @@ UGreatSwordComponent::UGreatSwordComponent()
 
 	// Skeletal Mesh 로드
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SwordSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/sword.sword'"));
-	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword Weapon"));
 	WeaponMeshComponent->SetSkeletalMesh(SwordSkeletalMeshRef.Object);
 }
 

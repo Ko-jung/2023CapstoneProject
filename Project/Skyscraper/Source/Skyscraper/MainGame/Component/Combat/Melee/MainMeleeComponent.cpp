@@ -10,6 +10,7 @@
 #include "Components/InputComponent.h"
 
 #include "MotionWarpingComponent.h"
+#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "PlayMontageCallbackProxy.h"
 #include "PlayMontageCallbackProxy.h"
@@ -55,6 +56,21 @@ UMainMeleeComponent::UMainMeleeComponent()
 		if(NS_HitEffectRef.Succeeded())
 		{
 			NS_HitEffect = NS_HitEffectRef.Object;
+		}
+	}
+
+	{
+		WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Main Weapon"));
+		SubWeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sub Weapon"));
+
+		NS_MainWeaponCreateEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_MainWeaponCreate"));
+		NS_SubWeaponCreateEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_SubWeaponCreate"));
+
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_WeaponCreateRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/WeaponCreate/NS_WeaponCreate.NS_WeaponCreate'"));
+		if(NS_WeaponCreateRef.Succeeded())
+		{
+			NS_MainWeaponCreateEffect->SetAsset(NS_WeaponCreateRef.Object);
+			NS_SubWeaponCreateEffect->SetAsset(NS_WeaponCreateRef.Object);
 		}
 	}
 }
@@ -136,6 +152,7 @@ void UMainMeleeComponent::AddThisWeapon()
 {
 	AddInputMappingContext();
 	SetWeaponHiddenInGame(false);
+	
 }
 
 void UMainMeleeComponent::RemoveThisWeapon()
@@ -467,5 +484,9 @@ void UMainMeleeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 void UMainMeleeComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 {
 	WeaponMeshComponent->SetHiddenInGame(bNewHidden);
+	if (SubWeaponMeshComponent)
+	{
+		SubWeaponMeshComponent->SetHiddenInGame(bNewHidden);
+	}
 }
 

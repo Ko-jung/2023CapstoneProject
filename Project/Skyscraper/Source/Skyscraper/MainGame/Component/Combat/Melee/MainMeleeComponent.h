@@ -55,6 +55,15 @@ protected:
 	UPROPERTY()
 		USkeletalMeshComponent* WeaponMeshComponent;
 	UPROPERTY()
+		TObjectPtr<UNiagaraComponent> NS_MainWeaponCreateEffect;
+
+	// 서브 무기에 대한 변수
+	UPROPERTY()
+		USkeletalMeshComponent* SubWeaponMeshComponent;
+	UPROPERTY()
+		TObjectPtr<UNiagaraComponent> NS_SubWeaponCreateEffect;
+
+	UPROPERTY()
 		FName WeaponSocketName;
 
 	// == OwnerCharacter's CharacterAnimMontages - key variable

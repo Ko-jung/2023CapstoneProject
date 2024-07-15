@@ -19,7 +19,6 @@ UDaggerComponent::UDaggerComponent()
 
 	// Skeletal Mesh 로드
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerRightSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/dagger_right.dagger_right'"));
-	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dagger Right Weapon"));
 	WeaponMeshComponent->SetSkeletalMesh(DaggerRightSkeletalMeshRef.Object);
 
 
@@ -28,7 +27,6 @@ UDaggerComponent::UDaggerComponent()
 
 	// Skeletal Mesh 로드
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerLeftSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/dagger_left.dagger_left'"));
-	SubWeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dagger Left Weapon"));
 	SubWeaponMeshComponent->SetSkeletalMesh(DaggerLeftSkeletalMeshRef.Object);
 
 	
@@ -49,7 +47,6 @@ void UDaggerComponent::BeginPlay()
 void UDaggerComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 {
 	Super::SetWeaponHiddenInGame(bNewHidden);
-	SubWeaponMeshComponent->SetHiddenInGame(bNewHidden);
 
 }
 

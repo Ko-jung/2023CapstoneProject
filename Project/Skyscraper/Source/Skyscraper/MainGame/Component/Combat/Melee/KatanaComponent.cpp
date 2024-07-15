@@ -18,13 +18,11 @@ UKatanaComponent::UKatanaComponent()
 	WeaponSocketName = TEXT("KatanaSocket");
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> KatanaSkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/katana.katana'"));
-	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Katana Weapon"));
 	WeaponMeshComponent->SetSkeletalMesh(KatanaSkeletalMeshRef.Object);
 
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> KatanaSheathMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/weapon/melee/sheath.sheath'"));
-	KatanaSheathComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Katana Sheath"));
-	KatanaSheathComponent->SetSkeletalMesh(KatanaSheathMeshRef.Object);
+	SubWeaponMeshComponent->SetSkeletalMesh(KatanaSheathMeshRef.Object);
 }
 
 void UKatanaComponent::BeginPlay()
@@ -33,8 +31,8 @@ void UKatanaComponent::BeginPlay()
 
 	// 검집 왼손 소켓에 붙이기
 	FAttachmentTransformRules AttachmentTransformRules{ EAttachmentRule::SnapToTarget,false };
-	KatanaSheathComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, TEXT("KatanaSheathSocket"));
-	KatanaSheathComponent->SetHiddenInGame(true);
+	SubWeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, TEXT("KatanaSheathSocket"));
+	SubWeaponMeshComponent->SetHiddenInGame(true);
 	//KatanaSheathSocket
 	//KatanaSheathSocket
 
@@ -56,15 +54,13 @@ void UKatanaComponent::KatanaAttachToRightHand(bool bToRightHand)
 	// 오른손 -> 검집 옮기기
 	else
 	{
-		WeaponMeshComponent->AttachToComponent(KatanaSheathComponent, AttachmentTransformRules, TEXT("katana_sheathSocket"));
+		WeaponMeshComponent->AttachToComponent(SubWeaponMeshComponent, AttachmentTransformRules, TEXT("katana_sheathSocket"));
 	}
 }
 
 void UKatanaComponent::SetWeaponHiddenInGame(bool bNewHidden) const
 {
 	Super::SetWeaponHiddenInGame(bNewHidden);
-
-	KatanaSheathComponent->SetHiddenInGame(bNewHidden);
 }
 
 void UKatanaComponent::SetInitialValue()

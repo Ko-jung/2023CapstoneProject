@@ -16,6 +16,7 @@
 #include "Skyscraper/MainGame/Animation/SkyscraperAnimInstance.h"
 #include "SkyscraperCharacter.generated.h"
 
+class UMaterialInstanceConstant;
 class UNiagaraComponent;
 class ASkyscraperPlayerController;
 class USkyscraperAnimInstance;
@@ -196,6 +197,10 @@ public:
 	bool IsAlliance(AActor* Target);
 	// ==================
 
+	UFUNCTION()
+		void SetItemEffectAndOverlayMaterial(EItemEffect TargetItemEffect, bool bAdd);
+	
+
 protected:
 	// 키 인풋에 따른 액션 함수
 	/** Called for movement input */
@@ -309,6 +314,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> BP_GravityChangerAreaHighClass;
 
+	UPROPERTY(EditAnywhere)
+		TArray<TObjectPtr<UMaterialInstanceConstant>> MI_ItemOverlay;
+
+	UPROPERTY()
+		TArray<EItemEffect> CurrentItemEffects;
 private:
 	
 

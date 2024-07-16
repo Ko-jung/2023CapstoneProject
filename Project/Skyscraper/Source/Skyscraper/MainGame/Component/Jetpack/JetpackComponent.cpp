@@ -419,6 +419,8 @@ void UJetpackComponent::SlowdownDodge()
 void UJetpackComponent::ActivateBoostGaugeInfinity(float InfinityTime)
 {
 	bIsBoostGaugeInfinity = true;
+
+	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_BoostBulletInfinity, true);
 	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Activate"));
 
 	JetpackFuel = FMath::Max(JetpackFuel, 0.33f);
@@ -439,6 +441,7 @@ void UJetpackComponent::DeactivateBoostGaugeInfinity()
 {
 	GetWorld()->GetTimerManager().ClearTimer(BoostGaugeInfinityTimerHandle);
 	bIsBoostGaugeInfinity = false;
+	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_BoostBulletInfinity, false);
 	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Deactivate"));
 }
 

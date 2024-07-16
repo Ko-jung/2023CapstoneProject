@@ -28,6 +28,7 @@
 
 #include "../../../Network/MainGameMode.h"
 #include "Kismet/KismetMaterialLibrary.h"
+#include "Materials/MaterialInstanceConstant.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "UObject/UnrealTypePrivate.h"
@@ -230,9 +231,48 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		}
 	}
 
-	{	// Other Value use to Skill
+	// Other Value use to Skill
+	{	
 		DisableLockOn = false;
 		CanEnemyLockOnMe = true;
+	}
+
+	// 아이템 이펙트(오버레이 머테리얼)
+	{
+		for(int i = 0; i < static_cast<int>(EItemEffect::EIE_COUNT); ++i)
+		{
+			MI_ItemOverlay.AddDefaulted();
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MI_InvincibilityRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/2019180031/MainGame/Material/Outline/M_Overlay_Invincibility.M_Overlay_Invincibility'"));
+		if(MI_InvincibilityRef.Succeeded())
+		{
+			MI_ItemOverlay[static_cast<int>(EItemEffect::EIE_Single_GodMode)] = MI_InvincibilityRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MI_HPUpRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/2019180031/MainGame/Material/Outline/M_Overlay_HPUp.M_Overlay_HPUp'"));
+		if (MI_HPUpRef.Succeeded())
+		{
+			MI_ItemOverlay[static_cast<int>(EItemEffect::EIE_Team_PlusHealth)] = MI_HPUpRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MI_InfinityRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/2019180031/MainGame/Material/Outline/M_Overlay_Infinity.M_Overlay_Infinity'"));
+		if (MI_InfinityRef.Succeeded())
+		{
+			MI_ItemOverlay[static_cast<int>(EItemEffect::EIE_Single_BoostBulletInfinity)] = MI_InfinityRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MI_PowerUp(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/2019180031/MainGame/Material/Outline/M_Overlay_PowerUp.M_Overlay_PowerUp'"));
+		if (MI_PowerUp.Succeeded())
+		{
+			MI_ItemOverlay[static_cast<int>(EItemEffect::EIE_Team_Power)] = MI_PowerUp.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MI_SpeedUp(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/2019180031/MainGame/Material/Outline/M_Overlay_SpeedUp.M_Overlay_SpeedUp'"));
+		if (MI_SpeedUp.Succeeded())
+		{
+			MI_ItemOverlay[static_cast<int>(EItemEffect::EIE_Team_Speed)] = MI_SpeedUp.Object;
+		}
 	}
 }
 
@@ -570,7 +610,7 @@ void ASkyscraperCharacter::SetSpeedBuffValue(float NewSpeedBuffValue, float fBuf
 {
 	SpeedBuffValue = NewSpeedBuffValue;
 	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed* SpeedBuffValue;
-
+	SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_Speed, true);
 	if (!SpeedBuffTimerHandle.IsValid())
 	{
 		GetWorld()->GetTimerManager().SetTimer(SpeedBuffTimerHandle, this, &ThisClass::ResetSpeedBuffValue, 0.2f, false, fBuffTime);
@@ -592,12 +632,15 @@ void ASkyscraperCharacter::ResetSpeedBuffValue()
 	GetWorld()->GetTimerManager().ClearTimer(SpeedBuffTimerHandle);
 	SpeedBuffValue = 1.0f;
 	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;
+	SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_Speed, false);
 	UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::ResetSpeedBuffValue Called. GetCharacterMovement()->MaxWalkSpeed is %f"), GetCharacterMovement()->MaxWalkSpeed);
 }
 
 void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime)
 {
 	PowerBuffValue = NewPowerBuffValue;;
+
+	SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_Power, true);
 
 	if (!PowerBuffTimerHandle.IsValid())
 	{
@@ -695,6 +738,7 @@ void ASkyscraperCharacter::ResetPowerBuffValue()
 {
 	GetWorld()->GetTimerManager().ClearTimer(PowerBuffTimerHandle);
 	PowerBuffValue = 1.0f;
+	SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_Power, false);
 }
 
 
@@ -819,6 +863,34 @@ bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 	if (TargetTags[0] == MyTags[0]) return true;
 	return false;
 }
+
+void ASkyscraperCharacter::SetItemEffectAndOverlayMaterial(EItemEffect TargetItemEffect, bool bAdd)
+{
+	if(bAdd)
+	{
+		CurrentItemEffects.AddUnique(TargetItemEffect);
+
+		if (MI_ItemOverlay[static_cast<int>(TargetItemEffect)])
+		{
+			GetMesh()->SetOverlayMaterial(MI_ItemOverlay[static_cast<int>(TargetItemEffect)]);
+		}
+	}
+	else
+	{
+		if(CurrentItemEffects.Contains(TargetItemEffect))
+		{
+			CurrentItemEffects.Remove(TargetItemEffect);
+		}
+
+		UMaterialInterface* ChangeMaterial = nullptr;
+		if(!CurrentItemEffects.IsEmpty())
+		{
+			ChangeMaterial = MI_ItemOverlay[static_cast<int>(CurrentItemEffects[0])];
+		}
+		GetMesh()->SetOverlayMaterial(ChangeMaterial);
+	}
+}
+
 
 void ASkyscraperCharacter::ActiveSkill_Implementation(bool IsSpecialSkill)
 {

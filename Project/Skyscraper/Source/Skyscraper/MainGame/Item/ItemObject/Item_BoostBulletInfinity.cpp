@@ -38,6 +38,7 @@ void Item_BoostBulletInfinity::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 	ItemObject::DoItemEffect(UsedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("Item_boostBulletInfinity - DoItemEffect"));
+	
 	UsedCharacter->CombatSystemComponent->GetRangeComponent()->ActivateBulletInfinity(ItemBuffTime);
 	UsedCharacter->JetpackComponent->ActivateBoostGaugeInfinity(ItemBuffTime);
 

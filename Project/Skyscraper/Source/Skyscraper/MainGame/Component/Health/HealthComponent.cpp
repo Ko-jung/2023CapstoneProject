@@ -111,6 +111,8 @@ void UHealthComponent::ActivateGodMode(float GodModeTime)
 	bIsGodMode = true;
 	UE_LOG(LogTemp, Warning, TEXT("god mode on"));
 
+	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_GodMode, true);
+
 	if (!GodModeTimerHandle.IsValid())
 	{
 		GetWorld()->GetTimerManager().SetTimer(GodModeTimerHandle, this, &ThisClass::DeactivateGodMode, 0.2f, false, GodModeTime);
@@ -126,6 +128,7 @@ void UHealthComponent::DeactivateGodMode()
 {
 	GetWorld()->GetTimerManager().ClearTimer(GodModeTimerHandle);
 	bIsGodMode = false;
+	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_GodMode, false);
 	UE_LOG(LogTemp, Warning, TEXT("God Mode Turnn Off"));
 }
 
@@ -138,6 +141,8 @@ void UHealthComponent::ActivatePlusHealthBuff(float PlusHealthPercent, float Plu
 	UE_LOG(LogTemp, Warning, TEXT("health %f / %f Plus - %f"), CurrentHealth, MaxHealth, PlusHealthValue);
 	//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
 	ChangeCurrentHp(CurrentHealth);
+
+	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_PlusHealth, true);
 
 	if (!PlusHealthBuffTimerHandle.IsValid())
 	{
@@ -155,13 +160,15 @@ void UHealthComponent::DeactivatePlusHealth()
 {
 	if(PlusHealthBuffTimerHandle.IsValid())
 	{
+		GetWorld()->GetTimerManager().ClearTimer(PlusHealthBuffTimerHandle);
 		float PlusHealthValue = MaxHealth - OriginMaxHealth;
 		MaxHealth = OriginMaxHealth;
 		CurrentHealth = FMath::Max(CurrentHealth - PlusHealthValue, 1.0f);
 		UE_LOG(LogTemp, Warning, TEXT("health plus end, %f / %f"), CurrentHealth,MaxHealth);
 		//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
 		ChangeCurrentHp(CurrentHealth);
-		GetWorld()->GetTimerManager().ClearTimer(PlusHealthBuffTimerHandle);
+
+		OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_PlusHealth, false);
 	}
 }
 

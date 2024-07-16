@@ -51,8 +51,8 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	// == Stun / Down
-	void DoStun(const AActor* Attacker, const float StunTime, const FVector StunDirection) const;
-	void DoDown(const AActor* Attacker, const FVector& DownDirection) const;
+	virtual void DoStun(const AActor* Attacker, const float StunTime, const FVector StunDirection) const;
+	virtual void DoDown(const AActor* Attacker, const FVector& DownDirection) const;
 
 	// == Get Anim Montage
 	UAnimMontage* GetAnimMontage(ECharacterAnimMontage) const;
@@ -273,7 +273,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FOV")
 		float DashFOV;
 
+	bool bIsTrainingBot;
 protected:
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		USpringArmComponent* CameraBoom;
+
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		UCameraComponent* FollowCamera;
+
 	UPROPERTY()
 		float InitialCameraArmLength = 350.0f;
 	UPROPERTY()
@@ -301,13 +310,7 @@ protected:
 		TSubclassOf<AActor> BP_GravityChangerAreaHighClass;
 
 private:
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		UCameraComponent* FollowCamera;
+	
 
 	// 플레이어가 떠 있는지에 대한 변수 (AnimInstance에서 사용 예정)
 	UPROPERTY(VisibleAnywhere)

@@ -174,7 +174,11 @@ void UJetpackComponent::OnLandJetpack()
 	SetFuel(MaxJetpackFuel);
 	SetHoveringMode(false);
 
-	OwnerCharacter->GetAnimInstance()->bIsDescent = false;
+	if(OwnerCharacter->GetAnimInstance())
+	{
+		OwnerCharacter->GetAnimInstance()->bIsDescent = false;
+	}
+	
 }
 
 

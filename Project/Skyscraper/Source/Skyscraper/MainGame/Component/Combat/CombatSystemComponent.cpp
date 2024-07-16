@@ -130,21 +130,25 @@ void UCombatSystemComponent::BeginPlay()
 		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	}
 
-	{ // 소유 캐릭터에 근접 및 원거리 무기 컴퍼넌트 생성
-		MainMeleeWeaponComponent =OwnerCharacter->AddComponentByClass(MeleeClass[(uint8)MeleeSelect], false, FTransform(), true);
-		MainMeleeWeaponComponent->RegisterComponent();
+	if(!OwnerCharacter->bIsTrainingBot)
+	{
+		{ // 소유 캐릭터에 근접 및 원거리 무기 컴퍼넌트 생성
+			MainMeleeWeaponComponent = OwnerCharacter->AddComponentByClass(MeleeClass[(uint8)MeleeSelect], false, FTransform(), true);
+			MainMeleeWeaponComponent->RegisterComponent();
 
-		MainRangeWeaponComponent = OwnerCharacter->AddComponentByClass(RangeClass[(uint8)RangeSelect], false, FTransform(), true);
-		MainRangeWeaponComponent->RegisterComponent();
+			MainRangeWeaponComponent = OwnerCharacter->AddComponentByClass(RangeClass[(uint8)RangeSelect], false, FTransform(), true);
+			MainRangeWeaponComponent->RegisterComponent();
 
-		SwapToRangeWeapon(FInputActionValue());
+			SwapToRangeWeapon(FInputActionValue());
+		}
+
+		//Add Input Mapping Context
+		AddInputMappingContext();
+		BindingInputActions();
+
+		// ...	
 	}
-
-	//Add Input Mapping Context
-	AddInputMappingContext();
-	BindingInputActions();
-
-	// ...
+	
 	
 }
 

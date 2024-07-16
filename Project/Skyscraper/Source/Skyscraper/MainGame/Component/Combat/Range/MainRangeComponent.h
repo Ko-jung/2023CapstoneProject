@@ -59,6 +59,7 @@ public:
 
 	UPROPERTY()
 		ERangeSelect RangeWeaponType;
+	
 
 protected:
 	// BeginPlay / EndPlay
@@ -140,6 +141,10 @@ protected:
 	// Muzzle Flash 이펙트
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UNiagaraSystem> NS_MuzzleFlash;
+
+	// Hit 이펙트
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UNiagaraSystem> NS_HitEffect;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> BP_BloodSpawner;

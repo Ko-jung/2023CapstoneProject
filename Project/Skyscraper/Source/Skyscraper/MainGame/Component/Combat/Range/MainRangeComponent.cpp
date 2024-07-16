@@ -84,6 +84,15 @@ UMainRangeComponent::UMainRangeComponent()
 		}
 	}
 
+	// Hit Effect 로드
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_HitEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/HitEffect/NS_HitEffect.NS_HitEffect'"));
+		if (NS_HitEffectRef.Succeeded())
+		{
+			NS_HitEffect = NS_HitEffectRef.Object;
+		}
+	}
+
 	// BloodSpawner 로드
 	{
 		static ConstructorHelpers::FClassFinder<AActor> BP_BloodSpawnerRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/BloodSpawner/BP_Blood_Drops.BP_Blood_Drops_C'"));
@@ -329,16 +338,27 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 					UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
 					DamageComp->InitializeDamage(fBaseDamage);
 				}
+				// BloodSpawner 생성
+				{
+					FTransform Transform{ OutHit.Normal.Rotation().Quaternion(), OutHit.Location };
+					AActor* BloodSpawner = GetWorld()->SpawnActorDeferred<AActor>(BP_BloodSpawner, Transform);
+					if (BloodSpawner)
+					{
+						BloodSpawner->FinishSpawning(Transform);
+					}
+				}
 			}
 
-			// BloodSpawner 생성
+			
+
+			// Hit 이펙트 생성
+			if (NS_HitEffect)
 			{
-				FTransform Transform{ OutHit.Normal.Rotation().Quaternion(), OutHit.Location};
-				AActor* BloodSpawner = GetWorld()->SpawnActorDeferred<AActor>(BP_BloodSpawner, Transform);
-				if(BloodSpawner)
-				{
-					BloodSpawner->FinishSpawning(Transform);
-				}
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					GetWorld(), NS_HitEffect,
+					OutHit.Location,
+					FRotator{ 0.0f,0.0f,0.0f },
+					FVector(1));
 			}
 			
 		}
@@ -353,6 +373,8 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			FX->SetVariableFloat(FName("Distance"), Distance);
 
 		}
+
+
 	}
 
 	// == Recoil

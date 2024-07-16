@@ -31,15 +31,52 @@ ALootingItemActor::ALootingItemActor()
 			ItemObjectStaticMeshes.AddDefaulted();
 		}
 		static ConstructorHelpers::FObjectFinder<UStaticMesh> GodModeRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/1_1.1_1'"));
-		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Single_GodMode] = GodModeRef.Object;
+		if(GodModeRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Single_GodMode] = GodModeRef.Object;
+		}
+		
 		static ConstructorHelpers::FObjectFinder<UStaticMesh> BoostBulletRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/1_2.1_2'"));
-		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Single_BoostBulletInfinity] = BoostBulletRef.Object;
+		if(BoostBulletRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Single_BoostBulletInfinity] = BoostBulletRef.Object;
+		}
+		
 		static ConstructorHelpers::FObjectFinder<UStaticMesh> Team_SpeedRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/2_1.2_1'"));
-		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_Speed] = Team_SpeedRef.Object;
+		if(Team_SpeedRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_Speed] = Team_SpeedRef.Object;
+		}
+
 		static ConstructorHelpers::FObjectFinder<UStaticMesh> Team_PowerRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/2_2.2_2'"));
-		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_Power] = Team_PowerRef.Object;
+		if(Team_PowerRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_Power] = Team_PowerRef.Object;
+		}
+		
 		static ConstructorHelpers::FObjectFinder<UStaticMesh> Team_PlusHealthRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/2_3.2_3'"));
-		ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_PlusHealth] = Team_PlusHealthRef.Object;
+		if(Team_PlusHealthRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Team_PlusHealth] = Team_PlusHealthRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> Gravity_UpRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/3_1_1.3_1_1'"));
+		if (Gravity_UpRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Gravity_Up] = Gravity_UpRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> Gravity_DownRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/3_1_2.3_1_2'"));
+		if (Gravity_DownRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Gravity_Down] = Gravity_DownRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> TileCollapseRef(TEXT("/Script/Engine.StaticMesh'/Game/2016180023/item/3_2.3_2'"));
+		if (TileCollapseRef.Succeeded())
+		{
+			ItemObjectStaticMeshes[(int8)EItemEffect::EIE_Tile_Break] = TileCollapseRef.Object;
+		}
 	}
 
 	{
@@ -47,6 +84,7 @@ ALootingItemActor::ALootingItemActor()
 		BodyStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 		SetRootComponent(BodyStaticMesh);
 		BodyStaticMesh->SetStaticMesh(BodyMeshRef.Object);
+		BodyStaticMesh->SetRelativeScale3D(FVector{ 2.0f });
 
 		ItemObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemObject"));
 		ItemObjectMesh->SetupAttachment(BodyStaticMesh);

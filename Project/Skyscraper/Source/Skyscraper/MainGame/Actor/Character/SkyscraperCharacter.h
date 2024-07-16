@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "Skyscraper/Enum/ECharacterAnimMontage.h"
 #include "Skyscraper/Enum/ECharacterCameraMode.h"
+#include "Skyscraper/Enum/ECharacterSelect.h"
 #include "Skyscraper/Enum/EItemEffect.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
 #include "Skyscraper/Enum/EMeleeSelect.h"
@@ -279,6 +280,9 @@ public:
 		float DashFOV;
 
 	bool bIsTrainingBot;
+
+	UPROPERTY()
+		ECharacterSelect CharacterType;
 protected:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -319,6 +323,7 @@ protected:
 
 	UPROPERTY()
 		TArray<EItemEffect> CurrentItemEffects;
+
 private:
 	
 

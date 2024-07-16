@@ -5,6 +5,7 @@
 
 AShieldCharacter::AShieldCharacter()
 {
+	CharacterType = ECharacterSelect::ECS_ShieldCharacter;
 	{ // Set Mesh Character
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/0_shield/shield.shield'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);

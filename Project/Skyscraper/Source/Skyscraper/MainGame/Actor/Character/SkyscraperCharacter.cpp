@@ -40,6 +40,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 ASkyscraperCharacter::ASkyscraperCharacter()
 {
+	CharacterType = ECharacterSelect::ECS_Null;
+
 	float CapsuleHeightSize = 76.5f;
 
 	// Set size for collision capsule

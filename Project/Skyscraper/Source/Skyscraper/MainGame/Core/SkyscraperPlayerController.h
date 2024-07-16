@@ -17,6 +17,7 @@ class UChangeWeaponWidget;
 class UMiniMapWidget;
 class UTimeAndKillCountWidget;
 class ASkyscraperCharacter;
+class UMainCombatWidget;
 /**
  * 
  */
@@ -77,6 +78,12 @@ protected:
 	// 소유한 GetPawn() 에 대하여 형변환
 	UPROPERTY()
 	ASkyscraperCharacter* PossessingPawn;
+
+	// MainCombat Widget 클래스 및 변수
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> MainCombatWidgetClass;
+	UPROPERTY()
+		TObjectPtr<UMainCombatWidget> MainCombatWidget;
 
 	// TimeAndKillCount Widget 클래스 및 변수
 	UPROPERTY(EditAnywhere)

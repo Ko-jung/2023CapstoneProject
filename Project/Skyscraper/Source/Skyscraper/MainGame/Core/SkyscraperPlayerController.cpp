@@ -15,8 +15,10 @@
 #include "Skyscraper/MainGame/Widget/LockOn/LockOnWidget.h"
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
-
+#include "Skyscraper/MainGame/Widget/Combat/MainCombatWidget.h"
 // 2019180016 if Lobby Gamemode, No use Widget
+#include "SkyscraperPlayerController.h"
+
 #include "Skyscraper/Network/LobbyMode.h"
 
 ASkyscraperPlayerController::ASkyscraperPlayerController()
@@ -39,6 +41,10 @@ ASkyscraperPlayerController::ASkyscraperPlayerController()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_LockOnWidgetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Lockon/WBP_LockOn.WBP_LockOn_C'"));
 	LockOnWidgetClass = WBP_LockOnWidgetRef.Class;
+
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MainCombatWidgetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/MainCombatHUD/WBP_MainCombatHUD.WBP_MainCombatHUD_C'"));
+	MainCombatWidgetClass = WBP_MainCombatWidgetRef.Class;
 }
 
 UMiniMapWidget* ASkyscraperPlayerController::GetMiniMapWidget() const
@@ -221,6 +227,13 @@ void ASkyscraperPlayerController::BeginPlay()
 		LockOnWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 
+	
+	MainCombatWidget = Cast<UMainCombatWidget>(CreateWidget(this, MainCombatWidgetClass));
+	if(MainCombatWidget)
+	{
+		MainCombatWidget->AddToViewport();
+		MainCombatWidget->SetCharacterImage(PossessingPawn->CharacterType);
+	}
 }
 
 void ASkyscraperPlayerController::Tick(float DeltaSeconds)

@@ -5,6 +5,7 @@
 
 AWindCharacter::AWindCharacter() 
 {
+	CharacterType = ECharacterSelect::ECS_WindCharacter;
 	{ // Set Mesh Character
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/1_wind/wind.wind'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);

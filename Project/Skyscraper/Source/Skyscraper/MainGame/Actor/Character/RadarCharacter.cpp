@@ -5,6 +5,7 @@
 
 ARadarCharacter::ARadarCharacter() 
 {
+	CharacterType = ECharacterSelect::ECS_DetectionCharacter;
 	{ // Set Mesh Character
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/5_radar/radar.radar'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);

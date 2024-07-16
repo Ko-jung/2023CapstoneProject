@@ -5,6 +5,8 @@
 
 ABoomerangCharacter::ABoomerangCharacter()
 {
+	CharacterType = ECharacterSelect::ECS_BoomerangCharacter;
+
 	{ // Set Mesh Character
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/3_boomerang/boomerang.boomerang'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);

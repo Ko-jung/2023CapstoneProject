@@ -5,6 +5,8 @@
 
 AElectricCharacter::AElectricCharacter()
 {
+	CharacterType = ECharacterSelect::ECS_ElectricCharacter;
+
 	{ // Set Mesh Character
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/2_electric/elec.elec'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);

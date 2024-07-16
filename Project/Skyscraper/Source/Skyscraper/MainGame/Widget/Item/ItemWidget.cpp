@@ -3,12 +3,21 @@
 
 #include "ItemWidget.h"
 
+#include "K2Node_SwitchEnum.h"
 #include "Components/Image.h"
-
+#include "Components/TextBlock.h"
 
 void UItemWidget::SetItemImageTexture(EItemEffect ItemEffect)
 {
-	ItemImage->SetBrushFromTexture(ItemTexture[(int8)ItemEffect]);
+	if(ItemImage)
+	{
+		ItemImage->SetBrushFromTexture(ItemTexture[(int8)ItemEffect]);
+	}
+	if(ItemText)
+	{
+		ItemText->SetText(FText::FromString(GetItemTextByEItemEffect(ItemEffect)));
+		//ItemText->SetText(FText::FromString());
+	}
 }
 
 void UItemWidget::NativePreConstruct()
@@ -20,8 +29,8 @@ void UItemWidget::NativePreConstruct()
 		ItemTexture.AddDefaulted();
 	}
 	
-
-	ItemTexture[(int8)EItemEffect::EIE_NONE] = nullptr;
+	static UTexture2D* NoneTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/EMPTY_BACKGROUND.EMPTY_BACKGROUND'"));
+	ItemTexture[(int8)EItemEffect::EIE_NONE] = NoneTexture;
 
 	
 	static UTexture2D* InfinityTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/item/infinite.infinite'"));
@@ -48,4 +57,41 @@ void UItemWidget::NativePreConstruct()
 
 	static UTexture2D* TileBreakTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/item/tile_break.tile_break'"));
 	ItemTexture[(int8)EItemEffect::EIE_Tile_Break] = TileBreakTexture;
+}
+
+FString UItemWidget::GetItemTextByEItemEffect(EItemEffect ItemEffect)
+{
+	FString ReturnString;
+	switch (ItemEffect)
+	{
+	case EItemEffect::EIE_NONE:
+		ReturnString = L"";
+		break;
+	case EItemEffect::EIE_Single_BoostBulletInfinity:
+		ReturnString = L"게이지/탄창 무한";
+		break;
+	case EItemEffect::EIE_Single_GodMode:
+		ReturnString = L"무적(개인)";
+		break;
+	case EItemEffect::EIE_Team_PlusHealth:
+		ReturnString = L"체력 증가(팀)";
+		break;
+	case EItemEffect::EIE_Team_Power:
+		ReturnString = L"공격력 증가(팀)";
+		break;
+	case EItemEffect::EIE_Team_Speed:
+		ReturnString = L"이동속도 증가(팀)";
+		break;
+	case EItemEffect::EIE_Gravity_Up:
+		ReturnString = L"중력 증가";
+		break;
+	case EItemEffect::EIE_Gravity_Down:
+		ReturnString = L"중력 감소";
+		break;
+	case EItemEffect::EIE_Tile_Break:
+		ReturnString = L"타일 붕괴";
+		break;
+	}
+
+	return ReturnString;
 }

@@ -7,6 +7,7 @@
 #include "Skyscraper/Enum/EItemEffect.h"
 #include "ItemWidget.generated.h"
 
+class UTextBlock;
 class UImage;
 /**
  * 
@@ -20,6 +21,7 @@ public:
 	void SetItemImageTexture(EItemEffect ItemEffect);
 protected:
 	virtual void NativePreConstruct() override;
+	FString GetItemTextByEItemEffect(EItemEffect ItemEffect);
 private:
 
 public:
@@ -30,6 +32,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemTexture")
 		TArray<TObjectPtr<UTexture2D>> ItemTexture;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		TObjectPtr<UTextBlock> ItemText;
 	
 private:
 };

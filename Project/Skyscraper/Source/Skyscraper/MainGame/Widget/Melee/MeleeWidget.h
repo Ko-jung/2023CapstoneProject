@@ -7,6 +7,9 @@
 #include "Skyscraper/Enum/EMeleeSelect.h"
 #include "MeleeWidget.generated.h"
 
+class UCanvasPanelSlot;
+class UTextBlock;
+class UHorizontalBox;
 class UImage;
 class UProgressBar;
 /**
@@ -20,6 +23,10 @@ public:
 	void SetMeleeCooldownPercent(float CurrentCooldownTime, float MaxCooldownTime) const;
 
 	void SetMeleeWeapon(EMeleeSelect MeleeSelect);
+
+	void InitHitCountFunc();
+	void HitSizeChangeFunc();
+	void AddHitCount();
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
@@ -33,7 +40,34 @@ protected:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 		TObjectPtr<UImage> MeleeWeaponImage;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+		TObjectPtr<UHorizontalBox> HitTextBox;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+		TObjectPtr<UTextBlock> HitCountText;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+		TObjectPtr<UTextBlock> HitText;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponTexture")
 		TArray<TObjectPtr<UTexture2D>> WeaponTexture;
+
+	int HitCount = 0;
+
+	float InitHitCountTime = 3.0f;
+	float CurrentInitHitCountTime = 0.0f;
+	float TimeOffset = 0.05f;
+	float CurrentHitSizeChangeTime = 0.0f;
+
+
+	// Timer Handle
+	FTimerHandle HitTextSizeChangeTimerHandle;
+	FTimerHandle InitHitCountTimerHandle;
+
+	// Curve Data
+	UPROPERTY()
+		TObjectPtr<UCurveFloat> HitSizeCurve;
+	UPROPERTY()
+		TObjectPtr<UCurveFloat> HitTextAlphaCurve;
 private:
 };

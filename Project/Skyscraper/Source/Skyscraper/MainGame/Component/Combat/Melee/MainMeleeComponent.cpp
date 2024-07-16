@@ -132,7 +132,11 @@ void UMainMeleeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	//UnBind Input Mapping Context
 	RemoveThisWeapon();
 
-	// == TOOD: Unbind Melee Widget
+	// Unbind Melee Widget
+	if(MainMeleeWidget)
+	{
+		MainMeleeWidget->RemoveFromParent();
+	}
 }
 
 void UMainMeleeComponent::AttackCoolTimeFunc()
@@ -479,9 +483,14 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	}
 
 	// 적중된 적이 있으므로 역경직
+	// 24.07.17 추가적으로 적중 될 경우 HitCount를 표시하여 같은 역할이므로 이곳에서 실행
 	if (bDoHitLag)
 	{
 		DoHitLag();
+		if(MainMeleeWidget)
+		{
+			MainMeleeWidget->AddHitCount();
+		}
 	}
 }
 

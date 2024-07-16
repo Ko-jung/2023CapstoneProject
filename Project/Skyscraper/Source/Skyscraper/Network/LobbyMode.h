@@ -16,6 +16,8 @@ class SKYSCRAPER_API ALobbyMode : public ANetworkGameMode
 	GENERATED_BODY()
 	
 public:
+	ALobbyMode();
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -27,4 +29,7 @@ public:
 
 private:
 	bool IsReady;
+
+	UPROPERTY()
+	TSubclassOf<class ULobbyWidget> LobbyWidgetClass;
 };

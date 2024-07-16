@@ -3,7 +3,18 @@
 
 #include "LobbyMode.h"
 #include "NetworkManager.h"
+#include "Skyscraper/Network/LobbyWidget.h"
 #include "Kismet/GameplayStatics.h"
+
+ALobbyMode::ALobbyMode()
+{
+	// /Script/UMGEditor.WidgetBlueprint'/Game/2019180016/Blueprint/Widget/WBP_LobbyWidget.WBP_LobbyWidget'
+	static ConstructorHelpers::FClassFinder<ULobbyWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180016/Blueprint/Widget/WBP_LobbyWidget.WBP_LobbyWidget_C'"));
+	if (WidgetClass.Succeeded())
+	{
+		LobbyWidgetClass = WidgetClass.Class;
+	}
+}
 
 void ALobbyMode::BeginPlay()
 {
@@ -11,6 +22,24 @@ void ALobbyMode::BeginPlay()
 
 	IsReady = false;
 	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), GetIsConnected());
+
+	if (LobbyWidgetClass)
+	{
+		ULobbyWidget* LobbyWidget = CreateWidget<ULobbyWidget>(GetWorld(), LobbyWidgetClass);
+		if (LobbyWidget)
+		{
+			LobbyWidget->AddToViewport();
+			GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("LobbyWidget is nullptr"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LobbyWidgetClass is nullptr"));
+	}
 
 	if (GetIsConnected())
 	{

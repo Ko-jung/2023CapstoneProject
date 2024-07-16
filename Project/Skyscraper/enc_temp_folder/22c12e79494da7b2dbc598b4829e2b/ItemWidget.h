@@ -29,7 +29,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemTexture")
 		TArray<TObjectPtr<UTexture2D>> ItemTexture;
-
-	
 private:
 };

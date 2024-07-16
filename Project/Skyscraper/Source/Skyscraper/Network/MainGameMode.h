@@ -86,21 +86,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Test_TakeDamage(int DamageType);
 
-	 UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	 TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> CharacterClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Characters")
+	TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> CharacterClass;
 	 
-	 UPROPERTY(EditDefaultsOnly, Category = "Characters")
-	 TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> AiCharacterClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Characters")
+	TMap<ECharacterSelect, TSubclassOf<ASkyscraperCharacter>> AiCharacterClass;
 
-	 UPROPERTY(EditAnywhere)
-	 FVector TempSpawnLocation[5];
+	UPROPERTY(EditAnywhere)
+	FVector TempSpawnLocation[5];
 
-	 UFUNCTION(Exec)
-	 void RequestTileDrop();
-	 UFUNCTION(Exec)
-	 void RequestSpawnItem();
-	 UFUNCTION(Exec)
-	 void RequestFinishGame();
+	UFUNCTION(Exec)
+	void RequestTileDrop();
+	UFUNCTION(Exec)
+	void RequestSpawnItem();
+	UFUNCTION(Exec)
+	void RequestFinishGame();
 
 protected:
 	TArray<ASkyscraperCharacter*> Characters;

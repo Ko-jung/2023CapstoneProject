@@ -34,6 +34,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
 
+// Item Object
+#include "Skyscraper/MainGame/Item/ItemFactory/ItemFactory.h"
+#include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
+
 void AMainGameMode::BeginPlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
@@ -566,9 +570,19 @@ void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
 
 void AMainGameMode::ProcessUseItem(PUseItem PUI)
 {
+	if (!Characters.IsValidIndex(PUI.UsePlayerSerial)) return;
+
 	//Characters[PUI.UsePlayerSerial];
 	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
 	UE_LOG(LogTemp, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
+
+	bool IsSameTeam = (SerialNum / (MAXPLAYER / 2)) == (PUI.UsePlayerSerial / (MAXPLAYER / 2));
+	ASkyscraperCharacter* TargetCharacter = Characters[PUI.UsePlayerSerial];
+
+	if (ItemObject* Object = ItemFactory::CreateItem((EItemEffect)PUI.Effect, (EItemRareLevel)PUI.ItemLevel))
+	{
+		Object->DoItemEffect(TargetCharacter);
+	}
 }
 
 void AMainGameMode::ProcessGetItem(PGetItem PGI)

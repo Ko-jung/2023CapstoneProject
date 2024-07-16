@@ -185,27 +185,33 @@ void ClientMgr::ChangeState(int id, ECharacterState state)
 void ClientMgr::ProcessItem(int id, PUseItem PUI)
 {
 	int Timer = 0;
-	switch (PUI.Effect)
+	switch ((EItemEffect)PUI.Effect)
 	{
-	case (BYTE)EItemEffect::NONE:
-		break;	  
-	case (BYTE)EItemEffect::Single_BoostBulletInfinity:
-		Timer = 10 * (PUI.ItemLevel);
-		break;	  
-	case (BYTE)EItemEffect::Single_GodMode:
-		Timer = 5 * (PUI.ItemLevel);
-		break;	  
-	case (BYTE)EItemEffect::Team_PlusHealth:
-		ItemHeal(id, (EItemRareLevel)PUI.ItemLevel);
+	case EItemEffect::Team_PlusHealth:
+	case EItemEffect::Team_Power:
+	case EItemEffect::Team_Speed:
+	{
+		bool IsTeamB = (id % MAXPLAYER) > (MAXPLAYER / 2);
+		for (int i = 0; i < MAXPLAYER / 2; i++)
+		{
+			PUI.UsePlayerSerial = i + IsTeamB * (MAXPLAYER / 2);
+			SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
+		}
+	}
+	break;
+	case EItemEffect::Single_BoostBulletInfinity:
+	case EItemEffect::Single_GodMode:
+	case EItemEffect::Gravity_Up:
+	case EItemEffect::Gravity_Down:
+		SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
 		break;
-	case (BYTE)EItemEffect::Team_Power:
-	case (BYTE)EItemEffect::Team_Speed:
-		Timer = 10 * (PUI.ItemLevel);
+	case EItemEffect::Tile_Break:
+		// 위치 선택 UI 제작되면 제작
+		SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
 		break;
 	default:
-			break;
+		break;
 	}
-	SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
 
 	// TODO: 서버에서 버프를 꺼야한다.
 	

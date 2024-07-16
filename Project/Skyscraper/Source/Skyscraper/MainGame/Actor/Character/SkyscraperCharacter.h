@@ -111,6 +111,7 @@ public:
 
 	// 2019180016
 public:
+	// Skill
 	UFUNCTION(BlueprintCallable)
 	void DoDisableLockOn(float Timer);
 	void DoAbleLockOn();
@@ -123,6 +124,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SkillInteract(ESkillActor SkillActor, float Timer);
+	//==============
 
 	/// <returns>
 	/// If Weapon Changed return true
@@ -148,6 +150,10 @@ public:
 
 	void SyncTransformAndAnim(FTransform t, float s, FRotator r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum);
+
+	// Item
+	void SingleGodMode(EItemRareLevel EIRL);
+	// ================
 
 	void SetSpeed(float s) { Speed = s; }
 	void SetXRotate(float r) { XRotate = r; }

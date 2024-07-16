@@ -7,6 +7,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Health/HealthBar.h"
 #include "Skyscraper/MainGame/Widget/Health/MyHealthWidget.h"
@@ -54,6 +55,10 @@ void UHealthComponent::BeginPlay()
 		CurrentHealth = MaxHealth;
 		LivingState = EHealthState::EHS_LIVING;
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+		if(OwnerCharacter == GEngine->GetFirstLocalPlayerController(GetWorld())->GetPawn())
+		{
+			HealthBarWidgetComponent->SetVisibility(false);
+		}
 	}
 
 	{ // == create widget and attach to owner

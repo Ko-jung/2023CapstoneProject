@@ -16,6 +16,9 @@
 #include "Skyscraper/MainGame/Widget/MiniMap/MiniMapWidget.h"
 #include "Skyscraper/MainGame/Widget/TimeAndKillCount/TimeAndKillCountWidget.h"
 
+// 2019180016 if Lobby Gamemode, No use Widget
+#include "Skyscraper/Network/LobbyMode.h"
+
 ASkyscraperPlayerController::ASkyscraperPlayerController()
 {
 
@@ -174,6 +177,14 @@ void ASkyscraperPlayerController::BeginPlay()
 
 	PlayerCameraManager->ViewPitchMin = -45.0f;
 	PlayerCameraManager->ViewPitchMax = 45.0f;
+
+	// 2019180016 If Lobby Gamemode, no use
+	if (Cast<ALobbyMode>(GetWorld()->GetAuthGameMode()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Gamemode is LobbyGameMode"));
+		return;
+	}
+	//
 
 	TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
 	if(TimeAndKillCountWidget)

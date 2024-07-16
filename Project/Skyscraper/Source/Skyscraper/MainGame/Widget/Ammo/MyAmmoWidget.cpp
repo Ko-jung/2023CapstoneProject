@@ -10,14 +10,14 @@ void UMyAmmoWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	PB_AmmoBar->SetPercent(1.0f);
+	PB_AmmoBar->SetPercent(0.0f);
 }
 
 void UMyAmmoWidget::SetAmmoPercent(int CurrentBulletCount, int MaxBulletCount) const
 {
 	if(MaxBulletCount != 0 && PB_AmmoBar)
 	{
-		PB_AmmoBar->SetPercent((float)CurrentBulletCount / (float)MaxBulletCount);
+		PB_AmmoBar->SetPercent(1 - (float)CurrentBulletCount / (float)MaxBulletCount);
 	}
 }
 

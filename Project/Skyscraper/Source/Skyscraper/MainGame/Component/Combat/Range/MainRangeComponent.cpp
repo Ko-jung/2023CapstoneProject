@@ -53,6 +53,7 @@ UMainRangeComponent::UMainRangeComponent()
 	//AM_Reload = AM_ReloadRef.Object;
 	AnimMontageKey = ECharacterAnimMontage::ECAM_Default;
 
+	RangeWeaponType = ERangeSelect::ERS_NONE;
 
 
 	{ // == Set Input Asset
@@ -138,6 +139,7 @@ void UMainRangeComponent::BeginPlay()
 			{
 				MyAmmoWidget = Cast<UMyAmmoWidget>(Widget);
 				MyAmmoWidget->AddToViewport();
+				MyAmmoWidget->SetRangeWeapon(RangeWeaponType);
 			}
 
 			MainRangeWidget = CreateWidget(GetOwnerPlayerController(), MainRangeWidgetClass);

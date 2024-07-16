@@ -22,6 +22,8 @@ URPGComponent::URPGComponent()
 	RecoilTime = 0.1f;
 	RecoilSpeed = 20.0f;
 
+	RangeWeaponType = ERangeSelect::ERS_RPG;
+
 	{ // 총알 에셋 로드s
 		static ConstructorHelpers::FClassFinder<ARPGBullet> RPGBulletBPRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Actor/BP_RPGBullet.BP_RPGBullet_C'"));
 		RPGBulletBPClass = RPGBulletBPRef.Class;

@@ -7,6 +7,7 @@
 
 USMGComponent::USMGComponent()
 {
+	RangeWeaponType = ERangeSelect::ERS_SMG;
 	AnimMontageKey = ECharacterAnimMontage::ECAM_SMG;
 	
 	ReloadMaxCoolTime = 5.0f;

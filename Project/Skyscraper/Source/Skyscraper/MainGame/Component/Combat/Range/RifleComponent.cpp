@@ -20,6 +20,7 @@ URifleComponent::URifleComponent()
 	RecoilTime = 0.1f;
 	RecoilSpeed = 20.0f;
 
+	RangeWeaponType = ERangeSelect::ERS_Rifle;
 
 	WeaponSocketName = TEXT("RifleSocket");
 

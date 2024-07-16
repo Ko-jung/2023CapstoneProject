@@ -56,6 +56,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
 
+
+	UPROPERTY()
+		ERangeSelect RangeWeaponType;
+
 protected:
 	// BeginPlay / EndPlay
 	virtual void BeginPlay() override;

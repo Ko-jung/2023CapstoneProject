@@ -24,6 +24,7 @@
 #include "Skyscraper/MainGame/Component/Damage/DamageComponent.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/MainGame/Widget/Melee/MeleeWidget.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
 // Sets default values for this component's properties
@@ -32,6 +33,8 @@ UMainMeleeComponent::UMainMeleeComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
+
+	MeleeSelect = EMeleeSelect::EMS_NONE;
 
 	MeleeComboCount = 0;
 	LastAttackClickTime = 0;
@@ -74,6 +77,15 @@ UMainMeleeComponent::UMainMeleeComponent()
 			NS_SubWeaponCreateEffect->SetAsset(NS_WeaponCreateRef.Object);
 		}
 	}
+
+	// 위젯 연결
+	{
+		static ConstructorHelpers::FClassFinder<UUserWidget> WBP_MainMeleeWidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/Combat/Melee/WBP_MeleeHUD.WBP_MeleeHUD_C'"));
+		if(WBP_MainMeleeWidget.Succeeded())
+		{
+			MainMeleeWidgetClass = WBP_MainMeleeWidget.Class;
+		}
+	}
 }
 
 // Called when the game starts
@@ -95,12 +107,23 @@ void UMainMeleeComponent::BeginPlay()
 		WeaponMeshComponent->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentTransformRules, WeaponSocketName);
 		SetWeaponHiddenInGame(true);
 	}
-	// == TODO: Create Melee Widget
+
+	// Melee Widget 제작
+	{
+		if(GetOwnerPlayerController())
+		{
+			UUserWidget* Widget = CreateWidget(GetOwnerPlayerController(), MainMeleeWidgetClass);
+			if (Widget)
+			{
+				MainMeleeWidget = Cast<UMeleeWidget>(Widget);
+				MainMeleeWidget->AddToViewport();
+				MainMeleeWidget->SetMeleeWeapon(MeleeSelect);
+				MainMeleeWidget->SetMeleeCooldownPercent(CurrentCooldownTime, AttackCoolDownTime);
+			}
+		}
+	}
 
 	SetInitialValue();
-
-
-
 }
 
 
@@ -114,10 +137,21 @@ void UMainMeleeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UMainMeleeComponent::AttackCoolTimeFunc()
 {
-	UE_LOG(LogTemp, Warning, TEXT("근접 쿨타임 종료"));
-	bCanAttack = true;
+	CurrentCooldownTime -= AttackCoolDownTimeOffset;
+	if(MainMeleeWidget)
+	{
+		MainMeleeWidget->SetMeleeCooldownPercent(CurrentCooldownTime, AttackCoolDownTime);
+	}
 
-	GetWorld()->GetTimerManager().ClearTimer(AttackCoolTimeTimerHandle);
+	if(CurrentCooldownTime <= 0.0f)
+	{
+		CurrentCooldownTime = 0.0f;
+		UE_LOG(LogTemp, Warning, TEXT("근접 쿨타임 종료"));
+		bCanAttack = true;
+
+		GetWorld()->GetTimerManager().ClearTimer(AttackCoolTimeTimerHandle);
+	}
+	
 }
 
 void UMainMeleeComponent::AddInputMappingContext()
@@ -242,7 +276,8 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 			if(!AttackCoolTimeTimerHandle.IsValid())
 			{
 				UE_LOG(LogTemp, Warning, TEXT("근접 마지막 타격, 쿨타임 시작"));
-				GetWorld()->GetTimerManager().SetTimer(AttackCoolTimeTimerHandle, this, &ThisClass::AttackCoolTimeFunc, 0.1f, false,AttackCoolDownTime);
+				CurrentCooldownTime = AttackCoolDownTime;
+				GetWorld()->GetTimerManager().SetTimer(AttackCoolTimeTimerHandle, this, &ThisClass::AttackCoolTimeFunc,AttackCoolDownTimeOffset, true,AttackCoolDownTimeOffset);
 			}
 		}
 		MeleeComboCount = (MeleeComboCount + 1) % AttackTime.Num();

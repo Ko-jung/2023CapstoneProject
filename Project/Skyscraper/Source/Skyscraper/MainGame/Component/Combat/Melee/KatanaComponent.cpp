@@ -7,6 +7,8 @@
 
 UKatanaComponent::UKatanaComponent()
 {
+	MeleeSelect = EMeleeSelect::EMS_Katana;
+
 	AnimMontageKey = ECharacterAnimMontage::ECAM_KatanaAttack;
 
 

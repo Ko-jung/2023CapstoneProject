@@ -7,6 +7,8 @@
 
 UDaggerComponent::UDaggerComponent()
 {
+	MeleeSelect = EMeleeSelect::EMS_Dagger;
+
 	AnimMontageKey = ECharacterAnimMontage::ECAM_DaggerAttack;
 	AttackBlendOutTime.Add(0.00f);
 	AttackBlendOutTime.Add(0.00f);

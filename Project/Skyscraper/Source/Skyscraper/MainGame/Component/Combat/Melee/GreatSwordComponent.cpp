@@ -7,6 +7,8 @@
 
 UGreatSwordComponent::UGreatSwordComponent()
 {
+	MeleeSelect = EMeleeSelect::EMS_GreatSword;
+
 	// 애니메이션 몽타쥬 키 설정
 	AnimMontageKey = ECharacterAnimMontage::ECAM_GreatSwordAttack;
 	

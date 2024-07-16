@@ -9,6 +9,8 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "MainMeleeComponent.generated.h"
 
+class UMeleeWidget;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
 class SKYSCRAPER_API UMainMeleeComponent : public UActorComponent
 {
@@ -69,6 +71,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNiagaraSystem> NS_HitEffect;
 
+	// 근거리 무기에 대한 UI의 클래스와 변수
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> MainMeleeWidgetClass;
+	UPROPERTY()
+		UMeleeWidget* MainMeleeWidget;
+
+	UPROPERTY()
+		EMeleeSelect MeleeSelect;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -107,7 +118,10 @@ protected:
 		bool bCanAttack;
 	UPROPERTY(EditAnywhere)
 		float AttackCoolDownTime;
+	UPROPERTY()
+		float CurrentCooldownTime;
 	FTimerHandle AttackCoolTimeTimerHandle;
+	float AttackCoolDownTimeOffset = 0.05f;
 
 	
 public:	

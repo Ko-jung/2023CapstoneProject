@@ -6,4 +6,5 @@ enum class EMeleeSelect : uint8
 	EMS_Katana,
 	EMS_GreatSword,
 	EMS_NONE,
+	EMS_Count
 };

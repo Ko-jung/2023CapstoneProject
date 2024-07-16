@@ -184,19 +184,20 @@ void ASkyscraperPlayerController::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = -45.0f;
 	PlayerCameraManager->ViewPitchMax = 45.0f;
 
-	// 2019180016 If Lobby Gamemode, no use
-	if (Cast<ALobbyMode>(GetWorld()->GetAuthGameMode()))
+	
+	if (!Cast<ALobbyMode>(GetWorld()->GetAuthGameMode()))	// 2019180016 If Lobby Gamemode, no use
+	{
+		TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
+		if(TimeAndKillCountWidget)
+		{
+			TimeAndKillCountWidget->AddToViewport();
+		}
+	}
+	else													// 2019180016
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Gamemode is LobbyGameMode"));
-		return;
 	}
 	//
-
-	TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
-	if(TimeAndKillCountWidget)
-	{
-		TimeAndKillCountWidget->AddToViewport();
-	}
 
 	ItemWidget = Cast<UItemWidget>(CreateWidget(this, ItemWidgetClass));
 	if (ItemWidget)

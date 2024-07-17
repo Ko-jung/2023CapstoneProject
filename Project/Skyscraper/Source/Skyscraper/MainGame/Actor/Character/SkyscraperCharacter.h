@@ -126,6 +126,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SkillInteract(ESkillActor SkillActor, float Timer);
 
+	UFUNCTION(BlueprintCallable)
+	void CallBeginPlay();
+
 	/// <returns>
 	/// If Weapon Changed return true
 	/// </returns>
@@ -186,13 +189,13 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void PlaySkillMontage(bool IsSpecialSkill, uint8 SectionNum);
 
-	// Process Mine Stun
+		// Process Mine Stun
 		UFUNCTION(BlueprintCallable)
 		void AbleToAct();
 
 		UFUNCTION(BlueprintCallable)
 		void ApplyStun(const float StunTime);
-	// ==================
+		// ==================
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlliance(AActor* Target);

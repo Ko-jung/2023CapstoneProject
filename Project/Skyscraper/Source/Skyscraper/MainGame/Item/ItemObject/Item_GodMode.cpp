@@ -6,13 +6,14 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 
-Item_GodMode::Item_GodMode()
+UItem_GodMode::UItem_GodMode()
 {
 	
 }
 
-Item_GodMode::Item_GodMode(EItemRareLevel RareLevel)
+void UItem_GodMode::SetItemRare(EItemRareLevel RareLevel)
 {
+	UItemObject::SetItemRare(RareLevel);
 	switch (RareLevel)
 	{
 	case EItemRareLevel::EIRL_Normal:
@@ -29,13 +30,13 @@ Item_GodMode::Item_GodMode(EItemRareLevel RareLevel)
 	}
 }
 
-Item_GodMode::~Item_GodMode()
+UItem_GodMode::~UItem_GodMode()
 {
 }
 
-void Item_GodMode::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
+void UItem_GodMode::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
-	ItemObject::DoItemEffect(UsedCharacter);
+	UItemObject::DoItemEffect(UsedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("Item_GodMode - DoItemEffect"));
 	UsedCharacter->HealthComponent->ActivateGodMode(ItemBuffTime);

@@ -4,23 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
+#include "ItemObject.generated.h"
 
 class ASkyscraperCharacter;
 /**
  * 
  */
-class SKYSCRAPER_API ItemObject
+UCLASS()
+class SKYSCRAPER_API UItemObject : public UObject
 {
+	GENERATED_BODY()
+
+
 protected:
 	float ItemBuffTime = 0.0f;
 
-	// ¹öÇÁ ¼öÄ¡¿¡ ´ëÇÑ º¯¼ö
-	// Team ¹öÇÁ ³»¿¡¼­ »ç¿ëµÇ¸ç, °¢ ¹öÇÁ ³»¿¡ Å¬·¡½º¿¡¼­ »ó¼¼ ¼³¸í ÀÛ¼º (Item_Team_XXX)
+	// ë²„í”„ ìˆ˜ì¹˜ì— ëŒ€í•œ ë³€ìˆ˜
+	// Team ë²„í”„ ë‚´ì—ì„œ ì‚¬ìš©ë˜ë©°, ê° ë²„í”„ ë‚´ì— í´ë˜ìŠ¤ì—ì„œ ìƒì„¸ ì„¤ëª… ì‘ì„± (Item_Team_XXX)
 	float ItemBuffValue = 0.0f;
 
 public:
-	ItemObject();
-	virtual ~ItemObject();
+	UItemObject();
+
+	UFUNCTION()
+		virtual void SetItemRare(EItemRareLevel RareLevel);
 
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter);
 };

@@ -3,17 +3,15 @@
 
 #include "Item_Team_PlusHealth.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
-#include "Skyscraper/MainGame/Component/Jetpack/JetpackComponent.h"
-#include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Component/Health/HealthComponent.h"
 
-Item_Team_PlusHealth::Item_Team_PlusHealth()
+UItem_Team_PlusHealth::UItem_Team_PlusHealth()
 {
 }
 
-Item_Team_PlusHealth::Item_Team_PlusHealth(EItemRareLevel RareLevel)
+void UItem_Team_PlusHealth::SetItemRare(EItemRareLevel RareLevel)
 {
-
+	UItemObject::SetItemRare(RareLevel);
 	ItemBuffTime = 20.0f;
 	switch (RareLevel)
 	{
@@ -31,13 +29,13 @@ Item_Team_PlusHealth::Item_Team_PlusHealth(EItemRareLevel RareLevel)
 	}
 }
 
-Item_Team_PlusHealth::~Item_Team_PlusHealth()
+UItem_Team_PlusHealth::~UItem_Team_PlusHealth()
 {
 }
 
-void Item_Team_PlusHealth::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
+void UItem_Team_PlusHealth::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
-	ItemObject::DoItemEffect(UsedCharacter);
+	UItemObject::DoItemEffect(UsedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("Item_Team_PlusHealth - DoItemEffect"));
 	UsedCharacter->HealthComponent->ActivatePlusHealthBuff(ItemBuffValue, ItemBuffTime);

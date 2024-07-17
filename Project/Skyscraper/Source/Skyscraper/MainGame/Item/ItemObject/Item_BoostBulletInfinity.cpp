@@ -6,12 +6,13 @@
 #include "Skyscraper/MainGame/Component/Jetpack/JetpackComponent.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 
-Item_BoostBulletInfinity::Item_BoostBulletInfinity()
+UItem_BoostBulletInfinity::UItem_BoostBulletInfinity()
 {
 }
 
-Item_BoostBulletInfinity::Item_BoostBulletInfinity(EItemRareLevel RareLevel)
+void UItem_BoostBulletInfinity::SetItemRare(EItemRareLevel RareLevel)
 {
+	UItemObject::SetItemRare(RareLevel);
 	switch (RareLevel)
 	{
 	case EItemRareLevel::EIRL_Normal:
@@ -28,14 +29,14 @@ Item_BoostBulletInfinity::Item_BoostBulletInfinity(EItemRareLevel RareLevel)
 	}
 }
 
-Item_BoostBulletInfinity::~Item_BoostBulletInfinity()
+UItem_BoostBulletInfinity::~UItem_BoostBulletInfinity()
 {
 }
 
 
-void Item_BoostBulletInfinity::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
+void UItem_BoostBulletInfinity::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
-	ItemObject::DoItemEffect(UsedCharacter);
+	UItemObject::DoItemEffect(UsedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("Item_boostBulletInfinity - DoItemEffect"));
 	

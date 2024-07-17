@@ -10,55 +10,62 @@
 #include "Skyscraper/MainGame/Item/ItemObject/Item_Team_PlusHealth.h"
 #include "Skyscraper/MainGame/Item/ItemObject/Item_Team_Power.h"
 #include "Skyscraper/MainGame/Item/ItemObject/Item_Team_Speed.h"
+#include "Skyscraper/MainGame/Item/ItemObject/Item_TileBreak.h"
 
-ItemFactory::ItemFactory()
+UItemFactory::UItemFactory()
 {
 }
 
-ItemFactory::~ItemFactory()
+UItemFactory::~UItemFactory()
 {
 }
 
-ItemObject* ItemFactory::CreateItem(EItemEffect ItemEffectType, EItemRareLevel RareLevel)
+UItemObject* UItemFactory::CreateItem(EItemEffect ItemEffectType, EItemRareLevel RareLevel)
 {
-	ItemObject* Object = nullptr;
+	UItemObject* Object = nullptr;
 
 	// EItemEffect 에 맞는 아이템 생성
 	switch (ItemEffectType)
 	{
 	case EItemEffect::EIE_Single_BoostBulletInfinity:
-		Object = new Item_BoostBulletInfinity(RareLevel);
+		Object = NewObject<UItem_BoostBulletInfinity>(); // UItem_BoostBulletInfinity(RareLevel);
 		break;
 
 	case EItemEffect::EIE_Single_GodMode:
-		Object = new Item_GodMode(RareLevel);
+		Object = NewObject<UItem_GodMode>();
 		break;
 
 	case EItemEffect::EIE_Team_PlusHealth:
-		Object = new Item_Team_PlusHealth(RareLevel);
+		Object = NewObject<UItem_Team_PlusHealth>();
 		break;
 
 	case EItemEffect::EIE_Team_Power:
-		Object = new Item_Team_Power(RareLevel);
+		Object = NewObject<UItem_Team_Power>();
 		break;
 
 	case EItemEffect::EIE_Team_Speed:
-		Object = new Item_Team_Speed(RareLevel);
+		Object = NewObject<UItem_Team_Speed>();
 		break;
 
 	case EItemEffect::EIE_Gravity_Up:
-		Object = new Item_GravityHigh();
+		Object = NewObject<UItem_GravityHigh>();
 		break;
 
 	case EItemEffect::EIE_Gravity_Down:
-		Object = new Item_GravityLow();
+		Object = NewObject<UItem_GravityLow>();
 		break;
 
 	case EItemEffect::EIE_Tile_Break:
+		Object = NewObject<UItem_TileBreak>();
 		break;
 
 	default:
 		break;
+	}
+
+	if(Object)
+	{
+		Object->SetItemRare(RareLevel);
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("ItemFactory - Create item and return"));

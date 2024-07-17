@@ -4,15 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Item_GravityLow.h"
+#include "Item_GravityHigh.generated.h"
 
 /**
  * 
  */
-class SKYSCRAPER_API Item_GravityHigh : public ItemObject
+UCLASS()
+class SKYSCRAPER_API UItem_GravityHigh : public UItemObject
 {
+	GENERATED_BODY()
 public:
-	Item_GravityHigh();
-	virtual ~Item_GravityHigh() override;
+	UItem_GravityHigh();
+	virtual ~UItem_GravityHigh() override;
 
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter) override;
 

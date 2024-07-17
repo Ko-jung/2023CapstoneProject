@@ -15,7 +15,7 @@ class SKYSCRAPER_API USkyscraperEngineSubsystem : public UEngineSubsystem
 	GENERATED_BODY()
 
 public:
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	USoundBase* GetSkyscraperSound(FName RowName) const;
 
 protected:

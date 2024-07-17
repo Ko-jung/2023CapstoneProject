@@ -6,16 +6,20 @@
 #include "CoreMinimal.h"
 #include "ItemObject.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
+#include "Item_GodMode.generated.h"
 
 /**
  *
  */
-class SKYSCRAPER_API Item_GodMode : public ItemObject
+UCLASS()
+class SKYSCRAPER_API UItem_GodMode : public UItemObject
 {
+	GENERATED_BODY()
 public:
-	Item_GodMode();
-	Item_GodMode(EItemRareLevel RareLevel);
-	virtual ~Item_GodMode() override;
+	UItem_GodMode();
+	
+	virtual void SetItemRare(EItemRareLevel RareLevel) override;
+	virtual ~UItem_GodMode() override;
 
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter) override;
 };

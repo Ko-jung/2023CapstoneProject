@@ -3,17 +3,20 @@
 
 #include "ItemObject.h"
 
-ItemObject::ItemObject()
+
+
+UItemObject::UItemObject()
 {
 }
 
-ItemObject::~ItemObject()
+
+void UItemObject::SetItemRare(EItemRareLevel RareLevel)
 {
 }
 
-void ItemObject::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
+void UItemObject::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
-	UE_LOG(LogTemp, Warning, TEXT("!!!!!!!!!!!!!!!!!"));
 	// virtual
-	// Super ·Î ÇÒÀÏ ÀÖÀ» ½Ã Ãß°¡
+	// Super ë¡œ í• ì¼ ìˆì„ ì‹œ ì¶”ê°€
 }
+

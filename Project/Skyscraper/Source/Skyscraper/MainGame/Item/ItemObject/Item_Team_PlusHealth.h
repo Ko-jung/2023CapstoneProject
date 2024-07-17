@@ -7,19 +7,24 @@
 #include "ItemObject.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
 
+#include "Item_Team_PlusHealth.generated.h"
+
 /**
  *
  */
-class SKYSCRAPER_API Item_Team_PlusHealth : public ItemObject
+UCLASS()
+class SKYSCRAPER_API UItem_Team_PlusHealth : public UItemObject
 {
-	// ItemObject ³» ¹öÇÁ ItemBuffValue
-	// 1´Ü°è - 25%Áõ°¡ / 2´Ü°è - 50%Áõ°¡ / 3´Ü°è 100% Áõ°¡ ·Î,
-	// 1´Ü°è - 0.25f / 2´Ü°è - 0.5f / 3´Ü°è - 1.0fÀÇ °ªÀ» °¡Áü
+	GENERATED_BODY()
+	// ItemObject ë‚´ ë²„í”„ ItemBuffValue
+	// 1ë‹¨ê³„ - 25%ì¦ê°€ / 2ë‹¨ê³„ - 50%ì¦ê°€ / 3ë‹¨ê³„ 100% ì¦ê°€ ë¡œ,
+	// 1ë‹¨ê³„ - 0.25f / 2ë‹¨ê³„ - 0.5f / 3ë‹¨ê³„ - 1.0fì˜ ê°’ì„ ê°€ì§
 
 public:
-	Item_Team_PlusHealth();
-	Item_Team_PlusHealth(EItemRareLevel RareLevel);
-	virtual ~Item_Team_PlusHealth() override;
+	UItem_Team_PlusHealth();
+	
+	virtual void SetItemRare(EItemRareLevel RareLevel) override;
+	virtual ~UItem_Team_PlusHealth() override;
 
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter) override;
 };

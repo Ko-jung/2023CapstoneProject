@@ -6,18 +6,18 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 
 
-Item_GravityLow::Item_GravityLow()
+UItem_GravityLow::UItem_GravityLow()
 {
 	bGravityLow = true;
 }
 
-Item_GravityLow::~Item_GravityLow()
+UItem_GravityLow::~UItem_GravityLow()
 {
 }
 
-void Item_GravityLow::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
+void UItem_GravityLow::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
-	ItemObject::DoItemEffect(UsedCharacter);
+	UItemObject::DoItemEffect(UsedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("Gravity Low Item Used"));
 	UsedCharacter->SpawnGravityChangerArea(bGravityLow);

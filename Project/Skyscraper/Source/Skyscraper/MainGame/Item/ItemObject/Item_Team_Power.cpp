@@ -5,12 +5,13 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 
 
-Item_Team_Power::Item_Team_Power()
+UItem_Team_Power::UItem_Team_Power()
 {
 }
 
-Item_Team_Power::Item_Team_Power(EItemRareLevel RareLevel)
+void UItem_Team_Power::SetItemRare(EItemRareLevel RareLevel)
 {
+	UItemObject::SetItemRare(RareLevel);
 	ItemBuffTime = 30.0f;
 	switch (RareLevel)
 	{
@@ -28,18 +29,18 @@ Item_Team_Power::Item_Team_Power(EItemRareLevel RareLevel)
 	}
 }
 
-Item_Team_Power::~Item_Team_Power()
+UItem_Team_Power::~UItem_Team_Power()
 {
 }
 
-void Item_Team_Power::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
+void UItem_Team_Power::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
-	ItemObject::DoItemEffect(UsedCharacter);
+	UItemObject::DoItemEffect(UsedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("Item_Team_Power - DoItemEffect"));
 	UsedCharacter->SetPowerBuffValue(ItemBuffValue, ItemBuffTime);
 
-	{ // UsedCharacter ÀÇ ÆÀ¿¡°Ôµµ Àû¿ë½ÃÅ°±â
+	{ // UsedCharacter ì˜ íŒ€ì—ê²Œë„ ì ìš©ì‹œí‚¤ê¸°
 
 	}
 }

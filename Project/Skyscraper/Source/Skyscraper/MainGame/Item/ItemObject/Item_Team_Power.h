@@ -7,19 +7,24 @@
 #include "ItemObject.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
 
+#include "Item_Team_Power.generated.h"
+
 /**
  *
  */
-class SKYSCRAPER_API Item_Team_Power : public ItemObject
+UCLASS()
+class SKYSCRAPER_API UItem_Team_Power : public UItemObject
 {
-	// ItemObject ³» ¹öÇÁ ItemBuffValue
-	// 1´Ü°è - 20%Áõ°¡ / 2´Ü°è - 40%Áõ°¡ / 3´Ü°è 60% Áõ°¡ ·Î,
-	// 1´Ü°è - 1.2f / 2´Ü°è - 1.4f / 3´Ü°è - 1.6fÀÇ °ªÀ» °¡Áü
+	GENERATED_BODY()
+	// ItemObject ë‚´ ë²„í”„ ItemBuffValue
+	// 1ë‹¨ê³„ - 20%ì¦ê°€ / 2ë‹¨ê³„ - 40%ì¦ê°€ / 3ë‹¨ê³„ 60% ì¦ê°€ ë¡œ,
+	// 1ë‹¨ê³„ - 1.2f / 2ë‹¨ê³„ - 1.4f / 3ë‹¨ê³„ - 1.6fì˜ ê°’ì„ ê°€ì§
 
 public:
-	Item_Team_Power();
-	Item_Team_Power(EItemRareLevel RareLevel);
-	virtual ~Item_Team_Power() override;
+	UItem_Team_Power();
+	
+	virtual void SetItemRare(EItemRareLevel RareLevel) override;
+	virtual ~UItem_Team_Power() override;
 
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter) override;
 };

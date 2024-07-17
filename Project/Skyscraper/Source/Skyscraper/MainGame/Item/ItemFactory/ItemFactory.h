@@ -5,14 +5,19 @@
 #include "CoreMinimal.h"
 #include "Skyscraper/Enum/EItemEffect.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
+#include "ItemFactory.generated.h"
 
-class ItemObject;
+class UItemObject;
 
-class SKYSCRAPER_API ItemFactory
+UCLASS()
+class SKYSCRAPER_API UItemFactory : public UObject
 {
+	GENERATED_BODY()
+
+
 public:
-	ItemFactory();
-	~ItemFactory();
-	// ¾ÆÀÌÅÛÀ» »ı¼º ÈÄ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
-	static ItemObject* CreateItem(EItemEffect ItemEffectType, EItemRareLevel RareLevel);
+	UItemFactory();
+	~UItemFactory();
+	// ì•„ì´í…œì„ ìƒì„± í›„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
+	static UItemObject* CreateItem(EItemEffect ItemEffectType, EItemRareLevel RareLevel);
 };

@@ -1,32 +1,28 @@
+#pragma once
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "ItemObject.h"
-#include "Item_GravityLow.generated.h"
-
+#include "Skyscraper/Enum/EItemRareLevel.h"
+#include "Item_TileBreak.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class SKYSCRAPER_API UItem_GravityLow : public UItemObject
+class SKYSCRAPER_API UItem_TileBreak : public UItemObject
 {
 	GENERATED_BODY()
 public:
-	UItem_GravityLow();
-	virtual ~UItem_GravityLow() override;
+	UItem_TileBreak();
+	
+	virtual ~UItem_TileBreak() override;
 
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter) override;
 
 protected:
-private:
-
-public:
-protected:
-	bool bGravityLow;
-
-private:
-
 };
+
+

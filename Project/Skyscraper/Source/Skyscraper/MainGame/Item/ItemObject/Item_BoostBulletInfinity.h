@@ -1,21 +1,21 @@
 #pragma once
-// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
 
 #include "CoreMinimal.h"
 #include "ItemObject.h"
 #include "Skyscraper/Enum/EItemRareLevel.h"
+#include "Item_BoostBulletInfinity.generated.h"
 
 /**
  *
  */
-class SKYSCRAPER_API Item_BoostBulletInfinity : public ItemObject
+UCLASS()
+class SKYSCRAPER_API UItem_BoostBulletInfinity : public UItemObject
 {
+	GENERATED_BODY()
 public:
-	Item_BoostBulletInfinity();
-	Item_BoostBulletInfinity(EItemRareLevel RareLevel);
-	virtual ~Item_BoostBulletInfinity() override;
+	UItem_BoostBulletInfinity();
+	virtual void SetItemRare(EItemRareLevel RareLevel) override;
+	virtual ~UItem_BoostBulletInfinity() override;
 
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter) override;
 };

@@ -4,12 +4,13 @@
 #include "Item_Team_Speed.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 
-Item_Team_Speed::Item_Team_Speed()
+UItem_Team_Speed::UItem_Team_Speed()
 {
 }
 
-Item_Team_Speed::Item_Team_Speed(EItemRareLevel RareLevel)
+void UItem_Team_Speed::SetItemRare(EItemRareLevel RareLevel)
 {
+	UItemObject::SetItemRare(RareLevel);
 	ItemBuffTime = 40.0f;
 	switch (RareLevel)
 	{
@@ -27,18 +28,19 @@ Item_Team_Speed::Item_Team_Speed(EItemRareLevel RareLevel)
 	}
 }
 
-Item_Team_Speed::~Item_Team_Speed()
+
+UItem_Team_Speed::~UItem_Team_Speed()
 {
 }
 
-void Item_Team_Speed::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
+void UItem_Team_Speed::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 {
-	ItemObject::DoItemEffect(UsedCharacter);
+	UItemObject::DoItemEffect(UsedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("Item_Team_Speed - DoItemEffect"));
 	UsedCharacter->SetSpeedBuffValue(ItemBuffValue,ItemBuffTime);
 
-	{ // UsedCharacter ÀÇ ÆÀ¿¡°Ôµµ Àû¿ë½ÃÅ°±â
+	{ // UsedCharacter ì˜ íŒ€ì—ê²Œë„ ì ìš©ì‹œí‚¤ê¸°
 
 	}
 }

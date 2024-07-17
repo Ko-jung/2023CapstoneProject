@@ -469,6 +469,11 @@ void ASkyscraperCharacter::SkillInteract(ESkillActor SkillActor, float Timer)
 	}
 }
 
+void ASkyscraperCharacter::CallBeginPlay()
+{
+	BeginPlay();
+}
+
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)
 {
 	// CheckHoldWeapon(ESwapWeapon&) -> CheckHoldWeapon(ESwapWeapon&, uint8&)

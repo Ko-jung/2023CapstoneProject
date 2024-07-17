@@ -25,7 +25,7 @@ void ALobbyMode::BeginPlay()
 
 	if (LobbyWidgetClass)
 	{
-		ULobbyWidget* LobbyWidget = CreateWidget<ULobbyWidget>(GetWorld(), LobbyWidgetClass);
+		LobbyWidget = CreateWidget<ULobbyWidget>(GetWorld(), LobbyWidgetClass);
 		if (LobbyWidget)
 		{
 			LobbyWidget->AddToViewport();
@@ -73,6 +73,11 @@ void ALobbyMode::Tick(float Deltatime)
 	Super::Tick(Deltatime);
 
 	ProcessFunc();
+
+	if (LobbyWidget && LobbyWidget->IsMatching)
+	{
+		LobbyWidget->UpdateMatchingTimer();
+	}
 }
 
 void ALobbyMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -122,5 +127,21 @@ void ALobbyMode::Ready()
 		PStartMatching PSM;
 		m_Socket->Send(&PSM, sizeof(PSM));
 		IsReady = true;
+	}
+}
+
+void ALobbyMode::Ready(bool bIsReady)
+{
+	if (!m_Socket) return;
+
+	if (bIsReady)
+	{
+		PCancleMatching PCM;
+		m_Socket->Send(&PCM, sizeof(PCM));
+	}
+	else
+	{
+		PStartMatching PSM;
+		m_Socket->Send(&PSM, sizeof(PSM));
 	}
 }

@@ -14,6 +14,9 @@ UDamageComponent::UDamageComponent()
 
 	SetWidgetSpace(EWidgetSpace::Screen);
 	SetPivot(FVector2D{ 0.2f,0.75f });
+
+	UpwardSpeed = 300.0f;
+	UpwardTime = 1.0f;
 }
 
 void UDamageComponent::InitializeDamage(int GetDamage)
@@ -43,7 +46,11 @@ void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	SetRelativeLocation(GetRelativeLocation() + FVector{0.0f, 0.0f, 300.0f * DeltaTime});
+	if(GetWorld()->GetTimeSeconds() <= StartTime + UpwardTime )
+	{
+		SetRelativeLocation(GetRelativeLocation() + FVector{0.0f, 0.0f, 300.0f * DeltaTime});
+	}
+	
 
 	if (GetWorld()->GetTimeSeconds() >= StartTime + MaxLifeTime)
 	{

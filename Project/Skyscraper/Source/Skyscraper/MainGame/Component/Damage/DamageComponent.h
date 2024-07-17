@@ -35,6 +35,8 @@ protected:
 	float MaxLifeTime;
 	double StartTime;
 
+	float UpwardSpeed;
+	float UpwardTime;
 
 private:
 

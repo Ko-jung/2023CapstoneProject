@@ -5,12 +5,17 @@
 
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Skyscraper/MainGame/Actor/Bullet/RPGBullet.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 URPGComponent::URPGComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_RPG;
+
+	FireSoundName = TEXT("RPG_Fire");
+	ReloadSoundName = TEXT("RPG_Reload");
 
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 5;
@@ -110,7 +115,12 @@ void URPGComponent::Fire(float fBaseDamage)
 			FTransform Transform = WeaponMeshComponent->GetSocketTransform(TEXT("BackblastSocket"));
 			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_RPGBackblast, Transform.GetLocation(), Transform.Rotator());
 		}
-		
+	}
+
+	// Play Sound
+	{
+		USoundBase* FireSound = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>()->GetSkyscraperSound(FireSoundName);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, SpawnLocation, FRotator::ZeroRotator);
 	}
 }
 

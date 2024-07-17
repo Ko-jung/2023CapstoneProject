@@ -8,7 +8,9 @@
 URifleComponent::URifleComponent()
 {
 	AnimMontageKey = ECharacterAnimMontage::ECAM_Rifle;
-	
+
+	FireSoundName = TEXT("AR_Fire");
+	ReloadSoundName = TEXT("AR_Reload");
 
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 20;

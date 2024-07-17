@@ -9,7 +9,10 @@ USMGComponent::USMGComponent()
 {
 	RangeWeaponType = ERangeSelect::ERS_SMG;
 	AnimMontageKey = ECharacterAnimMontage::ECAM_SMG;
-	
+
+	FireSoundName = TEXT("SMG_Fire");
+	ReloadSoundName = TEXT("SMG_Reload");
+
 	ReloadMaxCoolTime = 5.0f;
 	BulletMaxCount = 50;
 	FireMaxCoolTime = 0.2f;

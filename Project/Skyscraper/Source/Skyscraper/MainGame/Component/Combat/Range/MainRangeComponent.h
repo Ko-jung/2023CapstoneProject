@@ -154,6 +154,11 @@ protected:
 
 	UPROPERTY()
 		TObjectPtr<UNiagaraComponent> NS_WeaponCreate;
+
+	UPROPERTY()
+		FName FireSoundName;
+	UPROPERTY()
+		FName ReloadSoundName;
 protected:
 	//FORCEINLINE bool CanFire() const { return (CurrentBulletCount > 0 && CurrentFireCoolTime <= 0.0f); }
 	FORCEINLINE bool CanReload() const { return CurrentReloadCoolTime <= 0.0f; }

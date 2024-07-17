@@ -24,6 +24,7 @@
 #include "Skyscraper/MainGame/Widget/Ammo/MyAmmoWidget.h"
 
 #include "Skyscraper/Network/MainGameMode.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 // Sets default values for this component's properties
 UMainRangeComponent::UMainRangeComponent()
@@ -294,6 +295,13 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
 
 	UseBullet();
+
+	// Play Sound
+	{
+		USoundBase* FireSound = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>()->GetSkyscraperSound(FireSoundName);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, OwnerCharacter->GetActorLocation(), FRotator::ZeroRotator);
+	}
+
 
 	if (!GetOwnerPlayerController()) 
 	{

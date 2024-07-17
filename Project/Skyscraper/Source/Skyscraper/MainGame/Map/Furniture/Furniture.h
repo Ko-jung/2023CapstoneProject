@@ -25,7 +25,7 @@ public:
 	virtual void DoCollapse() override;
 
 	UFUNCTION(BlueprintCallable)
-	void CollapseByTileCollapseItem(ASkyscraperCharacter* TargetCharacter);
+	bool CollapseByTileCollapseItem(ASkyscraperCharacter* TargetCharacter);
 
 	UFUNCTION()
 		void SetBuildingFloorInfo(ABuilding* GetBuilding, int Floor);

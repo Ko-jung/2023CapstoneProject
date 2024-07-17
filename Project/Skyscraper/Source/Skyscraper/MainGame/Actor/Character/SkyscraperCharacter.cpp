@@ -673,7 +673,8 @@ void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLe
 		GetPlayerController()->SetItemImage(ItemEffect);
 	}
 
-	if(MainGameMode)
+	// 2019180031: LootingItem 외에 아이템이 흭득되는 경우가 존재하여 해당 함수를 위한 condition으로 추가
+	if(MainGameMode && Item)
 		MainGameMode->SendGetItem(this, Item);
 }
 

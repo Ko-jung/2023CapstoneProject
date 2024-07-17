@@ -8,6 +8,7 @@
 #include "Skyscraper/Enum/EItemRareLevel.h"
 #include "Item_TileBreak.generated.h"
 
+class UTileBreakItemWidget;
 /**
  *
  */
@@ -23,6 +24,8 @@ public:
 	virtual void DoItemEffect(ASkyscraperCharacter* UsedCharacter) override;
 
 protected:
+	UPROPERTY()
+		TSubclassOf<UUserWidget> WBP_TileBreakItemClass;
 };
 
 

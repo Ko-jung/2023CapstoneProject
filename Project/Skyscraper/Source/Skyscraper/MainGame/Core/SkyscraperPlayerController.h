@@ -29,7 +29,7 @@ class SKYSCRAPER_API ASkyscraperPlayerController : public APlayerController
 public:
 	ASkyscraperPlayerController();
 
-
+	FORCEINLINE ASkyscraperCharacter* GetPossessingPawn() const { return PossessingPawn; }
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UTimeAndKillCountWidget* GetTimeAndKillCountWidget() const { return TimeAndKillCountWidget; }

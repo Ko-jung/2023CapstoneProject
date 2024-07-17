@@ -79,16 +79,17 @@ void AFurniture::DoCollapse()
 	}
 }
 
-void AFurniture::CollapseByTileCollapseItem(ASkyscraperCharacter* TargetCharacter)
+bool AFurniture::CollapseByTileCollapseItem(ASkyscraperCharacter* TargetCharacter)
 {
 	if(IsCharacterInHere(TargetCharacter))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("It Works"));
 		if(OwnerBuilding)
 		{
 			OwnerBuilding->CollapseBuilding(Floor);
+			return true;
 		}
 	}
+	return false;
 }
 
 void AFurniture::SetBuildingFloorInfo(ABuilding* GetBuilding, int GetFloor)

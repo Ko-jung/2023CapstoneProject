@@ -71,6 +71,7 @@ void ABuilding::BeginPlay()
 		{
 			NewFurnitureActor->SetActorLocation(NewFloorActor->GetActorLocation());
 			NewFurnitureActor->SetActorRotation(GetActorRotation());
+			NewFurnitureActor->SetBuildingFloorInfo(this, i);
 		}
 		FurnitureActors.Add(NewFurnitureActor);
 	}
@@ -78,7 +79,11 @@ void ABuilding::BeginPlay()
 
 void ABuilding::CollapseBuilding(int CollapseStartFloor)
 {
-	Building_Ceiling->DestroyComponent();
+	if(CollapseStartFloor == 0)
+	{
+		Building_Ceiling->DestroyComponent();
+	}
+	
 	for (int i = CollapseStartFloor; i < CurrentFloor; ++i)
 	{
 		Building_Floors[i]->DoCollapse();

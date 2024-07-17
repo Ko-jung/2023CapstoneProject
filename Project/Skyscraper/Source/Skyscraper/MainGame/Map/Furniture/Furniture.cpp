@@ -8,6 +8,8 @@
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Map/Building/Building.h"
+#include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
 
 // Sets default values
 AFurniture::AFurniture()
@@ -77,6 +79,30 @@ void AFurniture::DoCollapse()
 	}
 }
 
+void AFurniture::CollapseByTileCollapseItem(ASkyscraperCharacter* TargetCharacter)
+{
+	if(IsCharacterInHere(TargetCharacter))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("It Works"));
+		if(OwnerBuilding)
+		{
+			OwnerBuilding->CollapseBuilding(Floor);
+		}
+	}
+}
+
+void AFurniture::SetBuildingFloorInfo(ABuilding* GetBuilding, int GetFloor)
+{
+	OwnerBuilding = GetBuilding;
+	Floor = GetFloor;
+}
+
+bool AFurniture::IsCharacterInHere(ASkyscraperCharacter* TargetCharacter) const
+{
+	return InsidePlayers.Contains(TargetCharacter);
+}
+
+
 void AFurniture::SettingSpotLight()
 {
 	bool NewHiddenInGame = true;
@@ -129,6 +155,17 @@ void AFurniture::FindStartOverlapActors()
 void AFurniture::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(ASingleBuildingFloor* SingleBuilding = Cast<ASingleBuildingFloor>(GetOwner()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("correct   1"));
+		if(ABuilding* Building = Cast<ABuilding>(SingleBuilding->GetOwner()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("correct   2"));
+		}
+	}
+	
+	
 
 	// 컴퍼넌트 로드
 	{

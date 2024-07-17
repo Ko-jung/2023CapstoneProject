@@ -12,6 +12,7 @@ class UBoxComponent;
 class USpotLightComponent;
 class UHierarchicalInstancedStaticMeshComponent;
 class ADesk;
+class ABuilding;
 
 UCLASS()
 class SKYSCRAPER_API AFurniture : public AActor, public ICollapsible
@@ -22,7 +23,16 @@ public:
 	AFurniture();
 
 	virtual void DoCollapse() override;
+
+	UFUNCTION(BlueprintCallable)
+	void CollapseByTileCollapseItem(ASkyscraperCharacter* TargetCharacter);
+
+	UFUNCTION()
+		void SetBuildingFloorInfo(ABuilding* GetBuilding, int Floor);
+
 protected:
+	bool IsCharacterInHere(ASkyscraperCharacter* TargetCharacter) const;
+
 	void SettingSpotLight();
 	UFUNCTION()
 	void BoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -74,6 +84,10 @@ protected:
 	UPROPERTY()
 		TArray<TObjectPtr<UStaticMeshComponent>> PhysicsFurniture;
 
+	// 해당 가구 액터가 어떤 빌딩의 몇층의 액터인지에 대한 정보
+	UPROPERTY()
+		ABuilding* OwnerBuilding;
+	int Floor;
 private:
 
 };

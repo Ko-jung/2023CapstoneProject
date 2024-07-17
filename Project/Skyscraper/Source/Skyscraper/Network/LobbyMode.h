@@ -27,9 +27,14 @@ public:
 	UFUNCTION(Exec)
 	void Ready();
 
+	void Ready(bool IsReady);
+
 private:
 	bool IsReady;
 
 	UPROPERTY()
 	TSubclassOf<class ULobbyWidget> LobbyWidgetClass;
+
+	UPROPERTY()
+	ULobbyWidget* LobbyWidget;
 };

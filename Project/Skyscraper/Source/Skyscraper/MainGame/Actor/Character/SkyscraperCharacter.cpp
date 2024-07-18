@@ -469,11 +469,6 @@ void ASkyscraperCharacter::SkillInteract(ESkillActor SkillActor, float Timer)
 	}
 }
 
-void ASkyscraperCharacter::CallBeginPlay()
-{
-	BeginPlay();
-}
-
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)
 {
 	// CheckHoldWeapon(ESwapWeapon&) -> CheckHoldWeapon(ESwapWeapon&, uint8&)
@@ -541,7 +536,10 @@ void ASkyscraperCharacter::AddInputMappingContext()
 	AddCharacterMappingContext();
 
 	CombatSystemComponent->AddInputMappingContext();
+	CombatSystemComponent->BindingInputActions();
+
 	JetpackComponent->AddInputMappingContext();
+	JetpackComponent->BindingInputActions();
 
 	HealthComponent->AddWidget();
 }

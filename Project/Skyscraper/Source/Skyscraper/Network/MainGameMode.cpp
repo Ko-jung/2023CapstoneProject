@@ -73,7 +73,7 @@ void AMainGameMode::BeginPlay()
 	TeamName[(int)ETEAM::A] = FName("TeamA");
 	TeamName[(int)ETEAM::B] = FName("TeamB");
 
-	Characters.Init(nullptr, MAXPLAYER);
+	Characters.Init(nullptr, PlayerSelectInfo.Num());
 
 	// Move to ProcessBuildingInfo
 	/*for (int i = 0; i < PlayerSelectInfo.Num(); i++)
@@ -332,7 +332,7 @@ void AMainGameMode::GoToLobby()
 
 void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 {
-	if (!PlayerSelectInfo.IsValidIndex(TargetSerialNum)) return;
+	if (!PlayerSelectInfo.IsValidIndex(TargetSerialNum)/* || !Characters.IsValidIndex(TargetSerialNum)*/) return;
 
 	const auto& p = PlayerSelectInfo[TargetSerialNum];
 
@@ -360,8 +360,8 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	ASkyscraperCharacter* character = nullptr;
 	while (true)
 	{
-		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 100.f, Location.X + 100.f),
-										FMath::RandRange(Location.Y - 100.f, Location.Y + 100.f),
+		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 200.f, Location.X + 200.f),
+										FMath::RandRange(Location.Y - 200.f, Location.Y + 200.f),
 										Location.Z};
 		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, SpawnLocation, FRotator{}, spawnParams);
 

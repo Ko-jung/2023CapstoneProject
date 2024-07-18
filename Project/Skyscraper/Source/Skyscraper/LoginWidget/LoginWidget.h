@@ -26,6 +26,8 @@ public:
 	void OnPlayButtonClick();
 	UFUNCTION()
 	void OnRegisterButtonClick();
+	UFUNCTION()
+	void OnQuitButtonClick();
 
 	void SetExtraMessage(struct PLoginResult* PLR);
 

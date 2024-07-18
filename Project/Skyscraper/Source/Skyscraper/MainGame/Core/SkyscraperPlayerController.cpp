@@ -233,7 +233,9 @@ void ASkyscraperPlayerController::BeginPlay()
 	if(MainCombatWidget)
 	{
 		MainCombatWidget->AddToViewport();
-		MainCombatWidget->SetCharacterImage(PossessingPawn->CharacterType);
+
+		if(PossessingPawn)
+			MainCombatWidget->SetCharacterImage(PossessingPawn->CharacterType);
 	}
 }
 

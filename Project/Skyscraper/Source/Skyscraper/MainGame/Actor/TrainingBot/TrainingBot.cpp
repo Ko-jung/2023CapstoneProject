@@ -42,6 +42,7 @@ ATrainingBot::ATrainingBot()
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Down) = AM_DownRef.Object;
 	}
 	
+	ResetTimer = 15.f;
 }
 
 void ATrainingBot::DoStun(const AActor* Attacker, const float StunTime, const FVector StunDirection) const
@@ -54,5 +55,32 @@ void ATrainingBot::DoDown(const AActor* Attacker, const FVector& DownDirection) 
 {
 	//Super::DoDown(Attacker, DownDirection);
 	ApplyDown(DownDirection);
+}
 
+void ATrainingBot::SetTimer()
+{
+	DamagedTimer = ResetTimer;	// 2019180016
+}
+
+void ATrainingBot::BeginPlay()
+{
+	Super::BeginPlay();
+
+	BotBeginTransform = GetActorTransform();
+	DamagedTimer = ResetTimer;	// 2019180016
+}
+
+void ATrainingBot::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (DamagedTimer >= 0.f)
+	{
+		DamagedTimer -= DeltaSeconds;
+		if (DamagedTimer < 0.f)
+		{
+			SetActorTransform(BotBeginTransform);
+			DamagedTimer = ResetTimer;
+		}
+	}
 }

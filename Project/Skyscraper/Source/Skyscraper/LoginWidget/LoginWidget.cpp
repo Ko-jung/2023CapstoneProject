@@ -23,6 +23,7 @@ bool ULoginWidget::Initialize()
 
 	PlayButton->OnClicked.AddDynamic(this, &ULoginWidget::OnPlayButtonClick);
 	RegisterButton->OnClicked.AddDynamic(this, &ULoginWidget::OnRegisterButtonClick);
+	QuitButton->OnClicked.AddDynamic(this, &ULoginWidget::OnQuitButtonClick);
 
 	ExtraMessage->SetVisibility(ESlateVisibility::Hidden);
 	return true;
@@ -66,6 +67,29 @@ void ULoginWidget::OnRegisterButtonClick()
 
 	ALoginGameMode* LoginGameMode = Cast<ALoginGameMode>(UGameplayStatics::GetGameMode(this));
 	LoginGameMode->Send(&PTL, sizeof(PTL));
+}
+
+void ULoginWidget::OnQuitButtonClick()
+{
+	if(GEngine)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObjectChecked(this);
+		if (World)
+		{
+			if (World->WorldType == EWorldType::Editor)
+			{
+				GEngine->Exec(World, TEXT("QUIT_EDITOR"));
+			}
+			else if (World->WorldType == EWorldType::Game || World->WorldType == EWorldType::PIE)
+			{
+				UKismetSystemLibrary::QuitGame(World, nullptr, EQuitPreference::Quit, false);
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ULoginWidget::OnQuitButtonClick() GEngine is nullptr"));
+	}
 }
 
 void ULoginWidget::SetExtraMessage(PLoginResult* PLR)

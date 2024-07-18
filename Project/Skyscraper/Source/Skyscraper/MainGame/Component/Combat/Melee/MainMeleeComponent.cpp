@@ -393,6 +393,10 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	// 따라서 OutHit.GetActor() 으로 분리하였고, 그러기 위해 배열을 통해 저장
 	TArray<FHitResult> UniqueOutHits;
 	TArray<AActor*> OutHitActor;
+
+	TArray<FHitResult> UniqueOutHitsComponent;
+	TArray<UPrimitiveComponent*> OutHitComponent;	// To Break Window
+
 	for(FHitResult OutHitResult : OutHits)
 	{
 		if (OutHitResult.GetActor()->IsA<ASkyscraperCharacter>())
@@ -404,23 +408,33 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 			}
 				
 		}
+		else if (OutHitResult.GetComponent())
+		{
+			if (!OutHitComponent.Contains(OutHitResult.GetComponent()))
+			{
+				OutHitComponent.Add(OutHitResult.GetComponent());
+				UniqueOutHitsComponent.Add(OutHitResult);
+			}
+		}
 	}
 
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-
-	bool bDoHitLag = false;
-	for (FHitResult HitResult : UniqueOutHits)
+	for (const auto& HitResult : UniqueOutHitsComponent)
 	{
 		UPrimitiveComponent* PrimitiveComponent = HitResult.GetComponent();
 		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
 			&& PrimitiveComponent->GetName().StartsWith("Window_"))
 		{
 			//PrimitiveComponent->DestroyComponent();
-			if(GameMode)
-			 	GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EObjectType::Window);
+			if (GameMode)
+				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EObjectType::Window);
 			continue;
 		}
+	}
 
+	bool bDoHitLag = false;
+	for (FHitResult HitResult : UniqueOutHits)
+	{
 		AActor* HitActor = HitResult.GetActor();
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 

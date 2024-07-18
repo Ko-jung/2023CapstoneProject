@@ -184,7 +184,7 @@ void ASkyscraperPlayerController::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = -45.0f;
 	PlayerCameraManager->ViewPitchMax = 45.0f;
 
-	
+
 	if (!Cast<ALobbyMode>(GetWorld()->GetAuthGameMode()))	// 2019180016 If Lobby Gamemode, no use
 	{
 		TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
@@ -310,5 +310,72 @@ void ASkyscraperPlayerController::SetPlayerImage(int MaxPlayer, TArray<ASkyscrap
 			if (i != SerialNum)
 				MiniMapWidget->AddFriendlyPlayerToImage(PlayerCharacter[i]);
 		}
+	}
+}
+
+void ASkyscraperPlayerController::AddAllWidget()
+{
+	if(TimeAndKillCountWidget)
+		TimeAndKillCountWidget->RemoveFromViewport();
+
+	if (!Cast<ALobbyMode>(GetWorld()->GetAuthGameMode()))	// 2019180016 If Lobby Gamemode, no use
+	{
+		TimeAndKillCountWidget = Cast<UTimeAndKillCountWidget>(CreateWidget(this, TimeAndKillCountWidgetClass));
+		if (TimeAndKillCountWidget)
+		{
+			TimeAndKillCountWidget->AddToViewport();
+		}
+	}
+	else													// 2019180016
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Gamemode is LobbyGameMode"));
+	}
+	//
+
+	if (ItemWidget)
+		ItemWidget->RemoveFromViewport();
+	ItemWidget = Cast<UItemWidget>(CreateWidget(this, ItemWidgetClass));
+	if (ItemWidget)
+	{
+		ItemWidget->AddToViewport();
+	}
+
+	if (MiniMapWidget)
+		MiniMapWidget->RemoveFromViewport();
+	MiniMapWidget = Cast<UMiniMapWidget>(CreateWidget(this, MiniMapWidgetClass));
+	if (MiniMapWidget)
+	{
+		MiniMapWidget->AddToViewport();
+		if (PossessingPawn)
+		{
+			MiniMapWidget->AddPlayerToImage(PossessingPawn);
+		}
+		else if (APawn* DefaultPawn = Cast<ADefaultPawn>(GetPawn()))
+		{
+			MiniMapWidget->AddPlayerToImage(GetPawn());
+		}
+
+		UpdateImage();
+	}
+
+	if (LockOnWidget)
+		LockOnWidget->RemoveFromViewport();
+	LockOnWidget = Cast<ULockOnWidget>(CreateWidget(this, LockOnWidgetClass));
+	if (LockOnWidget)
+	{
+		LockOnWidget->AddToViewport();
+		LockOnWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+
+	if (MainCombatWidget)
+		MainCombatWidget->RemoveFromViewport();
+	MainCombatWidget = Cast<UMainCombatWidget>(CreateWidget(this, MainCombatWidgetClass));
+	if (MainCombatWidget)
+	{
+		MainCombatWidget->AddToViewport();
+
+		if (PossessingPawn)
+			MainCombatWidget->SetCharacterImage(PossessingPawn->CharacterType);
 	}
 }

@@ -73,7 +73,7 @@ void AMainGameMode::BeginPlay()
 	TeamName[(int)ETEAM::A] = FName("TeamA");
 	TeamName[(int)ETEAM::B] = FName("TeamB");
 
-	Characters.Init(nullptr, MAXPLAYER);
+	Characters.Init(nullptr, PlayerSelectInfo.Num());
 
 	// Move to ProcessBuildingInfo
 	/*for (int i = 0; i < PlayerSelectInfo.Num(); i++)
@@ -332,7 +332,7 @@ void AMainGameMode::GoToLobby()
 
 void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 {
-	if (!PlayerSelectInfo.IsValidIndex(TargetSerialNum)) return;
+	if (!PlayerSelectInfo.IsValidIndex(TargetSerialNum)/* || !Characters.IsValidIndex(TargetSerialNum)*/) return;
 
 	const auto& p = PlayerSelectInfo[TargetSerialNum];
 

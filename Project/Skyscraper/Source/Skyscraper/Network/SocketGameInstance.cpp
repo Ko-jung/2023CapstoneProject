@@ -8,6 +8,8 @@
 
 void USocketGameInstance::Init()
 {
+	SerialNum = 0;
+
 	//if (SelectInfo.IsEmpty())
 	//{
 	//	for (int i = 0; i < 6; i++)
@@ -15,7 +17,7 @@ void USocketGameInstance::Init()
 	//		SelectInfo.Add(new PPlayerSelectInfo());
 	//	}
 	//}
-	SerialNum = 0;
+
 	if (SelectInfo.IsEmpty())
 	{
 		PPlayerSelectInfo* PPS1 = new PPlayerSelectInfo{ ECharacterSelect::ECS_AssassinCharacter, EMeleeSelect::EMS_Dagger, ERangeSelect::ERS_Rifle, 0 };
@@ -25,35 +27,28 @@ void USocketGameInstance::Init()
 		PPlayerSelectInfo* PPS4 = new PPlayerSelectInfo{ ECharacterSelect::ECS_ElectricCharacter, EMeleeSelect::EMS_Dagger, ERangeSelect::ERS_Rifle, 3 };
 		PPlayerSelectInfo* PPS5 = new PPlayerSelectInfo{ ECharacterSelect::ECS_ShieldCharacter, EMeleeSelect::EMS_GreatSword, ERangeSelect::ERS_RPG, 4 };
 		PPlayerSelectInfo* PPS6 = new PPlayerSelectInfo{ ECharacterSelect::ECS_WindCharacter, EMeleeSelect::EMS_Katana, ERangeSelect::ERS_SMG, 5 };
-
+	
 		SelectInfo.Add(PPS1);
 		SelectInfo.Add(PPS2);
 		SelectInfo.Add(PPS3);
-
+	
 		SelectInfo.Add(PPS4);
 		SelectInfo.Add(PPS5);
 		SelectInfo.Add(PPS6);
 	}
-	else
-	{
-		for (int i = 0; i < MAXPLAYER; i++)
-		{
-			SelectInfo.Add(new PPlayerSelectInfo());
-		}
-	}
+	// else
+	// {
+	// 	for (int i = 0; i < MAXPLAYER; i++)
+	// 	{
+	// 		SelectInfo.Add(new PPlayerSelectInfo());
+	// 	}
+	// }
 }
 
 void USocketGameInstance::SetSelectInfo(TArray<PPlayerSelectInfo*> s)
 {
-	if (s.Num() == SelectInfo.Num())
+	for (int i = 0; i < s.Num(); i++)
 	{
-		for (int i = 0; i < s.Num(); i++)
-		{
-			SelectInfo[i] = s[i];
-		}
-	}
-	else
-	{
-		UE_LOG(LogClass, Warning, TEXT("s.Num() != SelectInfo.Num()"));
+		SelectInfo[i] = s[i];
 	}
 }

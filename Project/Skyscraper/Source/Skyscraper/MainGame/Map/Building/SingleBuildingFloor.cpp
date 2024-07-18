@@ -4,6 +4,7 @@
 #include "SingleBuildingFloor.h"
 
 #include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 // Sets default values
 ASingleBuildingFloor::ASingleBuildingFloor()
@@ -142,4 +143,40 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target, FVecto
 	//		break;
 	//	}
 	//}
+}
+#include "Kismet/KismetStringLibrary.h"
+void ASingleBuildingFloor::DoCollapseWindow(UHierarchicalInstancedStaticMeshComponent* Target, int32 TargetIndex, FVector ForceDirection)
+{
+	FVector Translation = Target->PerInstanceSMData[TargetIndex].Transform.GetOrigin();
+	FVector Scale = Target->PerInstanceSMData[TargetIndex].Transform.GetScaleVector();
+	FQuat Rotation = FQuat(Target->PerInstanceSMData[TargetIndex].Transform);
+	//FRotator Rotation = Target->PerInstanceSMData[TargetIndex].Transform.Rotator();
+	
+	//auto M = Target->PerInstanceSMData[TargetIndex].Transform.M;
+	//UE_LOG(LogTemp, Warning, TEXT("===== Break Window Matrix ====="));
+	//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][0], M[1][0], M[2][0], M[3][0]);
+	//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][1], M[1][1], M[2][1], M[3][1]);
+	//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][2], M[1][2], M[2][2], M[3][2]);
+	//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][3], M[1][3], M[2][3], M[3][3]);
+	//UE_LOG(LogTemp, Warning, TEXT("Index Is %d"), TargetIndex);
+
+	FTransform Transform{ Rotation, Translation, Scale };
+	UE_LOG(LogTemp, Warning, TEXT("Transform is %s"), *UKismetStringLibrary::Conv_TransformToString(Transform));
+	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[3], Transform);
+	if (NewGCWindowMesh)
+	{
+		//NewGCWindowMesh->SetActorLocation(GetActorLocation());
+		//NewGCWindowMesh->SetActorRotation(GetActorRotation());
+		NewGCWindowMesh->SetActorTransform(Transform);
+		NewGCWindowMesh->FinishSpawning(Transform);
+	
+		NewGCWindowMesh->SetLifeSpan(5.0f);
+
+		NewGCWindowMesh->AttachToComponent(Target, FAttachmentTransformRules::KeepRelativeTransform);
+	}
+	else
+	{
+		UE_LOG(LogClass, Warning, TEXT("NewGCWindowMesh is nullptr!"));
+	}
+	Target->RemoveInstance(TargetIndex);
 }

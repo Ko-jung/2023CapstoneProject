@@ -27,6 +27,8 @@
 #include "Skyscraper/MainGame/Widget/Melee/MeleeWidget.h"
 #include "Skyscraper/Network/MainGameMode.h"
 
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+
 // Sets default values for this component's properties
 UMainMeleeComponent::UMainMeleeComponent()
 {
@@ -394,8 +396,9 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	TArray<FHitResult> UniqueOutHits;
 	TArray<AActor*> OutHitActor;
 
-	TArray<FHitResult> UniqueOutHitsComponent;
-	TArray<UPrimitiveComponent*> OutHitComponent;	// To Break Window
+	TArray<FHitResult> UniqueOutHitsComponent;		// To Break Window
+	TArray<UPrimitiveComponent*> OutHitComponent;
+	TArray<int32> HISMIndex;
 
 	for(FHitResult OutHitResult : OutHits)
 	{
@@ -414,20 +417,39 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 			{
 				OutHitComponent.Add(OutHitResult.GetComponent());
 				UniqueOutHitsComponent.Add(OutHitResult);
+
+				HISMIndex.Add(OutHitResult.Item);
 			}
 		}
 	}
 
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-	for (const auto& HitResult : UniqueOutHitsComponent)
+	for (int i = 0; i < UniqueOutHitsComponent.Num(); i++)
 	{
+		const auto& HitResult = UniqueOutHitsComponent[i];
+
 		UPrimitiveComponent* PrimitiveComponent = HitResult.GetComponent();
 		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
-			&& PrimitiveComponent->GetName().StartsWith("Window_"))
+			&& PrimitiveComponent->GetName() == ("HISM_Window"))
 		{
-			//PrimitiveComponent->DestroyComponent();
+			UHierarchicalInstancedStaticMeshComponent* HISMWindow = Cast<UHierarchicalInstancedStaticMeshComponent>(PrimitiveComponent);
+			auto M = HISMWindow->PerInstanceSMData[HISMIndex[i]].Transform.M;
+
+			//UE_LOG(LogTemp, Warning, TEXT("===== Break Window Matrix ====="));
+			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][0],M[1][0],M[2][0],M[3][0]);
+			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][1],M[1][1],M[2][1],M[3][1]);
+			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][2],M[1][2],M[2][2],M[3][2]);
+			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][3],M[1][3],M[2][3],M[3][3]);
+			//UE_LOG(LogTemp, Warning, TEXT("Index Is %d"), HISMIndex[i]);
+
 			if (GameMode)
-				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, EObjectType::Window);
+			{
+				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, HISMIndex[i], EObjectType::Window);
+			}
+			else
+			{
+				//HISMWindow->RemoveInstance(HISMIndex[i]);
+			}
 			continue;
 		}
 	}

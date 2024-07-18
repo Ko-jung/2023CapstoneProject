@@ -33,6 +33,7 @@
 #include "EngineUtils.h"
 #include "Components/StaticMeshComponent.h"
 #include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -586,13 +587,14 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 {
 	// Find Windows using LOCATION
 	//FVector ObjectLocation{ PBO.ObjectLocation.X, PBO.ObjectLocation.Y,PBO.ObjectLocation.Z };
-	UStaticMeshComponent* TargetObject = WindowMeshComponents[PBO.ObjectSerial];
 
-	if (!TargetObject)
+	if (!WindowMeshComponents.IsValidIndex(PBO.ObjectSerial))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TargetObject is NULL"));
+		UE_LOG(LogTemp, Warning, TEXT("! WindowMeshComponents.IsValidIndex(%d)"), PBO.ObjectSerial);
 		return;
 	}
+
+	UHierarchicalInstancedStaticMeshComponent* TargetObject = WindowMeshComponents[PBO.ObjectSerial];
 
 	UE_LOG(LogTemp, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
 
@@ -604,7 +606,7 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 		return;
 	}
 
-	SBFloor->DoCollapseWindow(TargetObject, FVector{ PBO.Direction.X, PBO.Direction.Y, PBO.Direction.Z });
+	SBFloor->DoCollapseWindow(TargetObject, PBO.ObjectSerialChildIndex, FVector{ PBO.Direction.X, PBO.Direction.Y, PBO.Direction.Z });
 	//TargetObject->DestroyComponent();
 }
 
@@ -686,18 +688,22 @@ void AMainGameMode::GetWindowsOnLevel()
 	{
 		ASingleBuildingFloor* SingleBuildingFloor = *It;
 
-		TArray<UStaticMeshComponent*> MeshComponents;
-		SingleBuildingFloor->GetComponents<UStaticMeshComponent>(MeshComponents);
+		TArray<UHierarchicalInstancedStaticMeshComponent*> HISMWindows;
+		SingleBuildingFloor->GetComponents<UHierarchicalInstancedStaticMeshComponent>(HISMWindows);
 
 		// Find Window
-		for (UStaticMeshComponent* MeshComponent : MeshComponents)
+		for (UHierarchicalInstancedStaticMeshComponent* MeshComponent : HISMWindows)
 		{
-			if (MeshComponent && MeshComponent->GetStaticMesh()->GetName().StartsWith("map_4_window"))
+			if (MeshComponent && MeshComponent->GetName() == ("HISM_Window"))
 			{
 				WindowMeshComponents.Add(MeshComponent);
 			}
 		}
 	}
+
+	WindowMeshComponents.Sort([](const UHierarchicalInstancedStaticMeshComponent& A, const UHierarchicalInstancedStaticMeshComponent& B) {
+		return A.GetOwner()->GetName() < B.GetOwner()->GetName();
+		});
 }
 
 int AMainGameMode::GetWindowsIndex(const UPrimitiveComponent* Target)
@@ -832,7 +838,7 @@ void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMo
 bool AMainGameMode::SendTakeDamage(AActor* Sender, AActor* Target)
 {
 
-	if (!m_Socket || Sender != Characters[SerialNum])
+	if (!m_Socket->GetIsConnected() || Sender != Characters[SerialNum])
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SendTakeDamage Sender != Characters[SerialNum]"));
 		return false;
@@ -930,7 +936,7 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 	int TargetSerialNum = GetIndex(Target);
 	if (TargetSerialNum == -1) return;
 
-	if (!m_Socket || Characters.IsEmpty() || Attacker != Characters[SerialNum]) return;
+	if (!m_Socket->GetIsConnected() || Characters.IsEmpty() || Attacker != Characters[SerialNum]) return;
 
 	PStunDownState PSDS{ (BYTE)TargetSerialNum, Dirction, StunTime, IsStun };
 	m_Socket->Send(&PSDS, sizeof(PSDS));
@@ -939,7 +945,7 @@ void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, c
 bool AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel)
 {
 	PUseItem PUI(SerialNum, (BYTE)Effect, (BYTE)RareLevel);
-	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum])
+	if (!m_Socket->GetIsConnected() || Characters.IsEmpty() || Sender != Characters[SerialNum])
 	{
 		ProcessUseItem(PUI);
 		return false;
@@ -951,7 +957,7 @@ bool AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLe
 
 void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 {
-	if (!m_Socket || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+	if (!m_Socket->GetIsConnected() || Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
 
 	PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
 	m_Socket->Send(&PGI, sizeof(PGI));
@@ -961,7 +967,7 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 {
 	FVector Direction = (BreakTarget->GetComponentLocation() - Sender->GetActorLocation()).GetSafeNormal();
 
-	if (!m_Socket)
+	if (!m_Socket->GetIsConnected())
 	{
 		PBreakObject PBO;
 		int WindowIndex = GetWindowsIndex(BreakTarget);
@@ -976,6 +982,30 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 
 	int WindowIndex = GetWindowsIndex(BreakTarget);
 	PBreakObject PBO(BreakType, WindowIndex, Direction);
+	m_Socket->Send(&PBO, sizeof(PBO));
+}
+
+void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakHISMTarget, int32 TargetIndex, EObjectType BreakType)
+{
+	FVector Direction = (BreakHISMTarget->GetComponentLocation() - Sender->GetActorLocation()).GetSafeNormal();
+
+	if (!m_Socket->GetIsConnected())
+	{
+		PBreakObject PBO;
+		int WindowIndex = GetWindowsIndex(BreakHISMTarget);
+		PBO.ObjectType = BreakType;
+		PBO.ObjectSerial = WindowIndex;
+		PBO.ObjectSerialChildIndex = TargetIndex;
+		PBO.Direction = Direction;
+		ProcessBreakObject(PBO);
+		return;
+	}
+
+	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
+
+	int WindowIndex = GetWindowsIndex(BreakHISMTarget);
+	PBreakObject PBO(BreakType, WindowIndex, Direction);
+	PBO.ObjectSerialChildIndex = TargetIndex;
 	m_Socket->Send(&PBO, sizeof(PBO));
 }
 

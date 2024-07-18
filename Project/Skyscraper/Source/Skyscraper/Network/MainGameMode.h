@@ -59,6 +59,7 @@ public:
 	void SendStunDown(const AActor* Sender, const AActor* Target, const FVector& Dirction, bool IsStun = false, float StunTime = 0.f);
 	void SendGetItem(const AActor* Sender, const AActor* Item);
 	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EObjectType BreakType);
+	void SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakHISMTarget, int32 TargetIndex, EObjectType BreakType);
 	bool SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
 	void SendSkillInteract(const AActor* Sender, const ESkillActor SkillActor);
@@ -121,5 +122,5 @@ protected:
 
 	class ASkyscraperPlayerController* PlayerController;
 
-	TArray<UStaticMeshComponent*> WindowMeshComponents;
+	TArray<class UHierarchicalInstancedStaticMeshComponent*> WindowMeshComponents;
 };

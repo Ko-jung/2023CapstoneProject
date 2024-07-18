@@ -322,9 +322,10 @@ struct PBreakObject : Packet
 {
 	EObjectType ObjectType;
 	WORD ObjectSerial;
+	int ObjectSerialChildIndex;
 	PVector Direction;
 
-	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EObjectType::Window), ObjectSerial(0), Direction(PVector()) { PacketSize = sizeof(PBreakObject); }
+	PBreakObject() : Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(EObjectType::Window), ObjectSerial(0), ObjectSerialChildIndex(0), Direction(PVector()) { PacketSize = sizeof(PBreakObject); }
 	PBreakObject(EObjectType type, WORD WindowSerial, PVector Direction) :
 		Packet(COMP_OP::OP_BREAKOBJECT), ObjectType(type), ObjectSerial(WindowSerial), Direction(Direction) {	PacketSize = sizeof(PBreakObject);	}
 };

@@ -20,6 +20,7 @@ public:
 
 	// ====== 2019180016 ======
 	void DoCollapseWindow(UStaticMeshComponent* Target, FVector ForceDirection);
+	void DoCollapseWindow(class UHierarchicalInstancedStaticMeshComponent* Target, int32 TargetIndex, FVector ForceDirection);
 	// ========================
 
 protected:

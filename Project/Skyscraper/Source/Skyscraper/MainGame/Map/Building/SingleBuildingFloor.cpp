@@ -74,7 +74,6 @@ void ASingleBuildingFloor::DoCollapse()
 	Destroy();
 }
 
-#include "Skyscraper/MainGame/Actor/GeometryCollection/WindowGeometryCollection.h"
 void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target, FVector ForceDirection)
 {
 	FString WindowString = Target->GetName();

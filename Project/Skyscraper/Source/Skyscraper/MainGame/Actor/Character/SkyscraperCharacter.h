@@ -126,9 +126,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SkillInteract(ESkillActor SkillActor, float Timer);
 
-	UFUNCTION(BlueprintCallable)
-	void CallBeginPlay();
-
 	/// <returns>
 	/// If Weapon Changed return true
 	/// </returns>

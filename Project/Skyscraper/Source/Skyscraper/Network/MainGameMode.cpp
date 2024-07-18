@@ -360,8 +360,8 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	ASkyscraperCharacter* character = nullptr;
 	while (true)
 	{
-		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 100.f, Location.X + 100.f),
-										FMath::RandRange(Location.Y - 100.f, Location.Y + 100.f),
+		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 200.f, Location.X + 200.f),
+										FMath::RandRange(Location.Y - 200.f, Location.Y + 200.f),
 										Location.Z};
 		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, SpawnLocation, FRotator{}, spawnParams);
 

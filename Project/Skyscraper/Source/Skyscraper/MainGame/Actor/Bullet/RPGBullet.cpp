@@ -11,6 +11,7 @@
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Skyscraper/MainGame/Component/Damage/DamageComponent.h"
 
 #include "Skyscraper/Network/MainGameMode.h"
 
@@ -101,28 +102,38 @@ void ARPGBullet::BulletExplode()
 
 	int i = 0;
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-	if (GameMode)
+	
+	
+	for (const auto& a : UniqueActors)
 	{
-		for (const auto& a : UniqueActors)
+		if (GameMode)
 		{
 			GameMode->SendTakeDamage(FireCharacter, a);
+		}
 
-			if (ASkyscraperCharacter* Character = Cast<ASkyscraperCharacter>(a))
+		if (ASkyscraperCharacter* Character = Cast<ASkyscraperCharacter>(a))
+		{
+			FVector DownDirVector{};
+			DownDirVector = Character->GetActorLocation() - GetActorLocation();
+			//2019180031 DownDirection은 normal vector
+			DownDirVector.Normalize();
+			Character->DoDown(FireCharacter, DownDirVector);
+
+			// == Spawn Damage (Local)
 			{
-				FVector DownDirVector{};
-				DownDirVector = Character->GetActorLocation() - GetActorLocation();
-				Character->DoDown(FireCharacter, DownDirVector);
-			}
+				if (GetWorld()->GetFirstPlayerController()->GetPawn() == FireCharacter)
+				{
+					FTransform SpawnTransform{};
+					SpawnTransform.SetLocation(Character->GetActorLocation());
+					UDamageComponent* DamageComp = Cast<UDamageComponent>(Character->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
+					DamageComp->InitializeDamage(Damage);
+				}
 
-			UE_LOG(LogTemp, Warning, TEXT("SendTakeDamage called. i = %d"), i);
-			i++;
+			}
 		}
 	}
 
-	// == TODO: Spawn Damage Spawner 
-
-	// == TODO: Delete Debug Later
-	DrawDebugSphere(GetWorld(), GetActorLocation(), 100.0f, 10, FColor::Black, true, 3.0f, 0, 3);
+	
 
 	{
 		if(NS_Explosion)

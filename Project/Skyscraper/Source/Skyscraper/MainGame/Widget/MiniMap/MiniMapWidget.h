@@ -76,6 +76,7 @@ public:
 		void AddFriendlyPlayerToImage(AActor* FriendlyPlayer);
 	UFUNCTION(BlueprintCallable)
 		void AddEnemyPlayerToImage(AActor* EnemyPlayer);
+
 	
 protected:
 	virtual void NativePreConstruct() override;

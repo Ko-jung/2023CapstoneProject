@@ -414,6 +414,14 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	character->CombatSystemComponent->SetInitialSelect(p->PickedMeleeWeapon, p->PickedRangeWeapon);
 
 	Characters[TargetSerialNum] = character;
+
+
+	APlayerController* controller = GetWorld()->GetFirstPlayerController();
+	ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
+	if (SkyController)
+	{
+		SkyController->SetPlayerImage(MAXPLAYER, Characters, SerialNum);
+	}
 }
 
 void AMainGameMode::UpdateUI(float Deltatime)

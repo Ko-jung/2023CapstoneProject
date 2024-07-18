@@ -26,6 +26,8 @@
 #include "Skyscraper/Network/MainGameMode.h"
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+
 // Sets default values for this component's properties
 UMainRangeComponent::UMainRangeComponent()
 {
@@ -321,6 +323,26 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		QueryParams.AddIgnoredActor(OwnerCharacter);
 		//QueryParams.TraceTag = TEXT("DebugTraceTag");
 
+		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+		bool ComponentHitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldStatic, QueryParams);
+		if (ComponentHitResult)
+		{
+			UPrimitiveComponent* PrimitiveComponent = OutHit.GetComponent();
+			if (PrimitiveComponent->IsA(UHierarchicalInstancedStaticMeshComponent::StaticClass())
+				&& PrimitiveComponent->GetName() == ("HISM_Window"))
+			{
+				if (GameMode)
+				{
+					GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, OutHit.Item, EObjectType::Window);
+				}
+				else
+				{
+					//HISMWindow->RemoveInstance(HISMIndex[i]);
+				}
+			}
+		}
+
+
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
 		if (HitResult)
 		{
@@ -329,7 +351,6 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			TargetLocation = OutHit.Location;
 
 			// Execute on Sever
-			AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
 			if (GameMode)
 			{
 				GameMode->SendTakeDamage(OwnerCharacter, HitActor);

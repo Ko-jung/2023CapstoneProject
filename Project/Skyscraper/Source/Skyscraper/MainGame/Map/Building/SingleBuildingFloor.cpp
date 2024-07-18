@@ -147,6 +147,8 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target, FVecto
 #include "Kismet/KismetStringLibrary.h"
 void ASingleBuildingFloor::DoCollapseWindow(UHierarchicalInstancedStaticMeshComponent* Target, int32 TargetIndex, FVector ForceDirection)
 {
+	if (!Target->PerInstanceSMData.IsValidIndex(TargetIndex)) return;
+
 	FVector Translation = Target->PerInstanceSMData[TargetIndex].Transform.GetOrigin();
 	FVector Scale = Target->PerInstanceSMData[TargetIndex].Transform.GetScaleVector();
 	FQuat Rotation = FQuat(Target->PerInstanceSMData[TargetIndex].Transform);
@@ -178,5 +180,5 @@ void ASingleBuildingFloor::DoCollapseWindow(UHierarchicalInstancedStaticMeshComp
 	{
 		UE_LOG(LogClass, Warning, TEXT("NewGCWindowMesh is nullptr!"));
 	}
-	Target->RemoveInstance(TargetIndex);
+	Target->RemoveInstance(TargetIndex); 
 }

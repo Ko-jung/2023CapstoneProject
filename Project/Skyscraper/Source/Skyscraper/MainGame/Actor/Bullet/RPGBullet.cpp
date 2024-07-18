@@ -14,6 +14,9 @@
 #include "Skyscraper/MainGame/Component/Damage/DamageComponent.h"
 
 #include "Skyscraper/Network/MainGameMode.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+
+typedef UHierarchicalInstancedStaticMeshComponent UHISM;
 
 // Sets default values
 ARPGBullet::ARPGBullet()
@@ -92,18 +95,14 @@ void ARPGBullet::BulletExplode()
 	for (const auto& HitResult : Hits)
 	{
 		AActor* HitActor = HitResult.GetActor();
-		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
-
-		if (!UniqueActors.Contains(HitActor))
+		if (HitActor->IsA(ACharacter::StaticClass()) && !UniqueActors.Contains(HitActor))
 		{
 			UniqueActors.Add(HitActor);
 		}
 	}
 
 	int i = 0;
-	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-	
-	
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));	
 	for (const auto& a : UniqueActors)
 	{
 		if (GameMode)
@@ -133,7 +132,31 @@ void ARPGBullet::BulletExplode()
 		}
 	}
 
-	
+	TArray<FHitResult> UniqueOutHitsComponent;		// To Break Window
+	TArray<UPrimitiveComponent*> OutHitComponent;
+	TArray<int32> HISMIndex;
+	bool IsComponentHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 350.f,
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_WorldStatic), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
+	for (const auto& HitResult : Hits)
+	{
+		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+		UE_LOG(LogTemp, Warning, TEXT("HitResult is % s"), *UKismetSystemLibrary::GetDisplayName(HitComponent));
+		if (HitComponent->IsA(UHISM::StaticClass())
+			//&& !OutHitComponent.Contains(HitComponent)
+			&& HitComponent->GetName() == ("HISM_Window"))
+		{
+			OutHitComponent.Add(HitComponent);
+
+			if (GameMode)
+			{
+				GameMode->SendBreakObject(FireCharacter, HitComponent, HitResult.Item, EObjectType::Window);
+			}
+			else
+			{
+				//HISMWindow->RemoveInstance(HISMIndex[i]);
+			}
+		}
+	}
 
 	{
 		if(NS_Explosion)

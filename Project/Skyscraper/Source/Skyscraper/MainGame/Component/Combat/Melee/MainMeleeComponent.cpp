@@ -455,6 +455,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	}
 
 	bool bDoHitLag = false;
+	bool bAddHitCount = false;
 	for (FHitResult HitResult : UniqueOutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
@@ -463,6 +464,11 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		bDoHitLag = true;
 
 		ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor);
+		if(!TargetCharacter->IsCharacterGodMode())
+		{
+			bAddHitCount = true;
+		}
+
 
 		if(TargetCharacter)
 		{
@@ -527,11 +533,16 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	}
 
 	// 적중된 적이 있으므로 역경직
-	// 24.07.17 추가적으로 적중 될 경우 HitCount를 표시하여 같은 역할이므로 이곳에서 실행
 	if (bDoHitLag)
 	{
 		DoHitLag();
-		if(MainMeleeWidget)
+		
+	}
+
+	// 성공적으로 공격을 가하였을 경우 hit count 증가
+	if(bAddHitCount)
+	{
+		if (MainMeleeWidget)
 		{
 			MainMeleeWidget->AddHitCount();
 		}

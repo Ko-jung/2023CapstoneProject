@@ -72,7 +72,7 @@ void ARPGBullet::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//BulletStaticMesh->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OverlapExplode);
+	BulletStaticMesh->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OverlapExplode);
 	BulletStaticMesh->OnComponentHit.AddDynamic(this, &ThisClass::HitExplode);
 
 	ProjectileMovementComponent->Velocity = InitVelocity * InitSpeed;
@@ -177,7 +177,12 @@ void ARPGBullet::BulletExplode()
 
 void ARPGBullet::OverlapExplode(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	BulletExplode();
+	// 서버 TODO : 적군 캐릭터에만 되도록 수정 바람
+	if(OtherActor->IsA<ASkyscraperCharacter>())
+	{
+		BulletExplode();
+	}
+	
 }
 
 void ARPGBullet::HitExplode(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

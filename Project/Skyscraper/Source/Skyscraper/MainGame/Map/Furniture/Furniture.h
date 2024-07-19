@@ -30,6 +30,9 @@ public:
 	UFUNCTION()
 		void SetBuildingFloorInfo(ABuilding* GetBuilding, int Floor);
 
+	UFUNCTION()
+		void ChangeHISMToPhysicsSMAndAddForce(UHierarchicalInstancedStaticMeshComponent* HISM, int index, const FVector& ForceStartLocation);
+	
 protected:
 	bool IsCharacterInHere(ASkyscraperCharacter* TargetCharacter) const;
 
@@ -41,9 +44,8 @@ protected:
 
 	UFUNCTION()
 		void FindStartOverlapActors();
-
 	UFUNCTION()
-		void ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index = 0);
+		UStaticMeshComponent* ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index = 0);
 	UFUNCTION()
 		void AllHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM);
 

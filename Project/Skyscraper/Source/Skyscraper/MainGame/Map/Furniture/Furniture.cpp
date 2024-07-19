@@ -65,7 +65,7 @@ AFurniture::AFurniture()
 }
 
 
-void AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index)
+UStaticMeshComponent* AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index)
 {
 	int CurrentLastIndex = DummyStaticMeshComp.Num() - 1;
 	UStaticMeshComponent* SMComp = DummyStaticMeshComp[CurrentLastIndex];
@@ -87,6 +87,8 @@ void AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent
 	PhysicsFurniture.Add(SMComp);
 
 	AddToSimulateStaticMeshData(SMComp, HISM->ComponentTags);
+
+	return SMComp;
 }
 
 void AFurniture::AllHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM)
@@ -136,6 +138,20 @@ void AFurniture::SetBuildingFloorInfo(ABuilding* GetBuilding, int GetFloor)
 {
 	OwnerBuilding = GetBuilding;
 	Floor = GetFloor;
+}
+
+void AFurniture::ChangeHISMToPhysicsSMAndAddForce(UHierarchicalInstancedStaticMeshComponent* HISM, int index,
+	const FVector& ForceStartLocation)
+{
+	UStaticMeshComponent* SimulatedMesh = ChangeHISMToPhysicsSM(HISM, index);
+	if(SimulatedMesh)
+	{
+		FVector ForceDirection = (GetActorLocation() + SimulatedMesh->GetRelativeLocation()) - ForceStartLocation;
+		ForceDirection.Normalize();
+		ForceDirection *= 7000000.0f;
+		SimulatedMesh->AddForce(ForceDirection);
+		UE_LOG(LogTemp, Warning, TEXT("Apply Force"));
+	}
 }
 
 bool AFurniture::IsCharacterInHere(ASkyscraperCharacter* TargetCharacter) const
@@ -227,9 +243,11 @@ void AFurniture::BeginPlay()
 			TArray<TObjectPtr<UChildActorComponent>> DeskChildActorComponents; GetComponents<UChildActorComponent>(DeskChildActorComponents);
 			for (UChildActorComponent* ChildComp : DeskChildActorComponents)
 			{
-				if (ADesk* Desktop = Cast<ADesk>(ChildComp->GetChildActor()))
+				if (ADesk* DeskActor = Cast<ADesk>(ChildComp->GetChildActor()))
 				{
-					DeskActors.Add(Desktop);
+					DeskActors.Add(DeskActor);
+					DeskActor->SetOwner(this);
+					
 				}
 			}
 		}

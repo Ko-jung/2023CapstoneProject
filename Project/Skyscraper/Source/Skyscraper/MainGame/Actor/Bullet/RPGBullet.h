@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "RPGBullet.generated.h"
 
+class AFurniture;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UProjectileMovementComponent;
@@ -73,3 +74,4 @@ protected:
 private:
 
 };
+

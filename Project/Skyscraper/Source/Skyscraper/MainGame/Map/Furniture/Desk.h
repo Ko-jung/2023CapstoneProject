@@ -15,7 +15,8 @@ class SKYSCRAPER_API ADesk : public AActor
 public:
 	ADesk();
 
-
+	UFUNCTION()
+		void ChangeHISMToPhysicsSMAndAddForce(UHierarchicalInstancedStaticMeshComponent* HISM, int index, const FVector& ForceStartLocation);
 protected:
 	virtual void BeginPlay() override;
 

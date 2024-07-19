@@ -15,6 +15,9 @@
 
 #include "Skyscraper/Network/MainGameMode.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
+#include "Skyscraper/MainGame/Map/Furniture/Desk.h"
+#include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
 
 typedef UHierarchicalInstancedStaticMeshComponent UHISM;
 
@@ -98,6 +101,7 @@ void ARPGBullet::BulletExplode()
 		if (HitActor->IsA(ACharacter::StaticClass()) && !UniqueActors.Contains(HitActor))
 		{
 			UniqueActors.Add(HitActor);
+			continue;;
 		}
 	}
 
@@ -139,11 +143,14 @@ void ARPGBullet::BulletExplode()
 		}
 	}
 
+
+
 	TArray<FHitResult> UniqueOutHitsComponent;		// To Break Window
 	TArray<UPrimitiveComponent*> OutHitComponent;
 	TArray<int32> HISMIndex;
 	bool IsComponentHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 350.f,
-		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_WorldStatic), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_WorldDynamic), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
+
 	for (const auto& HitResult : Hits)
 	{
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
@@ -163,6 +170,31 @@ void ARPGBullet::BulletExplode()
 				//HISMWindow->RemoveInstance(HISMIndex[i]);
 			}
 		}
+
+		// 2019180031
+		// 가구가 바주카포에 맞을 경우 simulate 되도록
+		if (UHierarchicalInstancedStaticMeshComponent* HISM = Cast<UHierarchicalInstancedStaticMeshComponent>(HitResult.GetComponent()))
+		{
+			if(AFurniture* HitFurnitureActor = Cast<AFurniture>(HitResult.GetActor()))
+			{
+				HitFurnitureActor->ChangeHISMToPhysicsSMAndAddForce(HISM, HitResult.Item, GetActorLocation());
+			}
+			else if(ADesk* DeskActor = Cast<ADesk>(HitResult.GetActor()))
+			{
+				AFurniture* FurnitureActor = Cast<AFurniture>(DeskActor->GetOwner());
+				FurnitureActor->ChangeHISMToPhysicsSMAndAddForce(HISM, HitResult.Item, GetActorLocation());
+			}
+		}
+
+		// 만약 simulate 되는 오브젝트일 경우 또다시 addforce 되도록
+		if(UStaticMeshComponent* SM = Cast<UStaticMeshComponent>(HitResult.GetComponent()))
+		{
+			FVector ForceDirection = (HitResult.GetActor()->GetActorLocation() + SM->GetRelativeLocation()) - GetActorLocation();
+			ForceDirection.Normalize();
+			ForceDirection *= 7000000.0f;
+			SM->AddForce(ForceDirection);
+		}
+		
 	}
 
 	{

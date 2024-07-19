@@ -51,6 +51,11 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
+	// 스태틱 메시 변경 후 태그값을 이용해 dissolve를 위한 머테리얼로 변경하고 타이머를 작동시키는 함수
+	UFUNCTION()
+		void AddToSimulateStaticMeshData(UStaticMeshComponent* TargetStaticMesh, TArray<FName> HISM_Tags);
+	UFUNCTION()
+		void DissolveFurniture();
 private:
 
 public:
@@ -93,12 +98,15 @@ protected:
 	UPROPERTY()
 		FTimerHandle FurnitureDissolveTimerHandle;
 	UPROPERTY()
-		TMap<TObjectPtr<UStaticMeshComponent>, float> FurnitureSimulateTime;
+		TMap<TObjectPtr<UStaticMeshComponent>, float> SimulatedStaticMeshes;
 	UPROPERTY()
 		float FurnitureDissolveTime;
 	UPROPERTY()
-		TArray<TObjectPtr<UMaterial>> FurnitureDissolveMaterial;
-	
+		TMap<FName, TObjectPtr<UMaterial>> FurnitureDissolveMaterial;
+	UPROPERTY()
+		TArray<UMaterial*> ForCheckMaterials;
+	UPROPERTY()
+		float DissolveTickTime;
 
 private:
 

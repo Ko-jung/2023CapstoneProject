@@ -88,6 +88,18 @@ protected:
 	UPROPERTY()
 		ABuilding* OwnerBuilding;
 	int Floor;
+
+	// ==== Furniture Dissolve를 위한 변수들
+	UPROPERTY()
+		FTimerHandle FurnitureDissolveTimerHandle;
+	UPROPERTY()
+		TMap<TObjectPtr<UStaticMeshComponent>, float> FurnitureSimulateTime;
+	UPROPERTY()
+		float FurnitureDissolveTime;
+	UPROPERTY()
+		TArray<TObjectPtr<UMaterial>> FurnitureDissolveMaterial;
+	
+
 private:
 
 };

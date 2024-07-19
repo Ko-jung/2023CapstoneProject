@@ -1,12 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Furniture.h"
 
 #include "Desk.h"
 #include "Components/BoxComponent.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Skyscraper/Enum/EFurnitureType.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Map/Building/Building.h"
 #include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
@@ -28,6 +26,44 @@ AFurniture::AFurniture()
 		TempStaticMeshComp->SetHiddenInGame(true);
 		DummyStaticMeshComp.Add(TempStaticMeshComp);
 	}
+
+	{
+		for (int i = 0; i < static_cast<int>(EFurnitureType::EFT_Count); ++i)
+		{
+			FurnitureDissolveMaterial.AddDefaulted();
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> M_Dissolve_ChairRef(TEXT("/Script/Engine.Material'/Game/2019180031/MainGame/Material/FurnitureDissolve/M_Dissolve_Chair.M_Dissolve_Chair'"));
+		if(M_Dissolve_ChairRef.Succeeded())
+		{
+			FurnitureDissolveMaterial[static_cast<int>(EFurnitureType::EFT_Chair)] = M_Dissolve_ChairRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> M_Dissolve_DeskRef(TEXT("/Script/Engine.Material'/Game/2019180031/MainGame/Material/FurnitureDissolve/M_Dissolve_Desk.M_Dissolve_Desk'"));
+		if (M_Dissolve_DeskRef.Succeeded())
+		{
+			FurnitureDissolveMaterial[static_cast<int>(EFurnitureType::EFT_Desk)] = M_Dissolve_DeskRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> M_Dissolve_FlowerPotRef(TEXT("/Script/Engine.Material'/Game/2019180031/MainGame/Material/FurnitureDissolve/M_Dissolve_FlowerPot.M_Dissolve_FlowerPot'"));
+		if (M_Dissolve_FlowerPotRef.Succeeded())
+		{
+			FurnitureDissolveMaterial[static_cast<int>(EFurnitureType::EFT_FlowerPot)] = M_Dissolve_FlowerPotRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> M_Dissolve_PCRef(TEXT("/Script/Engine.Material'/Game/2019180031/MainGame/Material/FurnitureDissolve/M_Dissolve_PC.M_Dissolve_PC'"));
+		if (M_Dissolve_PCRef.Succeeded())
+		{
+			FurnitureDissolveMaterial[static_cast<int>(EFurnitureType::EFT_PC)] = M_Dissolve_PCRef.Object;
+		}
+
+		static ConstructorHelpers::FObjectFinder<UMaterial> M_Dissolve_SofaTableRef(TEXT("/Script/Engine.Material'/Game/2019180031/MainGame/Material/FurnitureDissolve/M_Dissolve_Sofa_Table.M_Dissolve_Sofa_Table'"));
+		if (M_Dissolve_SofaTableRef.Succeeded())
+		{
+			FurnitureDissolveMaterial[static_cast<int>(EFurnitureType::EFT_SofaAndTable)] = M_Dissolve_SofaTableRef.Object;
+		}
+	}
+	
 }
 
 

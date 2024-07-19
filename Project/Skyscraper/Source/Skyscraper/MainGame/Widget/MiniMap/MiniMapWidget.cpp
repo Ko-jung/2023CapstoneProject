@@ -79,7 +79,7 @@ void UMiniMapWidget::AddFriendlyPlayerToImage(AActor* FriendlyPlayer)
 
 	for(FImageAndActor& ImageAndActor : FriendlyPlayerImagesAndActors)
 	{
-		if(! ImageAndActor.Actor)
+		if(! ImageAndActor.Actor || !IsValid(ImageAndActor.Actor))
 		{
 			ImageAndActor.Actor = FriendlyPlayer;
 			return;
@@ -98,7 +98,7 @@ void UMiniMapWidget::AddEnemyPlayerToImage(AActor* EnemyPlayer)
 
 	for (FImageAndActor& ImageAndActor : EnemyPlayerImagesAndActors)
 	{
-		if (!ImageAndActor.Actor)
+		if (!ImageAndActor.Actor || !IsValid(ImageAndActor.Actor))
 		{
 			ImageAndActor.Actor = EnemyPlayer;
 			return;
@@ -107,7 +107,6 @@ void UMiniMapWidget::AddEnemyPlayerToImage(AActor* EnemyPlayer)
 
 	UE_LOG(LogTemp, Warning, TEXT("이미 모든 적군 이미지를 사용중"));
 }
-
 
 void UMiniMapWidget::NativePreConstruct()
 {

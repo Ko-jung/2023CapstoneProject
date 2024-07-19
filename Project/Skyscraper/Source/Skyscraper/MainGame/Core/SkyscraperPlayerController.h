@@ -139,5 +139,6 @@ private:
 public:
 	void SetPossessingPawn();
 	void SetPlayerImage(int MaxPlayer, TArray<class ASkyscraperCharacter*> PlayerSelect, int SerialNum);
+	void AddAllWidget();
 //=================================
 };

@@ -364,8 +364,15 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 					FTransform SpawnTransform;
 					SpawnTransform.SetLocation(OutHit.Location);
 					
-					UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
-					DamageComp->InitializeDamage(fBaseDamage);
+					if (!Cast<ASkyscraperCharacter>(OutHit.GetActor())->IsCharacterGodMode())
+					{
+						UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
+						if (DamageComp)
+						{
+							DamageComp->InitializeDamage(fBaseDamage);
+						}
+					}
+					
 				}
 				// BloodSpawner 생성
 				{

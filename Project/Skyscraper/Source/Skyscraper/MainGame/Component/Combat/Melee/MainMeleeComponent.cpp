@@ -497,8 +497,16 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 					FTransform SpawnTransform;
 					SpawnTransform.SetLocation(HitResult.Location);
 
-					UDamageComponent* DamageComp = Cast<UDamageComponent>(HitResult.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
-					DamageComp->InitializeDamage(fBaseDamage);
+					if(!Cast<ASkyscraperCharacter>(HitResult.GetActor())->IsCharacterGodMode())
+					{
+						UDamageComponent* DamageComp = Cast<UDamageComponent>(HitResult.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
+						if (DamageComp)
+						{
+							DamageComp->InitializeDamage(fBaseDamage);
+						}
+					}
+					
+					
 				}
 			}
 		}

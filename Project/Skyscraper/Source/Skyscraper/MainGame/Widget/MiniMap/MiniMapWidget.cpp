@@ -8,7 +8,9 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMaterialLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Materials/MaterialInstanceConstant.h"
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
 
 void UMiniMapWidget::SetTileImageAlignment(int index, FVector2D NewAlignment)
@@ -39,9 +41,9 @@ void UMiniMapWidget::SetTileImageToCollapseNotification(int index)
 	if (index >= TileImages.Num()) return;
 	if (!TileImages.IsValidIndex(index)) return;
 
-	
-	//TileImages[index].TileImage->SetBrushFromMaterial();
-
+	UMaterialInstanceDynamic* Material = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), M_TileCollapseNotification);
+	Material->SetTextureParameterValue(TEXT("TileTexture"), TileTextures[static_cast<int>(TileImages[index].TileType)]);
+	TileImages[index].TileImage->SetBrushFromMaterial(Material);
 }
 
 void UMiniMapWidget::CollapseTileImage(int index)
@@ -168,12 +170,8 @@ void UMiniMapWidget::NativePreConstruct()
 
 	// 붕괴 알림 머테리얼 로드
 	{
-		static ConstructorHelpers::FObjectFinder<UMaterial> M_CollapseNotificationRef(TEXT(""));
-		if(M_CollapseNotificationRef.Succeeded())
-		{
-			M_TileCollapseNotification = M_CollapseNotificationRef.Object;
-		}
-		
+		static UMaterial* CollapseNotificationMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, L"/Script/Engine.Material'/Game/2019180031/MainGame/Widget/Map/M_CollapseNotification.M_CollapseNotification'"));
+		M_TileCollapseNotification = CollapseNotificationMaterial;
 	}
 
 	// 플레이어 이미지 찾기

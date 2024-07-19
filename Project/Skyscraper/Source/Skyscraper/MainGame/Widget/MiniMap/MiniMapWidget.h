@@ -7,6 +7,7 @@
 #include "Skyscraper/Enum/ETileImageType.h"
 #include "MiniMapWidget.generated.h"
 
+class UMaterialInstanceConstant;
 class AHexagonTile;
 class UCanvasPanelSlot;
 class UCanvasPanel;

@@ -124,7 +124,7 @@ void ARPGBullet::BulletExplode()
 				{
 					FTransform SpawnTransform{};
 					SpawnTransform.SetLocation(Character->GetActorLocation());
-					if (Character->IsCharacterGodMode())
+					if (!Character->IsCharacterGodMode())
 					{
 						UDamageComponent* DamageComp = Cast<UDamageComponent>(Character->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
 						if (DamageComp)

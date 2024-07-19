@@ -17,6 +17,13 @@ public:
 	AShieldCharacter();
 
 	// 2019180016
-	// 
+	UPROPERTY(BlueprintReadWrite)
+	bool IsCanUseShield;
+
+	UFUNCTION(BlueprintCallable)
+	void BreakShield();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void GetShieldDamage(float Damage);
 	// ==========
 };

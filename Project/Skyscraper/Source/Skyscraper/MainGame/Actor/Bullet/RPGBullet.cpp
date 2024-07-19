@@ -184,6 +184,7 @@ void ARPGBullet::BulletExplode()
 				AFurniture* FurnitureActor = Cast<AFurniture>(DeskActor->GetOwner());
 				FurnitureActor->ChangeHISMToPhysicsSMAndAddForce(HISM, HitResult.Item, GetActorLocation());
 			}
+			continue;
 		}
 
 		// 만약 simulate 되는 오브젝트일 경우 또다시 addforce 되도록

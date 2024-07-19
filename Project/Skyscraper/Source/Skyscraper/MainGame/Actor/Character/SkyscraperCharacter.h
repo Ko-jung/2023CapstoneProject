@@ -126,6 +126,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SkillInteract(ESkillActor SkillActor, float Timer);
 
+	// When Character Attack. Define each Character class. Now Use Only Assasin
+	virtual void CharacterAttackEvent() {};
+
 	/// <returns>
 	/// If Weapon Changed return true
 	/// </returns>
@@ -224,9 +227,9 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay() override;
 
-	// 2019180016
+	// === 2019180016 ===
 	virtual void Tick(float DeltaSeconds) override;
-	// ==========
+	// ==================
 
 	// 캐릭터가 땅에 닿았을 때 실행될 함수
 	virtual void Landed(const FHitResult& Hit) override;
@@ -250,6 +253,11 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsUnableAct;
+
+	float CommonSkillCoolTime;
+	float SpecialSkillCoolTime;
+	bool bCanCommonSkill;
+	bool bCanSpecialSkill;
 
 	FTimerHandle UnableActTimerHandle;
 	FTimerHandle DetectingTimerHandle;

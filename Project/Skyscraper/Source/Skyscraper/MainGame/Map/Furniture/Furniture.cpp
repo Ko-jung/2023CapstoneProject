@@ -76,7 +76,14 @@ UStaticMeshComponent* AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedSt
 	HISM->RemoveInstance(Index);
 	
 	SMComp->SetStaticMesh(HISM->GetStaticMesh());
-	SMComp->SetWorldLocation(HISM->GetComponentLocation() + Transform.GetLocation());
+	if(HISM->GetOwner()->IsA<ADesk>())
+	{
+		SMComp->SetWorldLocation(HISM->GetComponentLocation()  + Transform.GetLocation());
+	}else
+	{
+		SMComp->SetWorldLocation(GetActorLocation() + Transform.GetLocation().RotateAngleAxis(GetActorRotation().Yaw, FVector{ 0.0f,0.0f,1.0f }));
+	}
+	
 	SMComp->SetRelativeRotation(Transform.GetRotation());
 	SMComp->SetHiddenInGame(false);
 	SMComp->SetSimulatePhysics(true);

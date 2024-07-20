@@ -28,6 +28,7 @@ AAssassinCharacter::AAssassinCharacter()
 
 
 	// // ============== 2019180016 ==============
+	IsStealthMode = false;
 	// Process Blueprint Node
 	// // SKill
 	// {
@@ -38,6 +39,11 @@ AAssassinCharacter::AAssassinCharacter()
 	// 	// CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SpecialSkill, AM_SpecialRef.Object);
 	// }
 	// // ========================================
+}
+
+void AAssassinCharacter::CharacterAttackEvent()
+{
+	IsStealthMode = false;
 }
 
 void AAssassinCharacter::BuffUsingSkill()

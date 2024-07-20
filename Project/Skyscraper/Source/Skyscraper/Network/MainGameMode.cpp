@@ -579,6 +579,16 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 	//Characters[PUI.UsePlayerSerial];
 	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
 	UE_LOG(LogTemp, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
+
+	bool IsSameTeam = (SerialNum / (MAXPLAYER / 2)) == (PUI.UsePlayerSerial / (MAXPLAYER / 2));
+	ASkyscraperCharacter* TargetCharacter = Characters[PUI.UsePlayerSerial];
+
+	if (!TargetCharacter) return;
+
+	if (UItemObject* Object = UItemFactory::CreateItem((EItemEffect)PUI.Effect, (EItemRareLevel)PUI.ItemLevel))
+	{
+		Object->DoItemEffect(TargetCharacter);
+	}
 }
 
 void AMainGameMode::ProcessGetItem(PGetItem PGI)

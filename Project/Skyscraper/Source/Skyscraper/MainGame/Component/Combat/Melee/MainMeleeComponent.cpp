@@ -388,7 +388,11 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	FVector vHitSize{ 1.0f,Width,Height };
 
 	// == TODO: Delete Debug Later
-	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHits, true);
+	// 2019180031 - 근접공격이 다중으로 적용되지 않는 현상 해결을 위해 BoxTraceMulti -> BoxTraceMultiForObjects 로 변경
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	UKismetSystemLibrary::BoxTraceMultiForObjects(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, ObjectTypes, false, IgnoreActors, EDrawDebugTrace::Type::ForDuration, OutHits, true);
+	//UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHits, true);
 
 	// 노트
 	// UKismetSystemLibrary::BoxTraceMulti 를 사용했으나 OutHits 에 유일하지 않은 데이터로 리턴 됨을 확인
@@ -456,7 +460,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	}
 
 	bool bDoHitLag = false;
-	bool bAddHitCount = false;
+	int AddHitCount = 0;
 	for (FHitResult HitResult : UniqueOutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
@@ -473,7 +477,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		ASkyscraperCharacter* TargetCharacter = Cast<ASkyscraperCharacter>(HitActor);
 		if(!TargetCharacter->IsCharacterGodMode())
 		{
-			bAddHitCount = true;
+			AddHitCount += 1;
 		}
 
 		if(TargetCharacter)
@@ -546,11 +550,15 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	}
 
 	// 성공적으로 공격을 가하였을 경우 hit count 증가
-	if(bAddHitCount)
+	if(AddHitCount >= 1)
 	{
 		if (MainMeleeWidget)
 		{
-			MainMeleeWidget->AddHitCount();
+			for(int i =0; i<AddHitCount; ++i)
+			{
+				MainMeleeWidget->AddHitCount();
+			}
+			
 		}
 	}
 }

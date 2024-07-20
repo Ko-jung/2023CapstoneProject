@@ -117,6 +117,7 @@ void UJetpackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 		ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel2));
 
+
 		EDrawDebugTrace::Type DrawDebugType{EDrawDebugTrace::ForDuration};
 
 		FHitResult OutHit{};

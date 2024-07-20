@@ -199,11 +199,15 @@ void ASkyscraperPlayerController::BeginPlay()
 	}
 	//
 
-	ItemWidget = Cast<UItemWidget>(CreateWidget(this, ItemWidgetClass));
-	if (ItemWidget)
+	if(PossessingPawn)
 	{
-		ItemWidget->AddToViewport();
+		ItemWidget = Cast<UItemWidget>(CreateWidget(this, ItemWidgetClass));
+		if (ItemWidget)
+		{
+			ItemWidget->AddToViewport();
+		}
 	}
+	
 
 	MiniMapWidget = Cast<UMiniMapWidget>(CreateWidget(this, MiniMapWidgetClass));
 	if(MiniMapWidget)

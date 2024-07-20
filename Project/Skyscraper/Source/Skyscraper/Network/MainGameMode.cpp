@@ -389,6 +389,13 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	if (TargetSerialNum == SerialNum)
 	{
 		APlayerController* controller = GetWorld()->GetFirstPlayerController();
+
+		if (IsValid(controller->GetPawn()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SpawnCharacter %s is Destory!"), *UKismetSystemLibrary::GetDisplayName(controller->GetPawn()));
+			controller->GetPawn()->Destroy();
+		}
+
 		controller->Possess(character);
 
 		ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);

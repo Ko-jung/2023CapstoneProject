@@ -32,6 +32,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	double SelectTimer;
+
+	UPROPERTY(EditAnywhere)
+	bool IsBeConnect;
 private:
 	// Memory Leak
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;

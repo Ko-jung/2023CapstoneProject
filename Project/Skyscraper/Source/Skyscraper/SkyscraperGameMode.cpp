@@ -25,6 +25,8 @@ ASkyscraperGameMode::ASkyscraperGameMode()
 		P = new PPlayerSelectInfo();
 		P->ClientNum = i++; 
 	}
+
+	IsBeConnect = true;
 }
 
 void ASkyscraperGameMode::ProcessFunc()
@@ -80,12 +82,22 @@ void ASkyscraperGameMode::BeginPlay()
 	Super::BeginPlay();
 	m_Socket->InitializeManager();
 	m_Socket->SetState(ENetworkState::SelectGame);
-	Connect(GAME_SERVER_IP, GAME_SERVER_PORT);
+
+	if (IsBeConnect)
+	{
+		Connect(GAME_SERVER_IP, GAME_SERVER_PORT);
+	}
+	else
+	{
+		SerialNum = 0;
+	}
 }
 
 void ASkyscraperGameMode::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
+
+	if (!IsBeConnect) return;
 
 	if (SelectTimer > 0.001f)
 	{

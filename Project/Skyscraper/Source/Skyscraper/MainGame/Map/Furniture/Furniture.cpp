@@ -87,6 +87,7 @@ UStaticMeshComponent* AFurniture::ChangeHISMToPhysicsSM(UHierarchicalInstancedSt
 	SMComp->SetRelativeRotation(Transform.GetRotation());
 	SMComp->SetHiddenInGame(false);
 	SMComp->SetSimulatePhysics(true);
+	SMComp->SetLinearDamping(2.0f);
 	if(HISM->ComponentTags.IsValidIndex(0))
 	{
 		SMComp->ComponentTags.Add(HISM->ComponentTags[0]);

@@ -589,7 +589,7 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 	bool IsSameTeam = (SerialNum / (MAXPLAYER / 2)) == (PUI.UsePlayerSerial / (MAXPLAYER / 2));
 	ASkyscraperCharacter* TargetCharacter = Characters[PUI.UsePlayerSerial];
 
-	if (ItemObject* Object = ItemFactory::CreateItem((EItemEffect)PUI.Effect, (EItemRareLevel)PUI.ItemLevel))
+	if (UItemObject* Object = UItemFactory::CreateItem((EItemEffect)PUI.Effect, (EItemRareLevel)PUI.ItemLevel))
 	{
 		Object->DoItemEffect(TargetCharacter);
 	}

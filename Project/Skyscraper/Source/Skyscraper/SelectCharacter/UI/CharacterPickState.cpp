@@ -54,7 +54,7 @@ void UCharacterPickState::SelectInfoUpdate()
 {
 	TArray<PPlayerSelectInfo*>& PlayerSelectInfos = Gamemode->GetPlayerSelectInfo();
 
-	// ÀÚ½ÅÀÌ TeamAÀÎÁö TeamBÀÎÁö ÆÇ´Ü
+	// ìžì‹ ì´ TeamAì¸ì§€ TeamBì¸ì§€ íŒë‹¨
 	bool IsRight = Gamemode->GetSerialNum() >= MAXPLAYER / 2;
 
 

@@ -685,6 +685,7 @@ void ASkyscraperCharacter::SetCharacterGodMode(bool bNewGodMode)
 	if(HealthComponent)
 	{
 		HealthComponent->SetGodMode(bNewGodMode);
+		SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_GodMode, bNewGodMode);
 	}
 }
 

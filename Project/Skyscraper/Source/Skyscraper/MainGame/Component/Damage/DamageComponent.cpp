@@ -2,6 +2,8 @@
 
 
 #include "DamageComponent.h"
+
+#include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/MainGame/Widget/Damage/DamageWidget.h"
 
 UDamageComponent::UDamageComponent()
@@ -38,7 +40,6 @@ void UDamageComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	SetComponentTickEnabled(false);
-	
 }
 
 void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType,

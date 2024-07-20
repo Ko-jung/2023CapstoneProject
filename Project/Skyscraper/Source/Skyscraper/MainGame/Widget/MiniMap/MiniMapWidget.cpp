@@ -8,14 +8,17 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMaterialLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Materials/MaterialInstanceConstant.h"
 #include "Skyscraper/MainGame/Map/HexagonTile/HexagonTile.h"
 
 void UMiniMapWidget::SetTileImageAlignment(int index, FVector2D NewAlignment)
 {
 	if (index >= TileImages.Num()) return;
+	if (!TileImages.IsValidIndex(index)) return;
 
-	if(UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(TileImages[index]->Slot))
+	if(UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(TileImages[index].TileImage->Slot))
 	{
 		CanvasPanelSlot->SetAlignment(NewAlignment);
 	}
@@ -26,8 +29,21 @@ void UMiniMapWidget::SetTileImage(int index, ETileImageType TileImageType)
 	if (index >= TileImages.Num()) return;
 	if (TileImageType == ETileImageType::ETIT_SIZE) return;
 
-	TileImages[index]->SetBrushFromTexture(TileTextures[(int8)TileImageType]);
-	
+	if(TileImages.IsValidIndex(index))
+	{
+		TileImages[index].TileImage->SetBrushFromTexture(TileTextures[static_cast<int>(TileImageType)]);
+		TileImages[index].TileType = TileImageType;
+	}
+}
+
+void UMiniMapWidget::SetTileImageToCollapseNotification(int index)
+{
+	if (index >= TileImages.Num()) return;
+	if (!TileImages.IsValidIndex(index)) return;
+
+	UMaterialInstanceDynamic* Material = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), M_TileCollapseNotification);
+	Material->SetTextureParameterValue(TEXT("TileTexture"), TileTextures[static_cast<int>(TileImages[index].TileType)]);
+	TileImages[index].TileImage->SetBrushFromMaterial(Material);
 }
 
 void UMiniMapWidget::CollapseTileImage(int index)
@@ -72,10 +88,11 @@ void UMiniMapWidget::AddPlayerToImage(AActor* Player)
 
 void UMiniMapWidget::AddFriendlyPlayerToImage(AActor* FriendlyPlayer)
 {
-	if (!FriendlyPlayer) 
-	{
-		return;
-	}
+	// 새로운 아군 캐릭터를 바로 연결할 수 있도록 삭제
+	//if (!FriendlyPlayer) 
+	//{
+	//	return;
+	//}
 
 	for(FImageAndActor& ImageAndActor : FriendlyPlayerImagesAndActors)
 	{
@@ -91,10 +108,11 @@ void UMiniMapWidget::AddFriendlyPlayerToImage(AActor* FriendlyPlayer)
 
 void UMiniMapWidget::AddEnemyPlayerToImage(AActor* EnemyPlayer)
 {
-	if (!EnemyPlayer)
-	{
-		return;
-	}
+	// 새로운 적군 캐릭터를 바로 대입할 수 있도록 삭제
+	//if (!EnemyPlayer)
+	//{
+	//	return;
+	//}
 
 	for (FImageAndActor& ImageAndActor : EnemyPlayerImagesAndActors)
 	{
@@ -122,7 +140,7 @@ void UMiniMapWidget::NativePreConstruct()
 		for (int i = 0; i < 37; ++i)
 		{
 			FName WidgetName = FName(FString("TileImage_") + FString::FromInt(i));
-			TileImages.Add(Cast<UImage>(GetWidgetFromName(WidgetName)));
+			TileImages.Add(FTileImageAndType{ Cast<UImage>(GetWidgetFromName(WidgetName)),ETileImageType::ETIT_Normal });
 		}
 	}
 
@@ -148,6 +166,12 @@ void UMiniMapWidget::NativePreConstruct()
 
 		static UTexture2D* FloatTileTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_FLOAT.MAP_FLOAT'"));
 		TileTextures[(int8)ETileImageType::ETIT_FloatTile] = FloatTileTexture;
+	}
+
+	// 붕괴 알림 머테리얼 로드
+	{
+		static UMaterial* CollapseNotificationMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, L"/Script/Engine.Material'/Game/2019180031/MainGame/Widget/Map/M_CollapseNotification.M_CollapseNotification'"));
+		M_TileCollapseNotification = CollapseNotificationMaterial;
 	}
 
 	// 플레이어 이미지 찾기

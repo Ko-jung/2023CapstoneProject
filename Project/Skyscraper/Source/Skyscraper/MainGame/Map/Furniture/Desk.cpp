@@ -3,6 +3,7 @@
 
 #include "Desk.h"
 
+#include "Furniture.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 // Sets default values
@@ -16,6 +17,15 @@ ADesk::ADesk()
 	//HISM_Desktop = CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(TEXT("HISM_Desktop"));
 	//HISM_Monitor = CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(TEXT("HISM_Monitor"));
 	//HISM_Partition = CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(TEXT("HISM_Partition"));
+}
+
+void ADesk::ChangeHISMToPhysicsSMAndAddForce(UHierarchicalInstancedStaticMeshComponent* HISM, int index,
+	const FVector& ForceStartLocation)
+{
+	if(AFurniture* OwnerActor =Cast<AFurniture>(GetOwner()))
+	{
+		OwnerActor->ChangeHISMToPhysicsSMAndAddForce(HISM, index, ForceStartLocation);
+	}
 }
 
 

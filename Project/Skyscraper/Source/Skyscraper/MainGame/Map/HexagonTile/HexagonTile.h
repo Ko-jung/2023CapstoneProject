@@ -55,7 +55,14 @@ protected:
 	UPROPERTY()
 		FTimerHandle CollapseTileTimerHandle;
 	UPROPERTY(EditAnywhere)
-		float CollapseDelaySeconds = 1.0f;
+		float CollapseDelaySeconds = 7.0f;
+
+	UPROPERTY()
+		FTimerHandle CollapseTileAfterNotificationTimerHandle;
+	UPROPERTY(EditAnywhere)
+		float CollapseAfterNotificationTime = 4.0f;
+	UPROPERTY()
+		TArray<int> CollapseAfterNotificationIndex;
 
 public:	
 	// 생성자
@@ -119,8 +126,11 @@ public:
 
 	UFUNCTION()
 	void CollapseTileOnDelay();
+	UFUNCTION()
+		void CollapseTileAfterNotification();
 
 	void CollapseTilesAndActors(int CollapseLevel, int CenterIndex);
+
 	void CollapseLevel3(uint8 CenterIndex);
 
 	UFUNCTION()

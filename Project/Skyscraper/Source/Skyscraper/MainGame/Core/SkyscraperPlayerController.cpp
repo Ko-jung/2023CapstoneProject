@@ -316,7 +316,7 @@ void ASkyscraperPlayerController::SetPlayerImage(int MaxPlayer, TArray<ASkyscrap
 void ASkyscraperPlayerController::AddAllWidget()
 {
 	if(TimeAndKillCountWidget)
-		TimeAndKillCountWidget->RemoveFromViewport();
+		TimeAndKillCountWidget->RemoveFromParent();
 
 	if (!Cast<ALobbyMode>(GetWorld()->GetAuthGameMode()))	// 2019180016 If Lobby Gamemode, no use
 	{
@@ -333,7 +333,7 @@ void ASkyscraperPlayerController::AddAllWidget()
 	//
 
 	if (ItemWidget)
-		ItemWidget->RemoveFromViewport();
+		ItemWidget->RemoveFromParent();
 	ItemWidget = Cast<UItemWidget>(CreateWidget(this, ItemWidgetClass));
 	if (ItemWidget)
 	{
@@ -341,7 +341,7 @@ void ASkyscraperPlayerController::AddAllWidget()
 	}
 
 	if (MiniMapWidget)
-		MiniMapWidget->RemoveFromViewport();
+		MiniMapWidget->RemoveFromParent();
 	MiniMapWidget = Cast<UMiniMapWidget>(CreateWidget(this, MiniMapWidgetClass));
 	if (MiniMapWidget)
 	{
@@ -359,7 +359,7 @@ void ASkyscraperPlayerController::AddAllWidget()
 	}
 
 	if (LockOnWidget)
-		LockOnWidget->RemoveFromViewport();
+		LockOnWidget->RemoveFromParent();
 	LockOnWidget = Cast<ULockOnWidget>(CreateWidget(this, LockOnWidgetClass));
 	if (LockOnWidget)
 	{
@@ -369,7 +369,7 @@ void ASkyscraperPlayerController::AddAllWidget()
 
 
 	if (MainCombatWidget)
-		MainCombatWidget->RemoveFromViewport();
+		MainCombatWidget->RemoveFromParent();
 	MainCombatWidget = Cast<UMainCombatWidget>(CreateWidget(this, MainCombatWidgetClass));
 	if (MainCombatWidget)
 	{

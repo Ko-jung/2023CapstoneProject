@@ -818,35 +818,74 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 
 void AHexagonTile::CollapseTileOnDelay()
 {
-	UE_LOG(LogTemp, Warning, TEXT("CollapseTileOnDelay : CollapseTileIndexes.Num() : %d"), CollapseTileIndexes.Num());
 	if (CollapseTileIndexes.IsEmpty())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(CollapseTileTimerHandle);
 	}
 
+	// 기존에는 15초마다 바로 붕괴시켰으나,
+	// 5초의 붕괴 알림을 나타내는 이미지를 위해 해당 부분에선 미니맵의 이미지 머테리얼만 변경하고
+	// 5초 후에 실질적인 붕괴가 일어나도록 구현
+	ASkyscraperPlayerController* PlayerController = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
 	for (int i = 0; i < 3; ++i)
 	{
-		if (!CollapseTileIndexes.IsEmpty())
+		if (CollapseTileIndexes.IsEmpty())
 		{
-			int TileIndex = CollapseTileIndexes[0];
-			UE_LOG(LogTemp, Warning, TEXT("TileIndex: %d"), TileIndex);
-			CollapseTileIndexes.RemoveAt(0);
+			break;
+		}
+		int Index = FMath::Rand() % CollapseTileIndexes.Num();
+		int TileIndex = CollapseTileIndexes[Index];
+		CollapseTileIndexes.Remove(TileIndex);
+		CollapseAfterNotificationIndex.Add(TileIndex);
+		PlayerController->GetMiniMapWidget()->SetTileImageToCollapseNotification(TileIndex);
+	}
 
-			CollapseTile(TileIndex);
+	if(!CollapseAfterNotificationIndex.IsEmpty())
+	{
+		GetWorld()->GetTimerManager().SetTimer(CollapseTileAfterNotificationTimerHandle, this, &ThisClass::CollapseTileAfterNotification, CollapseAfterNotificationTime, false, CollapseAfterNotificationTime);
+	}
+}
 
-			for (int& Index : CollapseTileIndexes)
+void AHexagonTile::CollapseTileAfterNotification()
+{
+	for(int i = 0; i < CollapseAfterNotificationIndex.Num(); ++i)
+	{
+		int TileIndex = CollapseAfterNotificationIndex[i];
+		CollapseTile(TileIndex);
+
+		// 건물 붕괴 후 기존에 있던 인덱스 들이 줄어드므로 붕괴된 건물 수 만큼 값을 줄여줘야함.
+
+		for(int& Index : CollapseAfterNotificationIndex)
+		{
+			if(Index >= TileIndex)
+			{
+				Index -= 1;
+			}
+		}
+
+		for (int& Index : CollapseTileIndexes)
+		{
+			if (Index >= TileIndex)
 			{
 				Index -= 1;
 			}
 		}
 	}
-
-
+	CollapseAfterNotificationIndex.Empty();
 }
 
 void AHexagonTile::CollapseLevel3(uint8 CenterIndex)
 {
-	CollapseTile(CenterIndex);
+	int Index = FMath::Rand() % Tiles.Num();
+	CollapseTileIndexes.Add(Index);
+	// 붕괴할 타일이 있다면 타이머를 진행
+	if (!CollapseTileIndexes.IsEmpty())
+	{
+		if (!CollapseTileTimerHandle.IsValid())
+		{
+			GetWorld()->GetTimerManager().SetTimer(CollapseTileTimerHandle, this, &ThisClass::CollapseTileOnDelay, CollapseDelaySeconds, true, 0.0f);
+		}
+	}
 }
 
 FVector2D AHexagonTile::GetAlignmentByLocation(const FVector& ActorLocation)
@@ -864,9 +903,16 @@ FVector2D AHexagonTile::GetAlignmentByLocation(const FVector& ActorLocation)
 
 void AHexagonTile::CollapseLevel3()
 {
-	int index = UKismetMathLibrary::RandomIntegerInRange(0, Tiles.Num() - 1);
-
-	CollapseTile(index);
+	int Index = FMath::Rand() % Tiles.Num();
+	CollapseTileIndexes.Add(Index);
+	// 붕괴할 타일이 있다면 타이머를 진행
+	if (!CollapseTileIndexes.IsEmpty())
+	{
+		if (!CollapseTileTimerHandle.IsValid())
+		{
+			GetWorld()->GetTimerManager().SetTimer(CollapseTileTimerHandle, this, &ThisClass::CollapseTileOnDelay, CollapseDelaySeconds, true, 0.0f);
+		}
+	}
 }
 
 void AHexagonTile::CollapseTile(int CollapseTargetIndex)
@@ -903,7 +949,8 @@ void AHexagonTile::CollapseTile(int CollapseTargetIndex)
 	//	FConstPlayerControllerIterator PCIter =  GetWorld()->GetPlayerControllerIterator();
 	//	for(int i =0; i< GetWorld()->GetNumPlayerControllers(); ++i)
 	//	{
-	//		//Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->SetTileImage(CollapseTargetIndex, ETileImageType::ETIT_Collapse);
+	//		//Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->
+	// (CollapseTargetIndex, ETileImageType::ETIT_Collapse);
 	//		Cast<ASkyscraperPlayerController>(*PCIter)->GetMiniMapWidget()->CollapseTileImage(CollapseTargetIndex);
 	//	}
 	//	

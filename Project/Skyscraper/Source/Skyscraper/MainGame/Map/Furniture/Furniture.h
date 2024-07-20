@@ -30,6 +30,9 @@ public:
 	UFUNCTION()
 		void SetBuildingFloorInfo(ABuilding* GetBuilding, int Floor);
 
+	UFUNCTION()
+		void ChangeHISMToPhysicsSMAndAddForce(UHierarchicalInstancedStaticMeshComponent* HISM, int index, const FVector& ForceStartLocation);
+	
 protected:
 	bool IsCharacterInHere(ASkyscraperCharacter* TargetCharacter) const;
 
@@ -41,9 +44,8 @@ protected:
 
 	UFUNCTION()
 		void FindStartOverlapActors();
-
 	UFUNCTION()
-		void ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index = 0);
+		UStaticMeshComponent* ChangeHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM, int Index = 0);
 	UFUNCTION()
 		void AllHISMToPhysicsSM(UHierarchicalInstancedStaticMeshComponent* HISM);
 
@@ -51,6 +53,11 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
+	// 스태틱 메시 변경 후 태그값을 이용해 dissolve를 위한 머테리얼로 변경하고 타이머를 작동시키는 함수
+	UFUNCTION()
+		void AddToSimulateStaticMeshData(UStaticMeshComponent* TargetStaticMesh, TArray<FName> HISM_Tags);
+	UFUNCTION()
+		void DissolveFurniture();
 private:
 
 public:
@@ -88,6 +95,21 @@ protected:
 	UPROPERTY()
 		ABuilding* OwnerBuilding;
 	int Floor;
+
+	// ==== Furniture Dissolve를 위한 변수들
+	UPROPERTY()
+		FTimerHandle FurnitureDissolveTimerHandle;
+	UPROPERTY()
+		TMap<TObjectPtr<UStaticMeshComponent>, float> SimulatedStaticMeshes;
+	UPROPERTY()
+		float FurnitureDissolveTime;
+	UPROPERTY()
+		TMap<FName, TObjectPtr<UMaterial>> FurnitureDissolveMaterial;
+	UPROPERTY()
+		TArray<UMaterial*> ForCheckMaterials;
+	UPROPERTY()
+		float DissolveTickTime;
+
 private:
 
 };

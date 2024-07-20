@@ -18,7 +18,12 @@ public:
 	AAssassinCharacter();
 
 	// 2019180016
+	virtual void CharacterAttackEvent();
+
 	UFUNCTION(BlueprintCallable)
 	void BuffUsingSkill();
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsStealthMode;
 	// ==========
 };

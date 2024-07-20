@@ -35,6 +35,10 @@
 #include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
+// Item Object
+#include "Skyscraper/MainGame/Item/ItemFactory/ItemFactory.h"
+#include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
+
 void AMainGameMode::BeginPlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
@@ -576,6 +580,8 @@ void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
 
 void AMainGameMode::ProcessUseItem(PUseItem PUI)
 {
+	if (!Characters.IsValidIndex(PUI.UsePlayerSerial)) return;
+
 	//Characters[PUI.UsePlayerSerial];
 	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("{0} Character Use ITEM!"), (int)PUI.UsePlayerSerial));
 	UE_LOG(LogTemp, Warning, TEXT("%d Character Use Item!"), (int)PUI.UsePlayerSerial);
@@ -584,7 +590,7 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 	ASkyscraperCharacter* TargetCharacter = Characters[PUI.UsePlayerSerial];
 
 	if (!TargetCharacter) return;
-
+	
 	if (UItemObject* Object = UItemFactory::CreateItem((EItemEffect)PUI.Effect, (EItemRareLevel)PUI.ItemLevel))
 	{
 		Object->DoItemEffect(TargetCharacter);
@@ -927,8 +933,8 @@ void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
 
 void AMainGameMode::SendRemoveSkillActor(AActor* TargetActor)
 {
-	// ¼­¹ö µô·¹ÀÌ·Î Serial ¹øÈ£°¡ °¥¸±¼öµµÀÖÀ½
-	// ÀÏ´Ü ¹èÁ¦
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ Serial ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	uint16 TargetSerialNum{ 0 };
 	if (m_Socket)

@@ -34,7 +34,7 @@ UCombatSystemComponent::UCombatSystemComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	MeleeSelect = EMeleeSelect::EMS_GreatSword;
-	RangeSelect = ERangeSelect::ERS_RPG;
+	RangeSelect = ERangeSelect::ERS_Rifle;
 	OwnerCharacter = nullptr;
 	OwnerAnimInstance = nullptr;
 	MainMeleeWeaponComponent = nullptr;

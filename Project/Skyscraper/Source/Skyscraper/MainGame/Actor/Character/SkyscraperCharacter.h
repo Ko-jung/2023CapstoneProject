@@ -113,6 +113,7 @@ public:
 
 	// 2019180016
 public:
+	// Skill
 	UFUNCTION(BlueprintCallable)
 	void DoDisableLockOn(float Timer);
 	void DoAbleLockOn();
@@ -125,6 +126,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SkillInteract(ESkillActor SkillActor, float Timer);
+	//==============
+
+	// When Character Attack. Define each Character class. Now Use Only Assasin
+	virtual void CharacterAttackEvent() {};
 
 	/// <returns>
 	/// If Weapon Changed return true
@@ -150,6 +155,10 @@ public:
 
 	void SyncTransformAndAnim(FTransform t, float s, FRotator r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum);
+
+	// Item
+	void SingleGodMode(EItemRareLevel EIRL);
+	// ================
 
 	void SetSpeed(float s) { Speed = s; }
 	void SetXRotate(float r) { XRotate = r; }
@@ -224,9 +233,9 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay() override;
 
-	// 2019180016
+	// === 2019180016 ===
 	virtual void Tick(float DeltaSeconds) override;
-	// ==========
+	// ==================
 
 	// 캐릭터가 땅에 닿았을 때 실행될 함수
 	virtual void Landed(const FHitResult& Hit) override;
@@ -250,6 +259,11 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsUnableAct;
+
+	float CommonSkillCoolTime;
+	float SpecialSkillCoolTime;
+	bool bCanCommonSkill;
+	bool bCanSpecialSkill;
 
 	FTimerHandle UnableActTimerHandle;
 	FTimerHandle DetectingTimerHandle;

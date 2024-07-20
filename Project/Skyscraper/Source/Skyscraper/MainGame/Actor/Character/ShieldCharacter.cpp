@@ -76,4 +76,19 @@ AShieldCharacter::AShieldCharacter()
 
 		SkirtMaterialValue = 13;
 	}
+
+	IsCanUseShield = true;
+}
+
+void AShieldCharacter::BreakShield()
+{
+	IsCanUseShield = false;
+
+	GetWorld()->GetTimerManager().SetTimer(UnableActTimerHandle, [this]() {
+		IsCanUseShield = true;
+		}, 10.f, false);
+}
+
+void AShieldCharacter::GetShieldDamage_Implementation(float Damage)
+{
 }

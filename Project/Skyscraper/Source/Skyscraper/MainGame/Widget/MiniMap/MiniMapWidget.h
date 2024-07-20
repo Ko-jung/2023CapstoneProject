@@ -7,6 +7,7 @@
 #include "Skyscraper/Enum/ETileImageType.h"
 #include "MiniMapWidget.generated.h"
 
+class UMaterialInstanceConstant;
 class AHexagonTile;
 class UCanvasPanelSlot;
 class UCanvasPanel;
@@ -39,6 +40,19 @@ public:
 	}
 };
 
+USTRUCT()
+struct FTileImageAndType
+{
+	GENERATED_BODY()
+public:
+	FTileImageAndType() {};
+	FTileImageAndType(UImage* NewImage, ETileImageType NewType) { TileImage = NewImage, TileType = NewType; };
+
+	UPROPERTY()
+		TObjectPtr<UImage> TileImage;
+	UPROPERTY()
+		ETileImageType TileType = ETileImageType::ETIT_Collapse;
+};
 
 
 UCLASS()
@@ -53,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void SetTileImage(int index, ETileImageType TileImageType);
+
+	UFUNCTION(BlueprintCallable)
+		void SetTileImageToCollapseNotification(int index);
 
 	UFUNCTION()
 		void CollapseTileImage(int index);
@@ -95,10 +112,12 @@ protected:
 		UCanvasPanel* TileImageCanvas;
 
 	UPROPERTY()
-		TArray<UImage*> TileImages;
+		TArray<FTileImageAndType> TileImages;
 
 	UPROPERTY()
 		TArray<UTexture2D*> TileTextures;
+	UPROPERTY()
+		TObjectPtr<UMaterial> M_TileCollapseNotification;
 
 	UPROPERTY()
 	FImageAndActor PlayerImageAndActor;

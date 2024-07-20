@@ -276,6 +276,10 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 			MI_ItemOverlay[static_cast<int>(EItemEffect::EIE_Team_Speed)] = MI_SpeedUp.Object;
 		}
 	}
+
+
+	CommonSkillCoolTime = -1.f;
+	SpecialSkillCoolTime = -1.f;
 }
 
 void ASkyscraperCharacter::BeginPlay()
@@ -681,6 +685,7 @@ void ASkyscraperCharacter::SetCharacterGodMode(bool bNewGodMode)
 	if(HealthComponent)
 	{
 		HealthComponent->SetGodMode(bNewGodMode);
+		SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_GodMode, bNewGodMode);
 	}
 }
 

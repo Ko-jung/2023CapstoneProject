@@ -95,6 +95,8 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	{
 		// PChangeAnimMontage PCAM;
 		// MEMCPYBUFTOPACKET(PCAM);
+
+		//TODO: 스킬 쿨타임
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), p, sizeof(PChangeAnimMontage));
 		break;
 	}

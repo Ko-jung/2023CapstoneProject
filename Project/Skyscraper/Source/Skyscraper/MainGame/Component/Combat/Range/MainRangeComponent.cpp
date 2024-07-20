@@ -27,6 +27,7 @@
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Skyscraper/MainGame/Actor/SkillActor/Shield.h"
 
 // Sets default values for this component's properties
 UMainRangeComponent::UMainRangeComponent()
@@ -324,7 +325,7 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		//QueryParams.TraceTag = TEXT("DebugTraceTag");
 
 		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-		bool ComponentHitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldStatic, QueryParams);
+		bool ComponentHitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility, QueryParams);
 		if (ComponentHitResult)
 		{
 			UPrimitiveComponent* PrimitiveComponent = OutHit.GetComponent();
@@ -350,6 +351,11 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 
 			TargetLocation = OutHit.Location;
 
+			if (HitActor->IsA(AShield::StaticClass()))
+			{
+				Cast<AShield>(HitActor)->GetDamage(fBaseDamage);
+			}
+
 			// Execute on Sever
 			if (GameMode)
 			{
@@ -364,8 +370,15 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 					FTransform SpawnTransform;
 					SpawnTransform.SetLocation(OutHit.Location);
 					
-					UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
-					DamageComp->InitializeDamage(fBaseDamage);
+					if (!Cast<ASkyscraperCharacter>(OutHit.GetActor())->IsCharacterGodMode())
+					{
+						UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
+						if (DamageComp)
+						{
+							DamageComp->InitializeDamage(fBaseDamage);
+						}
+					}
+					
 				}
 				// BloodSpawner 생성
 				{

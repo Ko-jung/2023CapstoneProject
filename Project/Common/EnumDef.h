@@ -149,6 +149,9 @@ enum class EItemEffect : BYTE
 	Team_PlusHealth,
 	Team_Power,
 	Team_Speed,
+	Gravity_Up,
+	Gravity_Down,
+	Tile_Break,
 	COUNT
 };
 

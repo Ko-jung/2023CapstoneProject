@@ -140,6 +140,20 @@ void ASkillSyncTestGameMode::ProcessFunc()
 			}
 			break;
 		}
+		case (BYTE)COMP_OP::OP_USEITEM:
+		{
+			PUseItem PUI;
+			memcpy(&PUI, packet, sizeof(PUI));
+			ProcessUseItem(PUI);
+			break;
+		}
+		case (BYTE)COMP_OP::OP_GETITEM:
+		{
+			PGetItem PGI;
+			memcpy(&PGI, packet, sizeof(PGI));
+			ProcessGetItem(PGI);
+			break;
+		}
 		case (BYTE)COMP_OP::OP_BREAKOBJECT:
 		{
 			PBreakObject PBO;

@@ -28,6 +28,7 @@
 #include "Skyscraper/Network/MainGameMode.h"
 
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Skyscraper/MainGame/Actor/SkillActor/Shield.h"
 
 // Sets default values for this component's properties
 UMainMeleeComponent::UMainMeleeComponent()
@@ -459,6 +460,12 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	for (FHitResult HitResult : UniqueOutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
+
+		// if (HitActor->IsA(AShield::StaticClass()))
+		// {
+		// 	Cast<AShield>(HitActor)->GetDamage(fBaseDamage);
+		// 	continue;
+		// }
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 
 		bDoHitLag = true;
@@ -468,7 +475,6 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		{
 			bAddHitCount = true;
 		}
-
 
 		if(TargetCharacter)
 		{

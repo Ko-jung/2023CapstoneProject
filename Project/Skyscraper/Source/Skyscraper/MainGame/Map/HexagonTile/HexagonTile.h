@@ -55,7 +55,7 @@ protected:
 	UPROPERTY()
 		FTimerHandle CollapseTileTimerHandle;
 	UPROPERTY(EditAnywhere)
-		float CollapseDelaySeconds = 7.0f;
+		float CollapseDelaySeconds = 15.0f;
 
 	UPROPERTY()
 		FTimerHandle CollapseTileAfterNotificationTimerHandle;

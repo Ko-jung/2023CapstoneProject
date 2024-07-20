@@ -29,7 +29,7 @@ public:
 	void GetDamage(float Damage);
 
 	UFUNCTION(BlueprintCallable)
-	void SetSpawnCharacter(AShieldCharacter* Character) { SpawnCharacter = Character; }
+	void SetSpawnCharacter(AShieldCharacter* Character);
 protected:
 	UPROPERTY(BlueprintReadWrite)
 	AShieldCharacter* SpawnCharacter;

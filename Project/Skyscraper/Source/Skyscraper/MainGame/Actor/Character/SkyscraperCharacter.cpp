@@ -868,11 +868,17 @@ bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 	if (this == Target) return true;
 
 	// If has no Tag, is Enemy
-	if (!TargetTags.IsValidIndex(0) || !MyTags.IsValidIndex(0)) return false;
+	if (TargetTags.IsEmpty() || MyTags.IsEmpty())
+	{
+		if(TargetTags.IsEmpty())
+			UE_LOG(LogTemp, Warning, TEXT("%s Tags is Empty!"), *UKismetSystemLibrary::GetDisplayName(Target));
+		if(MyTags.IsEmpty())
+			UE_LOG(LogTemp, Warning, TEXT("%s Tags is Empty!"), *UKismetSystemLibrary::GetDisplayName(this));
+		return false;
+	}
 
 	// Check Alliance
-	if (TargetTags[0] == MyTags[0]) return true;
-	return false;
+	return TargetTags[0] == MyTags[0];
 }
 
 void ASkyscraperCharacter::SetItemEffectAndOverlayMaterial(EItemEffect TargetItemEffect, bool bAdd)

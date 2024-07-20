@@ -30,3 +30,13 @@ void AShield::GetDamage(float Damage)
 	if(SpawnCharacter)
 		SpawnCharacter->GetShieldDamage(Damage);
 }
+
+void AShield::SetSpawnCharacter(AShieldCharacter* Character)
+{
+	SpawnCharacter = Character; 
+
+	if (Tags.IsEmpty())
+	{
+		Tags.Add(SpawnCharacter->Tags[0]);
+	}
+}

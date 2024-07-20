@@ -324,8 +324,9 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		QueryParams.AddIgnoredActor(OwnerCharacter);
 		//QueryParams.TraceTag = TEXT("DebugTraceTag");
 
+		// ========================== 2019180016 ========================== 
 		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-		bool ComponentHitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility, QueryParams);
+		bool ComponentHitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldStatic, QueryParams);
 		if (ComponentHitResult)
 		{
 			UPrimitiveComponent* PrimitiveComponent = OutHit.GetComponent();
@@ -342,14 +343,17 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 				}
 			}
 		}
+		// ================================================================ 
 
 
 		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
-		if (HitResult)
+		while (HitResult)		// if -> while TO use break
 		{
 			AActor* HitActor = OutHit.GetActor();
 
 			TargetLocation = OutHit.Location;
+
+			if (OwnerCharacter->IsAlliance(HitActor)) break;
 
 			if (HitActor->IsA(AShield::StaticClass()))
 			{
@@ -403,6 +407,7 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 					FVector(1));
 			}
 			
+			HitResult = false;
 		}
 
 		// Muzzle Flash Effect

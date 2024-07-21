@@ -19,7 +19,6 @@ void UCharacterDetail::NativeConstruct()
 	SelectAssassinButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickSelectAssassinButton);
 	SelectDetectionButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickSelectDetectionButton);
 
-	CharacterDetailSwitcher->SetVisibility(ESlateVisibility::Hidden);
 
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	Gamemode = static_cast<ASkyscraperGameMode*>(gamemode);
@@ -36,57 +35,34 @@ void UCharacterDetail::Tick(FGeometry MyGeometry, float InDeltaTime)
 }
 
 
-void UCharacterDetail::SetSwitcherValue(int32 Value) const
-{
-	// ���� �����ִ� ��ư�� ��� ���̱� ���
-	if (CharacterDetailSwitcher->GetActiveWidgetIndex() == Value && CharacterDetailSwitcher->GetVisibility() == ESlateVisibility::Visible)
-	{
-		CharacterDetailSwitcher->SetVisibility(ESlateVisibility::Hidden);
-		return;
-	}
-	CharacterDetailSwitcher->SetVisibility(ESlateVisibility::Visible);
-	CharacterDetailSwitcher->SetActiveWidgetIndex(Value);
-}
-
 
 void UCharacterDetail::OnClickSelectShieldButton()
 {
-	SetSwitcherValue(0);
-
 	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_ShieldCharacter);
+	UE_LOG(LogTemp, Warning, TEXT("ABC"));
 }
 
 void UCharacterDetail::OnClickSelectWindButton()
 {
-	SetSwitcherValue(1);
-
 	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_WindCharacter);
 }
 
 void UCharacterDetail::OnClickSelectElectricButton()
 {
-	SetSwitcherValue(2);
-
 	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_ElectricCharacter);
 }
 
 void UCharacterDetail::OnClickSelectThrowButton()
 {
-	SetSwitcherValue(3);
-
 	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_BoomerangCharacter);
 }
 
 void UCharacterDetail::OnClickSelectAssassinButton()
 {
-	SetSwitcherValue(4);
-
 	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_AssassinCharacter);
 }
 
 void UCharacterDetail::OnClickSelectDetectionButton()
 {
-	SetSwitcherValue(5);
-
 	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_DetectionCharacter);
 }

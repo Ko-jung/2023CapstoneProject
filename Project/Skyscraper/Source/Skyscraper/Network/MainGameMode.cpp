@@ -835,6 +835,11 @@ void AMainGameMode::SendSkillActorSpawn(const AActor* Sender, ESkillActor SkillA
 
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
 {
+	if (Characters.IsEmpty())
+	{
+		return;
+	}
+
 	if (!GetIsConnected())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendAnimMontageStatus() GetIsConnected() is FALSE"));

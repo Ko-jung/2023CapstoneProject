@@ -21,6 +21,7 @@ public:
 public:
 	// Return True if Dead
 	bool TakeDamage(float damage);
+	bool TakeDamageToShield(float damage);
 	void Heal(float HealAmount);
 
 
@@ -62,5 +63,8 @@ public:
 	ECharacterState State;
 
 	bool IsOverlappedShieldSphere;
+
+	// Use If SelectInfo is Shiled
+	float ShieldHp;
 };
 

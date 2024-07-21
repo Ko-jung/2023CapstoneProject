@@ -473,6 +473,11 @@ void ASkyscraperCharacter::SkillInteract(ESkillActor SkillActor, float Timer)
 	}
 }
 
+void ASkyscraperCharacter::SkillActorDamaged(float AfterHp)
+{
+	UE_LOG(LogTemp, Warning, TEXT("This Character is None Shiled"));
+}
+
 bool ASkyscraperCharacter::CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon)
 {
 	// CheckHoldWeapon(ESwapWeapon&) -> CheckHoldWeapon(ESwapWeapon&, uint8&)

@@ -24,6 +24,7 @@ public:
 	void ChangeState(int id, ECharacterState state);
 	void ProcessItem(int id, PUseItem PUI);
 	void ProcessShieldSphereHeal(int id, PSkillInteract PSI);
+	float ProcessShieldDamaged(int id, PDamagedSkillActor PDSA, float Damage);
 
 	void Heal(int id, float damage);
 	void ItemHeal(int id, EItemRareLevel level);

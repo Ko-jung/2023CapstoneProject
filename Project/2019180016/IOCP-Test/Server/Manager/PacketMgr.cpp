@@ -63,13 +63,15 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PDamagedPlayer PDP;
 		MEMCPYBUFTOPACKET(PDP, ReadByte);
 		BYTE TargetPlayerSerialNum = PDP.ChangedPlayerSerial;
-		const int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
+		int id = c->GetClientNum();
+
+		const float Damage = GetWeaponDamage(id, PDP.IsMelee, PDP.WeaponEnum);
 		auto& clients = ClientMgr::Instance()->GetClients();
 
-		int id = c->GetClientNum();
 		int SendPlayerRoomNum = id / MAXPLAYER;
 		int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
 		
+		// Already Dead
 		if (clients[TargetPlayerId]->GetCurrnetHp() < 0.001f) return;
 
 		bool IsDead = clients[TargetPlayerId]->TakeDamage(Damage);
@@ -80,7 +82,14 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		{
 			ProcessingPlayerDead(TargetPlayerId);
 		}
-	break;
+		break;
+	}
+	case (int)COMP_OP::OP_DAMAGEDSKILLACTOR:
+	{
+		PDamagedSkillActor PDSA;
+		MEMCPYBUFTOPACKET(PDSA);
+		ProcessDamagedSkillActor(PDSA, c->GetClientNum());
+		break;
 	}
 	case (int)COMP_OP::OP_SPAWNOBJECT:
 	{
@@ -363,7 +372,31 @@ void PacketMgr::ProcessingSkillInteract(ClientInfo* c, PSkillInteract PSI)
 	}
 }
 
-const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)
+void PacketMgr::ProcessDamagedSkillActor(PDamagedSkillActor PDSA, const int id)
+{
+	int RoomId = id / MAXPLAYER;
+	const float Damage = GetWeaponDamage(id, PDSA.IsMelee, PDSA.WeaponEnum);
+	switch (PDSA.SkillActor)
+	{
+	case ESkillActor::BP_Shield:
+	{
+		PChangedSkillActorHP PCHP;
+		PCHP.ChangedSkillActorOwner = PDSA.SkillActorOwner;
+		PCHP.ChangedSkillActorSerial = PDSA.SkillActorSerial;
+		PCHP.AfterHP = ClientMgr::Instance()->ProcessShieldDamaged(id, PDSA, Damage);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomId, &PCHP, PCHP.PacketSize);
+		break;
+	}
+	case ESkillActor::BP_ElectTrap:
+		break;
+	case ESkillActor::BP_DetectorMine:
+		break;
+	default:
+		break;
+	}
+}
+
+const float PacketMgr::GetWeaponDamage(int Id, const bool& isMelee, const int& weaponEnum)
 {
 	if (isMelee)
 	{

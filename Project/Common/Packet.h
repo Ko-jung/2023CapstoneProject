@@ -92,6 +92,18 @@ struct PDamagedPlayer : Packet
 	}
 };
 
+struct PDamagedSkillActor : Packet
+{
+	BYTE SkillActorOwner;
+	ESkillActor SkillActor;
+	WORD SkillActorSerial;
+	bool IsMelee;
+	char WeaponEnum;
+
+	PDamagedSkillActor() : Packet(COMP_OP::OP_DAMAGEDSKILLACTOR), SkillActorOwner(0), SkillActor(ESkillActor::BP_NULL),
+		SkillActorSerial(0), IsMelee(false), WeaponEnum(0){ PacketSize = sizeof(PDamagedSkillActor); }
+};
+
 // Send If Character Damaged
 struct PChangedPlayerHP : Packet
 {
@@ -103,6 +115,15 @@ struct PChangedPlayerHP : Packet
 		ChangedPlayerSerial(changedPlayerSerial), AfterHP(afterHP) {
 		PacketSize = sizeof(PChangedPlayerHP);
 	}
+};
+
+struct PChangedSkillActorHP : Packet
+{
+	BYTE ChangedSkillActorOwner;
+	BYTE ChangedSkillActorSerial;
+	float AfterHP;
+
+	PChangedSkillActorHP() : Packet(COMP_OP::OP_CHANGEDSKILLACTORHP), ChangedSkillActorOwner(0), ChangedSkillActorSerial(-1), AfterHP(-1.f) { PacketSize = sizeof(PChangedSkillActorHP); }
 };
 
 // Send If Character Dead or ReSpawn

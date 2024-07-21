@@ -30,8 +30,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetSpawnCharacter(AShieldCharacter* Character);
-protected:
+
 	UPROPERTY(BlueprintReadWrite)
 	AShieldCharacter* SpawnCharacter;
-
+protected:
 };

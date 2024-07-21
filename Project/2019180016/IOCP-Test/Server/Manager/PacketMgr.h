@@ -21,6 +21,7 @@ public:
 	void GameBeginProcessing(int NowClientNum);
 	void ProcessingPlayerDead(int ClientId);
 	void ProcessingSkillInteract(ClientInfo* c, PSkillInteract PSI);
+	void ProcessDamagedSkillActor(PDamagedSkillActor PDSA, const int id);
 
 private:
 	// Timer Func
@@ -30,6 +31,6 @@ private:
 	void SendStartGame(int RoomNum, int ClientNum, void* etc);
 	void SendTileDrop(int RoomNum, BYTE TileDropLevel);
 
-	const int GetWeaponDamage(const bool& isMelee, const int& weaponEnum);
+	const float GetWeaponDamage(int Id, const bool& isMelee, const int& weaponEnum);
 };
 

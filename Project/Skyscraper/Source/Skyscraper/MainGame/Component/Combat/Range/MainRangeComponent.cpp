@@ -357,7 +357,13 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 
 			if (HitActor->IsA(AShield::StaticClass()))
 			{
-				Cast<AShield>(HitActor)->GetDamage(fBaseDamage);
+				AShield* Shield = Cast<AShield>(HitActor);
+				Shield->GetDamage(fBaseDamage);
+				if (GameMode)
+				{
+					GameMode->SendDamagedSkillActor(OwnerCharacter, Shield->SpawnCharacter, ESkillActor::BP_Shield, HitActor);
+				}
+				break;
 			}
 
 			// Execute on Sever

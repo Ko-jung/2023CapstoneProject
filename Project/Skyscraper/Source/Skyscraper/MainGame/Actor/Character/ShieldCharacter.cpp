@@ -89,6 +89,16 @@ void AShieldCharacter::BreakShield()
 		}, 10.f, false);
 }
 
+void AShieldCharacter::SetShieldHealth_Implementation(float Damage)
+{
+}
+
+void AShieldCharacter::SkillActorDamaged(float AfterHp)
+{
+	UE_LOG(LogTemp, Warning, TEXT("This Character is Shiled"));
+	SetShieldHealth(AfterHp);
+}
+
 void AShieldCharacter::GetShieldDamage_Implementation(float Damage)
 {
 }

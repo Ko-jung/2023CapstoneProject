@@ -63,6 +63,7 @@ public:
 	bool SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
 	void SendSkillInteract(const AActor* Sender, const ESkillActor SkillActor);
+	void SendDamagedSkillActor(const AActor* Sender, const AActor* SkillActorOwner, const ESkillActor& SkillActorType, const AActor* SkillActor);
 
 	UFUNCTION(BlueprintCallable)
 	void SendDetecting(AActor* Sender, AActor* Target);

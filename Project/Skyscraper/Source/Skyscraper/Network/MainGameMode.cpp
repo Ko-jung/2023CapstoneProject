@@ -156,6 +156,16 @@ void AMainGameMode::ProcessFunc()
 				Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_CHANGEDSKILLACTORHP:
+		{
+			PChangedSkillActorHP* PCHP = static_cast<PChangedSkillActorHP*>(packet);
+			uint8 TargetOwner = PCHP->ChangedSkillActorOwner;
+			if (Characters.IsValidIndex(TargetOwner) && Characters[TargetOwner])
+			{
+				Characters[TargetOwner]->SkillActorDamaged(PCHP->AfterHP);
+			}
+			break;
+		}
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERSTATE:
 		{
 			ProcessChangedCharacterState(static_cast<PChangedPlayerState*>(packet));
@@ -905,6 +915,49 @@ void AMainGameMode::SendSkillInteract(const AActor* Sender, const ESkillActor Sk
 	PSI.SkillActor = SkillActor;
 	PSI.InteractedPlayerSerial = SerialNum;
 	Send(&PSI, PSI.PacketSize);
+}
+
+void AMainGameMode::SendDamagedSkillActor(const AActor* Sender, const AActor* SkillActorOwner, const ESkillActor& SkillActorType, const AActor* SkillActor)
+{
+	if (!Characters.IsValidIndex(SerialNum) || Characters[SerialNum] != Sender)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendDamagedSkillActor SenderSerial == -1"));
+		return;
+	}
+
+	int OwnerSerial = GetIndex(SkillActorOwner);
+	if (OwnerSerial == -1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendDamagedSkillActor OwnerSerial == -1"));
+		return;
+	}
+
+	int SkillActorSerial{ -1 };
+	for (const auto& sa : SkillActors)
+	{
+		if (sa.Value == SkillActor)
+		{
+			SkillActorSerial = sa.Key;
+		}
+	}
+	if (SkillActorType != ESkillActor::BP_Shield && SkillActorSerial == -1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendDamagedSkillActor SkillActorSerial == -1"));
+		return;
+	}
+
+	ESwapWeapon weaponType;
+	uint8 equippedWeapon;
+	Characters[SerialNum]->CheckHoldWeapon(weaponType, equippedWeapon);
+
+	PDamagedSkillActor PDSA;
+	PDSA.SkillActorOwner = OwnerSerial;
+	PDSA.SkillActor = SkillActorType;
+	PDSA.SkillActorSerial = SkillActorSerial;
+	PDSA.IsMelee = ((weaponType == ESwapWeapon::MeleeWeapon) ? true : false);
+	PDSA.WeaponEnum = equippedWeapon;
+
+	Send(&PDSA, PDSA.PacketSize);
 }
 
 void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)

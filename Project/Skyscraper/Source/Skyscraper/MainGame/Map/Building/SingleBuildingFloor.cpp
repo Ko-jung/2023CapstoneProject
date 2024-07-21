@@ -12,6 +12,7 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = false;
 
+
 	ConstructorHelpers::FClassFinder<AActor> GC_BuildingRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/BP_GC_Building.BP_GC_Building_C'"));
 	GC_BuildingClass = GC_BuildingRef.Class;
 
@@ -31,6 +32,7 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 		ConstructorHelpers::FClassFinder<AActor> GC_WindowRef(*FilePath);
 		GC_WindowClass.Add(GC_WindowRef.Class);
 	}
+
 }
 
 

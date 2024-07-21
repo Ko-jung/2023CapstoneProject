@@ -20,53 +20,6 @@ UCLASS()
 class SKYSCRAPER_API ALootingItemActor : public AActor, public IItemInteraction
 {
 	GENERATED_BODY()
-	
-		// 아이템의 희귀도 enum 변수
-		UPROPERTY(EditAnywhere)
-		EItemRareLevel ItemRareLevel;
-	// 아이템의 효과 enum 변수
-	UPROPERTY(EditAnywhere)
-		EItemEffect ItemEffectType;
-
-	// 오버랩 범위 SphereComponent
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<USphereComponent> SphereComponent;
-	// 상호작용 게이지 Widget Component
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UWidgetComponent> GaugeWidgetComponent;
-	// Text Render
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UTextRenderComponent> TextRenderComponent;
-
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UStaticMeshComponent> BodyStaticMesh;
-	UPROPERTY(VisibleAnywhere)
-		TObjectPtr<UStaticMeshComponent> ItemObjectMesh;
-	UPROPERTY(EditAnywhere)
-		TArray<TObjectPtr<UStaticMesh>> ItemObjectStaticMeshes;
-
-	// 상호작용 필요 시간
-	UPROPERTY(EditAnywhere)
-		float RequiredTime;
-	// 현재 상호작용 시간
-	UPROPERTY()
-		float CurrentInteractionTime;
-	// 가장 이전 상호작용 시간
-	UPROPERTY()
-		float LastInteractionTime;
-	// Player - Widget 맵
-	UPROPERTY()
-		TMap<AActor*, UUserWidget*> PlayerAndWidgetMap;
-	// 현재 상호작용 중인 캐릭터
-	UPROPERTY()
-		TObjectPtr<AActor> CurrentInteractionActor;
-
-	// 상호작용 키 위젯
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<UUserWidget> WBP_InteractionKey;
-
-	UPROPERTY()
-		TObjectPtr<UProgressBar> InteractionBar;
 
 public:
 	// 생성자
@@ -97,7 +50,7 @@ protected:
 	void RemovePlayerWidget(AActor* EndOverlapCharacter);
 
 	// 프로그레스 바의 퍼센트를 바꾸는 함수
-	void SetProgressBarPercent() const;
+	virtual void SetProgressBarPercent() const;
 public:
 	// Tick Event
 	virtual void Tick(float DeltaTime) override;
@@ -106,4 +59,58 @@ public:
 
 	// SpawnActorDeferred 를 통해 액터를 생성 후 초기화할 때 사용할 함수
 	FORCEINLINE void Initialize(EItemEffect EffectType, EItemRareLevel RareLevel) { ItemEffectType = EffectType; ItemRareLevel = RareLevel; }
+
+public:
+protected:
+	// 아이템의 희귀도 enum 변수
+	UPROPERTY(EditAnywhere)
+		EItemRareLevel ItemRareLevel;
+	// 아이템의 효과 enum 변수
+	UPROPERTY(EditAnywhere)
+		EItemEffect ItemEffectType;
+
+	// 오버랩 범위 SphereComponent
+	UPROPERTY(VisibleAnywhere)
+		TObjectPtr<USphereComponent> SphereComponent;
+	// 상호작용 게이지 Widget Component
+	UPROPERTY(VisibleAnywhere)
+		TObjectPtr<UWidgetComponent> GaugeWidgetComponent;
+	// Text Render
+	UPROPERTY(VisibleAnywhere)
+		TObjectPtr<UTextRenderComponent> TextRenderComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		TObjectPtr<UStaticMeshComponent> BodyStaticMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		TObjectPtr<UStaticMeshComponent> ItemObjectMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TObjectPtr<UStaticMesh>> ItemObjectStaticMeshes;
+
+	// 상호작용 필요 시간
+	UPROPERTY(EditAnywhere)
+		float RequiredTime;
+	// 현재 상호작용 시간
+	UPROPERTY()
+		float CurrentInteractionTime;
+	// 가장 이전 상호작용 시간
+	UPROPERTY()
+		float LastInteractionTime;
+	// Player - Widget 맵
+	UPROPERTY()
+		TMap<AActor*, UUserWidget*> PlayerAndWidgetMap;
+	// 현재 상호작용 중인 캐릭터
+	UPROPERTY()
+		TObjectPtr<AActor> CurrentInteractionActor;
+
+	// 상호작용 키 위젯
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> WBP_InteractionKey;
+
+	UPROPERTY()
+		TObjectPtr<UProgressBar> InteractionBar;
+
+	float RemoveTime;
+private:
+
+
 };

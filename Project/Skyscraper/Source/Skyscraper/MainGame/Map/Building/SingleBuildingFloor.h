@@ -32,6 +32,7 @@ private:
 public:
 
 protected:
+	
 	// 건물 한 충의 스태틱 메시에 대한 배열
 	UPROPERTY(EditAnywhere)
 		TArray<UStaticMeshComponent*> FloorStaticMeshes;

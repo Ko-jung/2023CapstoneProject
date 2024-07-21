@@ -4,6 +4,7 @@
 #include "Building.h"
 
 #include "SingleBuildingFloor.h"
+#include "Skyscraper/MainGame/Actor/Elevator/ElevatorActor.h"
 #include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
 
 // Sets default values
@@ -37,7 +38,17 @@ ABuilding::ABuilding()
 	}
 
 	static ConstructorHelpers::FClassFinder<AActor> FurnitureRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Furniture/BP_Furnitures.BP_Furnitures_C'"));
-	FurnitureClass = FurnitureRef.Class;
+	if(FurnitureRef.Succeeded())
+	{
+		FurnitureClass = FurnitureRef.Class;
+	}
+	
+
+	static ConstructorHelpers::FClassFinder<AActor> ElevatorRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Elevator/BP_Elevator.BP_Elevator_C'"));
+	if(ElevatorRef.Succeeded())
+	{
+		ElevatorClass = ElevatorRef.Class;
+	}
 	
 }
 
@@ -74,6 +85,14 @@ void ABuilding::BeginPlay()
 			NewFurnitureActor->SetBuildingFloorInfo(this, i);
 		}
 		FurnitureActors.Add(NewFurnitureActor);
+
+		AElevatorActor* ElevatorActor = Cast<AElevatorActor>(GetWorld()->SpawnActor(ElevatorClass));
+		if(ElevatorActor)
+		{
+			ElevatorActor->SetActorLocation(NewFloorActor->GetActorLocation());
+			ElevatorActor->SetActorRotation(GetActorRotation());
+			ElevatorActor->InitializeElevator(GetActorLocation());
+		}
 	}
 }
 

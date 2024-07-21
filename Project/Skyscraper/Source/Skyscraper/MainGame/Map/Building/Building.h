@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Building.generated.h"
 
+class AElevatorActor;
 class AFurniture;
 class ASingleBuildingFloor;
 
@@ -81,6 +82,8 @@ public:
 		TSubclassOf<ASingleBuildingFloor> SingleBuildingClass;
 	UPROPERTY()
 		TSubclassOf<AFurniture> FurnitureClass;
+	UPROPERTY()
+		TSubclassOf<AElevatorActor> ElevatorClass;
 
 public:
 	/* ICollapsible Interface */

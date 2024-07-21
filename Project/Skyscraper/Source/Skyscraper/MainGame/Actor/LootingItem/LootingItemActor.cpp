@@ -21,6 +21,8 @@ ALootingItemActor::ALootingItemActor()
 		LastInteractionTime = 0.0f;
 		CurrentInteractionActor = nullptr;
 		ItemEffectType = EItemEffect::EIE_Team_Speed;
+
+		RemoveTime = 0.5f;
 	}
 
 	float SphereRadius = 100.0f;
@@ -145,7 +147,11 @@ void ALootingItemActor::BeginPlay()
 
 	InteractionBar = Cast<UProgressBar>(GaugeWidgetComponent->GetUserWidgetObject()->GetWidgetFromName("PB_Interaction"));
 
-	ItemObjectMesh->SetStaticMesh(ItemObjectStaticMeshes[(uint8)ItemEffectType]);
+	if(ItemObjectMesh)
+	{
+		ItemObjectMesh->SetStaticMesh(ItemObjectStaticMeshes[(uint8)ItemEffectType]);
+	}
+	
 }
 
 void ALootingItemActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -229,7 +235,7 @@ void ALootingItemActor::Tick(float DeltaTime)
 	//}
 
 	// 0.5초 이상 상호작용 계속 진행하지 않았을 시,
-	if (GetWorld()->GetTimeSeconds() - LastInteractionTime > 0.5f)
+	if (GetWorld()->GetTimeSeconds() - LastInteractionTime > RemoveTime)
 	{
 		CurrentInteractionTime = 0.0f;
 		GaugeWidgetComponent->SetHiddenInGame(true);

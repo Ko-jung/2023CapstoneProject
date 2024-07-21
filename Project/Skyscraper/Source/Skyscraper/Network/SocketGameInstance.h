@@ -30,6 +30,9 @@ public:
 	bool GetIsConnect() { return bIsConnected; }
 	int GetSerialNum() { return SerialNum; }
 
+	UPROPERTY(BlueprintReadWrite)
+	FString PlayerId;
+
 private:
 	TArray<PPlayerSelectInfo*>	SelectInfo;
 	NetworkManager*				Socket;

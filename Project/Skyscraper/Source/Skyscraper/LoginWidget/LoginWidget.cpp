@@ -135,3 +135,10 @@ void ULoginWidget::SetExtraMessage(PLoginResult* PLR)
 	ExtraMessage->SetVisibility(ESlateVisibility::Visible);
 	ExtraMessage->SetText(ExtraMess);
 }
+
+FString ULoginWidget::GetLoginId()
+{
+	FText IDText = IdEditable->GetText();
+	FString IDFString = IDText.ToString();
+	return IDFString;
+}

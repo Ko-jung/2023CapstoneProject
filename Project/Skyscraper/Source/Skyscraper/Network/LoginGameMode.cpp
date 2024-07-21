@@ -6,6 +6,7 @@
 #include "Skyscraper/LoginWidget/LoginWidget.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Skyscraper/Network/SocketGameInstance.h"
 
 ALoginGameMode::ALoginGameMode()
 {
@@ -109,6 +110,9 @@ void ALoginGameMode::ProcessLoginResult(PLoginResult* PLR)
 {
 	if (PLR->LoginResult == (char)ELoginResult::Success)
 	{
+		FString NewPlayerId = LoginWidget->GetLoginId();
+		Cast<USocketGameInstance>(GetWorld()->GetGameInstance())->PlayerId = NewPlayerId;
+		UE_LOG(LogTemp, Warning, TEXT("ALoginGameMode::ProcessLoginResult New Player Id is %s"), *NewPlayerId);
 		UE_LOG(LogClass, Warning, TEXT("Level Transate"));
 		UGameplayStatics::OpenLevel(this, FName("LobbyLevel"));
 	}

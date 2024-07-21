@@ -12,6 +12,9 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 	// bCanEverTick
 	PrimaryActorTick.bCanEverTick = false;
 
+	USceneComponent* SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	SetRootComponent(SceneComponent);
+	
 
 	ConstructorHelpers::FClassFinder<AActor> GC_BuildingRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/BP_GC_Building.BP_GC_Building_C'"));
 	GC_BuildingClass = GC_BuildingRef.Class;

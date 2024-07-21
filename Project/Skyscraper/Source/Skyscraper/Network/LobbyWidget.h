@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Skyscraper/SkyscraperWidget/SkyscraperWidget.h"
 #include "Skyscraper/Enum/ECharacterSelect.h"
 
 #include "LobbyWidget.generated.h"
@@ -15,7 +15,7 @@ class UTextBlock;
  * 
  */
 UCLASS()
-class SKYSCRAPER_API ULobbyWidget : public UUserWidget
+class SKYSCRAPER_API ULobbyWidget : public USkyscraperWidget
 {
 	GENERATED_BODY()
 

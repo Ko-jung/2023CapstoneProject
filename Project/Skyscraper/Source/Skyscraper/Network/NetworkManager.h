@@ -17,7 +17,7 @@
 #define GAME_SERVER_PORT		9000
 #define LOBBY_SERVER_PORT		9001
 #define GAME_SERVER_IP			"1.242.205.234"
-#define LOBBY_SERVER_IP			"127.0.0.1"
+#define LOBBY_SERVER_IP			"1.242.205.234"
 
 class ANetworkGameMode;
 

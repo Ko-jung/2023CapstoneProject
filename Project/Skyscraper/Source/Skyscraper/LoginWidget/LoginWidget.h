@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Skyscraper/SkyscraperWidget/SkyscraperWidget.h"
 #include "LoginWidget.generated.h"
 
 class UButton;
@@ -14,7 +14,7 @@ class UTextBlock;
  * 
  */
 UCLASS()
-class SKYSCRAPER_API ULoginWidget : public UUserWidget
+class SKYSCRAPER_API ULoginWidget : public USkyscraperWidget
 {
 	GENERATED_BODY()
 

@@ -31,6 +31,8 @@ bool ULoginWidget::Initialize()
 
 void ULoginWidget::OnPlayButtonClick()
 {
+	PlayButtonOnClickSound();
+
 	FText IDText = IdEditable->GetText();
 	FText PasswordText = PasswordEditable->GetText();
 
@@ -52,6 +54,8 @@ void ULoginWidget::OnPlayButtonClick()
 
 void ULoginWidget::OnRegisterButtonClick()
 {
+	PlayButtonOnClickSound();
+
 	FText IDText = IdEditable->GetText();
 	FText PasswordText = PasswordEditable->GetText();
 
@@ -73,6 +77,8 @@ void ULoginWidget::OnQuitButtonClick()
 {
 	if(GEngine)
 	{
+		PlayButtonOnClickSound();
+
 		UWorld* World = GEngine->GetWorldFromContextObjectChecked(this);
 		if (World)
 		{

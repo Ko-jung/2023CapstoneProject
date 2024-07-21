@@ -47,6 +47,8 @@ bool ULobbyWidget::Initialize()
 
 void ULobbyWidget::OnMatchingButtonClick()
 {
+	PlayButtonOnClickSound();
+
 	UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::OnMatchingButtonClick()"));
 
 	LobbyGameMode->Ready(IsMatching);

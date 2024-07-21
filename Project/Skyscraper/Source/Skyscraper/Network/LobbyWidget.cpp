@@ -250,7 +250,7 @@ void ULobbyWidget::UpdateMatchingTimer()
 	TCHAR Buffer[256];
 	FCString::Sprintf(Buffer, TEXT("%02d : %02d"), Minute, Second);
 	FString TimerString = FString(Buffer);
-	UE_LOG(LogClass, Warning, TEXT("ULobbyWidget::UpdateMatchingTimer() %s"), *TimerString);
+	//UE_LOG(LogClass, Warning, TEXT("ULobbyWidget::UpdateMatchingTimer() %s"), *TimerString);
 
 	MatchingTimer->SetText(FText::FromString(TimerString));
 }

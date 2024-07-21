@@ -12,6 +12,8 @@
 #include "CharacterPickState.generated.h"
 
 class UButton;
+class UTextBlock;
+
 UCLASS()
 class SKYSCRAPER_API UCharacterPickState : public UUserWidget
 {
@@ -22,6 +24,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SelectInfoUpdate();
+
+	UFUNCTION()
+	void SetPlayerIDs(TArray<FString> IDs, int SerialNum);
 
 private:
 	// == Border variable
@@ -68,9 +73,24 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UImage* FriendlyRange2;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerId0;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerId1;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerId2;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerId3;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerId4;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerId5;
+
 	TArray<UImage*> FriendlyChracters;
 	TArray<UImage*> FriendlyMelee;
 	TArray<UImage*> FriendlyRange;
+
+	TArray<UTextBlock*> PlayerIDs;
 
 private:
 	class ASkyscraperGameMode* Gamemode;

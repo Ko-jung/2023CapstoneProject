@@ -17,9 +17,9 @@
 #pragma comment(lib, "MSWSock.lib")
 #pragma comment(lib, "ws2_32.lib")
 
-#define BUFSIZE 128
+#define BUFSIZE 255
 #define MAXCLIENT 2100
-#define MAXPLAYER 4
+#define MAXPLAYER 1
 #define MAXROOM 350
 
 #define GAMESERVERIP "1.242.205.234"
@@ -58,7 +58,7 @@ public:
 	char _net_buf[BUFSIZE];					// Recv �� ��Ŷ �������Ͽ� ����Ǵ� ��ġ. ������ ��� ����.
 
 public:
-	EXP_OVER(COMP_OP comp_op, char num_bytes, void* mess) : _comp_op(comp_op)
+	EXP_OVER(COMP_OP comp_op, BYTE num_bytes, void* mess) : _comp_op(comp_op)
 	{
 		ZeroMemory(&_wsa_over, sizeof(_wsa_over));
 		_wsa_buf.buf = reinterpret_cast<char*>(_net_buf);

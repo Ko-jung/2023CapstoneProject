@@ -1,6 +1,7 @@
 #include "CharacterPickState.h"
 
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "../Core/SelectCharacterController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/SkyscraperGameMode.h"
@@ -31,6 +32,13 @@ void UCharacterPickState::NativeConstruct()
 	FriendlyRange.Add(FriendlyRange0);
 	FriendlyRange.Add(FriendlyRange1);
 	FriendlyRange.Add(FriendlyRange2);
+
+	PlayerIDs.Add(PlayerId0);
+	PlayerIDs.Add(PlayerId1);
+	PlayerIDs.Add(PlayerId2);
+	PlayerIDs.Add(PlayerId3);
+	PlayerIDs.Add(PlayerId4);
+	PlayerIDs.Add(PlayerId5);
 }
 
 void UCharacterPickState::NativeDestruct()
@@ -95,6 +103,18 @@ void UCharacterPickState::SelectInfoUpdate()
 			FriendlyRange[i]->SetBrushFromTexture(*RangeImages.Find(RangeWeaponNum));
 		}
 	}
+}
+
+void UCharacterPickState::SetPlayerIDs(TArray<FString> IDs, int SerialNum)
+{
+	for (int i = 0; i < MAXPLAYER; i++)
+	{
+		if (IDs.IsValidIndex(i) && PlayerIDs.IsValidIndex(i) && !IDs[i].IsEmpty())
+		{
+			PlayerIDs[i]->SetText(FText::FromString(IDs[i]));
+		}
+	}
+	PlayerIDs[SerialNum]->SetColorAndOpacity(FSlateColor(FLinearColor::Yellow));
 }
 
 void UCharacterPickState::GoToDetail()

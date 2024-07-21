@@ -6,6 +6,7 @@
 #include "Network/NetworkManager.h"
 #include "Network/SocketGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Skyscraper/SelectCharacter/Core/SelectCharacterController.h"
 
 #include "UObject/ConstructorHelpers.h"
 
@@ -42,6 +43,8 @@ void ASkyscraperGameMode::ProcessFunc()
 			PPlayerJoin PPJ;
 			memcpy(&PPJ, packet, sizeof(PPlayerJoin));
 			Super::SetOwnSerialNum(PPJ.PlayerSerial);
+
+			SetWidgetPlayerIDs();
 		}
 			break;
 		case (BYTE)COMP_OP::OP_SELECTWEAPONINFO:
@@ -83,13 +86,24 @@ void ASkyscraperGameMode::BeginPlay()
 	m_Socket->InitializeManager();
 	m_Socket->SetState(ENetworkState::SelectGame);
 
+	Controller = Cast<ASelectCharacterController>(GetWorld()->GetFirstPlayerController());
+	if (!Controller)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ASkyscraperGameMode::BeginPlay() Controller is NULLPTR"));
+	}
+
 	if (IsBeConnect)
 	{
 		Connect(GAME_SERVER_IP, GAME_SERVER_PORT);
+
+
+		// Move to after Recv OP_PlayerJoin Packet
+		//SetWidgetPlayerIDs();
 	}
 	else
 	{
 		SerialNum = 0;
+		UE_LOG(LogTemp, Warning, TEXT("ASkyscraperGameMode::BeginPlay() IsBeConnect is false"));
 	}
 }
 
@@ -129,6 +143,12 @@ void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 	PlayerSelectInfo[ClientNum]->PickedCharacter	 = Character  ;
 	PlayerSelectInfo[ClientNum]->PickedMeleeWeapon	 = MeleeWeapon;
 	PlayerSelectInfo[ClientNum]->PickedRangeWeapon	 = RangeWeapon;
+}
+
+void ASkyscraperGameMode::SetWidgetPlayerIDs()
+{
+	USocketGameInstance* Inst = Cast<USocketGameInstance>(GetWorld()->GetGameInstance());
+	Controller->SetPlayerIDs(Inst->PlayerIDs, SerialNum);
 }
 
 void ASkyscraperGameMode::SendSelectInfo()

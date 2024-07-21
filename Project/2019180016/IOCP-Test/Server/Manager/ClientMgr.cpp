@@ -136,7 +136,7 @@ bool ClientMgr::CheckSelectDuplication(int id, ECharacter c)
 	int roomNum = id / MAXPLAYER;
 	int clientNum = id % MAXPLAYER;
 
-	int temp = 6;//MAXPLAYER
+	int temp = MAXPLAYER;
 
 	if (clientNum < temp / 2)
 	{
@@ -234,6 +234,41 @@ void ClientMgr::ProcessShieldSphereHeal(int id, PSkillInteract PSI)
 			std::bind(&ClientMgr::ShieldSphereHeal, this, id));
 		TimerMgr::Instance()->Insert(TE);
 	}
+}
+
+float ClientMgr::ProcessShieldDamaged(int id, PDamagedSkillActor PDSA, float Damage)
+{
+	int RoomId = id / MAXPLAYER;
+	bool IsBreak = m_Clients[RoomId * MAXPLAYER + PDSA.SkillActorOwner]->TakeDamageToShield(Damage);
+
+	if(IsBreak)
+	{
+		m_Clients[RoomId * MAXPLAYER + PDSA.SkillActorOwner]->ShieldHp = 1500.f;
+		return 0.f;
+	}
+	else
+	{
+		return m_Clients[RoomId * MAXPLAYER + PDSA.SkillActorOwner]->ShieldHp;
+	}
+
+
+	/*int ShieldId{ -1 };
+	for (int i = 0; i < MAXPLAYER; i++)
+	{
+		if (m_Clients[RoomId * MAXPLAYER + i]->SelectInfo == ECharacter::Shield)
+		{
+			ShieldId = RoomId * MAXPLAYER + i;
+		}
+	}
+
+	if (ShieldId != -1)
+	{
+		m_Clients[RoomId * MAXPLAYER + PDSA.SkillActorOwner]->TakeDamageToShield(Damage);
+	}
+	else
+	{
+		cout << "[" << RoomId << "] Room has no Shield Character" << endl;
+	}*/
 }
 
 void ClientMgr::Heal(int id, float HealAmount)

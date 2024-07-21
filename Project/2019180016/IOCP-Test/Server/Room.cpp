@@ -426,11 +426,19 @@ int Room::GetTileDropCenterIndex(int& CenterIndex)
 		CenterX = BuildingExist[0].PosX;
 		CenterY = BuildingExist[0].PosY;
 	}
-	else 
+	else if(TileDropLevel < 2)
 	{
 		CollapseRemainDistance = 1.5f * 1.5f;
 		CenterX = PrevCenterTile->PosX;
 		CenterY = PrevCenterTile->PosY;
+	}
+	else
+	{
+		int NewCenterIndex = RandomUtil::RandRange(0, BuildingExist.size() - 1);
+		CenterTileIndex[TileDropLevel] = NewCenterIndex;
+		PrevCenterTile = &BuildingExist[NewCenterIndex];
+		IncreaseTileDropLevel();
+		return TileDropLevel;
 	}
 
 	// CenterX += sin((float)(CollapseDirectionAngle * 60 + 30) * (3.1415 / 180));

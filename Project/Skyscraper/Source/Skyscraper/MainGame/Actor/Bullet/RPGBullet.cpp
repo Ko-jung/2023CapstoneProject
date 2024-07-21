@@ -98,10 +98,12 @@ void ARPGBullet::BulletExplode()
 	for (const auto& HitResult : Hits)
 	{
 		AActor* HitActor = HitResult.GetActor();
+		if (Cast<ASkyscraperCharacter>(FireCharacter)->IsAlliance(HitActor)) continue;
+
 		if (HitActor->IsA(ACharacter::StaticClass()) && !UniqueActors.Contains(HitActor))
 		{
 			UniqueActors.Add(HitActor);
-			continue;;
+			continue;
 		}
 	}
 
@@ -218,6 +220,10 @@ void ARPGBullet::BulletExplode()
 void ARPGBullet::OverlapExplode(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 서버 TODO : 적군 캐릭터에만 되도록 수정 바람
+	// ->	UniqueActor 배열 제작하면서 
+	//		if (Cast<ASkyscraperCharacter>(FireCharacter)->IsAlliance(HitActor)) continue;
+	//		으로 적군만 추가하게끔 수정
+
 	if(OtherActor->IsA<ASkyscraperCharacter>())
 	{
 		BulletExplode();

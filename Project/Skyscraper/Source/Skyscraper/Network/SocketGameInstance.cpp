@@ -10,6 +10,12 @@ void USocketGameInstance::Init()
 {
 	SerialNum = 0;
 
+	for (int i = 0; i < 8; i++)
+	{
+		PlayerId += (char)FMath::RandRange((int)'A', (int)'z');
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Player Id is %s"), *PlayerId);
+
 	//if (SelectInfo.IsEmpty())
 	//{
 	//	for (int i = 0; i < 6; i++)

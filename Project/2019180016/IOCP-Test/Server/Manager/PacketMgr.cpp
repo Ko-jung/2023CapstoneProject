@@ -63,13 +63,15 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		PDamagedPlayer PDP;
 		MEMCPYBUFTOPACKET(PDP, ReadByte);
 		BYTE TargetPlayerSerialNum = PDP.ChangedPlayerSerial;
-		const int Damage = GetWeaponDamage(PDP.IsMelee, PDP.WeaponEnum);
+		int id = c->GetClientNum();
+
+		const float Damage = GetWeaponDamage(id, PDP.IsMelee, PDP.WeaponEnum);
 		auto& clients = ClientMgr::Instance()->GetClients();
 
-		int id = c->GetClientNum();
 		int SendPlayerRoomNum = id / MAXPLAYER;
 		int TargetPlayerId = TargetPlayerSerialNum + SendPlayerRoomNum * MAXPLAYER;	// 0번 방 * 6 + TargetNum
 		
+		// Already Dead
 		if (clients[TargetPlayerId]->GetCurrnetHp() < 0.001f) return;
 
 		bool IsDead = clients[TargetPlayerId]->TakeDamage(Damage);
@@ -80,7 +82,14 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		{
 			ProcessingPlayerDead(TargetPlayerId);
 		}
-	break;
+		break;
+	}
+	case (int)COMP_OP::OP_DAMAGEDSKILLACTOR:
+	{
+		PDamagedSkillActor PDSA;
+		MEMCPYBUFTOPACKET(PDSA);
+		ProcessDamagedSkillActor(PDSA, c->GetClientNum());
+		break;
 	}
 	case (int)COMP_OP::OP_SPAWNOBJECT:
 	{
@@ -254,8 +263,8 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 
 	float NextTimer{};
 
-	if (TDLevel < 3)	NextTimer = 300.f;
-	else				NextTimer = 60.f;
+	if (TDLevel < 2)	NextTimer = 30.f;
+	else				NextTimer = 6.f;
 
 	int CenterIndex;
 	TDLevel = RoomMgr::Instance()->GetTileDropCenterIndex(RoomNum, CenterIndex);
@@ -265,6 +274,13 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 
 	PSetTimer PST(ETimer::TileDropTimer, NextTimer);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PST, sizeof(PST));
+
+	if (TDLevel != 9)
+	{
+		TimerEvent NewTileDropTimer(std::chrono::seconds((int)NextTimer),
+			std::bind(&PacketMgr::SendTileDrop, this, RoomNum, TDLevel + 1));
+		TimerMgr::Instance()->Insert(NewTileDropTimer);
+	}
 }
 
 void PacketMgr::GameBeginProcessing(int NowClientId)
@@ -279,17 +295,17 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 	TimerMgr::Instance()->Insert(TE2);
 
 	// ======== Tile Drop ========
-	TimerEvent TileDrop1Timer(std::chrono::seconds(300 + SELECTTIMESECOND),
+	TimerEvent TileDrop1Timer(std::chrono::seconds(30 + SELECTTIMESECOND),
 		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 1));
 	TimerMgr::Instance()->Insert(TileDrop1Timer);
 
-	TimerEvent TileDrop2Timer(std::chrono::seconds(600 + SELECTTIMESECOND),
-		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 2));
-	TimerMgr::Instance()->Insert(TileDrop2Timer);
-
-	TimerEvent TileDrop3Timer(std::chrono::seconds(900 + SELECTTIMESECOND),
-		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 3));
-	TimerMgr::Instance()->Insert(TileDrop3Timer);
+	// TimerEvent TileDrop2Timer(std::chrono::seconds(120 + SELECTTIMESECOND),
+	// 	std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 2));
+	// TimerMgr::Instance()->Insert(TileDrop2Timer);
+	// 
+	// TimerEvent TileDrop3Timer(std::chrono::seconds(180 + SELECTTIMESECOND),
+	// 	std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 3));
+	// TimerMgr::Instance()->Insert(TileDrop3Timer);
 	//============================
 
 	// ======== new Room =========
@@ -363,7 +379,31 @@ void PacketMgr::ProcessingSkillInteract(ClientInfo* c, PSkillInteract PSI)
 	}
 }
 
-const int PacketMgr::GetWeaponDamage(const bool& isMelee, const int& weaponEnum)
+void PacketMgr::ProcessDamagedSkillActor(PDamagedSkillActor PDSA, const int id)
+{
+	int RoomId = id / MAXPLAYER;
+	const float Damage = GetWeaponDamage(id, PDSA.IsMelee, PDSA.WeaponEnum);
+	switch (PDSA.SkillActor)
+	{
+	case ESkillActor::BP_Shield:
+	{
+		PChangedSkillActorHP PCHP;
+		PCHP.ChangedSkillActorOwner = PDSA.SkillActorOwner;
+		PCHP.ChangedSkillActorSerial = PDSA.SkillActorSerial;
+		PCHP.AfterHP = ClientMgr::Instance()->ProcessShieldDamaged(id, PDSA, Damage);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomId, &PCHP, PCHP.PacketSize);
+		break;
+	}
+	case ESkillActor::BP_ElectTrap:
+		break;
+	case ESkillActor::BP_DetectorMine:
+		break;
+	default:
+		break;
+	}
+}
+
+const float PacketMgr::GetWeaponDamage(int Id, const bool& isMelee, const int& weaponEnum)
 {
 	if (isMelee)
 	{

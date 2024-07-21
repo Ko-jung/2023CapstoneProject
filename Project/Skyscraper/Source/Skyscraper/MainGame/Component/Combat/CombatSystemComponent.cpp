@@ -248,6 +248,7 @@ void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 	{
 		LockOnActor = nullptr;
 		CloseTargetDistance = InitTargetDistance;
+		UE_LOG(LogTemp, Warning, TEXT("UCombatSystemComponent::LockOnKeyFunc OwnerCharacter is %s"), *UKismetSystemLibrary::GetDisplayName(OwnerCharacter));
 		GetOwnerPlayerController()->GetLockOnWidget()->SetVisibility(ESlateVisibility::Hidden);
 	}
 	

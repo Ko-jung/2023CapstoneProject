@@ -18,7 +18,7 @@ public:
 	AAssassinCharacter();
 
 	// 2019180016
-	virtual void CharacterAttackEvent();
+	virtual void CharacterAttackEvent() override;
 
 	UFUNCTION(BlueprintCallable)
 	void BuffUsingSkill();

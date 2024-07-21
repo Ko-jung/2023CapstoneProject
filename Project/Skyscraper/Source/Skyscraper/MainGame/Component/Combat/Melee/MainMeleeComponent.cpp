@@ -409,6 +409,8 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	{
 		if (OutHitResult.GetActor()->IsA<ASkyscraperCharacter>())
 		{
+			if(OwnerCharacter->IsAlliance(OutHitResult.GetActor())) continue;
+
 			if (!OutHitActor.Contains(OutHitResult.GetActor()))
 			{
 				OutHitActor.Add(OutHitResult.GetActor());

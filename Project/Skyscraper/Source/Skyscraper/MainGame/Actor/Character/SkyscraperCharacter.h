@@ -114,22 +114,24 @@ public:
 	// 2019180016
 public:
 	// Skill
-	UFUNCTION(BlueprintCallable)
-	void DoDisableLockOn(float Timer);
-	void DoAbleLockOn();
-	bool DisableLockOn;
+		UFUNCTION(BlueprintCallable)
+		void DoDisableLockOn(float Timer);
+		void DoAbleLockOn();
+		bool DisableLockOn;
 
-	UFUNCTION(BlueprintCallable)
-	void DoCantEnemyLockOnMe(float Timer);
-	void DoCanEnemyLockOnMe();
-	bool CanEnemyLockOnMe;
+		UFUNCTION(BlueprintCallable)
+		void DoCantEnemyLockOnMe(float Timer);
+		void DoCanEnemyLockOnMe();
+		bool CanEnemyLockOnMe;
 
-	UFUNCTION(BlueprintCallable)
-	void SkillInteract(ESkillActor SkillActor, float Timer);
+		UFUNCTION(BlueprintCallable)
+		void SkillInteract(ESkillActor SkillActor, float Timer);
 	//==============
 
 	// When Character Attack. Define each Character class. Now Use Only Assasin
 	virtual void CharacterAttackEvent() {};
+	// When Own SkillActor has Damaged. Now Use Only Shield
+	virtual void SkillActorDamaged(float AfterHp);
 
 	/// <returns>
 	/// If Weapon Changed return true

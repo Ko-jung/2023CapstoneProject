@@ -66,7 +66,7 @@ public:
 
 private:
 	std::array<std::atomic<int>, 2> KillScore;
-	std::array<int, 3> CenterTileIndex;
+	std::array<int, 9> CenterTileIndex;
 	std::vector<bool> IsDying;
 	int TileDropLevel;
 	std::chrono::system_clock::time_point RoomStartTime;

@@ -31,6 +31,8 @@ public:
 
 	void SetExtraMessage(struct PLoginResult* PLR);
 
+	FString GetLoginId();
+
 private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ExtraMessage;

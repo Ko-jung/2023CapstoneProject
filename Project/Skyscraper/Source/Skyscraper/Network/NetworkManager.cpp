@@ -364,6 +364,11 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		COPYPACKET(PSkillInteract);
 		break;
 	}
+	case (BYTE)COMP_OP::OP_CHANGEDSKILLACTORHP:
+	{
+		COPYPACKET(PChangedSkillActorHP);
+		break;
+	}
 	case (BYTE)COMP_OP::OP_JOINPLAYERINSKILLTEST:
 	{
 		COPYPACKET(PJoinPlayerInSkillTest);

@@ -13,7 +13,8 @@ ClientInfo::ClientInfo(int ClientNum):
 	CurrentHp(1000.f),
 	SelectInfo(ECharacter::NullCharacter),
 	State(ECharacterState::LIVING),
-	IsOverlappedShieldSphere(false)
+	IsOverlappedShieldSphere(false),
+	ShieldHp(1500.f)
 {
 	//m_sClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	//if (INVALID_SOCKET == m_sClientSocket)
@@ -72,6 +73,17 @@ bool ClientInfo::TakeDamage(float damage)
 	if (CurrentHp <= 0.0f)
 	{
 		CurrentHp = 0.f;
+		return true;
+	}
+	return false;
+}
+
+bool ClientInfo::TakeDamageToShield(float damage)
+{
+	ShieldHp = ShieldHp - damage;
+	if (ShieldHp <= 0.0f)
+	{
+		ShieldHp = 0.f;
 		return true;
 	}
 	return false;

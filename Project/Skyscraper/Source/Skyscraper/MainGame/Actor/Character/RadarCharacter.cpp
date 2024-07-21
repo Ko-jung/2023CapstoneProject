@@ -65,6 +65,11 @@ ARadarCharacter::ARadarCharacter()
 		// Boost
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Radar/Boost/AM_Radar_Boost.AM_Radar_Boost'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
+
+
+		// Interaction
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_InteractionRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Radar/Interaction/AM_Radar_Interaction.AM_Radar_Interaction'"));
+		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Interaction) = AM_InteractionRef.Object;
 	}
 
 	// Skirt

@@ -64,6 +64,11 @@ AShieldCharacter::AShieldCharacter()
 		// Boost
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/Boost/AM_Shield_Boost.AM_Shield_Boost'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
+
+
+		// Interaction
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_InteractionRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Shield/Interaction/AM_Shield_Interaction.AM_Shield_Interaction'"));
+		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Interaction) = AM_InteractionRef.Object;
 	}
 
 	// Skirt

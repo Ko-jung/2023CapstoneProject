@@ -216,6 +216,9 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 		// Boost
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Boost/AM_Assassin_Boost.AM_Assassin_Boost'"));
 		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Boost, AM_BoostRef.Object);
+
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_InteractionRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Assassin/Interaction/AM_Assassin_Interaction.AM_Assassin_Interaction'"));
+		CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_Interaction, AM_InteractionRef.Object);
 	}
 
 	// Gravity Change Area
@@ -770,6 +773,8 @@ void ASkyscraperCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::Look);
 		// 아이템 상호작용
+		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Started, this, &ASkyscraperCharacter::ItemInteractionStart);
+		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Completed, this, &ASkyscraperCharacter::ItemInteractionEnd);
 		EnhancedInputComponent->BindAction(IA_ItemInteraction, ETriggerEvent::Triggered, this, &ASkyscraperCharacter::ItemInteraction);
 		EnhancedInputComponent->BindAction(IA_ItemUsing, ETriggerEvent::Started, this, &ASkyscraperCharacter::UseItem);
 		EnhancedInputComponent->BindAction(IA_ObserveMode, ETriggerEvent::Started, this, &ASkyscraperCharacter::StartObserveMode);
@@ -986,6 +991,12 @@ void ASkyscraperCharacter::Look(const FInputActionValue& Value)
 
 void ASkyscraperCharacter::ItemInteraction()
 {
+	// 몽타쥬 재생중이 아니라면 종료
+	if(GetAnimInstance())
+	{
+		if (!GetAnimInstance()->IsAnyMontagePlaying()) return;
+	}
+
 	TArray<AActor*> ItemActors;
 	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALootingItemActor::StaticClass(), ItemActors);
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
@@ -1055,4 +1066,20 @@ void ASkyscraperCharacter::SetCameraZoomUpDown(const FInputActionValue& Value)
 
 	float LerpAlpha = (CameraBoom->TargetArmLength - MinArmLength) / (MaxArmLength - MinArmLength);
 	CameraBoom->SetRelativeLocation(FMath::Lerp(FVector{ 0.0f,0.0f,0.0f }, InitialCameraBoomOffset, LerpAlpha));
+}
+
+void ASkyscraperCharacter::ItemInteractionStart()
+{
+	UAnimMontage* Montage = GetAnimMontage(ECharacterAnimMontage::ECAM_Interaction);
+	UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(GetMesh(), Montage, 1.0f, 0.00f);
+}
+
+void ASkyscraperCharacter::ItemInteractionEnd()
+{
+	if(GetAnimInstance())
+	{
+		UAnimMontage* Montage = GetAnimMontage(ECharacterAnimMontage::ECAM_Interaction);
+		GetAnimInstance()->Montage_Stop(0.1f,Montage);
+	}
+	
 }

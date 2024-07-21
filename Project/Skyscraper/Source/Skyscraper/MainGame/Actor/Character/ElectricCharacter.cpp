@@ -67,6 +67,11 @@ AElectricCharacter::AElectricCharacter()
 		// Boost
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/Boost/AM_Electric_Boost.AM_Electric_Boost'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
+
+
+		// Interaction
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_InteractionRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Electric/Interaction/AM_Electric_Interaction.AM_Electric_Interaction'"));
+		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Interaction) = AM_InteractionRef.Object;
 	}
 
 	// Skirt

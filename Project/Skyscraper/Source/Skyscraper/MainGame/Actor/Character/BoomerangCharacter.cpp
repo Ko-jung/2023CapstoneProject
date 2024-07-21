@@ -65,6 +65,10 @@ ABoomerangCharacter::ABoomerangCharacter()
 		// Boost
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_BoostRef(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Boomerang/Boost/AM_Boom_Boost.AM_Boom_Boost'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Boost) = AM_BoostRef.Object;
+
+		// Interaction
+		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_InteractionRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Boomerang/Interaction/AM_Boomerang_Interaction.AM_Boomerang_Interaction'"));
+		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Interaction) = AM_InteractionRef.Object;
 	}
 
 	// 부메랑 로드 및 생성

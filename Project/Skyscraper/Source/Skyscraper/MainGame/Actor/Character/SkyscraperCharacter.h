@@ -119,7 +119,8 @@ public:
 		void DoAbleLockOn();
 		bool DisableLockOn;
 
-		UFUNCTION(BlueprintCallable)
+
+	UFUNCTION(BlueprintCallable)
 		void DoCantEnemyLockOnMe(float Timer);
 		void DoCanEnemyLockOnMe();
 		bool CanEnemyLockOnMe;
@@ -229,6 +230,8 @@ protected:
 	// 휠 업다운(alt 중)
 	void SetCameraZoomUpDown(const FInputActionValue& Value);
 
+	void ItemInteractionStart();
+	void ItemInteractionEnd();
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

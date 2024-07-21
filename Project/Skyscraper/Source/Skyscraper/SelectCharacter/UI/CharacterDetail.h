@@ -48,11 +48,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		UButton* SelectDetectionButton;
 
-	// ĳ���� ���� ���� ������ ����
-	UPROPERTY(meta = (BindWidget))
-		UWidgetSwitcher* CharacterDetailSwitcher;
 
-	void SetSwitcherValue(int32 Value) const;
 public:
 	FORCEINLINE UImage* GetShieldImage() const { return ShieldImage; }
 	FORCEINLINE UImage* GetWindImage() const { return WindImage; }
@@ -68,7 +64,6 @@ public:
 	FORCEINLINE UButton* GetSelectAssassinButton() const { return SelectAssassinButton; }
 	FORCEINLINE UButton* GetSelectDetectionButton() const { return SelectDetectionButton; }
 
-	FORCEINLINE UWidgetSwitcher* GetCharacterDetailSwitcher() const { return CharacterDetailSwitcher; }
 
 	UFUNCTION()
 		void OnClickSelectShieldButton();

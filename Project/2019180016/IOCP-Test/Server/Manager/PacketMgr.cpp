@@ -263,8 +263,8 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 
 	float NextTimer{};
 
-	if (TDLevel < 2)	NextTimer = 30.f;
-	else				NextTimer = 6.f;
+	if (TDLevel < 2)	NextTimer = 60.f;	//300
+	else				NextTimer = 30.f;	//60
 
 	int CenterIndex;
 	TDLevel = RoomMgr::Instance()->GetTileDropCenterIndex(RoomNum, CenterIndex);

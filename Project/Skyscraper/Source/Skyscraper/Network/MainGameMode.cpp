@@ -637,6 +637,7 @@ void AMainGameMode::ProcessBreakObject(PBreakObject PBO)
 	}
 
 	UHierarchicalInstancedStaticMeshComponent* TargetObject = WindowMeshComponents[PBO.ObjectSerial];
+	if (!IsValid(TargetObject)) return;
 
 	UE_LOG(LogTemp, Warning, TEXT("TargetObject is %s"), *TargetObject->GetStaticMesh()->GetName());
 

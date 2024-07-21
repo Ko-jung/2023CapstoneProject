@@ -263,8 +263,8 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 
 	float NextTimer{};
 
-	if (TDLevel < 3)	NextTimer = 300.f;
-	else				NextTimer = 60.f;
+	if (TDLevel < 2)	NextTimer = 30.f;
+	else				NextTimer = 6.f;
 
 	int CenterIndex;
 	TDLevel = RoomMgr::Instance()->GetTileDropCenterIndex(RoomNum, CenterIndex);
@@ -274,6 +274,13 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 
 	PSetTimer PST(ETimer::TileDropTimer, NextTimer);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PST, sizeof(PST));
+
+	if (TDLevel != 9)
+	{
+		TimerEvent NewTileDropTimer(std::chrono::seconds((int)NextTimer),
+			std::bind(&PacketMgr::SendTileDrop, this, RoomNum, TDLevel + 1));
+		TimerMgr::Instance()->Insert(NewTileDropTimer);
+	}
 }
 
 void PacketMgr::GameBeginProcessing(int NowClientId)
@@ -288,17 +295,17 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 	TimerMgr::Instance()->Insert(TE2);
 
 	// ======== Tile Drop ========
-	TimerEvent TileDrop1Timer(std::chrono::seconds(300 + SELECTTIMESECOND),
+	TimerEvent TileDrop1Timer(std::chrono::seconds(30 + SELECTTIMESECOND),
 		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 1));
 	TimerMgr::Instance()->Insert(TileDrop1Timer);
 
-	TimerEvent TileDrop2Timer(std::chrono::seconds(600 + SELECTTIMESECOND),
-		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 2));
-	TimerMgr::Instance()->Insert(TileDrop2Timer);
-
-	TimerEvent TileDrop3Timer(std::chrono::seconds(900 + SELECTTIMESECOND),
-		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 3));
-	TimerMgr::Instance()->Insert(TileDrop3Timer);
+	// TimerEvent TileDrop2Timer(std::chrono::seconds(120 + SELECTTIMESECOND),
+	// 	std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 2));
+	// TimerMgr::Instance()->Insert(TileDrop2Timer);
+	// 
+	// TimerEvent TileDrop3Timer(std::chrono::seconds(180 + SELECTTIMESECOND),
+	// 	std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 3));
+	// TimerMgr::Instance()->Insert(TileDrop3Timer);
 	//============================
 
 	// ======== new Room =========

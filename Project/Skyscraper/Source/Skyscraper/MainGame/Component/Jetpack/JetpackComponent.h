@@ -169,6 +169,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float HoveringGravityScale;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TObjectPtr<UAudioComponent> BoostMaintaingAudioComponent;
+
 protected:
 	UFUNCTION()
 	FORCEINLINE UCharacterMovementComponent* GetOwnerCharacterMovement() const { return OwnerCharacter->GetCharacterMovement(); }

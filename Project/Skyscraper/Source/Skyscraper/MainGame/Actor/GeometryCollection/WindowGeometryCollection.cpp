@@ -3,6 +3,8 @@
 
 #include "Skyscraper/MainGame/Actor/GeometryCollection/WindowGeometryCollection.h"
 #include "GeometryCollection/GeometryCollectionObject.h"
+#include "Kismet/GameplayStatics.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 //TArray<UObject*> AWindowGeometryCollection::GC_WindowObject;
 
@@ -21,7 +23,7 @@ AWindowGeometryCollection::AWindowGeometryCollection()
 			FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "'";
 			//                  /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
 
-			// Geometry Collection ·Îµå
+			// Geometry Collection ë¡œë“œ
 			ConstructorHelpers::FObjectFinder<UObject> GC_WindowRef(*FilePath);
 			if (GC_WindowRef.Succeeded())
 			{
@@ -32,12 +34,12 @@ AWindowGeometryCollection::AWindowGeometryCollection()
 				}
 				else
 				{
-					UE_LOG(LogClass, Warning, TEXT("Geometry Collection ·Îµå ½ÇÆÐ: %s"), *FilePath);
+					UE_LOG(LogClass, Warning, TEXT("Geometry Collection ë¡œë“œ ì‹¤íŒ¨: %s"), *FilePath);
 				}
 			}
 			else
 			{
-				UE_LOG(LogClass, Warning, TEXT("Geometry Collection ·Îµå ½ÇÆÐ: %s"), *FilePath);
+				UE_LOG(LogClass, Warning, TEXT("Geometry Collection ë¡œë“œ ì‹¤íŒ¨: %s"), *FilePath);
 			}
 		}
 	}
@@ -76,7 +78,15 @@ void AWindowGeometryCollection::Init(uint8 WindowNum)
 void AWindowGeometryCollection::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//2019180031
+	if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("WindowBreak")))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+		}
+	}
 }
 
 // Called every frame

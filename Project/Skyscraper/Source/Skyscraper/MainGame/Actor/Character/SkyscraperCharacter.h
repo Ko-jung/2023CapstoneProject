@@ -111,6 +111,9 @@ public:
 	UFUNCTION()
 		void SpawnGravityChangerArea(bool bGravityLow);
 
+	UFUNCTION()
+		FORCEINLINE USkeletalMeshComponent* GetBoostMesh() const { return BoostMesh; }
+
 	// 2019180016
 public:
 	// Skill

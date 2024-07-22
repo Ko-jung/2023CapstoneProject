@@ -11,6 +11,7 @@
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Health/HealthBar.h"
 #include "Skyscraper/MainGame/Widget/Health/MyHealthWidget.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 class UPlayMontageCallbackProxy;
 // Sets default values for this component's properties
@@ -73,7 +74,21 @@ void UHealthComponent::BeginPlay()
 
 	// 생성 시 Player엔 controller가 없다. 후에 불러줄 예정
 	AddWidget();
-	
+
+	// 초기 및 부활 시 부활 사운드 실행
+	{
+		if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Revive")))
+			{
+				if(OwnerCharacter)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(),FRotator{});
+				}
+				
+			}
+		}
+	}
 }
 
 
@@ -220,10 +235,18 @@ void UHealthComponent::AddWidget()
 
 void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 {
+	if (!OwnerCharacter) return;
+
 	LivingState = EHealthState::EHS_DEAD;
 
 	if(APlayerController* OwnerPlayerController = OwnerCharacter->GetPlayerController())
 	{
+		if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Death"));
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+		}
+
 		// == For player (with player controller)
 		OwnerCharacter->DisableInput(OwnerPlayerController);
 

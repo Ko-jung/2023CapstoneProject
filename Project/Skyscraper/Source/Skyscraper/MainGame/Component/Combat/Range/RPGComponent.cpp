@@ -17,7 +17,7 @@ URPGComponent::URPGComponent()
 	FireSoundName = TEXT("RPG_Fire");
 	ReloadSoundName = TEXT("RPG_Reload");
 
-	ReloadMaxCoolTime = 5.0f;
+	ReloadMaxCoolTime = 0.1f;
 	BulletMaxCount = 5;
 	FireMaxCoolTime = 1.0f;
 	ReloadSpeedTime = 5.0f;

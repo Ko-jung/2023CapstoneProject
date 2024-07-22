@@ -12,7 +12,7 @@ URifleComponent::URifleComponent()
 	FireSoundName = TEXT("AR_Fire");
 	ReloadSoundName = TEXT("AR_Reload");
 
-	ReloadMaxCoolTime = 5.0f;
+	ReloadMaxCoolTime = 0.1f;
 	BulletMaxCount = 20;
 	FireMaxCoolTime = 0.3f;
 	ReloadSpeedTime = 3.0f;

@@ -16,6 +16,7 @@
 #include "Skyscraper/Network/MainGameMode.h"
 
 #include "Skyscraper/MainGame/Actor/LootingItem/LootingItemActor.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 // Sets default values
 AHexagonTile::AHexagonTile()
@@ -848,6 +849,19 @@ void AHexagonTile::CollapseTileOnDelay()
 
 void AHexagonTile::CollapseTileAfterNotification()
 {
+	if(!CollapseAfterNotificationIndex.IsEmpty())
+	{
+		// 건물이 붕괴하므로 소리 재생
+		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			// 부스트 시작 소리 실행
+			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("TileCollapse")))
+			{
+				UGameplayStatics::PlaySound2D(GetWorld(), Sound);
+			}
+		}
+	}
+
 	for(int i = 0; i < CollapseAfterNotificationIndex.Num(); ++i)
 	{
 		int TileIndex = CollapseAfterNotificationIndex[i];

@@ -12,12 +12,15 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/AudioComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/RepLayout.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/Jetpack/JetpackGaugeBar.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 // Sets default values for this component's properties
 UJetpackComponent::UJetpackComponent()
@@ -78,6 +81,8 @@ UJetpackComponent::UJetpackComponent()
 		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_LandDustRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/LandDust/NS_LandDust.NS_LandDust'"));
 		NS_LandDust = NS_LandDustRef.Object;
 	}
+	
+	BoostMaintaingAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BoostMaintaingAudioComponent"));
 }
 
 
@@ -95,6 +100,23 @@ void UJetpackComponent::BeginPlay()
 	BindingInputActions();
 
 	OwnerCharacter->PlayBoostAnimation("Default");
+
+	// BoostMaintaing audio component 연결
+	if(OwnerCharacter && OwnerCharacter->GetBoostMesh())
+	{
+		BoostMaintaingAudioComponent->AttachToComponent(OwnerCharacter->GetBoostMesh(), FAttachmentTransformRules{ EAttachmentRule::SnapToTarget,true });
+
+		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			// 부스트 시작 소리 실행
+			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("BoostMaintaing")))
+			{
+				BoostMaintaingAudioComponent->SetSound(Sound);
+			}
+			
+		}
+		
+	}
 }
 
 
@@ -231,6 +253,26 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 			GetOwnerCharacterMovement()->MaxAcceleration = 50000.0f;
 
 			OwnerCharacter->GetAnimInstance()->bIsDescent = false;
+
+			// 소리
+			{
+				if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+				{
+					// 부스트 시작 소리 실행
+					if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("BoostStart")))
+					{
+						if(OwnerCharacter && OwnerCharacter->GetBoostMesh())
+						{
+							UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetBoostMesh()->GetComponentLocation());
+						}
+					}
+
+					if(!BoostMaintaingAudioComponent->IsPlaying())
+					{
+						BoostMaintaingAudioComponent->Play(1.0f);
+					}
+				}
+			}
 		}
 	}
 	else   // bHover == false
@@ -240,6 +282,10 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 		SetCharacterMaxSpeed();
 		GetOwnerCharacterMovement()->GravityScale = 2.0f;
 
+		if (BoostMaintaingAudioComponent->IsPlaying())
+		{
+			BoostMaintaingAudioComponent->Stop();
+		}
 	}
 }
 
@@ -259,11 +305,16 @@ void UJetpackComponent::AddJetpackVelocity(FVector AddVelocity, float FuelReduct
 
 void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("??"));
 	if (JetpackFuel > 0.0f)
 	{
 		AddJetpackVelocity(FVector(0.0f, 0.0f, 50.0f * HoveringGravityScale), HoverGaugePerSec);
 		bHoverStoping = false;
+
+		if(!BoostMaintaingAudioComponent->IsPlaying())
+		{
+			BoostMaintaingAudioComponent->Play(1.0f);
+		}
+		
 	}
 	else
 	{
@@ -281,6 +332,11 @@ void UJetpackComponent::HoverStop()
 	{
 		GetOwnerCharacterMovement()->Velocity.Z *= 0.1f;
 		bHoverStoping = true;
+
+		if (BoostMaintaingAudioComponent->IsPlaying() && !bIsDashing)
+		{
+			BoostMaintaingAudioComponent->Stop();
+		}
 	}
 	
 }
@@ -301,6 +357,12 @@ void UJetpackComponent::DashFast()
 			ChangeFOVAlpha = 0.0f;
 			bStartDash = true;			
 			OwnerCharacter->SetDashEffectHiddenInGame(false);
+
+			if(!BoostMaintaingAudioComponent->IsPlaying())
+			{
+				BoostMaintaingAudioComponent->Play(1.0f);
+			}
+			
 		}
 		SetHoveringMode(true);
 		
@@ -325,6 +387,10 @@ void UJetpackComponent::DashStop()
 	bIsDashing = false;
 	SetCharacterMaxSpeed();
 	//GetOwnerCharacterMovement()->Velocity = ClampToMaxWalkSpeed(GetOwnerCharacterMovement()->Velocity);
+	if (BoostMaintaingAudioComponent->IsPlaying())
+	{
+		BoostMaintaingAudioComponent->Stop();
+	}
 }
 
 void UJetpackComponent::Dodge_Fwd()

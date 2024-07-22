@@ -9,6 +9,12 @@ UGreatSwordComponent::UGreatSwordComponent()
 {
 	MeleeSelect = EMeleeSelect::EMS_GreatSword;
 
+	AttackSound = TEXT("SwordAttack");
+	FinalAttackSound = TEXT("SwordHit_last");
+
+	DamagedSound = TEXT("SwordHit");
+	FinalDamagedSound = TEXT("SwordHit_last");
+
 	// 애니메이션 몽타쥬 키 설정
 	AnimMontageKey = ECharacterAnimMontage::ECAM_GreatSwordAttack;
 	

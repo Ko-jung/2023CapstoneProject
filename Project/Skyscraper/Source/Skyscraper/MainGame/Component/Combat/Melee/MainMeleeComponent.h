@@ -37,7 +37,7 @@ public:
 	//TODO: Refactoring for team not damaged
 	UFUNCTION(BlueprintCallable)
 	//void CreateAttackArea(FVector vHitSize, float fStunTime, float fBaseDamage, bool bDoDown);
-	void CreateAttackArea(float Width, float Height, float Distance, FVector StartOffset, float Angle, float fStunTime, float fBaseDamage, bool bDoDown);
+	void CreateAttackArea(float Width, float Height, float Distance, FVector StartOffset, float Angle, float fStunTime, float fBaseDamage, bool bDoDown, bool bIsFinalAttack = false);
 
 
 	// 적을 맞출 시 HitLag(역경직)을 발생시키는 함수
@@ -123,6 +123,15 @@ protected:
 	FTimerHandle AttackCoolTimeTimerHandle;
 	float AttackCoolDownTimeOffset = 0.05f;
 
+	UPROPERTY()
+		FName AttackSound;
+	UPROPERTY()
+		FName FinalAttackSound;
+
+	UPROPERTY()
+		FName DamagedSound;
+	UPROPERTY()
+		FName FinalDamagedSound;
 	
 public:	
 	// Called every frame

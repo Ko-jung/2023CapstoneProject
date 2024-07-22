@@ -9,6 +9,12 @@ UKatanaComponent::UKatanaComponent()
 {
 	MeleeSelect = EMeleeSelect::EMS_Katana;
 
+	AttackSound = TEXT("KatanaAttack");
+	FinalAttackSound = TEXT("KatanaHit_last");
+
+	DamagedSound = TEXT("KatanaHit");
+	FinalDamagedSound = TEXT("KatanaHit_last");
+
 	AnimMontageKey = ECharacterAnimMontage::ECAM_KatanaAttack;
 
 

@@ -116,23 +116,25 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 		PEmptyRoomNum PER;
 		memcpy(&PER, exp->_wsa_buf.buf, sizeof(PER));
 
-		// Notify Room Num to Clients
-		PConnectToGameserver SPS;
-		//SPS.RoomNum = 0;
-		//SPS.RoomNum = PER.RoomNum;
-
 		LobbyClientInfo* client;
-
-		// TODO: m_MatchingQueue �� Lock�� �ɰ� ����.
-		// 6���� �Ǿ� pop ���� �� ��Ī ��Ұ� ������ �ȵǹǷ�
+		std::vector<int> MatchingSerial;
+		PPlayerID PPI;
 		for (int i = 0; i < MAXPLAYER; )
 		{
 			while (m_MatchingQueue.try_pop(client))
 			{
-				client->SendProcess(&SPS);
-
+				MatchingSerial.push_back(client->ClientNum);
+				memcpy_s(PPI.IDs[i], IDSIZE, client->ClientID, IDSIZE);
 				i++;
 			}
+		}
+
+		PConnectToGameserver SPS;
+		for (const auto i : MatchingSerial)
+		{
+			Clients[i]->SendProcess(&PPI);
+			Clients[i]->SendProcess(&SPS);
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}
 	break;
@@ -178,6 +180,11 @@ void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
 	{	// LOGIN
 		PLR.LoginResult = DBMgr::Instance()->ExecLogin(L"SELECT ID, Password FROM [2024_CapstoneProject].[dbo].[Login_Table]", *PTL);
 		PLR.IsRegister = false;
+
+		if (PLR.LoginResult == (char)ELoginResult::Success)
+		{
+			memcpy_s(Target->ClientID, IDSIZE, PTL->ID, IDSIZE);
+		}
 	}
 	Target->SendProcess(&PLR);
 }

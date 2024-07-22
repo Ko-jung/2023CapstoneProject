@@ -180,10 +180,15 @@ void NetworkManager::ProcessRecvFromLobby(Packet* p)
 
 		State = ENetworkState::SelectGame;
 		IsChangingGameMode = true;
+		break;
 	}
-	break;
+	case(BYTE)COMP_OP::OP_PLAYERID:
+	{
+		COPYPACKET(PPlayerID);
+		break;
+	}
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Recv FromLobby OP Error!"));
+		UE_LOG(LogTemp, Warning, TEXT("Recv FromLobby OP Error! OP is %d"), p->PacketType);
 		break;
 	}
 }
@@ -238,7 +243,7 @@ void NetworkManager::ProcessRecvFromSelectGame(Packet* p)
 	}
 	break;
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Recv SelectGame OP Error!"));
+		UE_LOG(LogTemp, Warning, TEXT("Recv SelectGame OP Error! OP is %d"), p->PacketType);
 		break;
 	}
 }
@@ -425,11 +430,11 @@ void NetworkManager::StopListen()
 	}
 
 	//Thread->WaitForCompletion();
-	if (Thread)
+	if (Thread && Thread->GetRunnableThread())
 	{
 		Thread->Kill(false);
-		delete Thread;
-		Thread = nullptr;
+		//delete Thread;
+		//Thread = nullptr;
 	}
 	StopTaskCounter.Reset();
 	//Stop();
@@ -471,7 +476,7 @@ uint32 NetworkManager::Run()
 
 			if (p->PacketType == (BYTE)COMP_OP::OP_DISCONNECT)
 			{
-				StopListen();
+				//StopListen();
 				UE_LOG(LogTemp, Warning, TEXT("Server Sending OP_DISCONNECT"));
 				ReciveData += p->PacketSize;
 				RemainLen -= p->PacketSize;
@@ -507,6 +512,8 @@ void NetworkManager::Stop()
 
 void NetworkManager::Exit()
 {
+	delete Thread;
+	Thread = nullptr;
 }
 
 //void NetworkManager::SetGamemode(ANetworkGameMode* gamemode, ENetworkState state)

@@ -140,7 +140,7 @@ void ClientInfo::SendProcess(int PacketSize, Packet* PacketData)
 		return;
 	}
 
-	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (char)(PacketSize), (void*)PacketData };
+	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (BYTE)(PacketSize), (void*)PacketData };
 
 	int ret = WSASend(ClientSocket, &exp->_wsa_buf, 1, 0, 0, &exp->_wsa_over, 0);
 	if (0 != ret) {

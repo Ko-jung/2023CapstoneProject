@@ -117,6 +117,8 @@ void ASkyscraperPlayerController::AddGameResultWidget(const FText& WinnerText)
 
 void ASkyscraperPlayerController::SetObserveMode(bool bToObserveMode)
 {
+	if (!PossessingPawn) return;
+
 	if(bToObserveMode)
 	{
 		//if (PossessingPawn->GetAnimInstance() && PossessingPawn->GetAnimInstance()->IsAnyMontagePlaying()) return;

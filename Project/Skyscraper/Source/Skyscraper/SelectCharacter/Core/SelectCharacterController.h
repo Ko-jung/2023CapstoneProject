@@ -46,4 +46,8 @@ public:
 
 	UFUNCTION()
 		void SetDetailWidgetVisibility(bool bVisible) const;
+
+	// ===== 2019180016 =====
+	void SetPlayerIDs(TArray<FString> IDs, int SerialNum);
+	// ======================
 };

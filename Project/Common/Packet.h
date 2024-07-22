@@ -399,4 +399,12 @@ struct PJoinPlayerInSkillTest : Packet
 
 	PJoinPlayerInSkillTest() : Packet(COMP_OP::OP_JOINPLAYERINSKILLTEST) { PacketSize = sizeof(PJoinPlayerInSkillTest); }
 };
+
+struct PPlayerID : Packet
+{
+	char IDs[6][30];
+
+	PPlayerID() :Packet(COMP_OP::OP_PLAYERID) { ZeroMemory(&IDs, sizeof(IDs)); PacketSize = sizeof(PPlayerID); }
+};
+
 #pragma pack(pop)

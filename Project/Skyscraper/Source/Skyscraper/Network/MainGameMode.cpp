@@ -974,7 +974,7 @@ void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
 		return;
 	}
 
-	BYTE TargetSerial;
+	int TargetSerial{ -1 };
 	for (int i = 0; i < Characters.Num(); i++)
 	{
 		const auto& c = Characters[i];
@@ -982,6 +982,10 @@ void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
 		{
 			TargetSerial = i;
 		}
+	}
+	if (TargetSerial == -1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendDetecting TargetSerial == -1"));
 	}
 
 	PSkillInteract PSI;

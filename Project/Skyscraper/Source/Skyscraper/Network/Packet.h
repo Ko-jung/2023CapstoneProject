@@ -440,4 +440,11 @@ struct PJoinPlayerInSkillTest : Packet
 
 	PJoinPlayerInSkillTest() : Packet(COMP_OP::OP_JOINPLAYERINSKILLTEST) { PacketSize = sizeof(PJoinPlayerInSkillTest); }
 };
+
+struct PPlayerID : Packet
+{
+	char IDs[6][30];
+
+	PPlayerID() :Packet(COMP_OP::OP_PLAYERID) { memset(&IDs, 0, sizeof(IDs)); PacketSize = sizeof(PPlayerID); }
+};
 #pragma pack(pop)

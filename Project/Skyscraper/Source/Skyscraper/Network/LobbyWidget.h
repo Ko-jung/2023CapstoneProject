@@ -23,6 +23,8 @@ public:
 	virtual void NativeConstruct() override;
 	virtual bool Initialize();
 
+	void SpawnNewCharacter(ECharacterSelect ECharacter);
+
 	UFUNCTION()
 	void OnMatchingButtonClick();
 

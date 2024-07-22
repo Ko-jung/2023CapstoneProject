@@ -4,6 +4,7 @@
 #include "LobbyMode.h"
 #include "NetworkManager.h"
 #include "Skyscraper/Network/LobbyWidget.h"
+#include "Skyscraper/Network/SocketGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 ALobbyMode::ALobbyMode()
@@ -106,12 +107,31 @@ void ALobbyMode::ProcessFunc()
 			UGameplayStatics::OpenLevel(this, FName("SelectCharacterLevel"));
 			break;
 		}
+		case(BYTE)COMP_OP::OP_PLAYERID:
+		{
+			PPlayerID PPI;
+			memcpy(&PPI, packet, sizeof(PPI));
+			ProcessPlayerIDs(PPI);
+			break;
+		}
 		default:
 			break;
 		}
 
 		delete packet;
 	}
+}
+
+void ALobbyMode::ProcessPlayerIDs(const PPlayerID& IDs)
+{
+	USocketGameInstance* Inst = Cast<USocketGameInstance>(GetWorld()->GetGameInstance());
+	TArray<FString> IDStrings;
+	for (int i = 0; i < MAXPLAYER; i++)
+	{
+		Inst->PlayerIDs.Add(FString(IDs.IDs[i]));
+	}
+
+	//Controller->SetPlayerIDs(IDStrings, SerialNum);
 }
 
 void ALobbyMode::Ready()

@@ -24,6 +24,8 @@ public:
 
 	void ProcessFunc();
 
+	void ProcessPlayerIDs(const PPlayerID& IDs);
+
 	UFUNCTION(Exec)
 	void Ready();
 

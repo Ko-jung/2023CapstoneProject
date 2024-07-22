@@ -45,6 +45,33 @@ bool ULobbyWidget::Initialize()
 	return (bool)LobbyGameMode;
 }
 
+void ULobbyWidget::SpawnNewCharacter(ECharacterSelect ECharacter)
+{
+	APawn* PrevPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	FTransform PrevCharacterTransform = PrevPawn->GetActorTransform();
+
+	ASkyscraperCharacter* Character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(
+		Characters[ECharacter],
+		PrevCharacterTransform);
+
+	if (Character)
+	{
+		ASkyscraperPlayerController* Controller = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (Controller)
+		{
+			Controller->Possess(Character);
+			Controller->SetPossessingPawn();
+		}
+		PrevPawn->Destroy();
+		Character->FinishSpawning(PrevCharacterTransform);
+		UE_LOG(LogTemp, Warning, TEXT("ECS_ElectricCharacter Spawned"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::SpawnNewCharacter() Character is nullptr. ECharacterSelect is %d"), ECharacter);
+	}
+}
+
 void ULobbyWidget::OnMatchingButtonClick()
 {
 	PlayButtonOnClickSound();
@@ -107,134 +134,32 @@ void ULobbyWidget::OnRPGButtonClick()
 
 void ULobbyWidget::OnAssasinButtonClick()
 {
-	APawn* PrevPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	FTransform PrevCharacterTransform = PrevPawn->GetActorTransform();
-
-	ASkyscraperCharacter* Character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(
-		Characters[ECharacterSelect::ECS_AssassinCharacter],
-		PrevCharacterTransform);
-
-	if (Character)
-	{
-		GetWorld()->GetFirstPlayerController()->Possess(Character);
-		PrevPawn->Destroy();
-		Character->FinishSpawning(PrevCharacterTransform);
-		UE_LOG(LogTemp, Warning, TEXT("ECS_AssassinCharacter Spawned"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::OnAssasinButtonClick() Character is nullptr"));
-	}
+	SpawnNewCharacter(ECharacterSelect::ECS_AssassinCharacter);
 }
 
 void ULobbyWidget::OnBoomerangButtonClick()
 {
-	APawn* PrevPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	FTransform PrevCharacterTransform = PrevPawn->GetActorTransform();
-
-	ASkyscraperCharacter* Character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(
-		Characters[ECharacterSelect::ECS_BoomerangCharacter],
-		PrevCharacterTransform);
-
-	if (Character)
-	{
-		GetWorld()->GetFirstPlayerController()->Possess(Character);
-		PrevPawn->Destroy();
-		Character->FinishSpawning(PrevCharacterTransform);
-		UE_LOG(LogTemp, Warning, TEXT("ECS_BoomerangCharacter Spawned"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::OnBoomerangButtonClick() Character is nullptr"));
-	}
+	SpawnNewCharacter(ECharacterSelect::ECS_BoomerangCharacter);
 }
 
 void ULobbyWidget::OnElectricButtonClick()
 {
-	APawn* PrevPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	FTransform PrevCharacterTransform = PrevPawn->GetActorTransform();
-
-	ASkyscraperCharacter* Character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(
-		Characters[ECharacterSelect::ECS_ElectricCharacter],
-		PrevCharacterTransform);
-
-	if (Character)
-	{
-		GetWorld()->GetFirstPlayerController()->Possess(Character);
-		PrevPawn->Destroy();
-		Character->FinishSpawning(PrevCharacterTransform);
-		UE_LOG(LogTemp, Warning, TEXT("ECS_ElectricCharacter Spawned"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::OnElectricButtonClick() Character is nullptr"));
-	}
+	SpawnNewCharacter(ECharacterSelect::ECS_ElectricCharacter);
 }
 
 void ULobbyWidget::OnRadarButtonClick()
 {
-	APawn* PrevPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	FTransform PrevCharacterTransform = PrevPawn->GetActorTransform();
-
-	ASkyscraperCharacter* Character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(
-		Characters[ECharacterSelect::ECS_DetectionCharacter],
-		PrevCharacterTransform);
-
-	if (Character)
-	{
-		GetWorld()->GetFirstPlayerController()->Possess(Character);
-		PrevPawn->Destroy();
-		Character->FinishSpawning(PrevCharacterTransform);
-		UE_LOG(LogTemp, Warning, TEXT("ECS_DetectionCharacter Spawned"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::OnRadarButtonClick() Character is nullptr"));
-	}
+	SpawnNewCharacter(ECharacterSelect::ECS_DetectionCharacter);
 }
 
 void ULobbyWidget::OnShieldButtonClick()
 {
-	APawn* PrevPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	FTransform PrevCharacterTransform = PrevPawn->GetActorTransform();
-
-	ASkyscraperCharacter* Character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(
-		Characters[ECharacterSelect::ECS_ShieldCharacter],
-		PrevCharacterTransform);
-
-	if (Character)
-	{
-		GetWorld()->GetFirstPlayerController()->Possess(Character);
-		PrevPawn->Destroy();
-		Character->FinishSpawning(PrevCharacterTransform);
-		UE_LOG(LogTemp, Warning, TEXT("ECS_ShieldCharacter Spawned"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::OnShieldButtonClick() Character is nullptr"));
-	}
+	SpawnNewCharacter(ECharacterSelect::ECS_ShieldCharacter);
 }
 
 void ULobbyWidget::OnWindButtonClick()
 {
-	APawn* PrevPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	FTransform PrevCharacterTransform = PrevPawn->GetActorTransform();
-
-	ASkyscraperCharacter* Character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(
-		Characters[ECharacterSelect::ECS_WindCharacter],
-		PrevCharacterTransform);
-
-	if (Character)
-	{
-		GetWorld()->GetFirstPlayerController()->Possess(Character);
-		PrevPawn->Destroy();
-		Character->FinishSpawning(PrevCharacterTransform);
-		UE_LOG(LogTemp, Warning, TEXT("ECS_WindCharacter Spawned"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ULobbyWidget::OnWindButtonClick() Character is nullptr"));
-	}
+	SpawnNewCharacter(ECharacterSelect::ECS_WindCharacter);
 }
 
 void ULobbyWidget::UpdateMatchingTimer()

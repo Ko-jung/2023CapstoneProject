@@ -31,6 +31,7 @@
 #include "Materials/MaterialInstanceConstant.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 #include "UObject/UnrealTypePrivate.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -317,8 +318,18 @@ void ASkyscraperCharacter::Tick(float DeltaSeconds)
 void ASkyscraperCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-	 
-	JetpackComponent->OnLandJetpack();
+
+	if(JetpackComponent)
+	{
+		JetpackComponent->OnLandJetpack();
+	}
+
+	if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Landing"));
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation() - 40.0f);
+	}
+
 }
 
 ASkyscraperPlayerController* ASkyscraperCharacter::GetPlayerController() const

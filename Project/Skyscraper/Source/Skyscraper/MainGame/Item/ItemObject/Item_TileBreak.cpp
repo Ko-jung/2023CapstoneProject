@@ -8,6 +8,9 @@
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Widget/TileBreakItem/TileBreakItemWidget.h"
 
+#include "Skyscraper/Network/MainGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
 UItem_TileBreak::UItem_TileBreak()
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP_TileBreakItemRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/2019180031/MainGame/Widget/TileBreakItem/WBP_TileBreakItem.WBP_TileBreakItem_C'"));
@@ -43,10 +46,25 @@ void UItem_TileBreak::DoItemEffect(ASkyscraperCharacter* UsedCharacter)
 				{
 					Widget->AddToViewport();
 
+					Widget->SetUseCharacter(UsedCharacter);
 					// 서버 TODO: UsedCharacter를 이용해 적군 캐릭터에 대한 정보 입력
 					// TODO: 주의! 현재는 디버깅을 위해 아이템을 사용한 캐릭터를 0번 플레이어로 입력함
+					AGameModeBase* GM =  UGameplayStatics::GetGameMode(UsedCharacter);
+					if (GM)
 					{
-						Widget->SetEnemyPlayer(0, UsedCharacter);
+						if(AMainGameMode* GameMode = Cast<AMainGameMode>(GM))
+						{
+							TArray<ASkyscraperCharacter*> Characters = GameMode->GetEnemyCharacters();
+
+							for (int i = 0; i < Characters.Num(); i++)
+							{
+								Widget->SetEnemyPlayer(i, Characters[i]);
+							}
+						}
+					}
+					else
+					{
+						UE_LOG(LogClass, Warning, TEXT("UItem_TileBreak::DoItemEffect GM is nullptr"));
 					}
 				}
 			}

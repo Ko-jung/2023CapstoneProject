@@ -13,6 +13,9 @@
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 #include <Blueprint/WidgetBlueprintLibrary.h>
 
+#include "Skyscraper/Network/MainGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
 
 void UTileBreakItemWidget::SetEnemyPlayer(int PlayerIndex, ASkyscraperCharacter* TargetCharacter)
 {
@@ -50,28 +53,33 @@ void UTileBreakItemWidget::ThirdButtonClicked()
 
 void UTileBreakItemWidget::CollapseTileWithEnemy(int PlayerIndex)
 {
-	// 게임 플레이 중 타일 붕괴 아이템이 등장할 때에만 작동하는 함수이므로 GetAllActorsOfClass를 사용
-	TArray<AActor*> TargetActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFurniture::StaticClass(),TargetActors);
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+	GameMode->SendTileBreakItem(UseCharacter, PlayerIndex);
 
-	bool bUseItem{false};
-	for(AActor* Actor : TargetActors)
-	{
-		if(AFurniture* Furniture = Cast<AFurniture>(Actor))
-		{
-			if(Furniture->CollapseByTileCollapseItem(TargetCharacters[PlayerIndex]))
-			{
-				bUseItem = true;
-				break;
-			}
-		}
-	}
 
-	// 아이템을 사용하지 못했다면 그대로 정지
-	if(!bUseItem)
-	{
-		return;
-	}
+	//Move to AMainGameMode::ProcessTileBreakItem(const uint8 TargetSerial)
+	// // 게임 플레이 중 타일 붕괴 아이템이 등장할 때에만 작동하는 함수이므로 GetAllActorsOfClass를 사용
+	// TArray<AActor*> TargetActors;
+	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFurniture::StaticClass(),TargetActors);
+	// 
+	// bool bUseItem{false};
+	// for(AActor* Actor : TargetActors)
+	// {
+	// 	if(AFurniture* Furniture = Cast<AFurniture>(Actor))
+	// 	{
+	// 		if(Furniture->CollapseByTileCollapseItem(TargetCharacters[PlayerIndex]))
+	// 		{
+	// 			bUseItem = true;
+	// 			break;
+	// 		}
+	// 	}
+	// }
+	//
+	// // 아이템을 사용하지 못했다면 그대로 정지
+	// if(!bUseItem)
+	// {
+	// 	return;
+	// }
 
 	// 아이템을 정상적으로 사용 시 위젯 종료
 	RemoveFromParent();

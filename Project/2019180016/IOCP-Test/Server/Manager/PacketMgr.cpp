@@ -295,7 +295,7 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 	TimerMgr::Instance()->Insert(TE2);
 
 	// ======== Tile Drop ========
-	TimerEvent TileDrop1Timer(std::chrono::seconds(30 + SELECTTIMESECOND),
+	TimerEvent TileDrop1Timer(std::chrono::seconds((30 + SELECTTIMESECOND)),
 		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 1));
 	TimerMgr::Instance()->Insert(TileDrop1Timer);
 

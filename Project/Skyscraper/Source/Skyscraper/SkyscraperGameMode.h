@@ -30,6 +30,10 @@ public:
 
 	void SetWidgetPlayerIDs();
 
+	void PlayCountdownSound();
+	void PlayCountdownFinishSound();
+	void WorldTranslate();
+
 	TArray<PPlayerSelectInfo*>& GetPlayerSelectInfo() { return PlayerSelectInfo; }
 
 	UPROPERTY(BlueprintReadOnly)
@@ -42,6 +46,9 @@ private:
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
 
 	class ASelectCharacterController* Controller;
+
+	FTimerHandle CountdownTimer;
+	FTimerHandle CountdownFinishTimer;
 };
 
 

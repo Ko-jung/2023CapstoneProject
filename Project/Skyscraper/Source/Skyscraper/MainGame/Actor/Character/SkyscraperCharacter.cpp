@@ -1027,10 +1027,16 @@ void ASkyscraperCharacter::UseItem()
 		UE_LOG(LogTemp, Warning, TEXT("character use item"));
 		if(TObjectPtr<UItemObject> Object = UItemFactory::CreateItem(OwningItem.Key, OwningItem.Value))
 		{
-			if (MainGameMode)
+			if (OwningItem.Key == EItemEffect::EIE_Tile_Break)
+			{
+				Object->DoItemEffect(this);
+			}
+			else if (MainGameMode)
+			{
 				MainGameMode->SendUseItem(this, (BYTE)OwningItem.Key, (BYTE)OwningItem.Value);
+			}
 
-			Object->DoItemEffect(this);
+			//Object->DoItemEffect(this);
 			//delete Object;
 		}
 		OwningItem.Key = EItemEffect::EIE_NONE;

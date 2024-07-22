@@ -46,11 +46,16 @@ public:
 	void ProcessRemoveObject(PRemoveObject PRO);
 	void ProcessSkillInteract(PSkillInteract PKI);
 	void ProcessDetecting(const uint8 DetectedSerial);
+	void ProcessTileBreakItem(const uint8 TargetSerial);
 
 	void GetHexagonTileOnLevel();
 	void GetWindowsOnLevel();
 	int GetWindowsIndex(const UPrimitiveComponent* Target);
 	//UStaticMeshComponent* GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType);
+
+	TArray<ASkyscraperCharacter*> GetCharacters() { return Characters; }
+	TArray<ASkyscraperCharacter*> GetAllienceCharacters();
+	TArray<ASkyscraperCharacter*> GetEnemyCharacters();
 
 	void SendPlayerLocation();
 	void SendPlayerSwapWeaponInfo();
@@ -64,6 +69,7 @@ public:
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
 	void SendSkillInteract(const AActor* Sender, const ESkillActor SkillActor);
 	void SendDamagedSkillActor(const AActor* Sender, const AActor* SkillActorOwner, const ESkillActor& SkillActorType, const AActor* SkillActor);
+	void SendTileBreakItem(const AActor* Sender, uint8 TargetSerial);
 
 	UFUNCTION(BlueprintCallable)
 	void SendDetecting(AActor* Sender, AActor* Target);

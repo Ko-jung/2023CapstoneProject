@@ -22,6 +22,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetEnemyPlayer(int PlayerIndex, ASkyscraperCharacter* TargetCharacter);
 
+	// 2019180016
+	void SetUseCharacter(ASkyscraperCharacter* Character) { UseCharacter = Character; };
+	// ==========
+
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
@@ -69,4 +73,7 @@ protected:
 		TObjectPtr<UButton> CancelButton;
 
 private:
+	// 2019180016
+	ASkyscraperCharacter* UseCharacter;
+	// ==========
 };

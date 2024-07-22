@@ -38,6 +38,7 @@
 // Item Object
 #include "Skyscraper/MainGame/Item/ItemFactory/ItemFactory.h"
 #include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
+#include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
 
 void AMainGameMode::BeginPlay()
 {
@@ -608,7 +609,11 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 
 	if (!TargetCharacter) return;
 	
-	if (UItemObject* Object = UItemFactory::CreateItem((EItemEffect)PUI.Effect, (EItemRareLevel)PUI.ItemLevel))
+	if (PUI.Effect == (BYTE)EItemEffect::EIE_Tile_Break)
+	{
+		ProcessTileBreakItem(PUI.ItemLevel);
+	}
+	else if (UItemObject* Object = UItemFactory::CreateItem((EItemEffect)PUI.Effect, (EItemRareLevel)PUI.ItemLevel))
 	{
 		Object->DoItemEffect(TargetCharacter);
 	}
@@ -697,6 +702,25 @@ void AMainGameMode::ProcessDetecting(const uint8 DetectedSerial)
 	}
 }
 
+void AMainGameMode::ProcessTileBreakItem(const uint8 TargetSerial)
+{	// 게임 플레이 중 타일 붕괴 아이템이 등장할 때에만 작동하는 함수이므로 GetAllActorsOfClass를 사용
+	TArray<AActor*> TargetActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFurniture::StaticClass(), TargetActors);
+
+	bool bUseItem{ false };
+	for (AActor* Actor : TargetActors)
+	{
+		if (AFurniture* Furniture = Cast<AFurniture>(Actor))
+		{
+			if (Furniture->CollapseByTileCollapseItem(Characters[TargetSerial]))
+			{
+				bUseItem = true;
+				break;
+			}
+		}
+	}
+}
+
 //void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
 //{
 //	if (AActor** ppTarget = SkillActors.Find(PRO.ObjectSerial))
@@ -780,6 +804,42 @@ int AMainGameMode::GetWindowsIndex(const UPrimitiveComponent* Target)
 //	}
 //	return nullptr;
 //}
+
+TArray<ASkyscraperCharacter*> AMainGameMode::GetAllienceCharacters()
+{
+	TArray<ASkyscraperCharacter*> ReturnArray;
+	if (SerialNum < MAXPLAYER / 2)
+	{
+		ReturnArray.Add(Characters[0]);
+		ReturnArray.Add(Characters[1]);
+		ReturnArray.Add(Characters[2]);
+	}
+	else
+	{
+		ReturnArray.Add(Characters[3]);
+		ReturnArray.Add(Characters[4]);
+		ReturnArray.Add(Characters[5]);
+	}
+	return ReturnArray;
+}
+
+TArray<ASkyscraperCharacter*> AMainGameMode::GetEnemyCharacters()
+{
+	TArray<ASkyscraperCharacter*> ReturnArray;
+	if (SerialNum < MAXPLAYER / 2)
+	{
+		ReturnArray.Add(Characters[3]);
+		ReturnArray.Add(Characters[4]);
+		ReturnArray.Add(Characters[5]);
+	}
+	else
+	{
+		ReturnArray.Add(Characters[0]);
+		ReturnArray.Add(Characters[1]);
+		ReturnArray.Add(Characters[2]);
+	}
+	return ReturnArray;
+}
 
 void AMainGameMode::SendPlayerLocation()
 {
@@ -964,6 +1024,22 @@ void AMainGameMode::SendDamagedSkillActor(const AActor* Sender, const AActor* Sk
 	PDSA.WeaponEnum = equippedWeapon;
 
 	Send(&PDSA, PDSA.PacketSize);
+}
+
+void AMainGameMode::SendTileBreakItem(const AActor* Sender, uint8 TargetSerial)
+{
+	if (!Characters.IsValidIndex(SerialNum) || Sender != Characters[SerialNum]) return;
+
+	if (SerialNum < MAXPLAYER / 2)
+	{
+		TargetSerial += MAXPLAYER / 2;
+	}
+
+	PUseItem PUI;
+	PUI.Effect = (BYTE)EItemEffect::EIE_Tile_Break;
+	PUI.ItemLevel = TargetSerial;
+	PUI.UsePlayerSerial = SerialNum;
+	Send(&PUI, PUI.PacketSize);
 }
 
 void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)

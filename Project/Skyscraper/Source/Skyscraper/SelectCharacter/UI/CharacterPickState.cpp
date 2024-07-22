@@ -8,37 +8,82 @@
 
 // Fill out your copyright notice in the Description page of Project Settings.
 
+UCharacterPickState::UCharacterPickState(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer),
+	IsBinding(false),
+	PlayerSerialNum(-1)
+{
+	
+}
+
 void UCharacterPickState::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	MyCharacterButton->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
-	MyMeleeButton->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
-	MyRangeButton->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
+	// CharacterButton0->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
+	// MeleeButton0->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
+	// RangeButton0->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
+
+	{
+
+		CharacterImgs.Add(CharacterImg);
+		CharacterImgs.Add(CharacterImg_1);
+		CharacterImgs.Add(CharacterImg_2);
+		CharacterImgs.Add(CharacterImg_3);
+		CharacterImgs.Add(CharacterImg_4);
+		CharacterImgs.Add(CharacterImg_5);
+
+		MeleeImgs.Add(MeleeImg);
+		MeleeImgs.Add(MeleeImg_1);
+		MeleeImgs.Add(MeleeImg_2);
+		MeleeImgs.Add(MeleeImg_3);
+		MeleeImgs.Add(MeleeImg_4);
+		MeleeImgs.Add(MeleeImg_5);
+
+		RangeImgs.Add(RangeImg);
+		RangeImgs.Add(RangeImg_1);
+		RangeImgs.Add(RangeImg_2);
+		RangeImgs.Add(RangeImg_3);
+		RangeImgs.Add(RangeImg_4);
+		RangeImgs.Add(RangeImg_5);
+
+		PlayerIDs.Add(PlayerId);
+		PlayerIDs.Add(PlayerId_1);
+		PlayerIDs.Add(PlayerId_2);
+		PlayerIDs.Add(PlayerId_3);
+		PlayerIDs.Add(PlayerId_4);
+		PlayerIDs.Add(PlayerId_5);
+
+		CharacterButtons.Add(CharacterButton);
+		CharacterButtons.Add(CharacterButton_1);
+		CharacterButtons.Add(CharacterButton_2);
+		CharacterButtons.Add(CharacterButton_3);
+		CharacterButtons.Add(CharacterButton_4);
+		CharacterButtons.Add(CharacterButton_5);
+
+		MeleeButtons.Add(MeleeButton);
+		MeleeButtons.Add(MeleeButton_1);
+		MeleeButtons.Add(MeleeButton_2);
+		MeleeButtons.Add(MeleeButton_3);
+		MeleeButtons.Add(MeleeButton_4);
+		MeleeButtons.Add(MeleeButton_5);
+
+		RangeButtons.Add(RangeButton);
+		RangeButtons.Add(RangeButton_1);
+		RangeButtons.Add(RangeButton_2);
+		RangeButtons.Add(RangeButton_3);
+		RangeButtons.Add(RangeButton_4);
+		RangeButtons.Add(RangeButton_5);
+	}
+
+	for (const auto& Button : CharacterButtons) Button->SetIsEnabled(false);
+	for (const auto& Button : MeleeButtons)		Button->SetIsEnabled(false);
+	for (const auto& Button : RangeButtons)		Button->SetIsEnabled(false);
 
  	auto gamemode = UGameplayStatics::GetGameMode(this);
 	Gamemode = static_cast<ASkyscraperGameMode*>(gamemode);
 
-	IsInfoChanged = false;
-
-	FriendlyChracters.Add(FriendlyCharacter0);
-	FriendlyChracters.Add(FriendlyCharacter1);
-	FriendlyChracters.Add(FriendlyCharacter2);
-
-	FriendlyMelee.Add(FriendlyMelee0);
-	FriendlyMelee.Add(FriendlyMelee1);
-	FriendlyMelee.Add(FriendlyMelee2);
-
-	FriendlyRange.Add(FriendlyRange0);
-	FriendlyRange.Add(FriendlyRange1);
-	FriendlyRange.Add(FriendlyRange2);
-
-	PlayerIDs.Add(PlayerId0);
-	PlayerIDs.Add(PlayerId1);
-	PlayerIDs.Add(PlayerId2);
-	PlayerIDs.Add(PlayerId3);
-	PlayerIDs.Add(PlayerId4);
-	PlayerIDs.Add(PlayerId5);
+	SetOwnButtonOnClicked();
 }
 
 void UCharacterPickState::NativeDestruct()
@@ -63,7 +108,7 @@ void UCharacterPickState::SelectInfoUpdate()
 	TArray<PPlayerSelectInfo*>& PlayerSelectInfos = Gamemode->GetPlayerSelectInfo();
 
 	// 자신이 TeamA인지 TeamB인지 판단
-	bool IsRight = Gamemode->GetSerialNum() >= MAXPLAYER / 2;
+	bool IsRight = PlayerSerialNum >= MAXPLAYER / 2;
 
 
 	for (int i = 0; i < PlayerSelectInfos.Num() / 2; i++)
@@ -76,37 +121,41 @@ void UCharacterPickState::SelectInfoUpdate()
 		// Set Character portrait
 		if (CharacterNum == ECharacterSelect::ECS_Null)
 		{
-			FriendlyChracters[i]->SetBrushFromTexture(QuestionImages);
+			CharacterImgs[i]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			FriendlyChracters[i]->SetBrushFromTexture(*CharacterImages.Find(CharacterNum));
+			CharacterImgs[i]->SetBrushFromTexture(*CharacterImages.Find(CharacterNum));
 		}
 
 		// Set Melee Weapon portrait
 		if (MeleeWeaponNum == EMeleeSelect::EMS_NONE)
 		{
-			FriendlyMelee[i]->SetBrushFromTexture(QuestionImages);
+			MeleeImgs[i]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			FriendlyMelee[i]->SetBrushFromTexture(*MeleeImages.Find(MeleeWeaponNum));
+			MeleeImgs[i]->SetBrushFromTexture(*MeleeImages.Find(MeleeWeaponNum));
 		}
 
 		// Set Melee Weapon portrait
 		if (RangeWeaponNum == ERangeSelect::ERS_NONE)
 		{
-			FriendlyRange[i]->SetBrushFromTexture(QuestionImages);
+			RangeImgs[i]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			FriendlyRange[i]->SetBrushFromTexture(*RangeImages.Find(RangeWeaponNum));
+			RangeImgs[i]->SetBrushFromTexture(*RangeImages.Find(RangeWeaponNum));
 		}
 	}
 }
 
 void UCharacterPickState::SetPlayerIDs(TArray<FString> IDs, int SerialNum)
 {
+	// bool IsRight = SerialNum >= MAXPLAYER / 2;
+	// PlayerSerialNum = SerialNum + IsRight * 6 / 2;
+	PlayerSerialNum = SerialNum;
+
 	for (int i = 0; i < MAXPLAYER; i++)
 	{
 		if (IDs.IsValidIndex(i) && PlayerIDs.IsValidIndex(i) && !IDs[i].IsEmpty())
@@ -114,7 +163,45 @@ void UCharacterPickState::SetPlayerIDs(TArray<FString> IDs, int SerialNum)
 			PlayerIDs[i]->SetText(FText::FromString(IDs[i]));
 		}
 	}
-	PlayerIDs[SerialNum]->SetColorAndOpacity(FSlateColor(FLinearColor::Yellow));
+	PlayerIDs[PlayerSerialNum]->SetColorAndOpacity(FSlateColor(FLinearColor::Yellow));
+
+	SetOwnButtonOnClicked();
+}
+
+void UCharacterPickState::SetOwnButtonOnClicked()
+{
+	if (!CharacterButtons.IsValidIndex(PlayerSerialNum)) return;
+
+	CharacterButtons[PlayerSerialNum]->SetIsEnabled(true);
+	MeleeButtons[PlayerSerialNum]->SetIsEnabled(true);
+	RangeButtons[PlayerSerialNum]->SetIsEnabled(true);
+
+	if (!IsBinding)
+	{
+		CharacterButtons[PlayerSerialNum]->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
+		MeleeButtons[PlayerSerialNum]->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
+		RangeButtons[PlayerSerialNum]->OnClicked.AddUniqueDynamic(this, &ThisClass::GoToDetail);
+
+		IsBinding = true;
+	}
+}
+
+UButton* UCharacterPickState::GetMyCharacterBorder() const
+{
+	if (CharacterButtons.IsValidIndex(PlayerSerialNum))	return CharacterButtons[PlayerSerialNum];
+	else												return nullptr;
+}
+
+UButton* UCharacterPickState::GetMyMeleeBorder() const
+{
+	if (MeleeButtons.IsValidIndex(PlayerSerialNum))	return MeleeButtons[PlayerSerialNum];
+	else											return nullptr;
+}
+
+UButton* UCharacterPickState::GetMyRangeBorder() const
+{
+	if (RangeButtons.IsValidIndex(PlayerSerialNum))	return RangeButtons[PlayerSerialNum];
+	else											return nullptr;
 }
 
 void UCharacterPickState::GoToDetail()

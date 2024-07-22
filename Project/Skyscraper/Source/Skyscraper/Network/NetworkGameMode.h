@@ -9,7 +9,7 @@
 #include <concurrent_queue.h>
 #include <atomic>
 
-#define MAXPLAYER 4
+#define MAXPLAYER 2
 
 #include "NetworkGameMode.generated.h"
 /**

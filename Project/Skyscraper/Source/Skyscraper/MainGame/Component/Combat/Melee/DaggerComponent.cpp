@@ -9,6 +9,12 @@ UDaggerComponent::UDaggerComponent()
 {
 	MeleeSelect = EMeleeSelect::EMS_Dagger;
 
+	AttackSound = TEXT("DaggerAttack");
+	FinalAttackSound = TEXT("DaggerHit_last");
+
+	DamagedSound = TEXT("DaggerHit");
+	FinalDamagedSound = TEXT("DaggerHit_last");
+
 	AnimMontageKey = ECharacterAnimMontage::ECAM_DaggerAttack;
 	AttackBlendOutTime.Add(0.00f);
 	AttackBlendOutTime.Add(0.00f);

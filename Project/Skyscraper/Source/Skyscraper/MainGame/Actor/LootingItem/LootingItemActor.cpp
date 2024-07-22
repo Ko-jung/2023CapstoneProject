@@ -7,8 +7,12 @@
 #include "Components/SphereComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Skyscraper/SkyscraperGameMode.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/Network/MainGameMode.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 // Sets default values
 ALootingItemActor::ALootingItemActor()
@@ -170,10 +174,20 @@ void ALootingItemActor::AddItemToUsedCharacter(ASkyscraperCharacter* ItemUsedCha
 	// 사용한 캐릭터에게 아이템을 추가
 	ItemUsedCharacter->AddItem(ItemEffectType, ItemRareLevel, this);
 
-
-
+	if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Item_Obtain")))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+		}
+	}
 	// Destory On Server
 	//Destroy();
+	if (!UGameplayStatics::GetGameMode(this)->IsA<ASkyscraperGameMode>())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NotServer"));
+		Destroy();
+	}
 }
 
 

@@ -29,6 +29,7 @@
 
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Skyscraper/MainGame/Actor/SkillActor/Shield.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 // Sets default values for this component's properties
 UMainMeleeComponent::UMainMeleeComponent()
@@ -260,7 +261,6 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 		if(AttackBlendOutTime.Num())
 		{
 			PlayMontage->BlendOut.SetBlendTime(AttackBlendOutTime[MeleeComboCount]);
-			UE_LOG(LogTemp, Warning, TEXT("attack - %d // %f"), MeleeComboCount, PlayMontage->BlendOut.GetBlendTime());
 		}
 
 		{	// Montage Sync
@@ -287,6 +287,21 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 				GetWorld()->GetTimerManager().SetTimer(AttackCoolTimeTimerHandle, this, &ThisClass::AttackCoolTimeFunc,AttackCoolDownTimeOffset, true,AttackCoolDownTimeOffset);
 			}
 		}
+
+		// 사운드 실행
+		FName CurrentAttackSoundName = AttackSound;
+		if(MeleeComboCount == AttackTime.Num()-1)
+		{
+			CurrentAttackSoundName = FinalAttackSound;
+		}
+		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(CurrentAttackSoundName))
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+			}
+		}
+
 		MeleeComboCount = (MeleeComboCount + 1) % AttackTime.Num();
 	}
 
@@ -370,7 +385,7 @@ void UMainMeleeComponent::Attack()
 }
 
 void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Distance, FVector StartOffset, float Angle,
-	float fStunTime, float fBaseDamage, bool bDoDown)
+	float fStunTime, float fBaseDamage, bool bDoDown, bool bIsFinalAttack)
 {
 	fBaseDamage *= OwnerCharacter->GetPowerBuffValue();
 
@@ -525,6 +540,24 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 					}
 					
 					
+				}
+			}
+
+			// Hit Sound
+			if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+			{
+				FName CurrentAttackName{};
+				if(bIsFinalAttack)
+				{
+					CurrentAttackName = FinalDamagedSound;
+				}
+				else
+				{
+					CurrentAttackName = DamagedSound;
+				}
+				if (USoundBase* Sound = Subsystem->GetSkyscraperSound(CurrentAttackName))
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
 				}
 			}
 		}

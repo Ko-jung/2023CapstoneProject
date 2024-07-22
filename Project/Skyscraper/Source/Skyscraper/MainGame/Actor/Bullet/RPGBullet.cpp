@@ -18,6 +18,7 @@
 #include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
 #include "Skyscraper/MainGame/Map/Furniture/Desk.h"
 #include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 typedef UHierarchicalInstancedStaticMeshComponent UHISM;
 
@@ -212,9 +213,16 @@ void ARPGBullet::BulletExplode()
 		}
 	}
 
+
+	if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("RPG_Explosion")))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+		}
+	}
+
 	Destroy();
-	
-	
 }
 
 void ARPGBullet::OverlapExplode(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

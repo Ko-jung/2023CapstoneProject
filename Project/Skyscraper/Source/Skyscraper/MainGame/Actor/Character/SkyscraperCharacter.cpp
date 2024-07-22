@@ -31,6 +31,7 @@
 #include "Materials/MaterialInstanceConstant.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 #include "UObject/UnrealTypePrivate.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -317,8 +318,17 @@ void ASkyscraperCharacter::Tick(float DeltaSeconds)
 void ASkyscraperCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-	 
-	JetpackComponent->OnLandJetpack();
+
+	if(JetpackComponent)
+	{
+		JetpackComponent->OnLandJetpack();
+	}
+
+	if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Landing"));
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation() - 40.0f);
+	}
 }
 
 ASkyscraperPlayerController* ASkyscraperCharacter::GetPlayerController() const
@@ -724,7 +734,6 @@ void ASkyscraperCharacter::SetCameraMode(ECharacterCameraMode CameraMode)
 
 void ASkyscraperCharacter::PlayBoostAnimation(const FString& SectionString) const
 {
-	
 	if (BoostMesh)
 	{
 		FName SectionName = FName(*SectionString);
@@ -1039,6 +1048,14 @@ void ASkyscraperCharacter::UseItem()
 		{
 			GetPlayerController()->SetItemImage(EItemEffect::EIE_NONE);
 		}
+
+		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Item_Use_Infinity")))
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+			}
+		}
 	}
 }
 
@@ -1072,6 +1089,14 @@ void ASkyscraperCharacter::ItemInteractionStart()
 {
 	UAnimMontage* Montage = GetAnimMontage(ECharacterAnimMontage::ECAM_Interaction);
 	UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(GetMesh(), Montage, 1.0f, 0.00f);
+
+	if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Item_Interaction")))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+		}
+	}
 }
 
 void ASkyscraperCharacter::ItemInteractionEnd()

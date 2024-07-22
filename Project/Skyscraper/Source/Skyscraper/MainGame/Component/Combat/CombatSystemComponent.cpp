@@ -25,6 +25,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/MainGame/Widget/LockOn/LockOnWidget.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 // Sets default values for this component's properties
 UCombatSystemComponent::UCombatSystemComponent()
@@ -193,8 +194,19 @@ void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)
 		return;
 	}
 
-	// 무기를 착용 중일때는 기존 무기 Input 및 무기 제거
+	if(MainWeaponComponent)
+	{
+		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("ChangeWeapon")))
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+			}
+		}
+	}
 	
+
+	// 무기를 착용 중일때는 기존 무기 Input 및 무기 제거
 	if(MainWeaponComponent)
 	{
 		if(UMainMeleeComponent* MeleeComp = Cast<UMainMeleeComponent>(MainWeaponComponent))
@@ -217,8 +229,6 @@ void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)
 	}
 
 	MainWeaponComponent = TargetWeaponComponent;
-
-	
 }
 
 

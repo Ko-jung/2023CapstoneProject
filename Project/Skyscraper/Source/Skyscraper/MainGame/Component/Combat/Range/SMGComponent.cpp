@@ -13,7 +13,7 @@ USMGComponent::USMGComponent()
 	FireSoundName = TEXT("SMG_Fire");
 	ReloadSoundName = TEXT("SMG_Reload");
 
-	ReloadMaxCoolTime = 5.0f;
+	ReloadMaxCoolTime = 0.1f;
 	BulletMaxCount = 50;
 	FireMaxCoolTime = 0.2f;
 	ReloadSpeedTime = 1.0f;

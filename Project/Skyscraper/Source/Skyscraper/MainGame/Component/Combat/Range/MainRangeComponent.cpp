@@ -517,6 +517,15 @@ void UMainRangeComponent::PlayReloadAnim()
 			WeaponMeshComponent->PlayAnimation(WeaponReloadAnim, false);
 		}
 	}
+
+	if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		// 부스트 시작 소리 실행
+		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(ReloadSoundName)) {
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound,WeaponMeshComponent->GetComponentLocation());
+		}
+	}
+
 }
 
 void UMainRangeComponent::Recoil()

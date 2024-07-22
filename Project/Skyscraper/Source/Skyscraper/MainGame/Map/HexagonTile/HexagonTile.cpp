@@ -549,10 +549,12 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 }
 
 void AHexagonTile::Init()
-{	
+{
 	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
-	if(!GameMode || !GameMode->GetIsConnected())
+	if (!GameMode || !GameMode->GetIsConnected())
+	{
 		InitialSettings();
+	}
 }
 
 void AHexagonTile::SpawnItem(PItemInfo* Items, const uint8 SpawnCount)
@@ -834,7 +836,7 @@ void AHexagonTile::CollapseTileOnDelay()
 		{
 			break;
 		}
-		int Index = FMath::Rand() % CollapseTileIndexes.Num();
+		int Index = 0;// FMath::Rand() % CollapseTileIndexes.Num();
 		int TileIndex = CollapseTileIndexes[Index];
 		CollapseTileIndexes.Remove(TileIndex);
 		CollapseAfterNotificationIndex.Add(TileIndex);

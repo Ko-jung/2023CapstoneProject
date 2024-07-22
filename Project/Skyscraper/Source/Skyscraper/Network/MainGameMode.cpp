@@ -55,6 +55,7 @@ void AMainGameMode::BeginPlay()
 	if (!instance->GetIsConnect())
 	{
 		// Super::BeginPlay();
+		m_Socket->InitializeManager();
 		HexagonTile->Init();
 		GetWindowsOnLevel();
 		return;

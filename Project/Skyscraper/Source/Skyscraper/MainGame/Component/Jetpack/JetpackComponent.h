@@ -171,6 +171,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TObjectPtr<UAudioComponent> BoostMaintaingAudioComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TObjectPtr<UAudioComponent> BoostStartAudioComponent;
 
 protected:
 	UFUNCTION()

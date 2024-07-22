@@ -83,6 +83,8 @@ UJetpackComponent::UJetpackComponent()
 	}
 	
 	BoostMaintaingAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BoostMaintaingAudioComponent"));
+
+	BoostStartAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BoostStartAudioComponent"));
 }
 
 
@@ -105,6 +107,7 @@ void UJetpackComponent::BeginPlay()
 	if(OwnerCharacter && OwnerCharacter->GetBoostMesh())
 	{
 		BoostMaintaingAudioComponent->AttachToComponent(OwnerCharacter->GetBoostMesh(), FAttachmentTransformRules{ EAttachmentRule::SnapToTarget,true });
+		BoostStartAudioComponent->AttachToComponent(OwnerCharacter->GetBoostMesh(), FAttachmentTransformRules{ EAttachmentRule::SnapToTarget,true });
 
 		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
 		{
@@ -113,7 +116,10 @@ void UJetpackComponent::BeginPlay()
 			{
 				BoostMaintaingAudioComponent->SetSound(Sound);
 			}
-			
+			if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("BoostStart")))
+			{
+				BoostStartAudioComponent->SetSound(Sound);
+			}
 		}
 		
 	}
@@ -259,12 +265,9 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 				if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
 				{
 					// 부스트 시작 소리 실행
-					if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("BoostStart")))
+					if(!BoostStartAudioComponent->IsPlaying())
 					{
-						if(OwnerCharacter && OwnerCharacter->GetBoostMesh())
-						{
-							UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetBoostMesh()->GetComponentLocation());
-						}
+						BoostStartAudioComponent->Play(1.0f);
 					}
 
 					if(!BoostMaintaingAudioComponent->IsPlaying())
@@ -285,6 +288,10 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 		if (BoostMaintaingAudioComponent->IsPlaying())
 		{
 			BoostMaintaingAudioComponent->Stop();
+		}
+		if (BoostStartAudioComponent->IsPlaying())
+		{
+			BoostStartAudioComponent->Stop();
 		}
 	}
 }
@@ -314,6 +321,10 @@ void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 		{
 			BoostMaintaingAudioComponent->Play(1.0f);
 		}
+		if (!BoostStartAudioComponent->IsPlaying())
+		{
+			BoostStartAudioComponent->Play(1.0f);
+		}
 		
 	}
 	else
@@ -336,6 +347,10 @@ void UJetpackComponent::HoverStop()
 		if (BoostMaintaingAudioComponent->IsPlaying() && !bIsDashing)
 		{
 			BoostMaintaingAudioComponent->Stop();
+		}
+		if (BoostStartAudioComponent->IsPlaying())
+		{
+			BoostStartAudioComponent->Stop();
 		}
 	}
 	
@@ -361,6 +376,10 @@ void UJetpackComponent::DashFast()
 			if(!BoostMaintaingAudioComponent->IsPlaying())
 			{
 				BoostMaintaingAudioComponent->Play(1.0f);
+			}
+			if (!BoostStartAudioComponent->IsPlaying())
+			{
+				BoostStartAudioComponent->Play(1.0f);
 			}
 			
 		}
@@ -390,6 +409,10 @@ void UJetpackComponent::DashStop()
 	if (BoostMaintaingAudioComponent->IsPlaying())
 	{
 		BoostMaintaingAudioComponent->Stop();
+	}
+	if (BoostStartAudioComponent->IsPlaying())
+	{
+		BoostStartAudioComponent->Stop();
 	}
 }
 
@@ -520,7 +543,11 @@ void UJetpackComponent::DoDescent()
 		UE_LOG(LogTemp, Warning, TEXT("ctrl 키 눌림"));
 
 		OwnerCharacter->GetAnimInstance()->bIsDescent = true;	
-			
+
+		if (!BoostStartAudioComponent->IsPlaying())
+		{
+			BoostStartAudioComponent->Play(1.0f);
+		}
 	}
 }
 

@@ -33,6 +33,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FString PlayerId;
 
+	UPROPERTY()
+	TArray<FString> PlayerIDs;
+
 private:
 	TArray<PPlayerSelectInfo*>	SelectInfo;
 	NetworkManager*				Socket;

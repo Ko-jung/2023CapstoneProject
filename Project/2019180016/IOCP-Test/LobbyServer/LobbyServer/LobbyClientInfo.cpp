@@ -8,6 +8,7 @@ LobbyClientInfo::LobbyClientInfo(int ClientNum) :
 {
 	ClientSocket = INVALID_SOCKET;
 	ZeroMemory(&Exp, sizeof(Exp));
+	ZeroMemory(&ClientID, sizeof(ClientID));
 }
 
 void LobbyClientInfo::Init()
@@ -48,7 +49,7 @@ void LobbyClientInfo::SendProcess(Packet* PacketData)
 		return;
 	}
 
-	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (char)(PacketData->PacketSize), (void*)PacketData };
+	EXP_OVER* exp = new EXP_OVER{ COMP_OP::OP_SEND, (BYTE)(PacketData->PacketSize), (void*)PacketData };
 
 	int ret = WSASend(ClientSocket, &exp->_wsa_buf, 1, 0, 0, &exp->_wsa_over, 0);
 	if (SOCKET_ERROR == ret) {

@@ -34,5 +34,7 @@ public:
 	int ClientNum;
 
 	EXP_OVER Exp;
+
+	char ClientID[IDSIZE];
 };
 

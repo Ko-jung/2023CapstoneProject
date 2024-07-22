@@ -74,3 +74,8 @@ void ASelectCharacterController::SetDetailWidgetVisibility(bool bVisible) const
         
     }
 }
+
+void ASelectCharacterController::SetPlayerIDs(TArray<FString> IDs, int SerialNum)
+{
+    CharacterSelectionWidget->SetPlayerIDs(IDs, SerialNum);
+}

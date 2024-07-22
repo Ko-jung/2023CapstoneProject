@@ -13,4 +13,11 @@ UCLASS()
 class SKYSCRAPER_API USelectCharacter : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION()
+	void SetPlayerIDs(TArray<FString> IDs, int SerialNum);
+
+	UPROPERTY(meta=(BindWidget))
+	class UCharacterPickState* WBP_CharacterPickState;
 };

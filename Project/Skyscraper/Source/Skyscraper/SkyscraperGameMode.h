@@ -28,6 +28,8 @@ public:
 	void UpdateSelectInfo(EMeleeSelect MeleeWeapon);
 	void UpdateSelectInfo(ERangeSelect RangeWeapon);
 
+	void SetWidgetPlayerIDs();
+
 	TArray<PPlayerSelectInfo*>& GetPlayerSelectInfo() { return PlayerSelectInfo; }
 
 	UPROPERTY(BlueprintReadOnly)
@@ -38,6 +40,8 @@ public:
 private:
 	// Memory Leak
 	TArray<PPlayerSelectInfo*> PlayerSelectInfo;
+
+	class ASelectCharacterController* Controller;
 };
 
 

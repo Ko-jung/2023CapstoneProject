@@ -12,30 +12,31 @@
 #include "CharacterPickState.generated.h"
 
 class UButton;
+class UTextBlock;
+
 UCLASS()
 class SKYSCRAPER_API UCharacterPickState : public UUserWidget
 {
 	GENERATED_BODY()
 public: 
+	UCharacterPickState(const FObjectInitializer& ObjectInitializer);
+
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
 	UFUNCTION(BlueprintCallable)
 	void SelectInfoUpdate();
 
-private:
-	// == Border variable
-	UPROPERTY(meta = (BindWidget))
-		UButton* MyCharacterButton;
-	UPROPERTY(meta = (BindWidget))
-		UButton* MyMeleeButton;
-	UPROPERTY(meta = (BindWidget))
-		UButton* MyRangeButton;
+	UFUNCTION()
+	void SetPlayerIDs(TArray<FString> IDs, int SerialNum);
+
+	UFUNCTION()
+	void SetOwnButtonOnClicked();
 
 public:
-	FORCEINLINE UButton* GetMyCharacterBorder() const { return MyCharacterButton; }
-	FORCEINLINE UButton* GetMyMeleeBorder() const { return MyMeleeButton; }
-	FORCEINLINE UButton* GetMyRangeBorder() const { return MyRangeButton; }
+	FORCEINLINE UButton* GetMyCharacterBorder() const	; //{ return CharacterButton0; }
+	FORCEINLINE UButton* GetMyMeleeBorder() const		; //{ return MeleeButton0; }
+	FORCEINLINE UButton* GetMyRangeBorder() const		; //{ return RangeButton0; }
 
 	UFUNCTION()
 	void GoToDetail();
@@ -49,30 +50,71 @@ public:
 	UPROPERTY(EditAnywhere, Category = "SelectedImage")
 	UTexture2D* QuestionImages;
 
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyCharacter0;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyMelee0;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyRange0;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyCharacter1;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyMelee1;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyRange1;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyCharacter2;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyMelee2;
-	UPROPERTY(meta = (BindWidget))
-	UImage* FriendlyRange2;
+	TArray<UImage*> CharacterImgs;
+	TArray<UImage*> MeleeImgs;
+	TArray<UImage*> RangeImgs;
 
-	TArray<UImage*> FriendlyChracters;
-	TArray<UImage*> FriendlyMelee;
-	TArray<UImage*> FriendlyRange;
+	TArray<UButton*> CharacterButtons;
+	TArray<UButton*> MeleeButtons;
+	TArray<UButton*> RangeButtons;
+
+	TArray<UTextBlock*> PlayerIDs;
 
 private:
 	class ASkyscraperGameMode* Gamemode;
-	bool IsInfoChanged;
+	bool IsBinding;
+
+	uint8 PlayerSerialNum;
+
+	// Widget Bind Variables
+	UPROPERTY(meta = (BindWidget))	UImage* CharacterImg;
+	UPROPERTY(meta = (BindWidget))	UImage* CharacterImg_1;
+	UPROPERTY(meta = (BindWidget))	UImage* CharacterImg_2;
+	UPROPERTY(meta = (BindWidget))	UImage* CharacterImg_3;
+	UPROPERTY(meta = (BindWidget))	UImage* CharacterImg_4;
+	UPROPERTY(meta = (BindWidget))	UImage* CharacterImg_5;
+
+	UPROPERTY(meta = (BindWidget))	UImage* MeleeImg;
+	UPROPERTY(meta = (BindWidget))	UImage* MeleeImg_1;
+	UPROPERTY(meta = (BindWidget))	UImage* MeleeImg_2;
+	UPROPERTY(meta = (BindWidget))	UImage* MeleeImg_3;
+	UPROPERTY(meta = (BindWidget))	UImage* MeleeImg_4;
+	UPROPERTY(meta = (BindWidget))	UImage* MeleeImg_5;
+
+	UPROPERTY(meta = (BindWidget))	UImage* RangeImg;
+	UPROPERTY(meta = (BindWidget))	UImage* RangeImg_1;
+	UPROPERTY(meta = (BindWidget))	UImage* RangeImg_2;
+	UPROPERTY(meta = (BindWidget))	UImage* RangeImg_3;
+	UPROPERTY(meta = (BindWidget))	UImage* RangeImg_4;
+	UPROPERTY(meta = (BindWidget))	UImage* RangeImg_5;
+
+	UPROPERTY(meta = (BindWidget))	UTextBlock* PlayerId;
+	UPROPERTY(meta = (BindWidget))	UTextBlock* PlayerId_1;
+	UPROPERTY(meta = (BindWidget))	UTextBlock* PlayerId_2;
+	UPROPERTY(meta = (BindWidget))	UTextBlock* PlayerId_3;
+	UPROPERTY(meta = (BindWidget))	UTextBlock* PlayerId_4;
+	UPROPERTY(meta = (BindWidget))	UTextBlock* PlayerId_5;
+
+private:
+	// == Border variable
+	UPROPERTY(meta = (BindWidget))	UButton* CharacterButton;
+	UPROPERTY(meta = (BindWidget))	UButton* CharacterButton_1;
+	UPROPERTY(meta = (BindWidget))	UButton* CharacterButton_2;
+	UPROPERTY(meta = (BindWidget))	UButton* CharacterButton_3;
+	UPROPERTY(meta = (BindWidget))	UButton* CharacterButton_4;
+	UPROPERTY(meta = (BindWidget))	UButton* CharacterButton_5;
+
+	UPROPERTY(meta = (BindWidget))	UButton* MeleeButton;
+	UPROPERTY(meta = (BindWidget))	UButton* MeleeButton_1;
+	UPROPERTY(meta = (BindWidget))	UButton* MeleeButton_2;
+	UPROPERTY(meta = (BindWidget))	UButton* MeleeButton_3;
+	UPROPERTY(meta = (BindWidget))	UButton* MeleeButton_4;
+	UPROPERTY(meta = (BindWidget))	UButton* MeleeButton_5;
+
+	UPROPERTY(meta = (BindWidget))	UButton* RangeButton;
+	UPROPERTY(meta = (BindWidget))	UButton* RangeButton_1;
+	UPROPERTY(meta = (BindWidget))	UButton* RangeButton_2;
+	UPROPERTY(meta = (BindWidget))	UButton* RangeButton_3;
+	UPROPERTY(meta = (BindWidget))	UButton* RangeButton_4;
+	UPROPERTY(meta = (BindWidget))	UButton* RangeButton_5;
 };

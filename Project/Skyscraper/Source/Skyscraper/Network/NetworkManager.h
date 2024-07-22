@@ -13,7 +13,7 @@
 
 #include "Packet.h"
 
-#define	MAX_BUFFER				256
+#define	MAX_BUFFER				255
 #define GAME_SERVER_PORT		9000
 #define LOBBY_SERVER_PORT		9001
 #define GAME_SERVER_IP			"1.242.205.234"

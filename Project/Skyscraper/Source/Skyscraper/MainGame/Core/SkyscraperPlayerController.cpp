@@ -101,7 +101,7 @@ void ASkyscraperPlayerController::ChangePlayerRangeWeapon(ERangeSelect NewRangeS
 	}
 }
 
-void ASkyscraperPlayerController::AddGameResultWidget(const FText& WinnerText)
+void ASkyscraperPlayerController::AddGameResultWidget(const bool IsWin)
 {
 	if (!GameResultWidget)
 	{
@@ -110,7 +110,7 @@ void ASkyscraperPlayerController::AddGameResultWidget(const FText& WinnerText)
 
 	if (GameResultWidget)
 	{
-		GameResultWidget->SetWinnerText(WinnerText);
+		GameResultWidget->SetWinnerText(IsWin);
 		GameResultWidget->AddToViewport(20);
 	}
 }

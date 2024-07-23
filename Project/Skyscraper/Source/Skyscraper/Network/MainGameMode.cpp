@@ -274,13 +274,8 @@ void AMainGameMode::ProcessFunc()
 			ASkyscraperPlayerController* controller = Cast<ASkyscraperPlayerController>(GetWorld()->GetFirstPlayerController());
 			if (controller)
 			{
-				FText Result;
-				if (PFG.IsTeamAWin)
-					Result = FText::FromString(L"Win A Team");
-				else
-					Result = FText::FromString(L"Win B Team");
-
-				controller->AddGameResultWidget(Result);
+				bool IsTeamA = SerialNum < MAXPLAYER / 2;
+				controller->AddGameResultWidget(PFG.IsTeamAWin == IsTeamA);
 			}
 			break;
 		}

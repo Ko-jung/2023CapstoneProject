@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/MainGame/Map/Building/Building.h"
 #include "Skyscraper/MainGame/Map/FloatingTile/FloatingTile.h"
+#include "Skyscraper/MainGame/Map/Building/SingleBuildingFloor.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Skyscraper/Enum/ETileImageType.h"

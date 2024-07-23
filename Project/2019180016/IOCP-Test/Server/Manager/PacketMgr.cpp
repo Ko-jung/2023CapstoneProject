@@ -405,18 +405,23 @@ void PacketMgr::ProcessDamagedSkillActor(PDamagedSkillActor PDSA, const int id)
 
 const float PacketMgr::GetWeaponDamage(int Id, const bool& isMelee, const int& weaponEnum)
 {
+	float WeaponDamage{ 0.f };
 	if (isMelee)
 	{
 		switch (weaponEnum)
 		{
 		case (int)EMeleeWeapon::Dagger:
-			return 120;
+			WeaponDamage = 120;
+			break;
 		case (int)EMeleeWeapon::Greatsword:
-			return 200;
+			WeaponDamage = 200;
+			break;
 		case (int)EMeleeWeapon::Katana:
-			return 150;
+			WeaponDamage = 150;
+			break;
 		default:
-			return 0;
+			WeaponDamage = 0;
+			break;
 		}
 	}
 	else
@@ -424,15 +429,22 @@ const float PacketMgr::GetWeaponDamage(int Id, const bool& isMelee, const int& w
 		switch (weaponEnum)
 		{
 		case (int)ERangeWeapon::AssaultRifle:
-			return 100;
+			WeaponDamage = 100;
+			break;
 		case (int)ERangeWeapon::RPG:
-			return 300;
+			WeaponDamage = 300;
+			break;
 		case (int)ERangeWeapon::SubmachineGun:
-			return 50;
+			WeaponDamage = 50;
+			break;
 		default:
-			return 0;
+			WeaponDamage = 0;
+			break;
 		}
 	}
+
+	//cout << "[" << Id << "] Damage Is " << WeaponDamage * ClientMgr::Instance()->GetClients()[Id]->Power << endl;
+	return WeaponDamage * ClientMgr::Instance()->GetClients()[Id]->Power;
 }
 
 

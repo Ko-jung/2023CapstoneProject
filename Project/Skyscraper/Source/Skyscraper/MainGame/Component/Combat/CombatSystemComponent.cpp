@@ -20,6 +20,7 @@
 #include "PlayMontageCallbackProxy.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -43,6 +44,8 @@ UCombatSystemComponent::UCombatSystemComponent()
 	LockOnStartTime = 0.0f;
 	LockOnActor = nullptr;
 	CloseTargetDistance = InitTargetDistance = 10000.0f;
+
+	ChangeWeaponAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("ChangeWeaponAudioComponent"));
 
 	{ // == Set Input Asset
 		static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_CombatSystemRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/2019180031/MainGame/Core/Input/Combat/IMC_CombatSystem.IMC_CombatSystem'"));
@@ -149,8 +152,6 @@ void UCombatSystemComponent::BeginPlay()
 
 		// ...	
 	}
-	
-	
 }
 
 void UCombatSystemComponent::AddInputMappingContext()

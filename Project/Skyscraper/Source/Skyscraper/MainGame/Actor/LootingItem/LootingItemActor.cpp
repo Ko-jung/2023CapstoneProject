@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/SkyscraperGameMode.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
 #include "Skyscraper/Network/MainGameMode.h"
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"

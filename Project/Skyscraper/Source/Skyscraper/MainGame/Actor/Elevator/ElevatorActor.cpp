@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 AElevatorActor::AElevatorActor()

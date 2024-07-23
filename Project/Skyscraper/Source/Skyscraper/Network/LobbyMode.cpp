@@ -5,6 +5,7 @@
 #include "NetworkManager.h"
 #include "Skyscraper/Network/LobbyWidget.h"
 #include "Skyscraper/Network/SocketGameInstance.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
 ALobbyMode::ALobbyMode()

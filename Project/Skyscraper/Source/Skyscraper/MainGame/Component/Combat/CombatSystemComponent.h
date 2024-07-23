@@ -84,6 +84,9 @@ public:
 		float SMG_EffectiveDistance;
 	UPROPERTY(EditAnywhere, Category = RangeDistanceValue)
 		float AR_EffectiveDistance;
+
+	UPROPERTY()
+		TObjectPtr<class UAudioComponent> ChangeWeaponAudioComponent;
 	
 
 protected:

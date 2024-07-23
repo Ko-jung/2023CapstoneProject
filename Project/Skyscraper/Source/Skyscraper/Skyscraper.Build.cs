@@ -9,7 +9,7 @@ public class Skyscraper : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         bEnableExceptions = true;
-
+        bUseUnity = false;
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "GeometryCollectionEngine", "EnhancedInput", "MotionWarping", "Niagara" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "AnimGraphRuntime", "AIModule", "ClothingSystemRuntimeInterface", "ClothingSystemRuntimeCommon", "ChaosCloth" });
     }

@@ -191,8 +191,13 @@ public:
 	void ChangeMappingContext(bool IsOnlyMouseMode);
 
 	UFUNCTION(BlueprintCallable)
-	//virtual void CastingSkill(bool IsSpecialSkill) PURE_VIRTUAL(ASkyscraperCharacter::CastingSkill, ;);
 	void CastingSkill(bool IsSpecialSkill);
+
+	void InValidCommonTimer();
+	void InValidSpecialTimer();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsTimerValid(bool IsSpecialSkill);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void SkillActorSpawnUsingPacket(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor);
@@ -272,8 +277,8 @@ protected:
 
 	float CommonSkillCoolTime;
 	float SpecialSkillCoolTime;
-	bool bCanCommonSkill;
-	bool bCanSpecialSkill;
+	FTimerHandle CommonSkillTimerHandle;
+	FTimerHandle SpecialSkillTimerHandle;
 
 	FTimerHandle UnableActTimerHandle;
 	FTimerHandle DetectingTimerHandle;

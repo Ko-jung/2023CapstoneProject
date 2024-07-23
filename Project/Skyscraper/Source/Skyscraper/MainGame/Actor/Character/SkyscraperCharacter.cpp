@@ -897,7 +897,46 @@ void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)
 
 void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 {
+	if (IsSpecialSkill)
+	{
+		GetPlayerController()->CastingSkill(true, SpecialSkillCoolTime);
+		GetWorld()->GetTimerManager().SetTimer(SpecialSkillTimerHandle, this, &ThisClass::InValidSpecialTimer, SpecialSkillCoolTime, false);
+	}
+	else
+	{
+		GetPlayerController()->CastingSkill(false, CommonSkillCoolTime);
+		//GetWorld()->GetTimerManager().SetTimer(CommonSkillTimerHandle, this, &ThisClass::InValidCommonTimer, CommonSkillCoolTime, false);
+	}
+
 	ActiveSkill(IsSpecialSkill);
+}
+
+void ASkyscraperCharacter::InValidCommonTimer()
+{
+	GetWorld()->GetTimerManager().ClearTimer(CommonSkillTimerHandle);
+}
+
+void ASkyscraperCharacter::InValidSpecialTimer()
+{
+	GetWorld()->GetTimerManager().ClearTimer(SpecialSkillTimerHandle);
+}
+
+bool ASkyscraperCharacter::IsTimerValid(bool IsSpecialSkill)
+{
+	bool IsValid = false;
+	if (IsSpecialSkill)
+	{
+		IsValid = SpecialSkillTimerHandle.IsValid();
+		if(!IsValid)
+			GetWorld()->GetTimerManager().SetTimer(SpecialSkillTimerHandle, this, &ThisClass::InValidSpecialTimer, SpecialSkillCoolTime, false);
+	}
+	else
+	{
+		IsValid = CommonSkillTimerHandle.IsValid();
+		if (!IsValid)
+			GetWorld()->GetTimerManager().SetTimer(CommonSkillTimerHandle, this, &ThisClass::InValidCommonTimer, CommonSkillCoolTime, false);
+	}
+	return IsValid;
 }
 
 void ASkyscraperCharacter::AbleToAct()

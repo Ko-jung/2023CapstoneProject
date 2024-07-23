@@ -8,6 +8,7 @@
 #include "MainCombatWidget.generated.h"
 
 class UImage;
+class UProgressBar;
 /**
  * 
  */
@@ -19,8 +20,20 @@ class SKYSCRAPER_API UMainCombatWidget : public UUserWidget
 public:
 	UFUNCTION()
 		void SetCharacterImage(ECharacterSelect CharacterType);
+
+	// ===== 2019180016 =====
+	UFUNCTION()
+	void UseSkill(bool IsSpecial, float CoolTime);
+	UFUNCTION()
+	void UpdateProgressBar();
+	//=======================
+
 protected:
 	virtual void NativePreConstruct() override;
+
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
+
 private:
 public:
 protected:
@@ -29,5 +42,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterTexture")
 		TArray<TObjectPtr<UTexture2D>> CharacterTextures;
+
+
 private:
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* CommonSkillProgressBar;
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* SpecialSkillProgressBar;
+
+	float  CommonSkillCurrentTime;
+	float SpecialSkillCurrentTime;
+
+	float  CommonSkillRequestTime;
+	float SpecialSkillRequestTime;
 };

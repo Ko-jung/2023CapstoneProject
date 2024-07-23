@@ -85,4 +85,6 @@ AElectricCharacter::AElectricCharacter()
 		SkirtMaterialValue = 10;
 	}
 
+	CommonSkillCoolTime = 7.f;
+	SpecialSkillCoolTime = 12.f;
 }

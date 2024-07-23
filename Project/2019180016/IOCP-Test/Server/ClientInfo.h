@@ -59,6 +59,7 @@ public:
 	// Gaming data, later separated
 	float MaxHP;
 	std::atomic<float> CurrentHp;
+	float Power;	// default 1.0f
 	ECharacter SelectInfo;
 	ECharacterState State;
 

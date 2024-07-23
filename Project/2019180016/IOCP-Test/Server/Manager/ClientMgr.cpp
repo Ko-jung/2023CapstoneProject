@@ -190,15 +190,8 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 	case EItemEffect::Team_PlusHealth:
 	case EItemEffect::Team_Power:
 	case EItemEffect::Team_Speed:
-	{
-		bool IsTeamB = (id % MAXPLAYER) > (MAXPLAYER / 2);
-		for (int i = 0; i < MAXPLAYER / 2; i++)
-		{
-			PUI.UsePlayerSerial = i + IsTeamB * (MAXPLAYER / 2);
-			SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
-		}
-	}
-	break;
+		ProcessTeamItem(id, PUI);
+		break;
 	case EItemEffect::Single_BoostBulletInfinity:
 	case EItemEffect::Single_GodMode:
 	case EItemEffect::Gravity_Up:
@@ -206,7 +199,6 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 		SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
 		break;
 	case EItemEffect::Tile_Break:
-		// 위치 선택 UI 제작되면 제작
 		SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
 		break;
 	default:
@@ -218,6 +210,34 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 	// TimerEvent OffTimer{std::chrono::seconds(Timer),
 	// std::bind(&)};
 	// TimerMgr::Instance()->Insert
+}
+
+void ClientMgr::ProcessTeamItem(int id, PUseItem PUI)
+{
+	bool IsTeamB = (id % MAXPLAYER) > (MAXPLAYER / 2);
+	int RoomId = (id / MAXPLAYER);
+	if (PUI.Effect == (BYTE)EItemEffect::Team_PlusHealth)
+	{
+		for (int i = 0; i < MAXPLAYER / 2; i++)
+		{
+			int ApplyIndex = (i + RoomId * MAXPLAYER) + IsTeamB * (MAXPLAYER / 2);
+			ItemHeal(ApplyIndex, (EItemRareLevel)PUI.ItemLevel);
+		}
+	}
+	else if (PUI.Effect == (BYTE)EItemEffect::Team_Power)
+	{
+		for (int i = 0; i < MAXPLAYER / 2; i++)
+		{
+			int ApplyIndex = (i + RoomId * MAXPLAYER) + IsTeamB * (MAXPLAYER / 2);
+			ItemPower(ApplyIndex, (EItemRareLevel)PUI.ItemLevel);
+		}
+	}
+
+	for (int i = 0; i < MAXPLAYER / 2; i++)
+	{
+		PUI.UsePlayerSerial = i + IsTeamB * (MAXPLAYER / 2);
+		SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
+	}
 }
 
 void ClientMgr::ProcessShieldSphereHeal(int id, PSkillInteract PSI)
@@ -290,20 +310,33 @@ void ClientMgr::ItemHeal(int id, EItemRareLevel level)
 		break;
 	}
 
-	for (int i = 0; i < MAXPLAYER / 2; i++)
-	{
-		// 방번호 0 * 6 + [0, 2] + 0 or 3
-		int TargetId = RoomNum * MAXPLAYER + i + (MAXPLAYER / 2 * IsTeamA);
-		Heal(TargetId, HealCount);
-	}
+	IncreaseMaxHp(id, HealCount, 20);
 
-	for (int i = 0; i < MAXPLAYER; i++)
-	{
-		int TargetId = RoomNum * MAXPLAYER + i;
+	PChangedPlayerHP PCPH(id, m_Clients[id]->GetCurrnetHp());
+	SendPacketToAllSocketsInRoom(RoomNum, &PCPH, sizeof(PCPH));
+}
 
-		PChangedPlayerHP PCPH(TargetId, m_Clients[TargetId]->GetCurrnetHp());
-		SendPacketToAllSocketsInRoom(RoomNum, &PCPH, sizeof(PCPH));
-	}
+void ClientMgr::IncreaseMaxHp(int id, float IncreaseAmount, int Sec)
+{
+	m_Clients[id]->MaxHP += IncreaseAmount;
+	m_Clients[id]->CurrentHp += IncreaseAmount;
+
+	cout << "[" << id << "] Player Increase Max Hp" << endl;
+
+	TimerEvent TE(std::chrono::seconds(Sec), 
+		std::bind(&ClientMgr::DecreaseMaxHp, this, id, IncreaseAmount));
+	TimerMgr::Instance()->Insert(TE);
+}
+
+void ClientMgr::DecreaseMaxHp(int id, float DecreaseAmount)
+{
+	m_Clients[id]->MaxHP -= DecreaseAmount;
+	m_Clients[id]->CurrentHp -= DecreaseAmount;
+	if (m_Clients[id]->CurrentHp < 0.f)
+		m_Clients[id]->CurrentHp = 1.f;
+
+	PChangedPlayerHP PCPH(id, m_Clients[id]->GetCurrnetHp());
+	SendPacketToAllSocketsInRoom(id/MAXPLAYER, &PCPH, sizeof(PCPH));
 }
 
 void ClientMgr::ShieldSphereHeal(int id)
@@ -324,4 +357,37 @@ void ClientMgr::ShieldSphereHeal(int id)
 		PCPH.ChangedPlayerSerial = id % MAXPLAYER;
 		Send(id, &PCPH, PCPH.PacketSize);
 	}
+}
+
+void ClientMgr::ItemPower(int id, EItemRareLevel level)
+{
+	bool IsTeamA = id < MAXPLAYER / 2;
+	int RoomNum = id / MAXPLAYER;
+	float PowerAmount{ 0 };
+	switch (level)
+	{
+	case EItemRareLevel::Normal:	PowerAmount = 1.2f;	break;
+	case EItemRareLevel::Rare:		PowerAmount = 1.4f;	break;
+	case EItemRareLevel::Legend:	PowerAmount = 1.6f;	break;
+	default:
+		break;
+	}
+
+	IncreasePower(id, PowerAmount, 30);
+}
+
+void ClientMgr::IncreasePower(int id, float IncreaseAmount, int Sec)
+{
+	m_Clients[id]->Power *= IncreaseAmount;
+
+	cout << "[" << id << "] Player Increase Max Power" << endl;
+
+	TimerEvent TE(std::chrono::seconds(Sec),
+		std::bind(&ClientMgr::DecreasePower, this, id, 1/IncreaseAmount));
+	TimerMgr::Instance()->Insert(TE);
+}
+
+void ClientMgr::DecreasePower(int id, float DecreaseAmount)
+{
+	m_Clients[id]->Power *= DecreaseAmount;
 }

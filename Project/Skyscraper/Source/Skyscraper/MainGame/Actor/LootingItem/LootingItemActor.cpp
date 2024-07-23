@@ -102,7 +102,7 @@ ALootingItemActor::ALootingItemActor()
 	{ // CreateDefaultSubobject 
 		SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 		SphereComponent->SetupAttachment(BodyStaticMesh);
-		SphereComponent->SetHiddenInGame(false);
+		SphereComponent->SetHiddenInGame(true);
 		SphereComponent->SetSphereRadius(SphereRadius);
 		SphereComponent->AddRelativeLocation(FVector(0.0f, 0.0f, SphereRadius));
 		SphereComponent->SetCollisionResponseToAllChannels(ECR_Overlap);

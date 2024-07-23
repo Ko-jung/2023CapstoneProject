@@ -20,6 +20,8 @@ ATrainingBot::ATrainingBot()
 		NS_DashEffect->SetVisibility(false);
 		BoostMesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 		BoostMesh->SetVisibility(false);
+		NS_BoostEffect->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		NS_BoostEffect->SetVisibility(false);
 	}
 
 	{ // Set Mesh Character

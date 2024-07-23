@@ -3,6 +3,8 @@
 
 #include "FloatingTile.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "Animation/AnimPhysicsSolver.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "GeometryCollection/GeometryCollectionObject.h"
@@ -24,6 +26,19 @@ AFloatingTile::AFloatingTile()
 	GC_Tile = GC_TileRef.Class;
 
 	IsInitProperty = false;
+
+	{
+		NS_BoostEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_BoostEffect"));
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_BoostEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/Boost/NS_BoostSpawn.NS_BoostSpawn'"));
+		if (NS_BoostEffectRef.Succeeded())
+		{
+			NS_BoostEffect->SetAsset(NS_BoostEffectRef.Object);
+		}
+		NS_BoostEffect->SetupAttachment(GetRootComponent());
+		NS_BoostEffect->SetRelativeLocation(FVector(-0.788, 7.19, -607.0f));
+		NS_BoostEffect->SetRelativeRotation(FRotator{ 0.0f,0.0f,0.0f });
+		NS_BoostEffect->SetRelativeScale3D(FVector{ 10.0f });
+	}
 }
 
 void AFloatingTile::Initialize(FVector GetMovementOffset)

@@ -7,6 +7,7 @@
 #include "Skyscraper/MainGame/Interface/Destructible/Collapsible.h"
 #include "FloatingTile.generated.h"
 
+class UNiagaraComponent;
 class UGeometryCollection;
 
 UCLASS()
@@ -77,6 +78,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Geometry")
 		UClass* GC_Tile;
 
+	UPROPERTY()
+		TObjectPtr<UNiagaraComponent> NS_BoostEffect;
 
 public:	
 	// Tick

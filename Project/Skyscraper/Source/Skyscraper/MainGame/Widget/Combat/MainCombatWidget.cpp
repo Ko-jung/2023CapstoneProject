@@ -37,6 +37,11 @@ void UMainCombatWidget::UpdateProgressBar()
 	SpecialSkillProgressBar->SetPercent(UKismetMathLibrary::SafeDivide(SpecialSkillCurrentTime, SpecialSkillRequestTime));
 }
 
+void UMainCombatWidget::InitCoolTime()
+{
+	CommonSkillCurrentTime = SpecialSkillCurrentTime = 0.f;
+}
+
 void UMainCombatWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();

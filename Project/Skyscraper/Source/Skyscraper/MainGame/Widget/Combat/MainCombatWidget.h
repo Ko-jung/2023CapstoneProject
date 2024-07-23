@@ -26,6 +26,7 @@ public:
 	void UseSkill(bool IsSpecial, float CoolTime);
 	UFUNCTION()
 	void UpdateProgressBar();
+	void InitCoolTime();
 	//=======================
 
 protected:

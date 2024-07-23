@@ -8,6 +8,7 @@
 #include "Skyscraper/Network/LobbyMode.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 #include "Skyscraper/MainGame/Actor/Character/SkyscraperCharacter.h"
+#include "Skyscraper/MainGame/Widget/Combat/MainCombatWidget.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -65,6 +66,9 @@ void ULobbyWidget::SpawnNewCharacter(ECharacterSelect ECharacter)
 		PrevPawn->Destroy();
 		Character->FinishSpawning(PrevCharacterTransform);
 		UE_LOG(LogTemp, Warning, TEXT("ECS_ElectricCharacter Spawned"));
+
+		Controller->GetMainCombatWidget()->SetCharacterImage(ECharacter);
+		Controller->GetMainCombatWidget()->InitCoolTime();
 	}
 	else
 	{

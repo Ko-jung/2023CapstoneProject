@@ -57,6 +57,11 @@ ULockOnWidget* ASkyscraperPlayerController::GetLockOnWidget() const
 	return LockOnWidget;
 }
 
+UMainCombatWidget* ASkyscraperPlayerController::GetMainCombatWidget() const
+{
+	return MainCombatWidget;
+}
+
 void ASkyscraperPlayerController::AddChangeWeaponWidget()
 {
 	if(!ChangeWeaponWidget)

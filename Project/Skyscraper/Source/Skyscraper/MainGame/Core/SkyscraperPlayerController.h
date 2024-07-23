@@ -38,6 +38,8 @@ public:
 		UMiniMapWidget* GetMiniMapWidget() const;
 	UFUNCTION(BlueprintCallable)
 		ULockOnWidget* GetLockOnWidget() const;
+	UFUNCTION(BlueprintCallable)
+	UMainCombatWidget* GetMainCombatWidget() const;
 
 	UFUNCTION(BlueprintCallable)
 	void AddChangeWeaponWidget();

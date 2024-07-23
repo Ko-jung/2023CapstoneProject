@@ -28,6 +28,8 @@ public:
 
 	void Heal(int id, float damage);
 	void ItemHeal(int id, EItemRareLevel level);
+	void IncreaseMaxHp(int id, float IncreaseAmount, int Sec);
+	void DecreaseMaxHp(int id, float DecreaseAmount);
 	void ShieldSphereHeal(int id);
 
 	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);

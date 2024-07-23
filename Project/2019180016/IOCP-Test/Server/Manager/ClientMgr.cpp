@@ -188,6 +188,16 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 	switch ((EItemEffect)PUI.Effect)
 	{
 	case EItemEffect::Team_PlusHealth:
+	{
+		bool IsTeamB = (id % MAXPLAYER) > (MAXPLAYER / 2);
+		int RoomId = (id / MAXPLAYER);
+		for (int i = 0; i < MAXPLAYER / 2; i++)
+		{
+			int ApplyIndex = (i + RoomId * MAXPLAYER) + IsTeamB * (MAXPLAYER / 2);
+			ItemHeal(ApplyIndex, (EItemRareLevel)PUI.ItemLevel);
+		}
+		// Break;
+	}
 	case EItemEffect::Team_Power:
 	case EItemEffect::Team_Speed:
 	{
@@ -206,7 +216,6 @@ void ClientMgr::ProcessItem(int id, PUseItem PUI)
 		SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
 		break;
 	case EItemEffect::Tile_Break:
-		// 위치 선택 UI 제작되면 제작
 		SendPacketToAllSocketsInRoom(id, &PUI, sizeof(PUI));
 		break;
 	default:
@@ -290,20 +299,33 @@ void ClientMgr::ItemHeal(int id, EItemRareLevel level)
 		break;
 	}
 
-	for (int i = 0; i < MAXPLAYER / 2; i++)
-	{
-		// 방번호 0 * 6 + [0, 2] + 0 or 3
-		int TargetId = RoomNum * MAXPLAYER + i + (MAXPLAYER / 2 * IsTeamA);
-		Heal(TargetId, HealCount);
-	}
+	IncreaseMaxHp(id, HealCount, 10);
 
-	for (int i = 0; i < MAXPLAYER; i++)
-	{
-		int TargetId = RoomNum * MAXPLAYER + i;
+	PChangedPlayerHP PCPH(id, m_Clients[id]->GetCurrnetHp());
+	SendPacketToAllSocketsInRoom(RoomNum, &PCPH, sizeof(PCPH));
+}
 
-		PChangedPlayerHP PCPH(TargetId, m_Clients[TargetId]->GetCurrnetHp());
-		SendPacketToAllSocketsInRoom(RoomNum, &PCPH, sizeof(PCPH));
-	}
+void ClientMgr::IncreaseMaxHp(int id, float IncreaseAmount, int Sec)
+{
+	m_Clients[id]->MaxHP += IncreaseAmount;
+	m_Clients[id]->CurrentHp += IncreaseAmount;
+
+	cout << "[" << id << "] Player Increase Max Hp" << endl;
+
+	TimerEvent TE(std::chrono::seconds(Sec), 
+		std::bind(&ClientMgr::DecreaseMaxHp, this, id, IncreaseAmount));
+	TimerMgr::Instance()->Insert(TE);
+}
+
+void ClientMgr::DecreaseMaxHp(int id, float DecreaseAmount)
+{
+	m_Clients[id]->MaxHP -= DecreaseAmount;
+	m_Clients[id]->CurrentHp -= DecreaseAmount;
+	if (m_Clients[id]->CurrentHp < 0.f)
+		m_Clients[id]->CurrentHp = 1.f;
+
+	PChangedPlayerHP PCPH(id, m_Clients[id]->GetCurrnetHp());
+	SendPacketToAllSocketsInRoom(id/MAXPLAYER, &PCPH, sizeof(PCPH));
 }
 
 void ClientMgr::ShieldSphereHeal(int id)

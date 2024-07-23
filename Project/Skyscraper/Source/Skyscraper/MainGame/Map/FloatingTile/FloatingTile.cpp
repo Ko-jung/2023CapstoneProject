@@ -22,6 +22,8 @@ AFloatingTile::AFloatingTile()
 
 	ConstructorHelpers::FClassFinder<AActor> GC_TileRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/FlotingTile/BP_GC_Floatingtile.BP_GC_Floatingtile_C'"));
 	GC_Tile = GC_TileRef.Class;
+
+	IsInitProperty = false;
 }
 
 void AFloatingTile::Initialize(FVector GetMovementOffset)
@@ -29,13 +31,25 @@ void AFloatingTile::Initialize(FVector GetMovementOffset)
 	MovementOffset = GetMovementOffset;
 }
 
+void AFloatingTile::InitializeProperty(double speed, float moveTime, float waitTime)
+{
+	Speed = speed;
+
+	MoveTime = moveTime;
+	WaitTime = waitTime;
+	IsInitProperty = true;
+}
+
 void AFloatingTile::SetInitialSetting()
 {
-	// 초기값 설정
-	Speed = UKismetMathLibrary::RandomFloatInRange(0.5, 0.7);
+	if (!IsInitProperty)
+	{
+		// 초기값 설정
+		Speed = UKismetMathLibrary::RandomFloatInRange(0.5, 0.7);
 
-	MoveTime = UKismetMathLibrary::RandomFloatInRange(4.0, 7.0);
-	WaitTime = UKismetMathLibrary::RandomFloatInRange(1.0, 2.0);
+		MoveTime = UKismetMathLibrary::RandomFloatInRange(4.0, 7.0);
+		WaitTime = UKismetMathLibrary::RandomFloatInRange(1.0, 2.0);
+	}
 
 	CurrentTime = 0.0f;
 

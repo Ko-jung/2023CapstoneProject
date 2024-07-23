@@ -58,7 +58,7 @@ void ALobbyMode::BeginPlay()
 	else
 	{
 		m_Socket->InitializeSocket();
-		m_Socket->SetState(ENetworkState::SelectGame);
+		m_Socket->SetState(ENetworkState::Lobby);
 		//m_Socket->InitSocket();
 		m_Socket->Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
 

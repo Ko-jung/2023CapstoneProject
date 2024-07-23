@@ -37,6 +37,13 @@ void AShield::SetSpawnCharacter(AShieldCharacter* Character)
 
 	if (Tags.IsEmpty())
 	{
-		Tags.Add(SpawnCharacter->Tags[0]);
+		if (!SpawnCharacter->Tags.IsEmpty())
+		{
+			Tags.Add(SpawnCharacter->Tags[0]);
+		}
+		else
+		{
+			Tags.Add(FName("TeamA"));
+		}
 	}
 }

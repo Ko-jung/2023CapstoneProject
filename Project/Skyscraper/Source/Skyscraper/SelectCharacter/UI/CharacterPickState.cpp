@@ -121,31 +121,31 @@ void UCharacterPickState::SelectInfoUpdate()
 		// Set Character portrait
 		if (CharacterNum == ECharacterSelect::ECS_Null)
 		{
-			CharacterImgs[i]->SetBrushFromTexture(QuestionImages);
+			CharacterImgs[num]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			CharacterImgs[i]->SetBrushFromTexture(*CharacterImages.Find(CharacterNum));
+			CharacterImgs[num]->SetBrushFromTexture(*CharacterImages.Find(CharacterNum));
 		}
 
 		// Set Melee Weapon portrait
 		if (MeleeWeaponNum == EMeleeSelect::EMS_NONE)
 		{
-			MeleeImgs[i]->SetBrushFromTexture(QuestionImages);
+			MeleeImgs[num]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			MeleeImgs[i]->SetBrushFromTexture(*MeleeImages.Find(MeleeWeaponNum));
+			MeleeImgs[num]->SetBrushFromTexture(*MeleeImages.Find(MeleeWeaponNum));
 		}
 
 		// Set Melee Weapon portrait
 		if (RangeWeaponNum == ERangeSelect::ERS_NONE)
 		{
-			RangeImgs[i]->SetBrushFromTexture(QuestionImages);
+			RangeImgs[num]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			RangeImgs[i]->SetBrushFromTexture(*RangeImages.Find(RangeWeaponNum));
+			RangeImgs[num]->SetBrushFromTexture(*RangeImages.Find(RangeWeaponNum));
 		}
 	}
 }

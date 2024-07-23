@@ -99,7 +99,10 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 	{
 		NS_DashEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_DashEffect"));
 		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_DashEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/DashEffect/NS_DashEffect.NS_DashEffect'"));
-		NS_DashEffect->SetAsset(NS_DashEffectRef.Object);
+		if(NS_DashEffectRef.Succeeded())
+		{
+			NS_DashEffect->SetAsset(NS_DashEffectRef.Object);
+		}
 		NS_DashEffect->SetupAttachment(FollowCamera);
 		NS_DashEffect->SetRelativeLocation(FVector{ 120.0f,0.f,0.f });
 		NS_DashEffect->SetRelativeRotation(FRotator{ 90.0f,0.0f,0.0f });
@@ -284,6 +287,20 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 	CommonSkillCoolTime = -1.f;
 	SpecialSkillCoolTime = -1.f;
+
+	{
+		NS_BoostEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_BoostEffect"));
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_BoostEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/Boost/NS_BoostSpawn.NS_BoostSpawn'"));
+		if (NS_BoostEffectRef.Succeeded())
+		{
+			NS_BoostEffect->SetAsset(NS_BoostEffectRef.Object);
+		}
+		NS_BoostEffect->SetupAttachment(BoostMesh, TEXT("BoostStartSocket"));
+		NS_BoostEffect->SetRelativeLocation(FVector(-0.788,7.19,-0.019f));
+		NS_BoostEffect->SetRelativeRotation(FRotator{ 0.0f,0.0f,-90.0f });
+		NS_BoostEffect->SetRelativeScale3D(FVector{ 0.1f,0.1f,0.25f });
+		NS_DashEffect->SetHiddenInGame(true);
+	}
 }
 
 void ASkyscraperCharacter::BeginPlay()
@@ -301,6 +318,23 @@ void ASkyscraperCharacter::BeginPlay()
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	MainGameMode = Cast<AMainGameMode>(gamemode);
 	// UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::BeginPlay() Cast<AMainGameMode>(gamemode) result: %d"), MainGameMode ? 1 : 0);
+
+	SetBoostEffectVisibility(false);
+}
+
+void ASkyscraperCharacter::SetBoostEffectVisibility(bool bVisible)
+{
+	if (!NS_BoostEffect) return;
+
+	if(bVisible)
+	{
+		NS_BoostEffect->SetHiddenInGame(false);
+		NS_BoostEffect->Activate(true);
+	}
+	else
+	{
+		NS_BoostEffect->SetHiddenInGame(true);
+	}
 }
 
 void ASkyscraperCharacter::Tick(float DeltaSeconds)

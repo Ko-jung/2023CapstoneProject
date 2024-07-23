@@ -16,6 +16,11 @@ class SKYSCRAPER_API AWindCharacter : public ASkyscraperCharacter
 public:
 	AWindCharacter();
 
+	virtual void SetBoostEffectVisibility(bool bVisible) override;
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TObjectPtr<UNiagaraComponent> NS_BoostEffectRight;
+
 	// 2019180016
 	// 
 	// ==========

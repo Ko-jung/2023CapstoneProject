@@ -3,6 +3,8 @@
 
 #include "WindCharacter.h"
 
+#include "NiagaraComponent.h"
+
 AWindCharacter::AWindCharacter() 
 {
 	CharacterType = ECharacterSelect::ECS_WindCharacter;
@@ -69,5 +71,36 @@ AWindCharacter::AWindCharacter()
 		// Interaction
 		const ConstructorHelpers::FObjectFinder<UAnimMontage> AM_InteractionRef(TEXT("/Script/Engine.AnimMontage'/Game/2019180031/MainGame/Animation/Wind/Interaction/AM_Wind_Interaction.AM_Wind_Interaction'"));
 		*CharacterAnimMontages.Find(ECharacterAnimMontage::ECAM_Interaction) = AM_InteractionRef.Object;
+	}
+
+	{
+		NS_BoostEffect->SetRelativeLocation(FVector(-0.788,0.37,0.5));
+		NS_BoostEffect->SetRelativeRotation(FRotator{ 0.0f,-90.0f,-90.0f });
+		
+
+		NS_BoostEffectRight = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_BoostEffectRight"));
+		NS_BoostEffectRight->SetAsset(NS_BoostEffect->GetAsset());
+		NS_BoostEffectRight->SetupAttachment(BoostMesh, TEXT("BoostStartSocketRight"));
+		NS_BoostEffectRight->SetRelativeLocation(FVector(-0.788, 7.19, -0.019f));
+		NS_BoostEffectRight->SetRelativeRotation(FRotator{ 0.0f,0.0f,-90.0f });
+		NS_BoostEffectRight->SetRelativeScale3D(FVector{ 0.1f,0.1f,0.25f });
+		NS_BoostEffectRight->SetHiddenInGame(true);
+	}
+}
+
+void AWindCharacter::SetBoostEffectVisibility(bool bVisible)
+{
+	Super::SetBoostEffectVisibility(bVisible);
+
+	if (!NS_BoostEffectRight) return;
+
+	if (bVisible)
+	{
+		NS_BoostEffectRight->SetHiddenInGame(false);
+		NS_BoostEffectRight->Activate(true);
+	}
+	else
+	{
+		NS_BoostEffectRight->SetHiddenInGame(true);
 	}
 }

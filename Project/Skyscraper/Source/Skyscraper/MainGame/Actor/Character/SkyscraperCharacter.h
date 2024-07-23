@@ -162,6 +162,8 @@ public:
 	void SyncTransformAndAnim(FTransform t, float s, FRotator r);
 	void SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum);
 
+	virtual void SetBoostEffectVisibility(bool bVisible);
+
 	// Item
 	void SingleGodMode(EItemRareLevel EIRL);
 	// ================
@@ -345,6 +347,9 @@ protected:
 
 	UPROPERTY()
 		TArray<EItemEffect> CurrentItemEffects;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+		TObjectPtr<UNiagaraComponent> NS_BoostEffect;
 
 private:
 	

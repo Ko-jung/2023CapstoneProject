@@ -171,6 +171,12 @@ void UJetpackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	{ 
 		if (bChangeCameraFOV)
 		{
+			if(JetpackFuel <= 0.0f)
+			{
+				bStartDash = false;
+				ChangeFOVAlpha = 1 - ChangeFOVAlpha;
+			}
+
 			if(bStartDash)
 			{
 				ChangeFOVAlpha += (DeltaTime * 2.0f);
@@ -245,6 +251,8 @@ void UJetpackComponent::SetFuel(double NewFuel)
 
 void UJetpackComponent::SetHoveringMode(bool bHover)
 {
+	if (!OwnerCharacter) return;
+
 	if (bHover)
 	{
 		// Hover 중이 아니었다면
@@ -258,6 +266,11 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 			GetOwnerCharacterMovement()->MaxAcceleration = 50000.0f;
 
 			OwnerCharacter->GetAnimInstance()->bIsDescent = false;
+
+			// 이펙트
+			{
+				OwnerCharacter->SetBoostEffectVisibility(true);
+			}
 
 			// 소리
 			{
@@ -292,6 +305,11 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 		{
 			BoostStartAudioComponent->Stop();
 		}
+
+		// 이펙트
+		{
+			OwnerCharacter->SetBoostEffectVisibility(false);
+		}
 	}
 }
 
@@ -324,7 +342,11 @@ void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 		{
 			BoostStartAudioComponent->Play(1.0f);
 		}
-		
+
+		// 이펙트
+		{
+			OwnerCharacter->SetBoostEffectVisibility(true);
+		}
 	}
 	else
 	{
@@ -348,6 +370,11 @@ void UJetpackComponent::HoverStop()
 		if (BoostStartAudioComponent->IsPlaying())
 		{
 			BoostStartAudioComponent->Stop();
+		}
+
+		// 이펙트
+		{
+			OwnerCharacter->SetBoostEffectVisibility(false);
 		}
 	}
 	
@@ -378,7 +405,10 @@ void UJetpackComponent::DashFast()
 			{
 				BoostStartAudioComponent->Play(1.0f);
 			}
-			
+			// 이펙트
+			{
+				OwnerCharacter->SetBoostEffectVisibility(true);
+			}
 		}
 		SetHoveringMode(true);
 		
@@ -411,6 +441,12 @@ void UJetpackComponent::DashStop()
 	{
 		BoostStartAudioComponent->Stop();
 	}
+
+	// 이펙트
+	{
+		OwnerCharacter->SetBoostEffectVisibility(false);
+	}
+	
 }
 
 void UJetpackComponent::Dodge_Fwd()

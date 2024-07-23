@@ -3,6 +3,8 @@
 
 #include "RadarCharacter.h"
 
+#include "NiagaraComponent.h"
+
 ARadarCharacter::ARadarCharacter() 
 {
 	CharacterType = ECharacterSelect::ECS_DetectionCharacter;
@@ -81,5 +83,9 @@ ARadarCharacter::ARadarCharacter()
 		SkirtMaterial = SkirtMaterialAsset.Object;
 
 		SkirtMaterialValue = 13;
+	}
+
+	// boost effect
+	{
 	}
 }

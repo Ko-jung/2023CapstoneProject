@@ -11,6 +11,7 @@ ClientInfo::ClientInfo(int ClientNum):
 	//m_iRoomNum(-1),
 	MaxHP(1000.f),
 	CurrentHp(1000.f),
+	Power(1.f),
 	SelectInfo(ECharacter::NullCharacter),
 	State(ECharacterState::LIVING),
 	IsOverlappedShieldSphere(false),

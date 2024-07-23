@@ -23,6 +23,7 @@ public:
 	void ProcessMove(int id, PPlayerPosition PPP);
 	void ChangeState(int id, ECharacterState state);
 	void ProcessItem(int id, PUseItem PUI);
+	void ProcessTeamItem(int id, PUseItem PUI);
 	void ProcessShieldSphereHeal(int id, PSkillInteract PSI);
 	float ProcessShieldDamaged(int id, PDamagedSkillActor PDSA, float Damage);
 
@@ -31,6 +32,10 @@ public:
 	void IncreaseMaxHp(int id, float IncreaseAmount, int Sec);
 	void DecreaseMaxHp(int id, float DecreaseAmount);
 	void ShieldSphereHeal(int id);
+
+	void ItemPower(int id, EItemRareLevel level);
+	void IncreasePower(int id, float IncreaseAmount, int Sec);
+	void DecreasePower(int id, float DecreaseAmount);
 
 	void SendPacketToAllSocketsInRoom(int roomId, Packet* p, int packetSize);
 	void SendPacketToAllExceptSelf(int id, Packet* p, int packetSize);

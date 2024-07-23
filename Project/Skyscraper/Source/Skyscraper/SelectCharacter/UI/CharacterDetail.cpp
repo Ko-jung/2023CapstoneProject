@@ -57,9 +57,9 @@ void UCharacterDetail::UpdateCharacterButton()
 	for (int i = 0; i < MAXPLAYER / 2; i++)
 	{
 		int index = i + IsRight * MAXPLAYER / 2;
-		if (CharacterButtons.Find(PlayerSelectInfos[i]->PickedCharacter))
+		if (CharacterButtons.Find((ECharacterSelect)PlayerSelectInfos[i]->PickedCharacter))
 		{
-			CharacterButtons[PlayerSelectInfos[i]->PickedCharacter]->SetIsEnabled(false);
+			CharacterButtons[(ECharacterSelect)PlayerSelectInfos[i]->PickedCharacter]->SetIsEnabled(false);
 		}
 	}
 }

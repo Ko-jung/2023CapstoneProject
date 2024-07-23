@@ -49,7 +49,7 @@ void ASkillSyncTestGameMode::ProcessFunc()
 			{
 				SerialNum = NewPlayer->ClientNum;
 				PPlayerSelectInfo* NewSelectInfo = new PPlayerSelectInfo;
-				NewSelectInfo->PickedCharacter = PlayerCharacter;
+				NewSelectInfo->PickedCharacter = (BYTE)PlayerCharacter;
 				NewSelectInfo->PickedMeleeWeapon = EMeleeSelect::EMS_Dagger;
 				NewSelectInfo->PickedRangeWeapon = ERangeSelect::ERS_SMG;
 				NewSelectInfo->ClientNum = SerialNum;
@@ -66,7 +66,7 @@ void ASkillSyncTestGameMode::ProcessFunc()
 				if (PlayerSelectInfo.IsValidIndex(NewPlayer->ClientNum) && Characters.IsValidIndex(NewPlayer->ClientNum))
 				{
 					PPlayerSelectInfo* NewSelectInfo = new PPlayerSelectInfo;
-					NewSelectInfo->PickedCharacter = PlayerCharacter;
+					NewSelectInfo->PickedCharacter = (BYTE)PlayerCharacter;
 					NewSelectInfo->PickedMeleeWeapon = EMeleeSelect::EMS_Dagger;
 					NewSelectInfo->PickedRangeWeapon = ERangeSelect::ERS_SMG;
 					NewSelectInfo->ClientNum = NewPlayer->ClientNum;

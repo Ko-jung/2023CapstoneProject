@@ -498,6 +498,11 @@ uint32 NetworkManager::Run()
 			if (RemainLen >= p->PacketSize)
 			{
 				ProcessRecv(p);
+				if (p->PacketSize == 0)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("NetworkManager::Run() p->PacketSize == 0"));
+					break;
+				}
 				ReciveData += p->PacketSize;
 				RemainLen -= p->PacketSize;
 			}

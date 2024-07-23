@@ -265,14 +265,15 @@ struct PPlayerSelectInfo : Packet
 {
 	// GENERATED_BODY()
 
-	ECharacterSelect PickedCharacter;
+	BYTE PickedCharacter;
+	//ECharacterSelect PickedCharacter;
 	EMeleeSelect PickedMeleeWeapon;
 	ERangeSelect PickedRangeWeapon;
 	BYTE ClientNum;
 
 	PPlayerSelectInfo(ECharacterSelect c, EMeleeSelect meele, ERangeSelect range, BYTE sendClientNum) :
 		Packet(COMP_OP::OP_SELECTWEAPONINFO),
-		PickedCharacter(c),
+		PickedCharacter((BYTE)c),
 		PickedMeleeWeapon(meele),
 		PickedRangeWeapon(range),
 		ClientNum(sendClientNum)
@@ -281,7 +282,7 @@ struct PPlayerSelectInfo : Packet
 	}
 
 	PPlayerSelectInfo() : Packet(COMP_OP::OP_SELECTWEAPONINFO),
-		PickedCharacter(ECharacterSelect::ECS_Null),
+		PickedCharacter((BYTE)ECharacterSelect::ECS_Null),
 		PickedMeleeWeapon(EMeleeSelect::EMS_NONE),
 		PickedRangeWeapon(ERangeSelect::ERS_NONE),
 		ClientNum(-1)

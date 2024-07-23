@@ -670,8 +670,6 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 		NewMiddleTileLocation.Y += (offset * UKismetMathLibrary::DegCos(CollapseDirectionAngle * 60 + 30));
 
 		CurrentMiddleTile = GetLineTileFromAngleAndDistance(0, 0, NewMiddleTileLocation);
-
-		DrawDebugBox(GetWorld(), NewMiddleTileLocation, FVector{ 20.0f,20.0f,1000.0f }, FColor::Red, true, 20.0f, 0, 10);
 	}
 
 	// 파괴 영역에 해당하는 육각타일 파괴 및 해당 육각타일 아래 건물 / 부유타일 삭제
@@ -685,7 +683,6 @@ void AHexagonTile::CollapseTilesAndActors(int CollapseLevel)
 			if (TileDistance > offset * CollapseRemainDistance)
 			{
 				CollapseTileIndexes.Add(i);
-				DrawDebugBox(GetWorld(), Tiles[i]->GetRelativeLocation(), FVector{20.0f,20.0f,1000.0f}, FColor::Blue, true, 20.0f, 0, 10);
 				//CollapseTile(i);
 				//i -= 1;
 			}

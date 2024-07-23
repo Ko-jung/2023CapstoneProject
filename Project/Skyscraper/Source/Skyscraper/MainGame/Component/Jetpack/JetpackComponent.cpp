@@ -146,7 +146,7 @@ void UJetpackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel2));
 
 
-		EDrawDebugTrace::Type DrawDebugType{EDrawDebugTrace::ForDuration};
+		EDrawDebugTrace::Type DrawDebugType{EDrawDebugTrace::None};
 
 		FHitResult OutHit{};
 		bool HitResult = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true, IgnoreActors, DrawDebugType, OutHit, true, FLinearColor::Red, FLinearColor::Blue, 5.0f);

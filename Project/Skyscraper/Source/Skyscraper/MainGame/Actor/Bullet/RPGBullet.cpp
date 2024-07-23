@@ -93,7 +93,7 @@ void ARPGBullet::BulletExplode()
 
 	TArray<FHitResult> Hits;
 	bool IsHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 350.f,
-		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::None, Hits, true);
 
 	TArray<AActor*> UniqueActors;
 	for (const auto& HitResult : Hits)
@@ -152,7 +152,7 @@ void ARPGBullet::BulletExplode()
 	TArray<UPrimitiveComponent*> OutHitComponent;
 	TArray<int32> HISMIndex;
 	bool IsComponentHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 350.f,
-		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_WorldDynamic), false, IgnoreActors, EDrawDebugTrace::ForDuration, Hits, true);
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_WorldDynamic), false, IgnoreActors, EDrawDebugTrace::None, Hits, true);
 
 	for (const auto& HitResult : Hits)
 	{

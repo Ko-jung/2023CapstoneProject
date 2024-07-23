@@ -60,6 +60,9 @@ void UHealthComponent::BeginPlay()
 		{
 			HealthBarWidgetComponent->SetVisibility(false);
 		}
+
+		//TODO: DELETELATER
+		HealthBarWidgetComponent->SetVisibility(false);
 	}
 
 	{ // == create widget and attach to owner

@@ -119,13 +119,13 @@ void UCharacterPickState::SelectInfoUpdate()
 		auto RangeWeaponNum = PlayerSelectInfos[num]->PickedRangeWeapon;
 
 		// Set Character portrait
-		if (CharacterNum == ECharacterSelect::ECS_Null)
+		if (CharacterNum == (BYTE)ECharacterSelect::ECS_Null)
 		{
 			CharacterImgs[num]->SetBrushFromTexture(QuestionImages);
 		}
 		else
 		{
-			CharacterImgs[num]->SetBrushFromTexture(*CharacterImages.Find(CharacterNum));
+			CharacterImgs[num]->SetBrushFromTexture(*CharacterImages.Find((ECharacterSelect)CharacterNum));
 		}
 
 		// Set Melee Weapon portrait

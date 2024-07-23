@@ -10,7 +10,7 @@ UKatanaComponent::UKatanaComponent()
 	MeleeSelect = EMeleeSelect::EMS_Katana;
 
 	AttackSound = TEXT("KatanaAttack");
-	FinalAttackSound = TEXT("KatanaHit_last");
+	FinalAttackSound = TEXT("KatanaAttack");
 
 	DamagedSound = TEXT("KatanaHit");
 	FinalDamagedSound = TEXT("KatanaHit_last");

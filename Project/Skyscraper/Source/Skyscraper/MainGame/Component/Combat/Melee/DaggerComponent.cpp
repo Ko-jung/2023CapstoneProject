@@ -10,7 +10,7 @@ UDaggerComponent::UDaggerComponent()
 	MeleeSelect = EMeleeSelect::EMS_Dagger;
 
 	AttackSound = TEXT("DaggerAttack");
-	FinalAttackSound = TEXT("DaggerHit_last");
+	FinalAttackSound = TEXT("DaggerAttack");
 
 	DamagedSound = TEXT("DaggerHit");
 	FinalDamagedSound = TEXT("DaggerHit_last");

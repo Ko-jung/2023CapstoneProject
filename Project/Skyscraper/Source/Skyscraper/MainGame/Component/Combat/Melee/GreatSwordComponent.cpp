@@ -10,7 +10,7 @@ UGreatSwordComponent::UGreatSwordComponent()
 	MeleeSelect = EMeleeSelect::EMS_GreatSword;
 
 	AttackSound = TEXT("SwordAttack");
-	FinalAttackSound = TEXT("SwordHit_last");
+	FinalAttackSound = TEXT("SwordAttack");
 
 	DamagedSound = TEXT("SwordHit");
 	FinalDamagedSound = TEXT("SwordHit_last");

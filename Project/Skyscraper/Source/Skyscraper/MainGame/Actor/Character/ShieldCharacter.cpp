@@ -2,6 +2,7 @@
 
 
 #include "Skyscraper/MainGame/Actor/Character/ShieldCharacter.h"
+#include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
 AShieldCharacter::AShieldCharacter()
 {
@@ -83,11 +84,17 @@ AShieldCharacter::AShieldCharacter()
 	}
 
 	IsCanUseShield = true;
+
+	//CommonSkillCoolTime = 5.f;
+	SpecialSkillCoolTime = 15.f;
 }
 
 void AShieldCharacter::BreakShield()
 {
 	IsCanUseShield = false;
+
+	GetPlayerController()->CastingSkill(false, 10);
+	GetWorld()->GetTimerManager().SetTimer(CommonSkillTimerHandle, this, &ThisClass::InValidCommonTimer, 10.f, false);
 
 	GetWorld()->GetTimerManager().SetTimer(UnableActTimerHandle, [this]() {
 		IsCanUseShield = true;

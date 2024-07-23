@@ -86,6 +86,9 @@ AWindCharacter::AWindCharacter()
 		NS_BoostEffectRight->SetRelativeScale3D(FVector{ 0.1f,0.1f,0.25f });
 		NS_BoostEffectRight->SetHiddenInGame(true);
 	}
+
+	CommonSkillCoolTime = 5.f;
+	SpecialSkillCoolTime = 15.f;
 }
 
 void AWindCharacter::SetBoostEffectVisibility(bool bVisible)

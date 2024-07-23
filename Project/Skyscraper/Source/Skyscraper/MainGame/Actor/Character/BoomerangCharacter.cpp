@@ -87,4 +87,7 @@ ABoomerangCharacter::ABoomerangCharacter()
 		Boomerang_L->SetStaticMesh(SmallBoomerangRef.Object);
 		Boomerang_L->SetupAttachment(BoostMesh, TEXT("DriverLSocket"));
 	}
+
+	CommonSkillCoolTime = 10.f;
+	SpecialSkillCoolTime = 25.f;
 }

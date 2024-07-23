@@ -88,4 +88,7 @@ ARadarCharacter::ARadarCharacter()
 	// boost effect
 	{
 	}
+
+	CommonSkillCoolTime = 7.f;
+	SpecialSkillCoolTime = 15.f;
 }

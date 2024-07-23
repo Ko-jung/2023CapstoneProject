@@ -178,6 +178,14 @@ void ASkyscraperPlayerController::SetItemImage(EItemEffect ItemEffect)
 	}
 }
 
+void ASkyscraperPlayerController::CastingSkill(bool IsSpecialSkill, float CoolTime)
+{
+	if (MainCombatWidget)
+	{
+		MainCombatWidget->UseSkill(IsSpecialSkill, CoolTime);
+	}
+}
+
 void ASkyscraperPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

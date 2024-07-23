@@ -39,6 +39,9 @@ AAssassinCharacter::AAssassinCharacter()
 	// 	// CharacterAnimMontages.Add(ECharacterAnimMontage::ECAM_SpecialSkill, AM_SpecialRef.Object);
 	// }
 	// // ========================================
+
+	CommonSkillCoolTime = 12.f;
+	SpecialSkillCoolTime = 15.f;
 }
 
 void AAssassinCharacter::CharacterAttackEvent()

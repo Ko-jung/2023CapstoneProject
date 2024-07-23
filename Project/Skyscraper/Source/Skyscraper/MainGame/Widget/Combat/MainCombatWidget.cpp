@@ -4,6 +4,8 @@
 #include "MainCombatWidget.h"
 
 #include "Components/Image.h"
+#include "Components/ProgressBar.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UMainCombatWidget::SetCharacterImage(ECharacterSelect CharacterType)
 {
@@ -13,6 +15,26 @@ void UMainCombatWidget::SetCharacterImage(ECharacterSelect CharacterType)
 	{
 		CharacterImage->SetBrushFromTexture(CharacterTextures[static_cast<int>(CharacterType)]);
 	}
+}
+
+void UMainCombatWidget::UseSkill(bool IsSpecial, float CoolTime)
+{
+	if (CoolTime < 0.f) return;
+
+	if (IsSpecial)
+	{
+		SpecialSkillCurrentTime = SpecialSkillRequestTime = CoolTime;
+	}
+	else
+	{
+		CommonSkillCurrentTime = CommonSkillRequestTime = CoolTime;
+	}
+}
+
+void UMainCombatWidget::UpdateProgressBar()
+{
+	CommonSkillProgressBar->SetPercent(UKismetMathLibrary::SafeDivide(CommonSkillCurrentTime, CommonSkillRequestTime));
+	SpecialSkillProgressBar->SetPercent(UKismetMathLibrary::SafeDivide(SpecialSkillCurrentTime, SpecialSkillRequestTime));
 }
 
 void UMainCombatWidget::NativePreConstruct()
@@ -41,4 +63,21 @@ void UMainCombatWidget::NativePreConstruct()
 
 	static UTexture2D* WindTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/character/wind.wind'"));
 	CharacterTextures[static_cast<int>(ECharacterSelect::ECS_WindCharacter)] = WindTexture;
+}
+
+void UMainCombatWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	if (CommonSkillCurrentTime > 0.f)
+	{
+		CommonSkillCurrentTime -= InDeltaTime;
+		if (CommonSkillCurrentTime < 0.f) CommonSkillCurrentTime = 0.f;
+	}
+	if (SpecialSkillCurrentTime > 0.f)
+	{
+		SpecialSkillCurrentTime -= InDeltaTime;
+		if (SpecialSkillCurrentTime < 0.f) SpecialSkillCurrentTime = 0.f;
+	}
+
+	UpdateProgressBar();
 }

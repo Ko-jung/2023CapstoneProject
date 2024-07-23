@@ -124,6 +124,11 @@ void UCombatSystemComponent::SetInitialSelect(EMeleeSelect eMeleeSelect, ERangeS
 }
 
 
+void UCombatSystemComponent::ForFirstBeginPlay()
+{
+	bIsFirstTick = false;
+}
+
 // Called when the game starts
 void UCombatSystemComponent::BeginPlay()
 {
@@ -152,6 +157,22 @@ void UCombatSystemComponent::BeginPlay()
 
 		// ...	
 	}
+
+	if(ChangeWeaponAudioComponent)
+	{
+		if(OwnerCharacter)
+		{
+			if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+			{
+				if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("ChangeWeapon")))
+				{
+					ChangeWeaponAudioComponent->SetSound(Sound);
+				}
+			}
+		}
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(ForFirstTimerHandle, this, &ThisClass::ForFirstBeginPlay, 0.1f, false, 0.5f);
 }
 
 void UCombatSystemComponent::AddInputMappingContext()
@@ -161,8 +182,6 @@ void UCombatSystemComponent::AddInputMappingContext()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(IMC_CombatSystem, 0);
-			
-			
 		}
 	}
 }
@@ -195,16 +214,18 @@ void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)
 		return;
 	}
 
-	if(MainWeaponComponent)
+	if(!bIsFirstTick)
 	{
-		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		if (ChangeWeaponAudioComponent)
 		{
-			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("ChangeWeapon")))
+			if (ChangeWeaponAudioComponent->IsPlaying())
 			{
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+				ChangeWeaponAudioComponent->Stop();
 			}
+			ChangeWeaponAudioComponent->Play();
 		}
 	}
+	
 	
 
 	// 무기를 착용 중일때는 기존 무기 Input 및 무기 제거

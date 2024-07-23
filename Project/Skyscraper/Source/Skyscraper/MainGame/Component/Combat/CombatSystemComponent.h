@@ -88,8 +88,12 @@ public:
 	UPROPERTY()
 		TObjectPtr<class UAudioComponent> ChangeWeaponAudioComponent;
 	
+	bool bIsFirstTick = true;
 
+	UPROPERTY()
+	FTimerHandle ForFirstTimerHandle;
 protected:
+	void ForFirstBeginPlay();
 	// Called when the game starts
 	virtual void BeginPlay() override;
 

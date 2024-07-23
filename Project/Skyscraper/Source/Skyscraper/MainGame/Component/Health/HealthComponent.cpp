@@ -75,19 +75,23 @@ void UHealthComponent::BeginPlay()
 	// 생성 시 Player엔 controller가 없다. 후에 불러줄 예정
 	AddWidget();
 
-	// 초기 및 부활 시 부활 사운드 실행
+	// 게임 초기 시작때에는 소리가 안들리도록 및 부활 시 부활 사운드 실행
 	{
-		if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		if(GetWorld()->GetTimeSeconds() >= 0.5f)
 		{
-			if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Revive")))
+			UE_LOG(LogTemp, Warning, TEXT("%f"), GetWorld()->GetTimeSeconds());
+			if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
 			{
-				if(OwnerCharacter)
+				if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Revive")))
 				{
-					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(),FRotator{});
+					if (OwnerCharacter)
+					{
+						UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{});
+					}
 				}
-				
 			}
 		}
+		
 	}
 }
 

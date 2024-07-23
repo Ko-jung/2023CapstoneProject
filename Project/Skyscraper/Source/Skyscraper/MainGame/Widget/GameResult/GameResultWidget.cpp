@@ -43,9 +43,15 @@ void UGameResultWidget::NativeConstruct()
 
 void UGameResultWidget::GoToLobby()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), FName("LobbyLevel"));
-	//auto gamemode = UGameplayStatics::GetGameMode(this);
-	//Cast<AMainGameMode>(gamemode)->GoToLobby();
+	auto GameMode = UGameplayStatics::GetGameMode(this);
+	if (GameMode)
+	{
+		Cast<AMainGameMode>(GameMode)->GoToLobby();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGameResultWidget::GoToLobby() GameMode is nullptr"));
+	}
 }
 
 

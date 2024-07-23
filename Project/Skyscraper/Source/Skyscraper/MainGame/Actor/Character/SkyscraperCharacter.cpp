@@ -300,7 +300,7 @@ void ASkyscraperCharacter::BeginPlay()
 
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	MainGameMode = Cast<AMainGameMode>(gamemode);
-	UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::BeginPlay() Cast<AMainGameMode>(gamemode) result: %d"), MainGameMode ? 1 : 0);
+	// UE_LOG(LogClass, Warning, TEXT("ASkyscraperCharacter::BeginPlay() Cast<AMainGameMode>(gamemode) result: %d"), MainGameMode ? 1 : 0);
 }
 
 void ASkyscraperCharacter::Tick(float DeltaSeconds)

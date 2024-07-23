@@ -338,7 +338,6 @@ void AMainGameMode::ProcessFunc()
 
 void AMainGameMode::GoToLobby()
 {
-
 	UGameplayStatics::OpenLevel(GetWorld(), FName("LobbyLevel"));
 }
 

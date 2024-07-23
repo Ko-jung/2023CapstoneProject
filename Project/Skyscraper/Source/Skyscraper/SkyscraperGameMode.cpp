@@ -9,6 +9,7 @@
 #include "Skyscraper/SelectCharacter/Core/SelectCharacterController.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 ASkyscraperGameMode::ASkyscraperGameMode()
 {
@@ -60,18 +61,11 @@ void ASkyscraperGameMode::ProcessFunc()
 			break;
 		case (BYTE)COMP_OP::OP_STARTGAME:
 		{
-			USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
-			instance->SetSelectInfo(PlayerSelectInfo);
-			instance->SetSocket(m_Socket);
-			instance->SetIsConnect(GetIsConnected());
-			instance->SetSerialNum(SerialNum);
-
-			//FString Level = L"/Game/MainGame/Level/MapCreateLevel";
-			//UGameplayStatics::OpenLevel(this, *Level);
-
-			UGameplayStatics::OpenLevel(this, FName("MapCreateLevel"));
-		}
+			GetWorld()->GetTimerManager().ClearTimer(CountdownTimer);
+			GetWorld()->GetTimerManager().SetTimer(CountdownFinishTimer, this, &ThisClass::WorldTranslate, 1.f, true);
+			PlayCountdownFinishSound();
 			break;
+		}
 		default:
 			break;
 		}
@@ -116,6 +110,11 @@ void ASkyscraperGameMode::Tick(float Deltatime)
 	if (SelectTimer > 0.001f)
 	{
 		SelectTimer -= Deltatime;
+
+		if (SelectTimer < 5.f && !CountdownTimer.IsValid())
+		{
+			GetWorld()->GetTimerManager().SetTimer(CountdownTimer, this, &ThisClass::PlayCountdownSound, 1.f, true);
+		}
 	}
 
 	ProcessFunc();
@@ -149,6 +148,32 @@ void ASkyscraperGameMode::SetWidgetPlayerIDs()
 {
 	USocketGameInstance* Inst = Cast<USocketGameInstance>(GetWorld()->GetGameInstance());
 	Controller->SetPlayerIDs(Inst->PlayerIDs, SerialNum);
+}
+
+void ASkyscraperGameMode::PlayCountdownSound()
+{
+	USoundBase* BtnSound = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>()->GetSkyscraperSound(FName("CountDown_other"));
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), BtnSound, FVector{}, FRotator::ZeroRotator);
+}
+
+void ASkyscraperGameMode::PlayCountdownFinishSound()
+{
+	USoundBase* BtnSound = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>()->GetSkyscraperSound(FName("CountDown_last"));
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), BtnSound, FVector{}, FRotator::ZeroRotator);
+}
+
+void ASkyscraperGameMode::WorldTranslate()
+{
+	USocketGameInstance* instance = static_cast<USocketGameInstance*>(GetGameInstance());
+	instance->SetSelectInfo(PlayerSelectInfo);
+	instance->SetSocket(m_Socket);
+	instance->SetIsConnect(GetIsConnected());
+	instance->SetSerialNum(SerialNum);
+
+	//FString Level = L"/Game/MainGame/Level/MapCreateLevel";
+	//UGameplayStatics::OpenLevel(this, *Level);
+
+	UGameplayStatics::OpenLevel(this, FName("MapCreateLevel"));
 }
 
 void ASkyscraperGameMode::SendSelectInfo()

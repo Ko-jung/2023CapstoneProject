@@ -19,6 +19,9 @@ public:
 
 	virtual void Tick(FGeometry MyGeometry, float InDeltaTime);
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateCharacterButton();
+
 private:
 	// ĳ���� �̹��� ����
 	UPROPERTY(meta = (BindWidget))
@@ -80,4 +83,7 @@ public:
 
 private:
 	class ASkyscraperGameMode* Gamemode;
+	uint8 PlayerSerialNum;
+
+	TMap<enum class ECharacterSelect, UButton*> CharacterButtons;
 };

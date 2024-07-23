@@ -17,7 +17,7 @@ class SKYSCRAPER_API UGameResultWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void SetWinnerText(const FText& NewText) const;
+	void SetWinnerText(const bool IsWin) const;
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;

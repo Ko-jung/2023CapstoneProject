@@ -41,6 +41,8 @@ public:
 // Socket Fuction
 public:
 	bool InitializeManager();
+	bool InitializeProperty();
+	bool InitializeSocket();
 	bool InitSocket();
 	bool Connect(const char* pszIP, int nPort);
 	void Disconnect();

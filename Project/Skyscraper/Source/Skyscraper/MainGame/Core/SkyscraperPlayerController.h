@@ -48,7 +48,7 @@ public:
 	void ChangePlayerRangeWeapon(ERangeSelect NewRangeSelect) const;
 
 	UFUNCTION(BlueprintCallable)
-	void AddGameResultWidget(const FText& WinnerText);
+	void AddGameResultWidget(const bool IsWin);
 
 	UFUNCTION(BlueprintCallable)
 		void SetObserveMode(bool bToObserveMode);

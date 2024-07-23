@@ -58,6 +58,13 @@ bool NetworkManager::InitSocket()
 
 bool NetworkManager::InitializeManager()
 {
+	InitializeProperty();
+	
+	return InitializeSocket();
+}
+
+bool NetworkManager::InitializeProperty()
+{
 	StopListen();
 	ZeroMemory(m_sRecvBuffer, sizeof(m_sRecvBuffer));
 	ZeroMemory(m_sSendBuffer, sizeof(m_sSendBuffer));
@@ -68,6 +75,11 @@ bool NetworkManager::InitializeManager()
 	RemainDataLen = 0;
 	bIsConnected = false;
 
+	return true;
+}
+
+bool NetworkManager::InitializeSocket()
+{
 	closesocket(m_ServerSocket);
 	m_ServerSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (m_ServerSocket == INVALID_SOCKET)

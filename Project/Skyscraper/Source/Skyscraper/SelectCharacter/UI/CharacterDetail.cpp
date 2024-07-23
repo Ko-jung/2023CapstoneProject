@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Skyscraper/SkyscraperGameMode.h"
+#include "Skyscraper/Enum/ECharacterSelect.h"
 
 void UCharacterDetail::NativeConstruct()
 {
@@ -19,9 +20,19 @@ void UCharacterDetail::NativeConstruct()
 	SelectAssassinButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickSelectAssassinButton);
 	SelectDetectionButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnClickSelectDetectionButton);
 
+	if (CharacterButtons.IsEmpty())
+	{
+		CharacterButtons.Add(ECharacterSelect::ECS_ShieldCharacter, SelectShieldButton);
+		CharacterButtons.Add(ECharacterSelect::ECS_WindCharacter, SelectWindButton);
+		CharacterButtons.Add(ECharacterSelect::ECS_ElectricCharacter, SelectElectricButton);
+		CharacterButtons.Add(ECharacterSelect::ECS_BoomerangCharacter, SelectThrowButton);
+		CharacterButtons.Add(ECharacterSelect::ECS_AssassinCharacter, SelectAssassinButton);
+		CharacterButtons.Add(ECharacterSelect::ECS_DetectionCharacter, SelectDetectionButton);
+	}
 
 	auto gamemode = UGameplayStatics::GetGameMode(this);
 	Gamemode = static_cast<ASkyscraperGameMode*>(gamemode);
+	PlayerSerialNum = Gamemode->GetSerialNum();
 }
 
 void UCharacterDetail::NativeDestruct()
@@ -32,6 +43,25 @@ void UCharacterDetail::NativeDestruct()
 void UCharacterDetail::Tick(FGeometry MyGeometry, float InDeltaTime)
 {
 	Super::Tick(MyGeometry, InDeltaTime);
+
+	UpdateCharacterButton();
+}
+
+void UCharacterDetail::UpdateCharacterButton()
+{
+	TArray<PPlayerSelectInfo*>& PlayerSelectInfos = Gamemode->GetPlayerSelectInfo();
+
+	bool IsRight = PlayerSerialNum >= MAXPLAYER / 2;
+	for (const auto& button : CharacterButtons)	button.Value->SetIsEnabled(true);
+
+	for (int i = 0; i < MAXPLAYER / 2; i++)
+	{
+		int index = i + IsRight * MAXPLAYER / 2;
+		if (CharacterButtons.Find(PlayerSelectInfos[i]->PickedCharacter))
+		{
+			CharacterButtons[PlayerSelectInfos[i]->PickedCharacter]->SetIsEnabled(false);
+		}
+	}
 }
 
 

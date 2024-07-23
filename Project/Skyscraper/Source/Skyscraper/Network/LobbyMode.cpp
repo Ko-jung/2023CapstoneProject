@@ -21,6 +21,9 @@ void ALobbyMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	m_Socket->InitializeProperty();
+	//m_Socket->SetState(ENetworkState::SelectGame);
+
 	IsReady = false;
 	UE_LOG(LogTemp, Warning, TEXT("bIsConnected is %d"), GetIsConnected());
 
@@ -54,8 +57,9 @@ void ALobbyMode::BeginPlay()
 	}
 	else
 	{
-		m_Socket = new NetworkManager();
-		m_Socket->InitSocket();
+		m_Socket->InitializeSocket();
+		m_Socket->SetState(ENetworkState::Lobby);
+		//m_Socket->InitSocket();
 		m_Socket->Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
 
 		if (GetIsConnected())

@@ -69,7 +69,6 @@ void UCharacterDetail::UpdateCharacterButton()
 void UCharacterDetail::OnClickSelectShieldButton()
 {
 	Gamemode->UpdateSelectInfo(ECharacterSelect::ECS_ShieldCharacter);
-	UE_LOG(LogTemp, Warning, TEXT("ABC"));
 }
 
 void UCharacterDetail::OnClickSelectWindButton()

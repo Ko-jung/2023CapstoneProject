@@ -228,7 +228,6 @@ void UJetpackComponent::SetFuel(double NewFuel)
 {
 	if (bIsBoostGaugeInfinity)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Time : %f"),JetpackFuel);
 		return;
 	}
 	JetpackFuel = FMath::Max(0.0f, NewFuel);
@@ -336,8 +335,6 @@ void UJetpackComponent::Hover(const FInputActionValue& InputActionValue)
 
 void UJetpackComponent::HoverStop()
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("stop hovering"));
 	ToGlidingSpeed();
 	if(!bHoverStoping)
 	{
@@ -511,7 +508,6 @@ void UJetpackComponent::ActivateBoostGaugeInfinity(float InfinityTime)
 	bIsBoostGaugeInfinity = true;
 
 	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_BoostBulletInfinity, true);
-	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Activate"));
 
 	JetpackFuel = FMath::Max(JetpackFuel, 0.33f);
 
@@ -532,7 +528,6 @@ void UJetpackComponent::DeactivateBoostGaugeInfinity()
 	GetWorld()->GetTimerManager().ClearTimer(BoostGaugeInfinityTimerHandle);
 	bIsBoostGaugeInfinity = false;
 	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_BoostBulletInfinity, false);
-	UE_LOG(LogTemp, Warning, TEXT("Boost Gauge Infinity Deactivate"));
 }
 
 void UJetpackComponent::DoDescent() 
@@ -540,7 +535,6 @@ void UJetpackComponent::DoDescent()
 	if(UCharacterMovementComponent* CharacterMovementComponent = GetOwnerCharacterMovement())
 	{
 		CharacterMovementComponent->GravityScale = 1.0f;
-		UE_LOG(LogTemp, Warning, TEXT("ctrl 키 눌림"));
 
 		OwnerCharacter->GetAnimInstance()->bIsDescent = true;	
 

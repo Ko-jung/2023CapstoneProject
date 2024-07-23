@@ -37,7 +37,6 @@ void ATestDefaultPawnForLiquid::Fire() {
 		{
 			FVector2D HitUV{};
 			UGameplayStatics::FindCollisionUV(OutHit,0,HitUV);
-			UE_LOG(LogTemp, Warning, TEXT("UV 결과 - %f %f"), HitUV.X, HitUV.Y);
 			Character->LiquidWetComponent->AddHitData(HitUV, UKismetMathLibrary::RandomFloatInRange(4.0, 6.0));
 		}
 	}

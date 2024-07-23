@@ -204,13 +204,11 @@ void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)
 {
 	if (OwnerAnimInstance->IsAnyMontagePlaying())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("행동 중 무기 교체 불가"));
 		return;
 	}
 
 	if(MainWeaponComponent == TargetWeaponComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("같은 장비 교체 X"));
 		return;
 	}
 
@@ -280,7 +278,6 @@ void UCombatSystemComponent::LockOnKeyFunc(const FInputActionValue& Value)
 	{
 		LockOnActor = nullptr;
 		CloseTargetDistance = InitTargetDistance;
-		UE_LOG(LogTemp, Warning, TEXT("UCombatSystemComponent::LockOnKeyFunc OwnerCharacter is %s"), *UKismetSystemLibrary::GetDisplayName(OwnerCharacter));
 		GetOwnerPlayerController()->GetLockOnWidget()->SetVisibility(ESlateVisibility::Hidden);
 	}
 	
@@ -402,7 +399,6 @@ void UCombatSystemComponent::Stun(float StunTime, FVector StunDirection)
 		}
 
 		float AttackAnimPlayRate = Montage->GetSectionLength(SectionNum) / StunTime;
-		UE_LOG(LogClass, Warning, TEXT("UCombatSystemComponent::Stun StunTime is %f"), StunTime);
 		const float DamagedAnimPlayRate = Montage->GetPlayLength();
 		
 		UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, DamagedAnimPlayRate, 0, StartingSection);

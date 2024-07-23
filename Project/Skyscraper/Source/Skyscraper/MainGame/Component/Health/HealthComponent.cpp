@@ -82,7 +82,6 @@ void UHealthComponent::BeginPlay()
 	{
 		if(GetWorld()->GetTimeSeconds() >= 0.5f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%f"), GetWorld()->GetTimeSeconds());
 			if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
 			{
 				if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Revive")))
@@ -136,7 +135,6 @@ float UHealthComponent::GetHealthPercent() const
 void UHealthComponent::ActivateGodMode(float GodModeTime)
 {
 	bIsGodMode = true;
-	UE_LOG(LogTemp, Warning, TEXT("god mode on"));
 
 	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_GodMode, true);
 
@@ -156,7 +154,6 @@ void UHealthComponent::DeactivateGodMode()
 	GetWorld()->GetTimerManager().ClearTimer(GodModeTimerHandle);
 	bIsGodMode = false;
 	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_GodMode, false);
-	UE_LOG(LogTemp, Warning, TEXT("God Mode Turnn Off"));
 }
 
 
@@ -165,7 +162,6 @@ void UHealthComponent::ActivatePlusHealthBuff(float PlusHealthPercent, float Plu
 	float PlusHealthValue = OriginMaxHealth * PlusHealthPercent;
 	MaxHealth += PlusHealthValue;
 	CurrentHealth += PlusHealthValue;
-	UE_LOG(LogTemp, Warning, TEXT("health %f / %f Plus - %f"), CurrentHealth, MaxHealth, PlusHealthValue);
 	//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
 	ChangeCurrentHp(CurrentHealth);
 
@@ -191,7 +187,6 @@ void UHealthComponent::DeactivatePlusHealth()
 		float PlusHealthValue = MaxHealth - OriginMaxHealth;
 		MaxHealth = OriginMaxHealth;
 		CurrentHealth = FMath::Max(CurrentHealth - PlusHealthValue, 1.0f);
-		UE_LOG(LogTemp, Warning, TEXT("health plus end, %f / %f"), CurrentHealth,MaxHealth);
 		//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
 		ChangeCurrentHp(CurrentHealth);
 

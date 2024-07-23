@@ -280,7 +280,6 @@ void UMainRangeComponent::UseBullet()
 {
 	if(bIsBulletInfinity)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Bullet Infinity Time"));
 		return;
 	}
 
@@ -422,7 +421,6 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			FVector FireLocation = WeaponMeshComponent->GetSocketLocation(TEXT("FireSocket"));
 			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MuzzleFlash, FireLocation, (TargetLocation - FireLocation).Rotation(), FVector{ 1.0f,1.0f,1.0f });
 			float Distance = FVector::Distance(FireLocation, TargetLocation);
-			UE_LOG(LogTemp, Warning, TEXT("Distance : %f"), Distance);
 			FX->SetVariableFloat(FName("Distance"), Distance);
 
 		}
@@ -563,8 +561,6 @@ void UMainRangeComponent::ReloadCoolDownTimerFunc()
 void UMainRangeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	UE_LOG(LogTemp, Warning, TEXT("%d %d"), CurrentBulletCount, BulletMaxCount);
 	// ...
 }
 
@@ -577,8 +573,6 @@ void UMainRangeComponent::ActivateBulletInfinity(float BulletInfinityTime)
 	{
 		CurrentBulletCount += 1;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Bullet Infinity Activate"));
 
 	if (!BulletInfinityTimerHandle.IsValid())
 	{
@@ -595,6 +589,5 @@ void UMainRangeComponent::DeactivateBulletInfinity()
 {
 	GetWorld()->GetTimerManager().ClearTimer(BulletInfinityTimerHandle);
 	bIsBulletInfinity = false;
-	UE_LOG(LogTemp, Warning, TEXT("Bullet Infinity Deactivate"));
 }
 

@@ -110,7 +110,6 @@ FVector AHexagonTile::CalculateRelativeLocation(int32 AngleCount, int32 Distance
 
 void AHexagonTile::InitialSettings()
 {
-	UE_LOG(LogClass, Warning, TEXT("AHexagonTile::InitialSettings()"));
 	// 팀 리스폰 위치 빌딩 생성
 	{
 		// 붕괴 방향 설정 ( 0',60',120',180',240',300' )
@@ -267,11 +266,6 @@ void AHexagonTile::SpawnFloatingTiles(int32 SpawnCount, FName TileTag, FVector M
 
 AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 Floor, FName TileTag)
 {
-	if (!TargetTile->ComponentHasTag(TileTag))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s %d"), *TargetTile->GetName(), CollapseDirectionAngle);
-
-	}
 	{ // 빌딩 배치하기
 		if (!Tile_Actor.Contains(TargetTile))
 		{
@@ -283,16 +277,8 @@ AActor* AHexagonTile::SpawnTeamBuilding(UChildActorComponent* TargetTile, int32 
 				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (Floor % 3),0.0f},TargetTile->GetRelativeLocation() * GetActorScale3D() });
 				//Building->SetActorLabel(FString(L"SpawnBuilding"));
 			}
-			else
-			{
-				UE_LOG(LogClass, Warning, TEXT("SpawnBuilding Is NULLPTR!"));
-			}
 			Tile_Actor.Add(TargetTile, Building);
 			return Building;
-		}
-		else
-		{
-			UE_LOG(LogClass, Warning, TEXT("Building is Already Exist!"));
 		}
 	}
 
@@ -378,10 +364,6 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 				Building->FinishSpawning(FTransform{ FRotator{0.0f,120.0f * (i % 3),0.0f},Tiles[i]->GetRelativeLocation() * GetActorScale3D() });
 				//Building->SetActorLocation();
 			}
-			else
-			{
-				UE_LOG(LogClass, Warning, TEXT("%d: Building Is NULLPTR!"), i);
-			}
 			Tile_Actor.Add(Tiles[i], Building);
 			break;
 		}
@@ -403,10 +385,6 @@ void AHexagonTile::InitialSettings(BYTE* BuildingInfo, uint8 Size)
 													((float)400 + ((i * i) % 300)) / 100,
 													((float)100 + ((i * i) % 100)) / 100);
 				FloatingTile->FinishSpawning(FTransform{ FRotator{},Tiles[i]->GetRelativeLocation() * GetActorScale3D() });
-			}
-			else
-			{
-				UE_LOG(LogClass, Warning, TEXT("%d: FloatingTile Is NULLPTR!"), i);
 			}
 			Tile_Actor.Add(Tiles[i], FloatingTile);
 			break;
@@ -452,14 +430,12 @@ void AHexagonTile::SpawnItem(PItemInfo* Items, const uint8 SpawnCount)
 		volatile auto TileActor = Tile_Actor.Find(IndexActorComponent);
 		if (!TileActor)
 		{
-			UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem TileActor Is nullptr"));
 			continue;
 		}
 
 		Building = Cast<ABuilding>(*TileActor);
 		if (!Building)
 		{
-			UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem Building Is nullptr"));
 			continue;
 		}
 
@@ -485,7 +461,6 @@ void AHexagonTile::SpawnItem(PItemInfo* Items, const uint8 SpawnCount)
 			
 			if (TileActorItem.Find(ItemSerial))
 			{
-				UE_LOG(LogClass, Warning, TEXT("AHexagonTile::SpawnItem TileActorItem ItemSerial Already Exist"));
 			}
 			else
 			{

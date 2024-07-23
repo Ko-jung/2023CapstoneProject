@@ -158,7 +158,6 @@ void AFurniture::ChangeHISMToPhysicsSMAndAddForce(UHierarchicalInstancedStaticMe
 		ForceDirection.Normalize();
 		ForceDirection *= 7000000.0f;
 		SimulatedMesh->AddForce(ForceDirection);
-		UE_LOG(LogTemp, Warning, TEXT("Apply Force"));
 	}
 }
 
@@ -221,15 +220,6 @@ void AFurniture::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(ASingleBuildingFloor* SingleBuilding = Cast<ASingleBuildingFloor>(GetOwner()))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("correct   1"));
-		if(ABuilding* Building = Cast<ABuilding>(SingleBuilding->GetOwner()))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("correct   2"));
-		}
-	}
-	
 	
 
 	// 컴퍼넌트 로드

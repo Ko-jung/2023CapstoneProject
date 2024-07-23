@@ -16,7 +16,6 @@ ETriggerState UDoubleTab_InputTrigger::UpdateState_Implementation(const UEnhance
 		// If input again in limit time, Return Triggered
 		if (CurrentTime - LastInputTime < TimeLimit)
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("Direction - %f %f"), ModifiedValue.Get<FVector2D>().X, ModifiedValue.Get<FVector2D>().Y);
 			LastInputTime = 0.0f;
 			return ETriggerState::Triggered;
 		}

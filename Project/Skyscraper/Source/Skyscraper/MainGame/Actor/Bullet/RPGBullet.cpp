@@ -157,7 +157,6 @@ void ARPGBullet::BulletExplode()
 	for (const auto& HitResult : Hits)
 	{
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-		UE_LOG(LogTemp, Warning, TEXT("HitResult is % s"), *UKismetSystemLibrary::GetDisplayName(HitComponent));
 		if (HitComponent->IsA(UHISM::StaticClass())
 			//&& !OutHitComponent.Contains(HitComponent)
 			&& HitComponent->GetName() == ("HISM_Window"))
@@ -256,7 +255,6 @@ void ARPGBullet::Tick(float DeltaTime)
 	NS_RPG->SetVariableVec3(TEXT("Direction"), Direction);
 	if(CurrentDistance >= EffectiveDistance)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Bullet Bomb"));
 		BulletExplode();
 	}
 }

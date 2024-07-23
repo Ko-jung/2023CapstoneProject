@@ -154,7 +154,6 @@ void UMainMeleeComponent::AttackCoolTimeFunc()
 	if(CurrentCooldownTime <= 0.0f)
 	{
 		CurrentCooldownTime = 0.0f;
-		UE_LOG(LogTemp, Warning, TEXT("근접 쿨타임 종료"));
 		bCanAttack = true;
 
 		GetWorld()->GetTimerManager().ClearTimer(AttackCoolTimeTimerHandle);
@@ -280,7 +279,6 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 			bCanAttack = false;
 			if(!AttackCoolTimeTimerHandle.IsValid())
 			{
-				UE_LOG(LogTemp, Warning, TEXT("근접 마지막 타격, 쿨타임 시작"));
 				CurrentCooldownTime = AttackCoolDownTime;
 				GetWorld()->GetTimerManager().SetTimer(AttackCoolTimeTimerHandle, this, &ThisClass::AttackCoolTimeFunc,AttackCoolDownTimeOffset, true,AttackCoolDownTimeOffset);
 			}
@@ -362,7 +360,6 @@ void UMainMeleeComponent::OnBlendOutMeleeAttack(FName Notify_Name)
 void UMainMeleeComponent::Attack()
 {
 	if (!bCanAttack) {
-		UE_LOG(LogTemp, Warning, TEXT("근접 쿨타임 중"));
 		return;
 	}
 

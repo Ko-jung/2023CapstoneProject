@@ -135,7 +135,7 @@ void ASkyscraperGameMode::ProcessSelectInfo(Packet* argu)
 		UE_LOG(LogClass, Warning, TEXT("PPlayerPickInfo Packet ClientNum == -1!"));
 	}
 
-	ECharacterSelect Character = PPP->PickedCharacter;
+	BYTE Character = PPP->PickedCharacter;
 	EMeleeSelect MeleeWeapon = PPP->PickedMeleeWeapon;
 	ERangeSelect RangeWeapon = PPP->PickedRangeWeapon;
 
@@ -192,7 +192,7 @@ void ASkyscraperGameMode::UpdateSelectInfo(ECharacterSelect Character)
 {
 	if (PlayerSelectInfo.IsValidIndex(SerialNum))
 	{
-		PlayerSelectInfo[SerialNum]->PickedCharacter = Character;
+		PlayerSelectInfo[SerialNum]->PickedCharacter = (BYTE)Character;
 		SendSelectInfo();
 	}
 	else

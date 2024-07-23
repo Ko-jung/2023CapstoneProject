@@ -348,8 +348,8 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	const auto& p = PlayerSelectInfo[TargetSerialNum];
 
 	TSubclassOf<ASkyscraperCharacter>* Class = (TargetSerialNum == SerialNum) ?
-		CharacterClass.Find(p->PickedCharacter) :
-		AiCharacterClass.Find(p->PickedCharacter);
+		CharacterClass.Find((ECharacterSelect)p->PickedCharacter) :
+		AiCharacterClass.Find((ECharacterSelect)p->PickedCharacter);
 
 	// Check Null Character
 	if (!Class)

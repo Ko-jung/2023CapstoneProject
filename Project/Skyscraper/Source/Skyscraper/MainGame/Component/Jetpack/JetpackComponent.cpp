@@ -515,6 +515,20 @@ void UJetpackComponent::Dodge(FVector2D InputValue)
 	// 연료 사용
 	SetFuel(JetpackFuel - DodgeReductionGauge);
 
+	if (!BoostMaintaingAudioComponent->IsPlaying())
+	{
+		BoostMaintaingAudioComponent->Play(1.0f);
+	}
+	if (!BoostStartAudioComponent->IsPlaying())
+	{
+		BoostStartAudioComponent->Play();
+	}
+	// 이펙트
+	{
+		OwnerCharacter->SetBoostEffectVisibility(true);
+	}
+
+
 	// 회피 감속 타이머 설정
 	if (!SlowdownDodgeTimerHandle.IsValid())
 	{
@@ -530,6 +544,16 @@ void UJetpackComponent::SlowdownDodge()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(SlowdownDodgeTimerHandle);
 		GetOwnerCharacterMovement()->GravityScale = 1.0f;
+		if(TurnOffSoundAndEffectTimerHandle.IsValid())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(TurnOffSoundAndEffectTimerHandle);
+		}
+
+		OwnerCharacter->SetBoostEffectVisibility(false);
+
+		BoostMaintaingAudioComponent->Stop();
+		BoostStartAudioComponent->Stop();
+		
 	}else
 	{
 		GetOwnerCharacterMovement()->Velocity *= DodgeSlowdownValue;

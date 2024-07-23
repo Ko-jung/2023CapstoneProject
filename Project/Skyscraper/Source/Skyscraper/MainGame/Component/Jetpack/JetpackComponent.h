@@ -174,6 +174,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TObjectPtr<UAudioComponent> BoostStartAudioComponent;
 
+	UPROPERTY()
+		FTimerHandle TurnOffSoundAndEffectTimerHandle;
 protected:
 	UFUNCTION()
 	FORCEINLINE UCharacterMovementComponent* GetOwnerCharacterMovement() const { return OwnerCharacter->GetCharacterMovement(); }

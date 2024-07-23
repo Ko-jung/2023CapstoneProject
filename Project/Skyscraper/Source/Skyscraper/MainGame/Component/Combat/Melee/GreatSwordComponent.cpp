@@ -19,9 +19,9 @@ UGreatSwordComponent::UGreatSwordComponent()
 	AnimMontageKey = ECharacterAnimMontage::ECAM_GreatSwordAttack;
 	
 
-	AttackBlendOutTime.Add(0.2f);
-	AttackBlendOutTime.Add(0.1f);
-	AttackBlendOutTime.Add(0.1f);
+	AttackBlendOutTime.Add(0.0f);
+	AttackBlendOutTime.Add(0.0f);
+	AttackBlendOutTime.Add(0.02f);
 	
 	// Skeletal Mesh 소켓 이름 설정
 	WeaponSocketName = TEXT("SwordSocket");

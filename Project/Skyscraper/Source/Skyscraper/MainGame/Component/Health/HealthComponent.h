@@ -111,6 +111,7 @@ public:
 	FORCEINLINE void SetGodMode(bool bNewGodMode) { bIsGodMode = bNewGodMode; }
 
 	// 아군/적군 체력바 위젯 설정
+	UFUNCTION(BlueprintCallable)
 	void SetHealthBarFriendly();
 	void SetHiddenHealthPB();
 	void GetDamagedByEnemy();

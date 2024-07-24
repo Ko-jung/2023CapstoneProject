@@ -206,10 +206,10 @@ void UHealthComponent::DeactivatePlusHealth()
 
 void UHealthComponent::SetHealthBarFriendly()
 {
-	if(HealthProgressBar)
+	if(HealthBarWidgetComponent && HealthProgressBar)
 	{
 		HealthProgressBar->SetFriendlyHealthBar();
-		HealthProgressBar->SetVisibility(ESlateVisibility::Visible);
+		HealthBarWidgetComponent->SetVisibility(true);
 	}
 	
 }

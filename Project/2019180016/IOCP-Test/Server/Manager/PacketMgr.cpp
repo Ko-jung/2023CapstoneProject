@@ -263,8 +263,8 @@ void PacketMgr::SendTileDrop(int RoomNum, BYTE TileDropLevel)
 
 	float NextTimer{};
 
-	if (TDLevel < 2)	NextTimer = 60.f;	//300
-	else				NextTimer = 30.f;	//60
+	if (TDLevel < 2)	NextTimer = 300.f;	//300
+	else				NextTimer = 60.f;	//60
 
 	int CenterIndex;
 	TDLevel = RoomMgr::Instance()->GetTileDropCenterIndex(RoomNum, CenterIndex);
@@ -295,7 +295,7 @@ void PacketMgr::GameBeginProcessing(int NowClientId)
 	TimerMgr::Instance()->Insert(TE2);
 
 	// ======== Tile Drop ========
-	TimerEvent TileDrop1Timer(std::chrono::seconds((30 + SELECTTIMESECOND)),
+	TimerEvent TileDrop1Timer(std::chrono::seconds((300 + SELECTTIMESECOND)),
 		std::bind(&PacketMgr::SendTileDrop, this, NowClientId / MAXPLAYER, 1));
 	TimerMgr::Instance()->Insert(TileDrop1Timer);
 

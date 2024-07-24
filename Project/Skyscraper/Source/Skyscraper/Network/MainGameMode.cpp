@@ -1169,7 +1169,7 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 		ProcessBreakObject(PBO);
 		return;
 	}
-
+	
 	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
 
 	int WindowIndex = GetWindowsIndex(BreakHISMTarget);

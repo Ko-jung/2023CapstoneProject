@@ -21,10 +21,13 @@ void UMyAmmoWidget::SetAmmoPercent(int CurrentBulletCount, int MaxBulletCount) c
 	}
 }
 
+#include "Kismet/KismetSystemLibrary.h"
 void UMyAmmoWidget::SetRangeWeapon(ERangeSelect RangeSelect)
 {
 	if(WeaponTexture.IsValidIndex(static_cast<int>(RangeSelect)))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UMyAmmoWidget::SetRangeWeapon RangeSelect: %d, WeaponTexture[static_cast<int>(RangeSelect)]: %s"),
+			static_cast<int>(RangeSelect), *UKismetSystemLibrary::GetDisplayName(WeaponTexture[static_cast<int>(RangeSelect)]));
 		RangeWeaponImage->SetBrushFromTexture(WeaponTexture[static_cast<int>(RangeSelect)]);
 	}
 }

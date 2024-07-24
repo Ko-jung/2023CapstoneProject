@@ -362,7 +362,6 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	bool IsTeamA = TargetSerialNum < MAXPLAYER / 2;
 	FName Team;
 	FVector Location = HexagonTile->GetSpawnLocation(IsTeamA);
-	FActorSpawnParameters spawnParams;
 
 	if (IsTeamA)	Team = TeamName[(int)ETEAM::A];
 	else			Team = TeamName[(int)ETEAM::B];
@@ -374,47 +373,50 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 200.f, Location.X + 200.f),
 										FMath::RandRange(Location.Y - 200.f, Location.Y + 200.f),
 										Location.Z};
-		character = GetWorld()->SpawnActor<ASkyscraperCharacter>(*Class, SpawnLocation, FRotator{}, spawnParams);
+		FTransform Transform = { FRotator{} , SpawnLocation };
 
-		if (!character) continue;
-
-		character->Tags.Add(Team);
-
-		{	// Post processing
-			bool IsEnemy = (SerialNum / (MAXPLAYER / 2)) != (TargetSerialNum / (MAXPLAYER / 2));
-
-			// Allience : 0, Enemy : 1
-			character->GetMesh()->CustomDepthStencilValue = IsEnemy;
-			// Allience : true, Enemy : false
-			character->GetMesh()->bRenderCustomDepth = !IsEnemy;
-		}
-		break;
-	}
-
-
-	if (TargetSerialNum == SerialNum)
-	{
-		APlayerController* controller = GetWorld()->GetFirstPlayerController();
-
-		if (IsValid(controller->GetPawn()))
+		character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(*Class, Transform);
+		if (character)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SpawnCharacter %s is Destory!"), *UKismetSystemLibrary::GetDisplayName(controller->GetPawn()));
-			controller->GetPawn()->Destroy();
+			if (TargetSerialNum == SerialNum)
+			{
+				APlayerController* controller = GetWorld()->GetFirstPlayerController();
+
+				if (IsValid(controller->GetPawn()))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SpawnCharacter %s is Destory!"), *UKismetSystemLibrary::GetDisplayName(controller->GetPawn()));
+					controller->GetPawn()->Destroy();
+				}
+
+				controller->Possess(character);
+
+				ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
+				SkyController->SetPossessingPawn();
+				SkyController->AddAllWidget();
+
+				character->FinishSpawning(Transform);
+				character->AddInputMappingContext();
+			}
+			else
+			{
+				AAISkyscraperController* controller =
+					GetWorld()->SpawnActor<AAISkyscraperController>(AAISkyscraperController::StaticClass(), FVector(), FRotator());
+				controller->Possess(character);
+				character->FinishSpawning(Transform);
+			}
+
+			character->Tags.Add(Team);
+
+			{	// Post processing
+				bool IsEnemy = (SerialNum / (MAXPLAYER / 2)) != (TargetSerialNum / (MAXPLAYER / 2));
+
+				// Allience : 0, Enemy : 1
+				character->GetMesh()->CustomDepthStencilValue = IsEnemy;
+				// Allience : true, Enemy : false
+				character->GetMesh()->bRenderCustomDepth = !IsEnemy;
+			}
+			break;
 		}
-
-		controller->Possess(character);
-
-		ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
-		SkyController->SetPossessingPawn();
-		SkyController->AddAllWidget();
-
-		character->AddInputMappingContext();
-	}
-	else
-	{
-		AAISkyscraperController* controller =
-			GetWorld()->SpawnActor<AAISkyscraperController>(AAISkyscraperController::StaticClass(), FVector(), FRotator());
-		controller->Possess(character);
 	}
 
 	// Set Weapon

@@ -438,27 +438,28 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 {
 	// == Fore enemy fire (doesn't have player controller actor)
 	{// == Line trace
-		FVector Start = OwnerCharacter->GetActorLocation();
+		FVector Start = OwnerCharacter->GetCameraBoom()->GetComponentLocation();
 		FVector End = Start +
-						OwnerCharacter->GetActorForwardVector() * 10000.0f;
+			OwnerCharacter->GetController()->GetControlRotation().Vector() * EffectiveDistance;
 		FVector TargetLocation = End;
-		TArray<AActor*> IgnoreActors;
-		FHitResult OutHit;
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(OwnerCharacter);
-
-		
-		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn,QueryParams);
-		
-
-		if (HitResult)
-		{
-			AActor* HitActor = OutHit.GetActor();
-			TargetLocation = OutHit.Location;
-
-			UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, OwnerCharacter, nullptr);
-
-			// Muzzle Flash Effect
+		// TArray<AActor*> IgnoreActors;
+		// FHitResult OutHit;
+		// FCollisionQueryParams QueryParams;
+		// QueryParams.AddIgnoredActor(OwnerCharacter);
+		// 
+		// 
+		// bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn,QueryParams);
+		// 
+		// 
+		// if (HitResult)
+		// {
+		// 	AActor* HitActor = OutHit.GetActor();
+		// 	TargetLocation = OutHit.Location;
+		// 
+		// 	UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, OwnerCharacter, nullptr);
+		// 
+		// 	// Muzzle Flash Effect
+		// }
 		if (NS_MuzzleFlash)
 		{
 			FVector FireLocation = WeaponMeshComponent->GetSocketLocation(TEXT("FireSocket"));
@@ -467,7 +468,6 @@ void UMainRangeComponent::EnemyFire(float fBaseDamage)
 			float Distance = FVector::Distance(FireLocation, TargetLocation);
 			FX->SetVariableFloat(FName("Distance"), Distance);
 
-		}
 		}
 	}
 }

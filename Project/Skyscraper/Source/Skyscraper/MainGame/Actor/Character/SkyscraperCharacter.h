@@ -293,15 +293,15 @@ private:
 public:
 	// == 컴퍼넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UCombatSystemComponent* CombatSystemComponent;
+		TObjectPtr<UCombatSystemComponent> CombatSystemComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UMotionWarpingComponent* MotionWarpingComponent;
+		TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UHealthComponent* HealthComponent;
+		TObjectPtr<UHealthComponent> HealthComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		UJetpackComponent* JetpackComponent;
+		TObjectPtr<UJetpackComponent> JetpackComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
-		ULiquidWetComponent* LiquidWetComponent;
+		TObjectPtr<ULiquidWetComponent> LiquidWetComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FOV")
 		float DefaultFOV;

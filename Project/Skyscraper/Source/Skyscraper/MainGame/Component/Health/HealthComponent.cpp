@@ -27,7 +27,7 @@ UHealthComponent::UHealthComponent()
 
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	
 	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
@@ -35,8 +35,8 @@ UHealthComponent::UHealthComponent()
 	if(HealthBarWidgetRef.Class)
 	{
 		HealthBarWidgetComponent->SetWidgetClass(HealthBarWidgetRef.Class);
-		HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-		HealthBarWidgetComponent->SetDrawSize(FVector2D(150.0f, 25.0f));
+		HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		HealthBarWidgetComponent->SetDrawSize(FVector2D(200.0f, 40.0f));
 		HealthBarWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	
@@ -56,13 +56,17 @@ void UHealthComponent::BeginPlay()
 		CurrentHealth = MaxHealth;
 		LivingState = EHealthState::EHS_LIVING;
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
-		if(OwnerCharacter == GEngine->GetFirstLocalPlayerController(GetWorld())->GetPawn())
+
+		// 모든 캐릭터는 기본적으로 체력바 위젯이 안보이며,
+		// 아군 캐릭터는 상시(+초록색 체력바로) / 적군 캐릭터는 공격 시에 약 10초 동안만 (+붉은색 체력바로) 보인다.
 		{
+			//if(OwnerCharacter == GEngine->GetFirstLocalPlayerController(GetWorld())->GetPawn())
+			//{
+			//	HealthBarWidgetComponent->SetVisibility(false);
+			//}
 			HealthBarWidgetComponent->SetVisibility(false);
 		}
-
-		//TODO: DELETELATER
-		HealthBarWidgetComponent->SetVisibility(false);
+		
 	}
 
 	{ // == create widget and attach to owner
@@ -70,8 +74,7 @@ void UHealthComponent::BeginPlay()
 		const FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 		HealthBarWidgetComponent->InitWidget();
 		HealthBarWidgetComponent->AttachToComponent(OwnerRootComponent, AttachRules);
-		HealthBarWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
-		
+		HealthBarWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 125.0f));
 		HealthProgressBar = Cast<UHealthBar>(HealthBarWidgetComponent->GetUserWidgetObject());
 	}
 
@@ -103,6 +106,12 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if(HealthBarWidgetComponent)
+	{
+		FVector FirstPlayerCameraForwardVector = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetActorForwardVector();
+		FRotator TargetRotator = (FirstPlayerCameraForwardVector * -1.0f).Rotation();
+		HealthBarWidgetComponent->SetWorldRotation(TargetRotator);
+	}
 }
 
 void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCauser)
@@ -111,14 +120,15 @@ void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCa
 	if (bIsGodMode) return;
 
 	CurrentHealth = FMath::Max(CurrentHealth - fBaseDamage, 0.0f);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
 	if(CurrentHealth<=0.0f)
 	{
 		SetPlayerDie(DamageCauser);
 	}
 
-	//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth/MaxHealth);
+	//
 	ChangeCurrentHp(CurrentHealth);
-	
+	GetDamagedByEnemy();
 }
 
 float UHealthComponent::GetHealthPercent() const
@@ -194,16 +204,56 @@ void UHealthComponent::DeactivatePlusHealth()
 	}
 }
 
+void UHealthComponent::SetHealthBarFriendly()
+{
+	if(HealthBarWidgetComponent && HealthProgressBar)
+	{
+		HealthProgressBar->SetFriendlyHealthBar();
+		HealthBarWidgetComponent->SetVisibility(true);
+	}
+	
+}
+
+void UHealthComponent::SetHiddenHealthPB()
+{
+	if (!HealthBarWidgetComponent) return;
+	HealthBarWidgetComponent->SetVisibility(false);
+}
+
+void UHealthComponent::GetDamagedByEnemy()
+{
+	if (!HealthProgressBar || HealthProgressBar->bIsFriendly) return;
+	if (!HealthBarWidgetComponent) return;
+
+	HealthBarWidgetComponent->SetVisibility(true);
+
+	if(VisibleHealthPBTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(VisibleHealthPBTimerHandle);
+	}
+	GetWorld()->GetTimerManager().SetTimer(VisibleHealthPBTimerHandle, this, &ThisClass::SetHiddenHealthPB, 0.1f, false, VisibleTime);
+}
+
 void UHealthComponent::ChangeCurrentHp(float hp)
 {
 	CurrentHealth = hp;
 
-	HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+	if(HealthProgressBar)
+	{
+		//HealthProgressBar->GetHealthBar()->SetPercent(CurrentHealth / MaxHealth);
+		UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth / MaxHealth);
+		HealthProgressBar->SetHealthPercent(CurrentHealth / MaxHealth);
+	}
+	
 
 	if(MyHealthWidget)
 	{
 		MyHealthWidget->SetHealthPercent(CurrentHealth / MaxHealth);
+		UE_LOG(LogTemp, Warning, TEXT("??"));
 	}
+
+
+	
 }
 
 void UHealthComponent::ChangeState(EHealthState s)
@@ -274,7 +324,6 @@ void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 	}else
 	{
 		// == For enemy(no player)
-		//OwnerCharacter->Destroy();
 		
 	}
 }

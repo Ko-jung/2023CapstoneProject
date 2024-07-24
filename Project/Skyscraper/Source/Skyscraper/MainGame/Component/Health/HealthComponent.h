@@ -42,12 +42,12 @@ private:
 		ASkyscraperCharacter* OwnerCharacter;
 
 	// 위젯 컴퍼넌트 관련 변수
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 		UWidgetComponent* HealthBarWidgetComponent;
 	UPROPERTY(VisibleAnywhere)
 		UClass* HealthBarWidgetClass;
 	UPROPERTY()
-		UHealthBar* HealthProgressBar;
+		TObjectPtr<UHealthBar> HealthProgressBar;
 
 	// 캐릭터 무적 bool 변수
 	UPROPERTY()
@@ -67,6 +67,12 @@ private:
 	TSubclassOf<UUserWidget> MyHealthWidgetClass;
 	UPROPERTY()
 		UMyHealthWidget* MyHealthWidget;
+
+	// 적군에게 공격 받을 시 일정 시간 동안 보여주게 하기 위한 타이머 및 변수들
+	UPROPERTY()
+		FTimerHandle VisibleHealthPBTimerHandle;
+	UPROPERTY()
+		float VisibleTime = 10.0f;
 
 protected:
 	// Called when the game starts
@@ -103,6 +109,12 @@ public:
 	// 무적상태 반환 함수(getter) 및 setter
 	FORCEINLINE bool IsGodMode() const { return bIsGodMode; }
 	FORCEINLINE void SetGodMode(bool bNewGodMode) { bIsGodMode = bNewGodMode; }
+
+	// 아군/적군 체력바 위젯 설정
+	UFUNCTION(BlueprintCallable)
+	void SetHealthBarFriendly();
+	void SetHiddenHealthPB();
+	void GetDamagedByEnemy();
 
 	// === 2019180016 ===
 	// Process Packet From Server

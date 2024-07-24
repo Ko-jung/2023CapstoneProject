@@ -370,7 +370,11 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			{
 				GameMode->SendTakeDamage(OwnerCharacter, HitActor);
 			}
-			//UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+			else
+			{
+				UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+			}
+			
 
 
 			if (OutHit.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))

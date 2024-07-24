@@ -22,7 +22,6 @@ void ALobbyMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	m_Socket->InitializeProperty();
 	//m_Socket->SetState(ENetworkState::SelectGame);
 
 	IsReady = false;
@@ -46,7 +45,7 @@ void ALobbyMode::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("LobbyWidgetClass is nullptr"));
 	}
 
-	if (GetIsConnected())
+	if (m_Socket->GetState() == ENetworkState::Login)
 	{
 		m_Socket->SetState(ENetworkState::Lobby);
 		m_Socket->StartListen();
@@ -58,6 +57,7 @@ void ALobbyMode::BeginPlay()
 	}
 	else
 	{
+		m_Socket->InitializeProperty();
 		m_Socket->InitializeSocket();
 		m_Socket->SetState(ENetworkState::Lobby);
 		//m_Socket->InitSocket();

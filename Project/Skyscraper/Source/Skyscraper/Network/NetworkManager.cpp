@@ -166,7 +166,7 @@ void NetworkManager::ProcessRecvFromLogin(Packet* p)
 
 		if (!PLR->IsRegister && PLR->LoginResult == (char)ELoginResult::Success)
 		{
-			State = ENetworkState::Lobby;
+			//State = ENetworkState::Lobby;
 			IsChangingGameMode = true;
 			//StopListen();
 		}

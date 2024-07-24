@@ -24,8 +24,8 @@ void ALoginGameMode::BeginPlay()
 	m_Socket->InitializeManager();
 	Connect(LOBBY_SERVER_IP, LOBBY_SERVER_PORT);
 
-	//m_Socket->SetState(ENetworkState::Login);
-	//m_Socket->SetGamemode(this);
+	m_Socket->SetState(ENetworkState::Login);
+	m_Socket->SetGamemode(this);
 	//
 	//PrimaryActorTick.bStartWithTickEnabled = true;
 	//PrimaryActorTick.bCanEverTick = true;

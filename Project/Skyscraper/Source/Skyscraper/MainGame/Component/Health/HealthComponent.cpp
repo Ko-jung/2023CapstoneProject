@@ -27,7 +27,7 @@ UHealthComponent::UHealthComponent()
 
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	
 	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
@@ -35,8 +35,8 @@ UHealthComponent::UHealthComponent()
 	if(HealthBarWidgetRef.Class)
 	{
 		HealthBarWidgetComponent->SetWidgetClass(HealthBarWidgetRef.Class);
-		HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-		HealthBarWidgetComponent->SetDrawSize(FVector2D(150.0f, 25.0f));
+		HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		HealthBarWidgetComponent->SetDrawSize(FVector2D(200.0f, 40.0f));
 		HealthBarWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	
@@ -67,9 +67,7 @@ void UHealthComponent::BeginPlay()
 		const FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 		HealthBarWidgetComponent->InitWidget();
 		HealthBarWidgetComponent->AttachToComponent(OwnerRootComponent, AttachRules);
-		HealthBarWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
-		HealthBarWidgetComponent->SetDrawSize(FVector2D{ 400.0f,50.0f });
-		//HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		HealthBarWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 125.0f));
 		HealthProgressBar = Cast<UHealthBar>(HealthBarWidgetComponent->GetUserWidgetObject());
 	}
 
@@ -101,6 +99,12 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if(HealthBarWidgetComponent)
+	{
+		FVector FirstPlayerCameraForwardVector = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetActorForwardVector();
+		FRotator TargetRotator = (FirstPlayerCameraForwardVector * -1.0f).Rotation();
+		HealthBarWidgetComponent->SetWorldRotation(TargetRotator);
+	}
 }
 
 void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCauser)

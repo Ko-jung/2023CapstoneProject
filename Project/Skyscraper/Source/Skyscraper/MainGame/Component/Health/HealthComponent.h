@@ -42,7 +42,7 @@ private:
 		ASkyscraperCharacter* OwnerCharacter;
 
 	// 위젯 컴퍼넌트 관련 변수
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 		UWidgetComponent* HealthBarWidgetComponent;
 	UPROPERTY(VisibleAnywhere)
 		UClass* HealthBarWidgetClass;

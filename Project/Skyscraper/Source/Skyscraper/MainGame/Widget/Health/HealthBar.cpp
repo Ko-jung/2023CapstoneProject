@@ -39,11 +39,9 @@ void UHealthBar::SetHealthPercent(float Percent)
 		for(int i = 0; i < Percent * MAX_HEALTH_BAR_COUNT - 1; ++i)
 		{
 			HealthBars[i]->SetPercent(1.0f);
-			UE_LOG(LogTemp, Warning, TEXT("%d index health bar -> %f"), i, 1.0f);
 		}
 	}
 
 	float RemainPercent = FMath::Fmod(Percent, (1.0f / MAX_HEALTH_BAR_COUNT));
-	UE_LOG(LogTemp, Warning, TEXT("%d index health bar -> %f"), MaxHealthCount, RemainPercent);
 	HealthBars[MaxHealthCount]->SetPercent(RemainPercent*MAX_HEALTH_BAR_COUNT);
 }

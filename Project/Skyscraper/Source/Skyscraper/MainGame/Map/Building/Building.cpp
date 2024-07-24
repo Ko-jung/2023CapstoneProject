@@ -93,6 +93,7 @@ void ABuilding::BeginPlay()
 			ElevatorActor->SetActorRotation(GetActorRotation());
 			ElevatorActor->InitializeElevator(GetActorLocation());
 		}
+		ElevatorActors.Add(ElevatorActor);
 	}
 }
 
@@ -107,6 +108,7 @@ void ABuilding::CollapseBuilding(int CollapseStartFloor)
 	{
 		Building_Floors[i]->DoCollapse();
 		FurnitureActors[i]->DoCollapse();
+		ElevatorActors[i]->Destroy();
 	}
 	CurrentFloor = CollapseStartFloor - 1;
 }

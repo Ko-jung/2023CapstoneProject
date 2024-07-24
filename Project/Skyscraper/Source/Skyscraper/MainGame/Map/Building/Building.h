@@ -72,6 +72,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 		TArray<AFurniture*> FurnitureActors;
+
+	UPROPERTY()
+		TArray<AElevatorActor*> ElevatorActors;
 	
 	/* 게임진행중 현재 층 수에 대한 변수 */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")

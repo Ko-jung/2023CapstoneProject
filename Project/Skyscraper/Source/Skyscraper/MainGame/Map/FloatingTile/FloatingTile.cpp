@@ -135,7 +135,7 @@ void AFloatingTile::DoCollapse()
 	NewGCTileActor->SetActorLocation(GetActorLocation());
 
 	
-	
+	Destroy();
 	
 }
 

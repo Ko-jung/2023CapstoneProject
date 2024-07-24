@@ -7,7 +7,6 @@
 #include "Components/ProgressBar.h"
 #include "HealthBar.generated.h"
 
-
 class UProgressBar;
 
 UCLASS()
@@ -15,9 +14,11 @@ class SKYSCRAPER_API UHealthBar : public UUserWidget
 {
 	GENERATED_BODY()
 private:
-	// == Border variable
 	UPROPERTY(meta = (BindWidget))
-		UProgressBar* HealthBar;
+		TObjectPtr<UProgressBar> HealthBar;
+
+	UPROPERTY()
+		TArray<TObjectPtr<UProgressBar>> HealthBars;
 
 	virtual void NativeConstruct() override;
 	

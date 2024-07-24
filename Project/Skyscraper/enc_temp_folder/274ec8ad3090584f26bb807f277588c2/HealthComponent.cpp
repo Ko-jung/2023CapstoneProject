@@ -68,8 +68,7 @@ void UHealthComponent::BeginPlay()
 		HealthBarWidgetComponent->InitWidget();
 		HealthBarWidgetComponent->AttachToComponent(OwnerRootComponent, AttachRules);
 		HealthBarWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
-		HealthBarWidgetComponent->SetDrawSize(FVector2D{ 400.0f,50.0f });
-		//HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		
 		HealthProgressBar = Cast<UHealthBar>(HealthBarWidgetComponent->GetUserWidgetObject());
 	}
 

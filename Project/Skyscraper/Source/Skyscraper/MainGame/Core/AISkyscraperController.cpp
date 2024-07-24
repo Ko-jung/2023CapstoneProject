@@ -3,3 +3,7 @@
 
 #include "Skyscraper/MainGame/Core/AISkyscraperController.h"
 
+AAISkyscraperController::AAISkyscraperController()
+{
+	PrimaryActorTick.bCanEverTick = false;
+}

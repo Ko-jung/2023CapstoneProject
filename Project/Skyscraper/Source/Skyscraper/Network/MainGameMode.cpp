@@ -310,32 +310,6 @@ void AMainGameMode::ProcessFunc()
 	//UE_LOG(LogTemp, Warning, TEXT("End Called AMainGameMode::ProcessFunc()"));
 }
 
-//void AMainGameMode::ProcessPosition()
-//{
-//	Packet* packet;
-//	while (not PositionQueue.empty())
-//	{
-//		if (PositionQueue.try_pop(packet))
-//		{
-//			switch (packet->PacketType)
-//			{
-//			case (BYTE)COMP_OP::OP_PLAYERPOSITION:
-//			{
-//				PPlayerPosition PPP;
-//				memcpy(&PPP, packet, sizeof(PPP));
-//				if (PPP.PlayerSerial >= MAXPLAYER || PPP.PlayerSerial < 0)
-//				{
-//					UE_LOG(LogTemp, Warning, TEXT("COMP_OP::OP_PLAYERPOSITION Array Error"));
-//					continue;
-//				}
-//				SetPlayerPosition(PPP);
-//				break;
-//			}
-//			}
-//		}
-//	}
-//}
-
 void AMainGameMode::GoToLobby()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), FName("LobbyLevel"));

@@ -14,4 +14,6 @@ class SKYSCRAPER_API AAISkyscraperController : public AAIController
 {
 	GENERATED_BODY()
 	
+public:
+	AAISkyscraperController();
 };

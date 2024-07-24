@@ -529,7 +529,7 @@ void NetworkManager::Stop()
 
 void NetworkManager::Exit()
 {
-	delete Thread;
+	// delete Thread;
 	Thread = nullptr;
 }
 

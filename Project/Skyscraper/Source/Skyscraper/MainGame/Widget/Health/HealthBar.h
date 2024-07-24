@@ -20,9 +20,13 @@ private:
 	UPROPERTY()
 		TArray<TObjectPtr<UProgressBar>> HealthBars;
 
+
 	virtual void NativeConstruct() override;
 	
 public:
 	FORCEINLINE UProgressBar* GetHealthBar() const { return HealthBar; }
 	void SetHealthPercent(float Percent);
+	void SetFriendlyHealthBar();
+
+	bool bIsFriendly = false;
 };

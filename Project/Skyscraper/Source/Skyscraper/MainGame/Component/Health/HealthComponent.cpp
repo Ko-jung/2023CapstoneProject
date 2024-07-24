@@ -56,10 +56,17 @@ void UHealthComponent::BeginPlay()
 		CurrentHealth = MaxHealth;
 		LivingState = EHealthState::EHS_LIVING;
 		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
-		if(OwnerCharacter == GEngine->GetFirstLocalPlayerController(GetWorld())->GetPawn())
+
+		// 모든 캐릭터는 기본적으로 체력바 위젯이 안보이며,
+		// 아군 캐릭터는 상시(+초록색 체력바로) / 적군 캐릭터는 공격 시에 약 10초 동안만 (+붉은색 체력바로) 보인다.
 		{
+			//if(OwnerCharacter == GEngine->GetFirstLocalPlayerController(GetWorld())->GetPawn())
+			//{
+			//	HealthBarWidgetComponent->SetVisibility(false);
+			//}
 			HealthBarWidgetComponent->SetVisibility(false);
 		}
+		
 	}
 
 	{ // == create widget and attach to owner
@@ -121,7 +128,7 @@ void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCa
 
 	//
 	ChangeCurrentHp(CurrentHealth);
-	
+	GetDamagedByEnemy();
 }
 
 float UHealthComponent::GetHealthPercent() const
@@ -195,6 +202,36 @@ void UHealthComponent::DeactivatePlusHealth()
 
 		OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_PlusHealth, false);
 	}
+}
+
+void UHealthComponent::SetHealthBarFriendly()
+{
+	if(HealthProgressBar)
+	{
+		HealthProgressBar->SetFriendlyHealthBar();
+		HealthProgressBar->SetVisibility(ESlateVisibility::Visible);
+	}
+	
+}
+
+void UHealthComponent::SetHiddenHealthPB()
+{
+	if (!HealthBarWidgetComponent) return;
+	HealthBarWidgetComponent->SetVisibility(false);
+}
+
+void UHealthComponent::GetDamagedByEnemy()
+{
+	if (!HealthProgressBar || HealthProgressBar->bIsFriendly) return;
+	if (!HealthBarWidgetComponent) return;
+
+	HealthBarWidgetComponent->SetVisibility(true);
+
+	if(VisibleHealthPBTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(VisibleHealthPBTimerHandle);
+	}
+	GetWorld()->GetTimerManager().SetTimer(VisibleHealthPBTimerHandle, this, &ThisClass::SetHiddenHealthPB, 0.1f, false, VisibleTime);
 }
 
 void UHealthComponent::ChangeCurrentHp(float hp)

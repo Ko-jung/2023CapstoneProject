@@ -45,3 +45,13 @@ void UHealthBar::SetHealthPercent(float Percent)
 	float RemainPercent = FMath::Fmod(Percent, (1.0f / MAX_HEALTH_BAR_COUNT));
 	HealthBars[MaxHealthCount]->SetPercent(RemainPercent*MAX_HEALTH_BAR_COUNT);
 }
+
+void UHealthBar::SetFriendlyHealthBar()
+{
+	bIsFriendly = true;
+
+	for(UProgressBar* ProgressBar : HealthBars)
+	{
+		ProgressBar->SetFillColorAndOpacity(FLinearColor{ 0.0f,1.0f,0.0f,1.0f });
+	}
+}

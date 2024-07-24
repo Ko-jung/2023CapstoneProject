@@ -898,15 +898,18 @@ void ASkyscraperCharacter::ChangeMappingContext(bool IsOnlyMouseMode)
 
 void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 {
-	if (IsSpecialSkill)
+	if (GetPlayerController())
 	{
-		GetPlayerController()->CastingSkill(true, SpecialSkillCoolTime);
-		GetWorld()->GetTimerManager().SetTimer(SpecialSkillTimerHandle, this, &ThisClass::InValidSpecialTimer, SpecialSkillCoolTime, false);
-	}
-	else
-	{
-		GetPlayerController()->CastingSkill(false, CommonSkillCoolTime);
-		//GetWorld()->GetTimerManager().SetTimer(CommonSkillTimerHandle, this, &ThisClass::InValidCommonTimer, CommonSkillCoolTime, false);
+		if (IsSpecialSkill)
+		{
+			GetPlayerController()->CastingSkill(true, SpecialSkillCoolTime);
+			GetWorld()->GetTimerManager().SetTimer(SpecialSkillTimerHandle, this, &ThisClass::InValidSpecialTimer, SpecialSkillCoolTime, false);
+		}
+		else
+		{
+			GetPlayerController()->CastingSkill(false, CommonSkillCoolTime);
+			//GetWorld()->GetTimerManager().SetTimer(CommonSkillTimerHandle, this, &ThisClass::InValidCommonTimer, CommonSkillCoolTime, false);
+		}
 	}
 
 	ActiveSkill(IsSpecialSkill);

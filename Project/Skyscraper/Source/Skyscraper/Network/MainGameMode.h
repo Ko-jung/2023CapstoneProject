@@ -90,6 +90,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void SpawnSkillActor(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void SpawnSkillEffect(ESkillActor SkillActor, FVector SpawnLocation);
 
 	UFUNCTION(BlueprintCallable)
 	void Test_TakeDamage(int DamageType);

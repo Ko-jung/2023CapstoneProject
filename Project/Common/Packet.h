@@ -355,11 +355,10 @@ struct PRemoveObject : Packet
 {
 	EObjectType ObjectType;
 	WORD ObjectSerial;
+	PVector ObjectLocation;
 
-	PRemoveObject() : Packet(COMP_OP::OP_REMOVEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0)
-	{
-		PacketSize = sizeof(PRemoveObject);
-	}
+	PRemoveObject() : Packet(COMP_OP::OP_REMOVEOBJECT), ObjectType(EObjectType::SkillActor), ObjectSerial(0), ObjectLocation(PVector())
+	{ PacketSize = sizeof(PRemoveObject); }
 };
 
 struct PSkillInteract : Packet

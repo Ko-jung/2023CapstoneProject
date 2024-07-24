@@ -662,6 +662,7 @@ void AMainGameMode::ProcessRemoveObject(PRemoveObject PRO)
 		if (IsValid(*ppActor))
 		{
 			(*ppActor)->Destroy();
+			SpawnSkillEffect(ESkillActor::BP_ElectTrap, FVector{ PRO.ObjectLocation.X,PRO.ObjectLocation.Y,PRO.ObjectLocation.Z });
 		}
 		else
 		{
@@ -1092,8 +1093,10 @@ void AMainGameMode::SendRemoveSkillActor(AActor* TargetActor)
 		PRemoveObject PRO;
 		PRO.ObjectSerial = TargetSerialNum;
 		PRO.ObjectType = EObjectType::SkillActor;
+		PRO.ObjectLocation = TargetActor->GetActorLocation();
 		m_Socket->Send(&PRO, PRO.PacketSize);
 	}
+	SpawnSkillEffect(ESkillActor::BP_ElectTrap, TargetActor->GetActorLocation());
 	SkillActors.Remove(TargetSerialNum);
 }
 
@@ -1279,3 +1282,4 @@ void AMainGameMode::RequestFinishGame()
 }
 
 void AMainGameMode::SpawnSkillActor_Implementation(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team) {}
+void AMainGameMode::SpawnSkillEffect_Implementation(ESkillActor SkillActor, FVector SpawnLocation) {}

@@ -337,7 +337,7 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 
 	// Respawn Timer 10s, GodMode 3s
 	TimerEvent RespawnTimer(std::chrono::seconds(1), std::bind(&PacketMgr::SendSpawn, this, ClientId));
-	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
+	TimerEvent GodmodeTimer(std::chrono::seconds(4), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
 
 	if (RoomMgr::Instance()->GetTileDropLevel(ClientId / MAXPLAYER) < 3)
 	{
@@ -358,7 +358,7 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 	}
 
 	// Send Dead state
-	ClientMgr::Instance()->ChangeState(ClientId, ECharacterState::DEAD);
+	//ClientMgr::Instance()->ChangeState(ClientId, ECharacterState::DEAD);
 	PChangedPlayerState PCPS(ClientId % MAXPLAYER, ECharacterState::DEAD);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(ClientId / MAXPLAYER, &PCPS, sizeof(PCPS));
 }
@@ -479,13 +479,14 @@ void PacketMgr::SendSpawn(int TargetClientID)
 	ClientMgr::Instance()->Heal(TargetClientID, -1);
 
 	//ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::INVINCIBILITY);
-	ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::LIVING);
+	ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::INVINCIBILITY);
 	PChangedPlayerState PCPS(TargetClientID, ECharacterState::INVINCIBILITY);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / MAXPLAYER, &PCPS, sizeof(PCPS));
 }
 
 void PacketMgr::SendOffInvincibility(int TargetClientID)
 {
+	ClientMgr::Instance()->ChangeState(TargetClientID, ECharacterState::LIVING);
 	PChangedPlayerState PCPS(TargetClientID, ECharacterState::LIVING);
 	ClientMgr::Instance()->SendPacketToAllSocketsInRoom(TargetClientID / MAXPLAYER, &PCPS, sizeof(PCPS));
 }

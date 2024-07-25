@@ -164,10 +164,14 @@ bool ClientMgr::CheckSelectDuplication(int id, ECharacter c)
 
 bool ClientMgr::CheckFallDie(int id, PPlayerPosition PPP)
 {
-	if ((m_Clients[id]->GetState() == ECharacterState::LIVING) && (PPP.Location.Z < -(9000.f + 500.f)))
+	m_Clients[id]->StateLock.lock();
+	if ((m_Clients[id]->GetState() == ECharacterState::LIVING) && (PPP.Location.Z < -(9000.f + 1500.f)))
 	{
+		m_Clients[id]->SetState(ECharacterState::DEAD);
+		m_Clients[id]->StateLock.unlock();
 		return true;
 	}
+	m_Clients[id]->StateLock.unlock();
 	return false;
 }
 
@@ -179,7 +183,9 @@ void ClientMgr::ProcessMove(int id, PPlayerPosition PPP)
 
 void ClientMgr::ChangeState(int id, ECharacterState state)
 {
+	m_Clients[id]->StateLock.lock();
 	m_Clients[id]->SetState(state);
+	m_Clients[id]->StateLock.unlock();
 }
 
 void ClientMgr::ProcessItem(int id, PUseItem PUI)

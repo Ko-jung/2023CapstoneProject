@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Common/Define.h"
+#include <mutex>
 
 class ClientInfo
 {
@@ -61,6 +62,8 @@ public:
 	std::atomic<float> CurrentHp;
 	float Power;	// default 1.0f
 	ECharacter SelectInfo;
+
+	std::mutex StateLock;
 	ECharacterState State;
 
 	bool IsOverlappedShieldSphere;

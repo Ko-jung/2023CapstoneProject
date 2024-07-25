@@ -475,7 +475,7 @@ uint32 NetworkManager::Run()
 		else if (nRecvLen == -1)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Recv -1 Btye. Server Close. Error Code: %d"), WSAGetLastError());
-			StopListen();
+			//StopListen();
 			break;
 		}
 

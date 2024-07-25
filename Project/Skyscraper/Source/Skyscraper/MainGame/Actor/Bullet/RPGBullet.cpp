@@ -20,6 +20,8 @@
 #include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
+#include "Skyscraper/MainGame/Actor/SkillActor/Shield.h"
+
 typedef UHierarchicalInstancedStaticMeshComponent UHISM;
 
 // Sets default values
@@ -91,10 +93,13 @@ void ARPGBullet::BulletExplode()
 
 	//UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 100.0f, nullptr, IgnoreActors);
 
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+
 	TArray<FHitResult> Hits;
 	bool IsHit = UKismetSystemLibrary::SphereTraceMulti(this, GetActorLocation(), GetActorLocation(), 350.f,
 		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::None, Hits, true);
 
+	bool IsHitShield{ false };
 	TArray<AActor*> UniqueActors;
 	for (const auto& HitResult : Hits)
 	{
@@ -106,42 +111,49 @@ void ARPGBullet::BulletExplode()
 			UniqueActors.Add(HitActor);
 			continue;
 		}
+		else if (AShield* Shield = Cast<AShield>(HitActor))
+		{
+			GameMode->SendDamagedSkillActor(FireCharacter, Shield->SpawnCharacter, ESkillActor::BP_Shield, Shield);
+			IsHitShield = true;
+		}
 	}
 
-	int i = 0;
-	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));	
-	for (const auto& a : UniqueActors)
+	if (!IsHitShield)
 	{
-		if (GameMode)
+		int i = 0;
+		for (const auto& a : UniqueActors)
 		{
-			GameMode->SendTakeDamage(FireCharacter, a);
-		}
-
-		if (ASkyscraperCharacter* Character = Cast<ASkyscraperCharacter>(a))
-		{
-			FVector DownDirVector{};
-			DownDirVector = Character->GetActorLocation() - GetActorLocation();
-			//2019180031 DownDirection은 normal vector
-			DownDirVector.Normalize();
-			Character->DoDown(FireCharacter, DownDirVector);
-
-			// == Spawn Damage (Local)
+			if (GameMode)
 			{
-				if (GetWorld()->GetFirstPlayerController()->GetPawn() == FireCharacter)
-				{
-					FTransform SpawnTransform{};
-					SpawnTransform.SetLocation(Character->GetActorLocation());
-					if (!Character->IsCharacterGodMode())
-					{
-						UDamageComponent* DamageComp = Cast<UDamageComponent>(Character->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
-						if (DamageComp)
-						{
-							DamageComp->InitializeDamage(Damage);
-						}
-					}
-					
-				}
+				GameMode->SendTakeDamage(FireCharacter, a);
+			}
 
+			if (ASkyscraperCharacter* Character = Cast<ASkyscraperCharacter>(a))
+			{
+				FVector DownDirVector{};
+				DownDirVector = Character->GetActorLocation() - GetActorLocation();
+				//2019180031 DownDirection은 normal vector
+				DownDirVector.Normalize();
+				Character->DoDown(FireCharacter, DownDirVector);
+
+				// == Spawn Damage (Local)
+				{
+					if (GetWorld()->GetFirstPlayerController()->GetPawn() == FireCharacter)
+					{
+						FTransform SpawnTransform{};
+						SpawnTransform.SetLocation(Character->GetActorLocation());
+						if (!Character->IsCharacterGodMode())
+						{
+							UDamageComponent* DamageComp = Cast<UDamageComponent>(Character->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
+							if (DamageComp)
+							{
+								DamageComp->InitializeDamage(Damage);
+							}
+						}
+					
+					}
+
+				}
 			}
 		}
 	}
@@ -192,6 +204,9 @@ void ARPGBullet::BulletExplode()
 		// 만약 simulate 되는 오브젝트일 경우 또다시 addforce 되도록
 		if(UStaticMeshComponent* SM = Cast<UStaticMeshComponent>(HitResult.GetComponent()))
 		{
+			if (SM->GetOwner()->IsA(AShield::StaticClass()) ||						// Ignore Shield Mesh
+				SM->GetOwner()->IsA(ASkyscraperCharacter::StaticClass())) return;	// Ignore Skirt Mesh
+
 			FVector ForceDirection = (HitResult.GetActor()->GetActorLocation() + SM->GetRelativeLocation()) - GetActorLocation();
 			ForceDirection.Normalize();
 			ForceDirection *= 7000000.0f;

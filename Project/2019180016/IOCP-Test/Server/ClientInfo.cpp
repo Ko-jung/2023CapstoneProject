@@ -116,12 +116,8 @@ void ClientInfo::RecvProcess(const DWORD& bytes, EXP_OVER* exp)
 
 		if (p->PacketSize <= remaindata) {
 			PacketMgr::Instance()->ProcessPacket(p, this);
-
 			if (p->PacketSize == 0)
-			{
-				cout << "@@@@" << endl;
 				return;
-			}
 			packet += p->PacketSize;
 			remaindata -= p->PacketSize;
 		}

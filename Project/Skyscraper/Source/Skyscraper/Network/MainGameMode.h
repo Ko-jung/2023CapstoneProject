@@ -49,6 +49,7 @@ public:
 	void ProcessTileBreakItem(const uint8 TargetSerial);
 
 	void GetHexagonTileOnLevel();
+	int GetTileDropLevel() { return TileDropLevel; }
 	void GetWindowsOnLevel();
 	int GetWindowsIndex(const UPrimitiveComponent* Target);
 	//UStaticMeshComponent* GetStaticMeshComponentByLocation(FVector Location, EBreakType BreakType);

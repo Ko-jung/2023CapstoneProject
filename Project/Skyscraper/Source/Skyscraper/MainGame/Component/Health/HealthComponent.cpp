@@ -13,6 +13,8 @@
 #include "Skyscraper/MainGame/Widget/Health/MyHealthWidget.h"
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
+#include "Skyscraper/Network/MainGameMode.h"
+
 class UPlayMontageCallbackProxy;
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -310,8 +312,13 @@ void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 
 		if(ASkyscraperPlayerController* PC = Cast<ASkyscraperPlayerController>(OwnerPlayerController))
 		{
-			// 무기교체 UI 추가
-			PC->AddChangeWeaponWidget();
+			AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(OwnerCharacter));
+
+			if (GameMode->GetTileDropLevel() < 2)
+			{
+				// 무기교체 UI 추가
+				PC->AddChangeWeaponWidget();
+			}
 
 			// 관전 모드로 변경할 수 있도록 설정
 			if(DamageCauser)

@@ -114,9 +114,9 @@ protected:
 	UPROPERTY()
 		TArray<FTileImageAndType> TileImages;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<UTexture2D*> TileTextures;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TObjectPtr<UMaterial> M_TileCollapseNotification;
 
 	UPROPERTY()

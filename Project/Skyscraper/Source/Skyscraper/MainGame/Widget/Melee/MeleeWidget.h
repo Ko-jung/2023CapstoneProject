@@ -65,9 +65,9 @@ protected:
 	FTimerHandle InitHitCountTimerHandle;
 
 	// Curve Data
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TObjectPtr<UCurveFloat> HitSizeCurve;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TObjectPtr<UCurveFloat> HitTextAlphaCurve;
 private:
 };

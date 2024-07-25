@@ -3,7 +3,7 @@
 
 #include "ItemWidget.h"
 
-#include "K2Node_SwitchEnum.h"
+//#include "K2Node_SwitchEnum.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 

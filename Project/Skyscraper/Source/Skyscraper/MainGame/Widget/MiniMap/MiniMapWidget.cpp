@@ -37,6 +37,14 @@ void UMiniMapWidget::SetTileImage(int index, ETileImageType TileImageType)
 		TileImages[index].TileType = TileImageType;
 
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop Start"));
+	for (const auto& T : TileTextures)
+	{		
+		UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop T: %s"),
+			*UKismetSystemLibrary::GetDisplayName(T));
+	}
+	UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop End"));
 }
 
 void UMiniMapWidget::SetTileImageToCollapseNotification(int index)
@@ -169,6 +177,15 @@ void UMiniMapWidget::NativePreConstruct()
 
 		static UTexture2D* FloatTileTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_FLOAT.MAP_FLOAT'"));
 		TileTextures[(int8)ETileImageType::ETIT_FloatTile] = FloatTileTexture;
+
+
+		UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::NativePreConstruct ForLoop Start"));
+		for (const auto& T : TileTextures)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::NativePreConstruct ForLoop T: %s"),
+				*UKismetSystemLibrary::GetDisplayName(T));
+		}
+		UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::NativePreConstruct ForLoop End"));
 	}
 
 	// 붕괴 알림 머테리얼 로드

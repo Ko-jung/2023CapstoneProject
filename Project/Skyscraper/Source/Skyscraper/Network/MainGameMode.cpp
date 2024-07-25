@@ -344,8 +344,8 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	ASkyscraperCharacter* character = nullptr;
 	while (true)
 	{
-		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 200.f, Location.X + 200.f),
-										FMath::RandRange(Location.Y - 200.f, Location.Y + 200.f),
+		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 300.f, Location.X + 300.f),
+										FMath::RandRange(Location.Y - 300.f, Location.Y + 300.f),
 										Location.Z};
 		FTransform Transform = { FRotator{} , SpawnLocation };
 
@@ -361,15 +361,21 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 					UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SpawnCharacter %s is Destory!"), *UKismetSystemLibrary::GetDisplayName(controller->GetPawn()));
 					controller->GetPawn()->Destroy();
 				}
-
 				controller->Possess(character);
-
-				ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
-				SkyController->SetPossessingPawn();
-				SkyController->AddAllWidget();
-
 				character->FinishSpawning(Transform);
-				character->AddInputMappingContext();
+				if (character->IsValidLowLevel())
+				{
+
+					ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
+					SkyController->SetPossessingPawn();
+					SkyController->AddAllWidget();
+					character->AddInputMappingContext();
+				}
+				else
+				{
+					character->Destroy();
+					continue;
+				}
 			}
 			else
 			{
@@ -377,6 +383,11 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 					GetWorld()->SpawnActor<AAISkyscraperController>(AAISkyscraperController::StaticClass(), FVector(), FRotator());
 				controller->Possess(character);
 				character->FinishSpawning(Transform);
+				if (!character->IsValidLowLevel())
+				{
+					character->Destroy();
+					continue;
+				}
 			}
 
 			character->Tags.Add(Team);

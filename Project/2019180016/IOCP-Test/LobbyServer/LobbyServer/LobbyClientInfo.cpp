@@ -30,6 +30,8 @@ void LobbyClientInfo::RecvPacketReassemble(const DWORD& bytes, EXP_OVER* exp)
 
 		if (p->PacketSize <= remaindata) {
 			PacketMgr::Instance()->ProcessPacket(p, this);
+			if (p->PacketSize == 0)
+				return;
 			packet += p->PacketSize;
 			remaindata -= p->PacketSize;
 		}

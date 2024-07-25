@@ -55,6 +55,7 @@ void USocketGameInstance::SetSelectInfo(TArray<PPlayerSelectInfo*> s)
 {
 	for (int i = 0; i < s.Num(); i++)
 	{
-		SelectInfo[i] = s[i];
+		if(s[i]->PickedCharacter != (BYTE)ECharacterSelect::ECS_Null)
+			SelectInfo[i] = s[i];
 	}
 }

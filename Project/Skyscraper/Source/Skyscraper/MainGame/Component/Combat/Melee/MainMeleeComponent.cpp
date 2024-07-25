@@ -400,7 +400,6 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	// 2019180031 - 근접공격이 다중으로 적용되지 않는 현상 해결을 위해 BoxTraceMulti -> BoxTraceMultiForObjects 로 변경
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_Visibility));
-	ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 	UKismetSystemLibrary::BoxTraceMultiForObjects(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, ObjectTypes, false, IgnoreActors, EDrawDebugTrace::Type::None, OutHits, true);
 	//UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHits, true);
 
@@ -415,6 +414,9 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	TArray<UPrimitiveComponent*> OutHitComponent;
 	TArray<int32> HISMIndex;
 
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
+	bool IsHitShield{ false };
+
 	for(FHitResult OutHitResult : OutHits)
 	{
 		if (OutHitResult.GetActor()->IsA<ASkyscraperCharacter>())
@@ -428,6 +430,12 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 			}
 				
 		}
+		else if (AShield* Shield = Cast<AShield>(OutHitResult.GetActor()))
+		{
+			GameMode->SendDamagedSkillActor(OwnerCharacter, Shield->SpawnCharacter, ESkillActor::BP_Shield, Shield);
+			UniqueOutHits.Add(OutHitResult);
+			IsHitShield = true;
+		}
 		else if (OutHitResult.GetComponent())
 		{
 			if (!OutHitComponent.Contains(OutHitResult.GetComponent()))
@@ -440,7 +448,6 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		}
 	}
 
-	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(this));
 	for (int i = 0; i < UniqueOutHitsComponent.Num(); i++)
 	{
 		const auto& HitResult = UniqueOutHitsComponent[i];
@@ -477,12 +484,13 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	{
 		AActor* HitActor = HitResult.GetActor();
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActor->GetName());
-		// if (HitActor->IsA(AShield::StaticClass()))
-		// {
-		// 	Cast<AShield>(HitActor)->GetDamage(fBaseDamage);
-		// 	continue;
-		// }
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
+
+		if (!IsHitShield)
+		{
+			PlayHitSound(bIsFinalAttack);
+			break;
+		}
 
 		bDoHitLag = true;
 
@@ -538,23 +546,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 				}
 			}
 
-			// Hit Sound
-			if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
-			{
-				FName CurrentAttackName{};
-				if(bIsFinalAttack)
-				{
-					CurrentAttackName = FinalDamagedSound;
-				}
-				else
-				{
-					CurrentAttackName = DamagedSound;
-				}
-				if (USoundBase* Sound = Subsystem->GetSkyscraperSound(CurrentAttackName))
-				{
-					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
-				}
-			}
+			PlayHitSound(bIsFinalAttack);
 		}
 		
 
@@ -589,6 +581,26 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 				MainMeleeWidget->AddHitCount();
 			}
 			
+		}
+	}
+}
+
+void UMainMeleeComponent::PlayHitSound(bool bIsFinalAttack)
+{			// Hit Sound
+	if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+	{
+		FName CurrentAttackName{};
+		if (bIsFinalAttack)
+		{
+			CurrentAttackName = FinalDamagedSound;
+		}
+		else
+		{
+			CurrentAttackName = DamagedSound;
+		}
+		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(CurrentAttackName))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
 		}
 	}
 }

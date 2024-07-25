@@ -91,6 +91,8 @@ AShieldCharacter::AShieldCharacter()
 
 void AShieldCharacter::BreakShield()
 {
+	if (!GetPlayerController())return;
+
 	IsCanUseShield = false;
 
 	GetPlayerController()->CastingSkill(false, 10);

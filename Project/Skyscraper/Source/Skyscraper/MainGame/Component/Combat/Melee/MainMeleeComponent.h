@@ -39,6 +39,7 @@ public:
 	//void CreateAttackArea(FVector vHitSize, float fStunTime, float fBaseDamage, bool bDoDown);
 	void CreateAttackArea(float Width, float Height, float Distance, FVector StartOffset, float Angle, float fStunTime, float fBaseDamage, bool bDoDown, bool bIsFinalAttack = false);
 
+	void PlayHitSound(bool bIsFinalAttack);
 
 	// 적을 맞출 시 HitLag(역경직)을 발생시키는 함수
 	void DoHitLag();

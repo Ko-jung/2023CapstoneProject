@@ -9,6 +9,9 @@
 #include "Engine/Canvas.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
+#include "Skyscraper/Network/MainGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
 void UChangeWeaponWidget::InitializeWeaponState(EMeleeSelect NowMeleeSelect, ERangeSelect NowRangeSelect)
 {
 	
@@ -45,6 +48,11 @@ void UChangeWeaponWidget::ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect)
 	MeleeButton[(int8)CurrentMeleeSelect]->SetBackgroundColor(FLinearColor::FromSRGBColor(FColor(125, 125, 125)));
 
 	OwnerPlayerController->ChangePlayerMeleeWeapon(NewMeleeSelect);
+
+	if (AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(OwnerPlayerController)))
+	{
+		GameMode->ChangeMeleeWeapon(NewMeleeSelect);
+	}
 }
 
 void UChangeWeaponWidget::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
@@ -59,6 +67,11 @@ void UChangeWeaponWidget::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
 	RangeButton[(int8)CurrentRangeSelect]->SetBackgroundColor(FLinearColor::FromSRGBColor(FColor(125, 125, 125)));
 
 	OwnerPlayerController->ChangePlayerRangeWeapon(NewRangeSelect);
+
+	if (AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(OwnerPlayerController)))
+	{
+		GameMode->ChangeRangeWeapon(NewRangeSelect);
+	}
 }
 
 void UChangeWeaponWidget::OnClickMeleeToDagger()

@@ -1089,6 +1089,22 @@ void AMainGameMode::SendRemoveSkillActor(AActor* TargetActor)
 	SkillActors.Remove(TargetSerialNum);
 }
 
+void AMainGameMode::ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect)
+{
+	if (PlayerSelectInfo.IsValidIndex(SerialNum))
+	{
+		PlayerSelectInfo[SerialNum]->PickedMeleeWeapon = NewMeleeSelect;
+	}
+}
+
+void AMainGameMode::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
+{
+	if (PlayerSelectInfo.IsValidIndex(SerialNum))
+	{
+		PlayerSelectInfo[SerialNum]->PickedRangeWeapon = NewRangeSelect;
+	}
+}
+
 void AMainGameMode::SendStunDown(const AActor* Attacker, const AActor* Target, const FVector& Dirction, bool IsStun, float StunTime)
 {
 	int TargetSerialNum = GetIndex(Target);

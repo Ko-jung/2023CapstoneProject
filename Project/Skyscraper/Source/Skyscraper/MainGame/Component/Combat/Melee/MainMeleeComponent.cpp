@@ -399,7 +399,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 
 	// 2019180031 - 근접공격이 다중으로 적용되지 않는 현상 해결을 위해 BoxTraceMulti -> BoxTraceMultiForObjects 로 변경
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_Visibility));
+	ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 	UKismetSystemLibrary::BoxTraceMultiForObjects(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, ObjectTypes, false, IgnoreActors, EDrawDebugTrace::Type::None, OutHits, true);
 	//UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHits, true);
 
@@ -436,45 +436,64 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 			UniqueOutHits.Add(OutHitResult);
 			IsHitShield = true;
 		}
-		else if (OutHitResult.GetComponent())
-		{
-			if (!OutHitComponent.Contains(OutHitResult.GetComponent()))
-			{
-				OutHitComponent.Add(OutHitResult.GetComponent());
-				UniqueOutHitsComponent.Add(OutHitResult);
-
-				HISMIndex.Add(OutHitResult.Item);
-			}
-		}
+		// else if (OutHitResult.GetComponent())
+		// {
+		// 	if (!OutHitComponent.Contains(OutHitResult.GetComponent()))
+		// 	{
+		// 		OutHitComponent.Add(OutHitResult.GetComponent());
+		// 		UniqueOutHitsComponent.Add(OutHitResult);
+		// 
+		// 		HISMIndex.Add(OutHitResult.Item);
+		// 	}
+		// }
 	}
 
-	for (int i = 0; i < UniqueOutHitsComponent.Num(); i++)
-	{
-		const auto& HitResult = UniqueOutHitsComponent[i];
-
-		UPrimitiveComponent* PrimitiveComponent = HitResult.GetComponent();
-		if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
-			&& PrimitiveComponent->GetName() == ("HISM_Window"))
+	{	// Break Window
+		TArray<TEnumAsByte<EObjectTypeQuery>> ComponentObjectType;
+		ComponentObjectType.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+		UKismetSystemLibrary::BoxTraceMultiForObjects(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator,
+			ComponentObjectType, false, IgnoreActors, EDrawDebugTrace::Type::None, OutHits, true);
+		for (FHitResult OutHitResult : OutHits)
 		{
-			UHierarchicalInstancedStaticMeshComponent* HISMWindow = Cast<UHierarchicalInstancedStaticMeshComponent>(PrimitiveComponent);
-			auto M = HISMWindow->PerInstanceSMData[HISMIndex[i]].Transform.M;
-
-			//UE_LOG(LogTemp, Warning, TEXT("===== Break Window Matrix ====="));
-			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][0],M[1][0],M[2][0],M[3][0]);
-			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][1],M[1][1],M[2][1],M[3][1]);
-			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][2],M[1][2],M[2][2],M[3][2]);
-			//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][3],M[1][3],M[2][3],M[3][3]);
-			//UE_LOG(LogTemp, Warning, TEXT("Index Is %d"), HISMIndex[i]);
-
-			if (GameMode)
+			if (OutHitResult.GetComponent())
 			{
-				GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, HISMIndex[i], EObjectType::Window);
+				if (!OutHitComponent.Contains(OutHitResult.GetComponent()))
+				{
+					OutHitComponent.Add(OutHitResult.GetComponent());
+					UniqueOutHitsComponent.Add(OutHitResult);
+
+					HISMIndex.Add(OutHitResult.Item);
+				}
 			}
-			else
+		}
+		for (int i = 0; i < UniqueOutHitsComponent.Num(); i++)
+		{
+			const auto& HitResult = UniqueOutHitsComponent[i];
+
+			UPrimitiveComponent* PrimitiveComponent = HitResult.GetComponent();
+			if (PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass())
+				&& PrimitiveComponent->GetName() == ("HISM_Window"))
 			{
-				//HISMWindow->RemoveInstance(HISMIndex[i]);
+				UHierarchicalInstancedStaticMeshComponent* HISMWindow = Cast<UHierarchicalInstancedStaticMeshComponent>(PrimitiveComponent);
+				auto M = HISMWindow->PerInstanceSMData[HISMIndex[i]].Transform.M;
+
+				//UE_LOG(LogTemp, Warning, TEXT("===== Break Window Matrix ====="));
+				//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][0],M[1][0],M[2][0],M[3][0]);
+				//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][1],M[1][1],M[2][1],M[3][1]);
+				//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][2],M[1][2],M[2][2],M[3][2]);
+				//UE_LOG(LogTemp, Warning, TEXT("%lf, %lf, %lf, %lf"), M[0][3],M[1][3],M[2][3],M[3][3]);
+				//UE_LOG(LogTemp, Warning, TEXT("Index Is %d"), HISMIndex[i]);
+
+				if (GameMode)
+				{
+					GameMode->SendBreakObject(OwnerCharacter, PrimitiveComponent, HISMIndex[i], EObjectType::Window);
+				}
+				else
+				{
+					//HISMWindow->RemoveInstance(HISMIndex[i]);
+				}
+				continue;
 			}
-			continue;
 		}
 	}
 
@@ -486,7 +505,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActor->GetName());
 		if (!HitActor->IsA(ACharacter::StaticClass())) continue;
 
-		if (!IsHitShield)
+		if (IsHitShield)
 		{
 			PlayHitSound(bIsFinalAttack);
 			break;

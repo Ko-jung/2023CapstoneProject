@@ -200,8 +200,10 @@ void AMainGameMode::ProcessFunc()
 			PSwapWeapon PSW;
 			memcpy(&PSW, packet, sizeof(PSW));
 			if (Characters.IsValidIndex(PSW.SwapingPlayer) && Characters[PSW.SwapingPlayer])
+			{
 				Characters[PSW.SwapingPlayer]->SwapWeapon(PSW.SwapWeapon);
-			UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_SWAPWEAPON"));
+				UE_LOG(LogTemp, Warning, TEXT("Recv COMP_OP::OP_SWAPWEAPON Changer is %s"), *UKismetSystemLibrary::GetDisplayName(Characters[PSW.SwapingPlayer]));
+			}
 			break;
 		}
 		case (BYTE)COMP_OP::OP_STUNDOWNSTATE:

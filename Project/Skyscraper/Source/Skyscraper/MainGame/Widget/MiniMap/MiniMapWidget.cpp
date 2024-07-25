@@ -199,7 +199,7 @@ void UMiniMapWidget::NativePreConstruct()
 void UMiniMapWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 }
 

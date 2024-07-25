@@ -2,6 +2,9 @@
 
 
 #include "Skyscraper/MainGame/Actor/Character/ShieldCharacter.h"
+
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "Skyscraper/MainGame/Core/SkyscraperPlayerController.h"
 
 AShieldCharacter::AShieldCharacter()
@@ -11,8 +14,8 @@ AShieldCharacter::AShieldCharacter()
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/0_shield/shield.shield'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
-		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/ABP_Shield.ABP_Shield_C'"));
-		GetMesh()->SetAnimClass(AnimBPAsset.Class);
+		//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/ABP_Shield.ABP_Shield_C'"));
+		//GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
 	{
@@ -21,8 +24,8 @@ AShieldCharacter::AShieldCharacter()
 
 		BoostMesh->SetupAttachment(GetMesh(), FName("BoostSocket"));
 
-		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/Boost/ABP_Shield_Boost.ABP_Shield_Boost_C'"));
-		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
+		//static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Shield/Boost/ABP_Shield_Boost.ABP_Shield_Boost_C'"));
+		//BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}
 	
 	{ // == Set Anim Montages
@@ -87,6 +90,20 @@ AShieldCharacter::AShieldCharacter()
 
 	//CommonSkillCoolTime = 5.f;
 	SpecialSkillCoolTime = 15.f;
+
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_BoostEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/Boost/NS_BoostSpawn.NS_BoostSpawn'"));
+		if (NS_BoostEffectRef.Succeeded())
+		{
+			NS_BoostEffect->SetAsset(NS_BoostEffectRef.Object);
+		}
+
+		NS_BoostEffect->SetupAttachment(BoostMesh, TEXT("BoostStartSocket"));
+		NS_BoostEffect->SetRelativeLocation(FVector(-0.788, 7.19, -0.019f));
+		NS_BoostEffect->SetRelativeRotation(FRotator{ 0.0f,0.0f,-90.0f });
+		NS_BoostEffect->SetRelativeScale3D(FVector{ 0.1f,0.1f,0.25f });
+		NS_DashEffect->SetHiddenInGame(true);
+	}
 }
 
 void AShieldCharacter::BreakShield()

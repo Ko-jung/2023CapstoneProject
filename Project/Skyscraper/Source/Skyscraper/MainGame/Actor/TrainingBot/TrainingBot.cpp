@@ -12,16 +12,16 @@ ATrainingBot::ATrainingBot()
 	bIsTrainingBot = true;
 
 	{
-		CameraBoom->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-		CameraBoom->SetVisibility(false);
-		FollowCamera->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-		FollowCamera->SetVisibility(false);
-		NS_DashEffect->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-		NS_DashEffect->SetVisibility(false);
-		BoostMesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-		BoostMesh->SetVisibility(false);
-		NS_BoostEffect->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-		NS_BoostEffect->SetVisibility(false);
+		//CameraBoom->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		//CameraBoom->SetVisibility(false);
+		//FollowCamera->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		//FollowCamera->SetVisibility(false);
+		//NS_DashEffect->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		//NS_DashEffect->SetVisibility(false);
+		//BoostMesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		//BoostMesh->SetVisibility(false);
+		//NS_BoostEffect->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		//NS_BoostEffect->SetVisibility(false);
 	}
 
 	{ // Set Mesh Character
@@ -31,8 +31,8 @@ ATrainingBot::ATrainingBot()
 		GetMesh()->SetRelativeScale3D(FVector{ 3.5f,3.5f,3.5f });
 
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
-		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/TrainingBot/ABP_TrainingBot.ABP_TrainingBot_C'"));
-		GetMesh()->SetAnimClass(AnimBPAsset.Class);
+		//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/TrainingBot/ABP_TrainingBot.ABP_TrainingBot_C'"));
+		//GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
 	// Stun / Down

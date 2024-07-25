@@ -3,6 +3,9 @@
 
 #include "ElectricCharacter.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+
 AElectricCharacter::AElectricCharacter()
 {
 	CharacterType = ECharacterSelect::ECS_ElectricCharacter;
@@ -12,8 +15,8 @@ AElectricCharacter::AElectricCharacter()
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
-		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/ABP_Electric.ABP_Electric_C'"));
-		GetMesh()->SetAnimClass(AnimBPAsset.Class);
+		//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/ABP_Electric.ABP_Electric_C'"));
+		//GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
 	{
@@ -22,8 +25,8 @@ AElectricCharacter::AElectricCharacter()
 
 		BoostMesh->SetupAttachment(GetMesh(), FName("BoostSocket"));
 
-		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/Boost/ABP_Electric_Boost.ABP_Electric_Boost_C'"));
-		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
+		//static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Electric/Boost/ABP_Electric_Boost.ABP_Electric_Boost_C'"));
+		//BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}
 
 
@@ -87,4 +90,18 @@ AElectricCharacter::AElectricCharacter()
 
 	CommonSkillCoolTime = 7.f;
 	SpecialSkillCoolTime = 12.f;
+
+	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_BoostEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/Boost/NS_BoostSpawn.NS_BoostSpawn'"));
+		if (NS_BoostEffectRef.Succeeded())
+		{
+			NS_BoostEffect->SetAsset(NS_BoostEffectRef.Object);
+		}
+
+		NS_BoostEffect->SetupAttachment(BoostMesh, TEXT("BoostStartSocket"));
+		NS_BoostEffect->SetRelativeLocation(FVector(-0.788, 7.19, -0.019f));
+		NS_BoostEffect->SetRelativeRotation(FRotator{ 0.0f,0.0f,-90.0f });
+		NS_BoostEffect->SetRelativeScale3D(FVector{ 0.1f,0.1f,0.25f });
+		NS_DashEffect->SetHiddenInGame(true);
+	}
 }

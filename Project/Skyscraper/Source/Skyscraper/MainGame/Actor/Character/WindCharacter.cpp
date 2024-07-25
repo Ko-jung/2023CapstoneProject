@@ -4,6 +4,7 @@
 #include "WindCharacter.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 
 AWindCharacter::AWindCharacter() 
 {
@@ -12,8 +13,8 @@ AWindCharacter::AWindCharacter()
 		static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/2016180023/character/1_wind/wind.wind'"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 		// == Find and set AnimBlueprint (TEMP, Refactor to c++ later)
-		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Wind/ABP_Wind.ABP_Wind_C'"));
-		GetMesh()->SetAnimClass(AnimBPAsset.Class);
+		//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBPAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Wind/ABP_Wind.ABP_Wind_C'"));
+		//GetMesh()->SetAnimClass(AnimBPAsset.Class);
 	}
 
 	{
@@ -22,8 +23,8 @@ AWindCharacter::AWindCharacter()
 
 		BoostMesh->SetupAttachment(GetMesh(), FName("BoostSocket"));
 
-		static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Wind/Boost/ABP_Wind_Boost.ABP_Wind_Boost_C'"));
-		BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
+		//static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_BoostAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/2019180031/MainGame/Animation/Wind/Boost/ABP_Wind_Boost.ABP_Wind_Boost_C'"));
+		//BoostMesh->SetAnimClass(ABP_BoostAsset.Class);
 	}
 
 	{ // == Set Anim Montages
@@ -74,6 +75,20 @@ AWindCharacter::AWindCharacter()
 	}
 
 	{
+		static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_BoostEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/2019180031/MainGame/Fbx/Boost/NS_BoostSpawn.NS_BoostSpawn'"));
+		if (NS_BoostEffectRef.Succeeded())
+		{
+			NS_BoostEffect->SetAsset(NS_BoostEffectRef.Object);
+		}
+
+		NS_BoostEffect->SetupAttachment(BoostMesh, TEXT("BoostStartSocket"));
+		NS_BoostEffect->SetRelativeLocation(FVector(-0.788, 7.19, -0.019f));
+		NS_BoostEffect->SetRelativeRotation(FRotator{ 0.0f,0.0f,-90.0f });
+		NS_BoostEffect->SetRelativeScale3D(FVector{ 0.1f,0.1f,0.25f });
+		NS_DashEffect->SetHiddenInGame(true);
+	}
+
+	{
 		NS_BoostEffect->SetRelativeLocation(FVector(-0.788,0.37,0.5));
 		NS_BoostEffect->SetRelativeRotation(FRotator{ 0.0f,-90.0f,-90.0f });
 		
@@ -86,6 +101,8 @@ AWindCharacter::AWindCharacter()
 		NS_BoostEffectRight->SetRelativeScale3D(FVector{ 0.1f,0.1f,0.25f });
 		NS_BoostEffectRight->SetHiddenInGame(true);
 	}
+
+
 
 	CommonSkillCoolTime = 5.f;
 	SpecialSkillCoolTime = 15.f;

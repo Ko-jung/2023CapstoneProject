@@ -111,7 +111,7 @@ void ASkyscraperGameMode::Tick(float Deltatime)
 	{
 		SelectTimer -= Deltatime;
 
-		if (SelectTimer < 5.f && !CountdownTimer.IsValid())
+		if (SelectTimer < 5.1f && !CountdownTimer.IsValid())
 		{
 			GetWorld()->GetTimerManager().SetTimer(CountdownTimer, this, &ThisClass::PlayCountdownSound, 1.f, true);
 		}

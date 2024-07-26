@@ -118,12 +118,20 @@ void UMainMeleeComponent::BeginPlay()
 		{
 			UUserWidget* Widget = CreateWidget(GetOwnerPlayerController(), MainMeleeWidgetClass);
 			if (Widget)
-			{
+			{				
 				MainMeleeWidget = Cast<UMeleeWidget>(Widget);
 				MainMeleeWidget->AddToViewport();
 				MainMeleeWidget->SetMeleeWeapon(MeleeSelect);
 				MainMeleeWidget->SetMeleeCooldownPercent(CurrentCooldownTime, AttackCoolDownTime);
 			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("UMainMeleeComponent::BeginPlay() Widget is nullptr"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UMainMeleeComponent::BeginPlay() GetOwnerPlayerController is nullptr"));
 		}
 	}
 

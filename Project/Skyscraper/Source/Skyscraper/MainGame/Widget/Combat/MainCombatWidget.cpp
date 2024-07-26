@@ -13,6 +13,7 @@ void UMainCombatWidget::SetCharacterImage(ECharacterSelect CharacterType)
 
 	if(CharacterTextures.IsValidIndex(static_cast<int>(CharacterType)) && CharacterTextures[static_cast<int>(CharacterType)])
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UMainCombatWidget::SetCharacterImage. CharacterType is: %d"), static_cast<int>(CharacterType));
 		CharacterImage->SetBrushFromTexture(CharacterTextures[static_cast<int>(CharacterType)]);
 	}
 }

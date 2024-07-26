@@ -355,21 +355,25 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 			if (TargetSerialNum == SerialNum)
 			{
 				APlayerController* controller = GetWorld()->GetFirstPlayerController();
-
 				if (IsValid(controller->GetPawn()))
 				{
 					UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SpawnCharacter %s is Destory!"), *UKismetSystemLibrary::GetDisplayName(controller->GetPawn()));
 					controller->GetPawn()->Destroy();
 				}
-
 				controller->Possess(character);
-
-				ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
-				SkyController->SetPossessingPawn();
-				SkyController->AddAllWidget();
-
 				character->FinishSpawning(Transform);
-				character->AddInputMappingContext();
+				if (character->IsValidLowLevel())
+				{
+					ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
+					SkyController->SetPossessingPawn();
+					SkyController->AddAllWidget();
+					character->AddInputMappingContext();
+				}
+				else
+				{
+					character->Destroy();
+					continue;
+				}
 			}
 			else
 			{
@@ -1255,6 +1259,17 @@ void AMainGameMode::RequestFinishGame()
 {
 	PRequestPacket PRP(COMP_OP::OP_FINISHGAME);
 	m_Socket->Send(&PRP, sizeof(PRP));
+}
+
+void AMainGameMode::PrintWidgets()
+{
+	TArray<UUserWidget*> FoundWidgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, UUserWidget::StaticClass(), false);
+
+	for (UUserWidget* Widget : FoundWidgets)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::PrintWidgets() Found Widget: %s"), *Widget->GetName());
+	}
 }
 
 void AMainGameMode::SpawnSkillActor_Implementation(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team) {}

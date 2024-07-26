@@ -113,6 +113,8 @@ public:
 	void RequestSpawnItem();
 	UFUNCTION(Exec)
 	void RequestFinishGame();
+	UFUNCTION(Exec)
+	void PrintWidgets();
 
 protected:
 	TArray<ASkyscraperCharacter*> Characters;

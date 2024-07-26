@@ -120,11 +120,15 @@ void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCa
 {
 	// 무적 상태라면 대미지 안받도록
 	if (bIsGodMode) return;
+	// 사망한 캐릭터는 대미지를 받지 않도록 수정
+	if (CurrentHealth <= 0.0f) return;
+
 
 	CurrentHealth = FMath::Max(CurrentHealth - fBaseDamage, 0.0f);
 	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
 	if(CurrentHealth<=0.0f)
 	{
+		SetGodMode(true);
 		SetPlayerDie(DamageCauser);
 	}
 
@@ -149,6 +153,8 @@ void UHealthComponent::ActivateGodMode(float GodModeTime)
 	bIsGodMode = true;
 
 	OwnerCharacter->SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Single_GodMode, true);
+	
+	
 
 	if (!GodModeTimerHandle.IsValid())
 	{

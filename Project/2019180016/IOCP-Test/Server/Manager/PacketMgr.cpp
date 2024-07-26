@@ -127,7 +127,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	{
 		PStunDownState PSDS;
 		MEMCPYBUFTOPACKET(PSDS);
-		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSDS, sizeof(PSDS));
+		ClientMgr::Instance()->ProcessStunDown(c->GetClientNum(), PSDS);
 		break;
 	}
 	case (int)COMP_OP::OP_USEITEM:
@@ -336,8 +336,8 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 
 
 	// Respawn Timer 10s, GodMode 3s
-	TimerEvent RespawnTimer(std::chrono::seconds(1), std::bind(&PacketMgr::SendSpawn, this, ClientId));
-	TimerEvent GodmodeTimer(std::chrono::seconds(4), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
+	TimerEvent RespawnTimer(std::chrono::seconds(10), std::bind(&PacketMgr::SendSpawn, this, ClientId));
+	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
 
 	if (RoomMgr::Instance()->GetTileDropLevel(ClientId / MAXPLAYER) < 3)
 	{

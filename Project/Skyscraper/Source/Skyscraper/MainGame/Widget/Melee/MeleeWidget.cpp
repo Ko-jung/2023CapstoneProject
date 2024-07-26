@@ -109,35 +109,7 @@ void UMeleeWidget::AddHitCount()
 void UMeleeWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	for (int i = 0; i < static_cast<int>(EMeleeSelect::EMS_Count); ++i)
-	{
-		WeaponTexture.AddDefaulted();
-	}
 
-	// Texture
-	{
-		static UTexture2D* NoneTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/combat/weapon_plate.weapon_plate'"));
-		WeaponTexture[static_cast<int>(EMeleeSelect::EMS_NONE)] = NoneTexture;
-
-		static UTexture2D* DaggerTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/combat/dagger.dagger'"));
-		WeaponTexture[static_cast<int>(EMeleeSelect::EMS_Dagger)] = DaggerTexture;
-
-		static UTexture2D* KatanaTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/combat/katana.katana'"));
-		WeaponTexture[static_cast<int>(EMeleeSelect::EMS_Katana)] = KatanaTexture;
-
-		static UTexture2D* SwordTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/combat/sword.sword'"));
-		WeaponTexture[static_cast<int>(EMeleeSelect::EMS_GreatSword)] = SwordTexture;
-	}
-
-
-	// Curve
-	{
-		static UCurveFloat* HitSizeCurveFloat = Cast<UCurveFloat>(StaticLoadObject(UCurveFloat::StaticClass(), NULL, L"/Script/Engine.CurveFloat'/Game/2019180031/MainGame/Widget/Combat/Melee/MeleeHitSizeCurve.MeleeHitSizeCurve'"));
-		HitSizeCurve = HitSizeCurveFloat;
-
-		static UCurveFloat* HitTextColorCurveFloat = Cast<UCurveFloat>(StaticLoadObject(UCurveFloat::StaticClass(), NULL, L"/Script/Engine.CurveFloat'/Game/2019180031/MainGame/Widget/Combat/Melee/MeleeHitTextColorCurve_Alpha.MeleeHitTextColorCurve_Alpha'"));
-		HitTextAlphaCurve = HitTextColorCurveFloat;
-	}
 }
 
 void UMeleeWidget::NativeConstruct()

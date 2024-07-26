@@ -208,7 +208,7 @@ void UCombatSystemComponent::BindingInputActions()
 
 void UCombatSystemComponent::SwapWeapon(UActorComponent* TargetWeaponComponent)
 {
-	if (OwnerAnimInstance->IsAnyMontagePlaying())
+	if (OwnerAnimInstance && OwnerAnimInstance->IsAnyMontagePlaying())
 	{
 		return;
 	}

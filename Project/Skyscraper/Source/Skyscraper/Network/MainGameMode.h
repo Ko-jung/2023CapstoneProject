@@ -78,8 +78,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SendRemoveSkillActor(AActor* TargetActor);
 
-	//UFUNCTION(BlueprintCallable)
-	//void RemoveSkillActor(AActor* TargetActor);
+	void ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect);
+	void ChangeRangeWeapon(ERangeSelect NewRangeSelect);
 
 	int GetIndex(const AActor* target);
 

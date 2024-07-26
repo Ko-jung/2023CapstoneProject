@@ -31,9 +31,20 @@ void UMiniMapWidget::SetTileImage(int index, ETileImageType TileImageType)
 
 	if(TileImages.IsValidIndex(index))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage TileImageType: %d, TileTextures[static_cast<int>(TileImageType)]: %s"),
+			static_cast<int>(TileImageType), *UKismetSystemLibrary::GetDisplayName(TileTextures[static_cast<int>(TileImageType)]));
 		TileImages[index].TileImage->SetBrushFromTexture(TileTextures[static_cast<int>(TileImageType)]);
 		TileImages[index].TileType = TileImageType;
+
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop Start"));
+	for (const auto& T : TileTextures)
+	{		
+		UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop T: %s"),
+			*UKismetSystemLibrary::GetDisplayName(T));
+	}
+	UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop End"));
 }
 
 void UMiniMapWidget::SetTileImageToCollapseNotification(int index)
@@ -144,35 +155,6 @@ void UMiniMapWidget::NativePreConstruct()
 		}
 	}
 
-	// 타일 이미지 텍스쳐 로드
-	{
-		for (int i = 0; i < (int8)ETileImageType::ETIT_SIZE; ++i)
-		{
-			TileTextures.AddDefaulted();
-		}
-
-		static UTexture2D* BuildingTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_BUILDING.MAP_BUILDING'"));
-		TileTextures[(int8)ETileImageType::ETIT_Building] = BuildingTexture;
-
-		static UTexture2D* ItemTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_ITEM.MAP_ITEM'"));
-		TileTextures[(int8)ETileImageType::ETIT_Item] = ItemTexture;
-
-		static UTexture2D* NormalTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_NORMAL_TILE.MAP_NORMAL_TILE'"));
-		TileTextures[(int8)ETileImageType::ETIT_Normal] = NormalTexture;
-
-
-		static UTexture2D* CollapseTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/EMPTY_BACKGROUND.EMPTY_BACKGROUND'"));
-		TileTextures[(int8)ETileImageType::ETIT_Collapse] = CollapseTexture;
-
-		static UTexture2D* FloatTileTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, L"/Script/Engine.Texture2D'/Game/2016180023/UI/map/MAP_FLOAT.MAP_FLOAT'"));
-		TileTextures[(int8)ETileImageType::ETIT_FloatTile] = FloatTileTexture;
-	}
-
-	// 붕괴 알림 머테리얼 로드
-	{
-		static UMaterial* CollapseNotificationMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, L"/Script/Engine.Material'/Game/2019180031/MainGame/Widget/Map/M_CollapseNotification.M_CollapseNotification'"));
-		M_TileCollapseNotification = CollapseNotificationMaterial;
-	}
 
 	// 플레이어 이미지 찾기
 	{
@@ -196,7 +178,7 @@ void UMiniMapWidget::NativePreConstruct()
 void UMiniMapWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	HexagonTile = Cast<AHexagonTile>(UGameplayStatics::GetActorOfClass(this, AHexagonTile::StaticClass()));
 }
 

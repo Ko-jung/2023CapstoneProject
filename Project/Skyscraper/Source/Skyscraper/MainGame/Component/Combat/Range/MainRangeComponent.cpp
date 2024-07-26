@@ -173,6 +173,17 @@ void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	//Unbind Input Mapping Context
 	RemoveThisWeapon();
+
+	// Unbind Melee Widget
+	if (MainRangeWidget)
+	{
+		MainRangeWidget->RemoveFromParent();
+	}
+
+	if(MyAmmoWidget)
+	{
+		MyAmmoWidget->RemoveFromParent();
+	}
 }
 
 void UMainRangeComponent::SetInitialValue()
@@ -499,6 +510,7 @@ void UMainRangeComponent::BulletReloading()
 void UMainRangeComponent::PlayReloadAnim()
 {
 	if (!CanReload()) return;
+	if (OwnerAnimInstance && OwnerAnimInstance->IsAnyMontagePlaying()) return;
 
 	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
 	{ // == Play Montage

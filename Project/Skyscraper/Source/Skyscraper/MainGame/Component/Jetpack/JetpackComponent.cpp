@@ -94,9 +94,7 @@ void UJetpackComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	{ // == Get Owner Character
-		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
-	}
+	SetOwner();
 	
 	AddInputMappingContext();
 	BindingInputActions();
@@ -667,4 +665,11 @@ void UJetpackComponent::AddHoveringGravityScale(float AddValue)
 void UJetpackComponent::SubtractFuelHalf()
 {
 	SetFuel(JetpackFuel - MaxJetpackFuel / 2);
+}
+
+void UJetpackComponent::SetOwner()
+{
+	{ // == Get Owner Character
+		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+	}
 }

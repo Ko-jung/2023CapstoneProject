@@ -137,6 +137,20 @@ void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCa
 	GetDamagedByEnemy();
 }
 
+void UHealthComponent::GetDamagedFromServer(float NewHp, TObjectPtr<AActor> DamageCauser)
+{
+	float DeltaHp = CurrentHealth - NewHp;
+	if (DeltaHp > 0.f)
+	{
+		// DAMAGED
+		GetDamaged(DeltaHp, DamageCauser);
+	}
+	else
+	{
+		// Heal
+	}
+}
+
 float UHealthComponent::GetHealthPercent() const
 {
 	if(HealthProgressBar)
@@ -295,7 +309,7 @@ void UHealthComponent::AddWidget()
 
 void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 {
-	if (!OwnerCharacter) return;
+	if (!OwnerCharacter || LivingState == EHealthState::EHS_DEAD) return;
 
 	LivingState = EHealthState::EHS_DEAD;
 
@@ -337,6 +351,10 @@ void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 	}else
 	{
 		// == For enemy(no player)
+		if (UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Death))
+		{
+			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0, 0, FName(TEXT("Death_Bwd")));
+		}
 		
 	}
 }

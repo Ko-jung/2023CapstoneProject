@@ -100,6 +100,7 @@ public:
 	
 	//2019180016
 	void SubtractFuelHalf();
+	void SetOwner();
 	//==========
 protected:
 	// == Owner 캐릭터 관련

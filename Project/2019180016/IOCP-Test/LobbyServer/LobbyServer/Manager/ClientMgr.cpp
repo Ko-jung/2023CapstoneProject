@@ -123,6 +123,11 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 		{
 			while (m_MatchingQueue.try_pop(client))
 			{
+				if (client->ClientNum == -1)
+				{
+					m_MatchingQueue.push(client);
+					return;
+				}
 				MatchingSerial.push_back(client->ClientNum);
 				memcpy_s(PPI.IDs[i], IDSIZE, client->ClientID, IDSIZE);
 				i++;
@@ -132,9 +137,10 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 		PConnectToGameserver SPS;
 		for (const auto i : MatchingSerial)
 		{
+			// TODO: i : -1 이라면 패스
 			Clients[i]->SendProcess(&PPI);
 			Clients[i]->SendProcess(&SPS);
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::this_thread::sleep_for(std::chrono::milliseconds(300));
 		}
 	}
 	break;

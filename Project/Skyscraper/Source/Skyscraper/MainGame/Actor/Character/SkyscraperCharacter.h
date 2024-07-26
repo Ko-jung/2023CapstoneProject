@@ -218,6 +218,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlliance(AActor* Target);
+
+	void SetCombatOwner();
 	// ==================
 
 	UFUNCTION()

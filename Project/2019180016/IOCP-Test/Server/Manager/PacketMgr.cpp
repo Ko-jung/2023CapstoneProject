@@ -76,6 +76,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 
 		bool IsDead = clients[TargetPlayerId]->TakeDamage(Damage);
 		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, clients[TargetPlayerId]->GetCurrnetHp());
+		PCPHP.AttackerSerial = id % MAXPLAYER;
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / MAXPLAYER, &PCPHP, sizeof(PCPHP));
 
 		if (IsDead)
@@ -339,7 +340,7 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 	TimerEvent RespawnTimer(std::chrono::seconds(10), std::bind(&PacketMgr::SendSpawn, this, ClientId));
 	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
 
-	if (RoomMgr::Instance()->GetTileDropLevel(ClientId / MAXPLAYER) < 3)
+	if (RoomMgr::Instance()->GetTileDropLevel(ClientId / MAXPLAYER) < 2)
 	{
 		TimerMgr::Instance()->Insert(RespawnTimer);
 		TimerMgr::Instance()->Insert(GodmodeTimer);

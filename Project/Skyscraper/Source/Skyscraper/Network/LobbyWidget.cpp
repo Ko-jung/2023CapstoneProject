@@ -65,7 +65,6 @@ void ULobbyWidget::SpawnNewCharacter(ECharacterSelect ECharacter)
 		}
 		PrevPawn->Destroy();
 		Character->FinishSpawning(PrevCharacterTransform);
-		UE_LOG(LogTemp, Warning, TEXT("ECS_ElectricCharacter Spawned"));
 
 		Controller->GetMainCombatWidget()->SetCharacterImage(ECharacter);
 		Controller->GetMainCombatWidget()->InitCoolTime();

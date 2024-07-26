@@ -124,10 +124,11 @@ struct PChangedPlayerHP : Packet
 {
 	// GENERATED_BODY()
 
+	BYTE AttackerSerial;
 	BYTE ChangedPlayerSerial;
 	float AfterHP;
 
-	PChangedPlayerHP() : Packet(COMP_OP::OP_CHANGEDPLAYERHP), ChangedPlayerSerial(-1), AfterHP(-1.f) { PacketSize = sizeof(PChangedPlayerHP); }
+	PChangedPlayerHP() : Packet(COMP_OP::OP_CHANGEDPLAYERHP), AttackerSerial(0),ChangedPlayerSerial(-1), AfterHP(-1.f) { PacketSize = sizeof(PChangedPlayerHP); }
 	PChangedPlayerHP(int changedPlayerSerial, float afterHP) : Packet(COMP_OP::OP_CHANGEDPLAYERHP),
 		ChangedPlayerSerial(changedPlayerSerial), AfterHP(afterHP) {
 		PacketSize = sizeof(PChangedPlayerHP);

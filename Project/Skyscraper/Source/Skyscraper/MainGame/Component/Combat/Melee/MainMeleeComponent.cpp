@@ -118,12 +118,20 @@ void UMainMeleeComponent::BeginPlay()
 		{
 			UUserWidget* Widget = CreateWidget(GetOwnerPlayerController(), MainMeleeWidgetClass);
 			if (Widget)
-			{
+			{				
 				MainMeleeWidget = Cast<UMeleeWidget>(Widget);
 				MainMeleeWidget->AddToViewport();
 				MainMeleeWidget->SetMeleeWeapon(MeleeSelect);
 				MainMeleeWidget->SetMeleeCooldownPercent(CurrentCooldownTime, AttackCoolDownTime);
 			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("UMainMeleeComponent::BeginPlay() Widget is nullptr"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UMainMeleeComponent::BeginPlay() GetOwnerPlayerController is nullptr"));
 		}
 	}
 
@@ -572,7 +580,12 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		// Execute on Sever
 		if (GameMode)
 		{
-			if (not GameMode->SendTakeDamage(OwnerCharacter, HitActor))
+			//if (not GameMode->SendTakeDamage(OwnerCharacter, HitActor))
+			if (GameMode->GetIsConnected())
+			{
+				GameMode->SendTakeDamage(OwnerCharacter, HitActor);
+			}
+			else
 			{
 				// == "This function will only execute on the server" <<= now, just client level
 				UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);

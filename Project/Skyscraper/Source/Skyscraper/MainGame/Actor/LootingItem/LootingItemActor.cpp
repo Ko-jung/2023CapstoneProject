@@ -224,6 +224,9 @@ void ALootingItemActor::RemovePlayerWidget(AActor* EndOverlapCharacter)
 	// 나간 액터가 캐릭터가 아니라면 종료
 	if (!EndOverlapCharacter->IsA(ASkyscraperCharacter::StaticClass())) return;
 
+	// 나간 액터가 AI라면 종료
+	if (!Cast<ASkyscraperCharacter>(EndOverlapCharacter)->GetPlayerController()) return;
+
 	// 나간 액터가 현재 맵에 저장되어 있지 않을경우도 종료
 	
 	if (!PlayerAndWidgetMap.FindChecked(EndOverlapCharacter)) return;

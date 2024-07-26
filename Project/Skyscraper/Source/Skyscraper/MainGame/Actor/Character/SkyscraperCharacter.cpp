@@ -964,6 +964,15 @@ bool ASkyscraperCharacter::IsAlliance(AActor* Target)
 	return TargetTags[0] == MyTags[0];
 }
 
+void ASkyscraperCharacter::SetCombatOwner()
+{
+	if (CombatSystemComponent)
+	{
+		CombatSystemComponent->SetOwner();
+		JetpackComponent->SetOwner();
+	}
+}
+
 void ASkyscraperCharacter::SetItemEffectAndOverlayMaterial(EItemEffect TargetItemEffect, bool bAdd)
 {
 	if(bAdd)

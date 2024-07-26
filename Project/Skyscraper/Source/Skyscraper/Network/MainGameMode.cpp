@@ -154,8 +154,10 @@ void AMainGameMode::ProcessFunc()
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERHP:
 		{
 			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(packet);
-			if (Characters[PCPHP->ChangedPlayerSerial])
-				Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
+			if (Characters[PCPHP->ChangedPlayerSerial] && Characters.IsValidIndex(PCPHP->AttackerSerial))
+			{
+				Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->GetDamagedFromServer(PCPHP->AfterHP, Characters[PCPHP->AttackerSerial]);
+			}
 			break;
 		}
 		case (BYTE)COMP_OP::OP_CHANGEDSKILLACTORHP:
@@ -357,7 +359,6 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 			if (TargetSerialNum == SerialNum)
 			{
 				APlayerController* controller = GetWorld()->GetFirstPlayerController();
-
 				if (IsValid(controller->GetPawn()))
 				{
 					UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SpawnCharacter %s is Destory!"), *UKismetSystemLibrary::GetDisplayName(controller->GetPawn()));
@@ -367,10 +368,11 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 				character->FinishSpawning(Transform);
 				if (character->IsValidLowLevel())
 				{
-
 					ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
 					SkyController->SetPossessingPawn();
 					SkyController->AddAllWidget();
+
+					character->SetCombatOwner();
 					character->AddInputMappingContext();
 				}
 				else
@@ -1284,6 +1286,17 @@ void AMainGameMode::RequestFinishGame()
 {
 	PRequestPacket PRP(COMP_OP::OP_FINISHGAME);
 	m_Socket->Send(&PRP, sizeof(PRP));
+}
+
+void AMainGameMode::PrintWidgets()
+{
+	TArray<UUserWidget*> FoundWidgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, UUserWidget::StaticClass(), false);
+
+	for (UUserWidget* Widget : FoundWidgets)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::PrintWidgets() Found Widget: %s"), *Widget->GetName());
+	}
 }
 
 void AMainGameMode::SpawnSkillActor_Implementation(ESkillActor SkillActor, FVector SpawnLocation, FVector ForwardVec, ASkyscraperCharacter* Spawner, FName Team) {}

@@ -512,7 +512,7 @@ uint32 NetworkManager::Run()
 		if (RemainLen > 0)
 		{
 			memmove(m_sRecvBuffer, ReciveData, RemainLen);
-			UE_LOG(LogTemp, Warning, TEXT("Called Memmove"));
+			//UE_LOG(LogTemp, Warning, TEXT("Called Memmove"));
 		}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Recv Close"));

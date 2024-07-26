@@ -358,6 +358,7 @@ ASkyscraperPlayerController* ASkyscraperCharacter::GetPlayerController() const
 {
 	// UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::GetPlayerController() this is %s"),
 	// 	*UKismetSystemLibrary::GetDisplayName(this));
+
 	return Cast<ASkyscraperPlayerController>(GetController()); 
 }
 
@@ -971,6 +972,7 @@ void ASkyscraperCharacter::SetCombatOwner()
 	if (CombatSystemComponent)
 	{
 		CombatSystemComponent->SetOwner();
+		JetpackComponent->SetOwner();
 	}
 }
 

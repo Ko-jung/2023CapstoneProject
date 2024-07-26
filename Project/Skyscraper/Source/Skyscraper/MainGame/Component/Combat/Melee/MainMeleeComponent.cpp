@@ -580,7 +580,12 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 		// Execute on Sever
 		if (GameMode)
 		{
-			if (not GameMode->SendTakeDamage(OwnerCharacter, HitActor))
+			//if (not GameMode->SendTakeDamage(OwnerCharacter, HitActor))
+			if (GameMode->GetIsConnected())
+			{
+				GameMode->SendTakeDamage(OwnerCharacter, HitActor);
+			}
+			else
 			{
 				// == "This function will only execute on the server" <<= now, just client level
 				UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);

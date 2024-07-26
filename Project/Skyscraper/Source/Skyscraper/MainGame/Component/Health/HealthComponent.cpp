@@ -309,7 +309,7 @@ void UHealthComponent::AddWidget()
 
 void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 {
-	if (!OwnerCharacter) return;
+	if (!OwnerCharacter || LivingState == EHealthState::EHS_DEAD) return;
 
 	LivingState = EHealthState::EHS_DEAD;
 

@@ -340,7 +340,7 @@ void PacketMgr::ProcessingPlayerDead(int ClientId)
 	TimerEvent RespawnTimer(std::chrono::seconds(10), std::bind(&PacketMgr::SendSpawn, this, ClientId));
 	TimerEvent GodmodeTimer(std::chrono::seconds(13), std::bind(&PacketMgr::SendOffInvincibility, this, ClientId));
 
-	if (RoomMgr::Instance()->GetTileDropLevel(ClientId / MAXPLAYER) < 3)
+	if (RoomMgr::Instance()->GetTileDropLevel(ClientId / MAXPLAYER) < 2)
 	{
 		TimerMgr::Instance()->Insert(RespawnTimer);
 		TimerMgr::Instance()->Insert(GodmodeTimer);

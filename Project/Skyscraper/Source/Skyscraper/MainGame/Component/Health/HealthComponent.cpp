@@ -137,6 +137,20 @@ void UHealthComponent::GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCa
 	GetDamagedByEnemy();
 }
 
+void UHealthComponent::GetDamagedFromServer(float NewHp, TObjectPtr<AActor> DamageCauser)
+{
+	float DeltaHp = CurrentHealth - NewHp;
+	if (DeltaHp > 0.f)
+	{
+		// DAMAGED
+		GetDamaged(DeltaHp, DamageCauser);
+	}
+	else
+	{
+		// Heal
+	}
+}
+
 float UHealthComponent::GetHealthPercent() const
 {
 	if(HealthProgressBar)

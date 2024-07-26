@@ -76,6 +76,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 
 		bool IsDead = clients[TargetPlayerId]->TakeDamage(Damage);
 		PChangedPlayerHP PCPHP(TargetPlayerSerialNum, clients[TargetPlayerId]->GetCurrnetHp());
+		PCPHP.AttackerSerial = id % MAXPLAYER;
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(id / MAXPLAYER, &PCPHP, sizeof(PCPHP));
 
 		if (IsDead)

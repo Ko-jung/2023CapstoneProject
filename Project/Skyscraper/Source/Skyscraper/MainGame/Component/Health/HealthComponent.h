@@ -94,6 +94,9 @@ public:
 	// 대미지 처리 함수
 	void GetDamaged(float fBaseDamage, TObjectPtr<AActor> DamageCauser);
 
+	// 2019180016
+	void GetDamagedFromServer(float NewHp, TObjectPtr<AActor> DamageCauser);
+
 	// 애니메이션에서 캐릭터의 체력 퍼센트 받는 함수
 	UFUNCTION(BlueprintCallable)
 		float GetHealthPercent() const;

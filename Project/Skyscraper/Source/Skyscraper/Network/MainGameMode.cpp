@@ -154,8 +154,10 @@ void AMainGameMode::ProcessFunc()
 		case (BYTE)COMP_OP::OP_CHANGEDPLAYERHP:
 		{
 			PChangedPlayerHP* PCPHP = static_cast<PChangedPlayerHP*>(packet);
-			if (Characters[PCPHP->ChangedPlayerSerial])
-				Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->ChangeCurrentHp(PCPHP->AfterHP);
+			if (Characters[PCPHP->ChangedPlayerSerial] && Characters.IsValidIndex(PCPHP->AttackerSerial))
+			{
+				Characters[PCPHP->ChangedPlayerSerial]->HealthComponent->GetDamagedFromServer(PCPHP->AfterHP, Characters[PCPHP->AttackerSerial]);
+			}
 			break;
 		}
 		case (BYTE)COMP_OP::OP_CHANGEDSKILLACTORHP:

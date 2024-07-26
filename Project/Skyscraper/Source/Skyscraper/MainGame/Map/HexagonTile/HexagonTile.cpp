@@ -792,6 +792,15 @@ void AHexagonTile::CollapseTile(int CollapseTargetIndex)
 {
 	if (CollapseTargetIndex >= Tiles.Num()) return;
 
+	for (auto& Item : TileActorItem)
+	{
+		if (Item.Value == CollapseTargetIndex)
+		{
+			TileActorItem.Remove(Item.Key);
+			break;
+		}		
+	}
+
 	FVector GeometrySpawnLocation = Tiles[CollapseTargetIndex]->GetRelativeLocation();
 	if (Tile_Actor.Contains(Tiles[CollapseTargetIndex]))
 	{

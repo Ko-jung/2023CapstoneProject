@@ -28,15 +28,15 @@ void UHealthBar::SetHealthPercent(float Percent)
 	HealthBar->SetPercent(Percent);
 
 	int MaxHealthCount = static_cast<int> (Percent * MAX_HEALTH_BAR_COUNT);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), MaxHealthCount);
+	for (int i = 0; i < MAX_HEALTH_BAR_COUNT; ++i)
+	{
+		HealthBars[i]->SetPercent(0.0f);
+	}
 
 	// Max(1.0f) 채우기
 	{
-		for(int i =0; i<MAX_HEALTH_BAR_COUNT; ++i)
-		{
-			HealthBars[i]->SetPercent(0.0f);
-		}
-
-		for(int i = 0; i < Percent * MAX_HEALTH_BAR_COUNT - 1; ++i)
+		for(int i = 0; i < Percent * MAX_HEALTH_BAR_COUNT; ++i)
 		{
 			HealthBars[i]->SetPercent(1.0f);
 		}

@@ -365,8 +365,6 @@ float ASkyscraperCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	// https://mingyu0403.tistory.com/258 PointDamage / RadialDamage ...
-
 	if(HealthComponent)
 	{
 		HealthComponent->GetDamaged(DamageAmount, DamageCauser);

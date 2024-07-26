@@ -127,7 +127,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	{
 		PStunDownState PSDS;
 		MEMCPYBUFTOPACKET(PSDS);
-		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSDS, sizeof(PSDS));
+		ClientMgr::Instance()->ProcessStunDown(c->GetClientNum(), PSDS);
 		break;
 	}
 	case (int)COMP_OP::OP_USEITEM:

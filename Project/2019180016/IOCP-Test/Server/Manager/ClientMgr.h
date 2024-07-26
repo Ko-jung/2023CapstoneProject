@@ -21,6 +21,7 @@ public:
 	bool CheckSelectDuplication(int id, ECharacter c);
 	bool CheckFallDie(int id, PPlayerPosition PPP);
 	void ProcessMove(int id, PPlayerPosition PPP);
+	void ProcessStunDown(int id, PStunDownState PSDS);
 	void ChangeState(int id, ECharacterState state);
 	void ProcessItem(int id, PUseItem PUI);
 	void ProcessTeamItem(int id, PUseItem PUI);

@@ -181,6 +181,12 @@ void ClientMgr::ProcessMove(int id, PPlayerPosition PPP)
 	//CheckFallDie(id, PPP);
 }
 
+void ClientMgr::ProcessStunDown(int id, PStunDownState PSDS)
+{
+	if(m_Clients[id]->GetState() != ECharacterState::DEAD)
+		SendPacketToAllSocketsInRoom(id / MAXPLAYER, &PSDS, sizeof(PSDS));
+}
+
 void ClientMgr::ChangeState(int id, ECharacterState state)
 {
 	m_Clients[id]->StateLock.lock();

@@ -158,7 +158,7 @@ void UMainRangeComponent::BeginPlay()
 			MainRangeWidget = CreateWidget(GetOwnerPlayerController(), MainRangeWidgetClass);
 			if(MainRangeWidget)
 			{
-				//MainRangeWidget->AddToViewport();
+				MainRangeWidget->AddToViewport();
 			}
 		}
 
@@ -178,6 +178,11 @@ void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (MainRangeWidget)
 	{
 		MainRangeWidget->RemoveFromParent();
+	}
+
+	if(MyAmmoWidget)
+	{
+		MyAmmoWidget->RemoveFromParent();
 	}
 }
 

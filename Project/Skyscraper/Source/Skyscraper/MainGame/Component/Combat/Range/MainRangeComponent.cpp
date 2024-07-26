@@ -158,7 +158,7 @@ void UMainRangeComponent::BeginPlay()
 			MainRangeWidget = CreateWidget(GetOwnerPlayerController(), MainRangeWidgetClass);
 			if(MainRangeWidget)
 			{
-				MainRangeWidget->AddToViewport();
+				//MainRangeWidget->AddToViewport();
 			}
 		}
 
@@ -173,6 +173,12 @@ void UMainRangeComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	//Unbind Input Mapping Context
 	RemoveThisWeapon();
+
+	// Unbind Melee Widget
+	if (MainRangeWidget)
+	{
+		MainRangeWidget->RemoveFromParent();
+	}
 }
 
 void UMainRangeComponent::SetInitialValue()
@@ -499,6 +505,7 @@ void UMainRangeComponent::BulletReloading()
 void UMainRangeComponent::PlayReloadAnim()
 {
 	if (!CanReload()) return;
+	if (OwnerAnimInstance && OwnerAnimInstance->IsAnyMontagePlaying()) return;
 
 	//OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetAnimMontage(FireAnimMontageKey));
 	{ // == Play Montage

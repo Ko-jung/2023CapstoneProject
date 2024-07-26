@@ -134,16 +134,7 @@ void UCombatSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	{ // == Get Owner Character And Anim Instance
-		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
-		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-
-		if (!OwnerCharacter)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("UCombatSystemComponent::BeginPlay OwnerCharacter is nullptr"));
-			check(OwnerCharacter && "UCombatSystemComponent::BeginPlay OwnerCharacter is nullptr");
-		}
-	}
+	SetOwner();
 
 	if(!OwnerCharacter->bIsTrainingBot)
 	{
@@ -203,6 +194,20 @@ void UCombatSystemComponent::BindingInputActions()
 		EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Started, this, &ThisClass::LockOnKeyFunc);
 		EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Triggered, this, &ThisClass::LockOn);
 		EnhancedInputComponent->BindAction(IA_LockOn, ETriggerEvent::Completed, this, &ThisClass::LockOnKeyFunc);
+	}
+}
+
+void UCombatSystemComponent::SetOwner()
+{
+	{ // == Get Owner Character And Anim Instance
+		OwnerCharacter = Cast<ASkyscraperCharacter>(GetOwner());
+		OwnerAnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+
+		if (!OwnerCharacter)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UCombatSystemComponent::BeginPlay OwnerCharacter is nullptr"));
+			check(OwnerCharacter && "UCombatSystemComponent::BeginPlay OwnerCharacter is nullptr");
+		}
 	}
 }
 

@@ -337,6 +337,10 @@ void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 	}else
 	{
 		// == For enemy(no player)
+		if (UAnimMontage* Montage = OwnerCharacter->GetAnimMontage(ECharacterAnimMontage::ECAM_Death))
+		{
+			UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(OwnerCharacter->GetMesh(), Montage, 1.0, 0, FName(TEXT("Death_Bwd")));
+		}
 		
 	}
 }

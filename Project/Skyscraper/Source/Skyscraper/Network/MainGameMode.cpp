@@ -369,6 +369,8 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 					ASkyscraperPlayerController* SkyController = Cast<ASkyscraperPlayerController>(controller);
 					SkyController->SetPossessingPawn();
 					SkyController->AddAllWidget();
+
+					character->SetCombatOwner();
 					character->AddInputMappingContext();
 				}
 				else

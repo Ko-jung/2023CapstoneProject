@@ -30,6 +30,7 @@ public:
 
 	void AddInputMappingContext();
 	void BindingInputActions();
+	void SetOwner();
 
 	// == Do Stun / Down Function
 	UFUNCTION(BlueprintCallable)

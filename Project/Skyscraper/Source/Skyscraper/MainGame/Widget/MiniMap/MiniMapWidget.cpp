@@ -31,20 +31,11 @@ void UMiniMapWidget::SetTileImage(int index, ETileImageType TileImageType)
 
 	if(TileImages.IsValidIndex(index))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage TileImageType: %d, TileTextures[static_cast<int>(TileImageType)]: %s"),
-			static_cast<int>(TileImageType), *UKismetSystemLibrary::GetDisplayName(TileTextures[static_cast<int>(TileImageType)]));
+		//UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage TileImageType: %d, TileTextures[static_cast<int>(TileImageType)]: %s"),
+		//	static_cast<int>(TileImageType), *UKismetSystemLibrary::GetDisplayName(TileTextures[static_cast<int>(TileImageType)]));
 		TileImages[index].TileImage->SetBrushFromTexture(TileTextures[static_cast<int>(TileImageType)]);
 		TileImages[index].TileType = TileImageType;
-
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop Start"));
-	for (const auto& T : TileTextures)
-	{		
-		UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop T: %s"),
-			*UKismetSystemLibrary::GetDisplayName(T));
-	}
-	UE_LOG(LogTemp, Warning, TEXT("UMiniMapWidget::SetTileImage ForLoop End"));
 }
 
 void UMiniMapWidget::SetTileImageToCollapseNotification(int index)

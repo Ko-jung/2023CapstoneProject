@@ -31,3 +31,11 @@ void UDeathWidget::NativeConstruct()
 
 	OwnerPlayerController = Cast<ASkyscraperPlayerController>(GetOwningPlayer());
 }
+
+void UDeathWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	SpectatorButton->SetVisibility(ESlateVisibility::Visible);
+	WeaponSelectButton->SetVisibility(ESlateVisibility::Hidden);
+}

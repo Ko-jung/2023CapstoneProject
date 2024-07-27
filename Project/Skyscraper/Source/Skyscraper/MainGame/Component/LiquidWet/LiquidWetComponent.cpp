@@ -75,7 +75,7 @@ void ULiquidWetComponent::AddSkirtCollisionMesh()
 	SkirtCollisionMesh->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules{ EAttachmentRule::SnapToTarget,true }, FName{ "SkirtSocket" });
 	SkirtCollisionMesh->SetStaticMesh(OwnerCharacter->GetSkirtStaticMesh());
 
-	SkirtCollisionMesh->SetVisibility(true);
+	SkirtCollisionMesh->SetVisibility(false);
 	SkirtCollisionMesh->SetCollisionObjectType(ECC_GameTraceChannel1);
 }
 

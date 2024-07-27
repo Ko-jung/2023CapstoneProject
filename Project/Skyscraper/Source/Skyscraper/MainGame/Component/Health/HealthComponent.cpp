@@ -94,7 +94,10 @@ void UHealthComponent::BeginPlay()
 				{
 					if (OwnerCharacter)
 					{
-						UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{});
+						if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+						{
+							UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+						}
 					}
 				}
 			}
@@ -149,7 +152,15 @@ void UHealthComponent::GetDamagedFromServer(float NewHp, TObjectPtr<AActor> Dama
 	else
 	{
 		// Heal
+		GetHealFromServer(-DeltaHp);
 	}
+}
+
+void UHealthComponent::GetHealFromServer(float DeltaHp)
+{
+	CurrentHealth = FMath::Min(CurrentHealth + DeltaHp, 1000.0f);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
+	ChangeCurrentHp(CurrentHealth);
 }
 
 float UHealthComponent::GetHealthPercent() const
@@ -305,7 +316,7 @@ void UHealthComponent::ChangeState(EHealthState s)
 
 void UHealthComponent::AddWidget()
 {
-	{// == My Health UI 연결하기
+	if(OwnerCharacter && OwnerCharacter->GetPlayerController()){// == My Health UI 연결하기
 		if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
 		{
 			MyHealthWidget = Cast<UMyHealthWidget>(CreateWidget(PlayerController, MyHealthWidgetClass));
@@ -324,8 +335,13 @@ void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 	{
 		if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
 		{
-			USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Death"));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+			if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Death")))
+			{
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
+			}
 		}
 
 		// == For player (with player controller)

@@ -485,7 +485,7 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	//float XRotate = PlayerPosition.PlayerXDirection;
 	FRotator ControllerRotator = { PlayerPosition.ControllerRotator.X,PlayerPosition.ControllerRotator.Y ,PlayerPosition.ControllerRotator.Z};
 
-	if(Characters[Serial])
+	if(Characters[Serial] && Characters[Serial]->GetName().StartsWith(FString("BP_")))
 		Characters[Serial]->SyncTransformAndAnim(transform, speed, ControllerRotator);
 }
 
@@ -544,6 +544,7 @@ void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
 		if (Characters[PCPS->ChangedPlayerSerial])
 		{
 			Characters[PCPS->ChangedPlayerSerial]->Destroy();
+			Characters[PCPS->ChangedPlayerSerial] = nullptr;
 		}
 
 		// ReSpawn and On INVINCIBILITY

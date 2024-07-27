@@ -84,7 +84,10 @@ void AWindowGeometryCollection::BeginPlay()
 	{
 		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("WindowBreak")))
 		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+			if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+			}
 		}
 	}
 }

@@ -411,8 +411,10 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 
 				// Allience : 0, Enemy : 1
 				character->GetMesh()->CustomDepthStencilValue = IsEnemy;
+				character->GetBoostMesh()->CustomDepthStencilValue = IsEnemy;
 				// Allience : true, Enemy : false
 				character->GetMesh()->bRenderCustomDepth = !IsEnemy;
+				character->GetBoostMesh()->bRenderCustomDepth = !IsEnemy;
 			}
 			break;
 		}

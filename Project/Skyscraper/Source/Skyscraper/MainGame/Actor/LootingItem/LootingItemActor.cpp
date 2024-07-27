@@ -253,6 +253,8 @@ void ALootingItemActor::Tick(float DeltaTime)
 	//}
 
 	// 0.5초 이상 상호작용 계속 진행하지 않았을 시,
+	UE_LOG(LogTemp, Warning, TEXT("[%s] ALootingItemActor::Tick GetWorld()->GetTimeSeconds(): %f, LastInteractionTime: %f"),
+		*UKismetSystemLibrary::GetDisplayName(this), GetWorld()->GetTimeSeconds(), LastInteractionTime);
 	if (GetWorld()->GetTimeSeconds() - LastInteractionTime > RemoveTime)
 	{
 		CurrentInteractionTime = 0.0f;

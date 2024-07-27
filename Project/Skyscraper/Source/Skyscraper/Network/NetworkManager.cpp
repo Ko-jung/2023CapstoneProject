@@ -381,6 +381,11 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		COPYPACKET(PSkillInteract);
 		break;
 	}
+	case (BYTE)COMP_OP::OP_OBJECTINTERACT:
+	{
+		COPYPACKET(PObjectInteract);
+		break;
+	}
 	case (BYTE)COMP_OP::OP_CHANGEDSKILLACTORHP:
 	{
 		COPYPACKET(PChangedSkillActorHP);

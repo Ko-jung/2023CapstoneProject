@@ -42,6 +42,7 @@ enum class COMP_OP : BYTE
 	OP_BREAKOBJECT,	// 30
 	OP_REMOVEOBJECT,
 	OP_SKILLINTERACT,
+	OP_OBJECTINTERACT,
 	OP_DAMAGEDSKILLACTOR,
 	OP_CHANGEDSKILLACTORHP,
 
@@ -138,10 +139,13 @@ enum class EAnimMontage : BYTE
 	SMG,
 	Rifle,
 	RPG,
-
 	Stun,
 	Down,
-	Death
+	Death,
+	Boost,
+	Interaction,
+	CommonSkill,
+	SpecialSkill
 };
 
 enum class EItemEffect : BYTE
@@ -172,6 +176,7 @@ enum class EObjectType : BYTE
 	Window,
 
 	SkillActor,
+	Elevator,
 };
 
 enum class ELoginResult : char

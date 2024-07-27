@@ -34,6 +34,8 @@
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 #include "UObject/UnrealTypePrivate.h"
 
+#include "Skyscraper/MainGame/Actor/Elevator/ElevatorActor.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -649,7 +651,23 @@ void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int Se
 	const auto AnimMontage = CharacterAnimMontages.Find(eAnimMontage);
 	if (AnimMontage)
 	{
-		PlayAnimMontage(*AnimMontage, 1.f, (*AnimMontage)->GetSectionName(SectionNum));
+		// TEMP CODE
+		if (eAnimMontage == ECharacterAnimMontage::ECAM_Interaction)
+		{
+			if (SectionNum == 0)
+			{
+				ItemInteractionStart();
+			}
+			else
+			{
+				ItemInteractionEnd();
+			}
+		}
+		// =====
+		else
+		{
+			PlayAnimMontage(*AnimMontage, 1.f, (*AnimMontage)->GetSectionName(SectionNum));
+		}
 	}
 	else
 	{	// Play Montage On Blueprint
@@ -1099,6 +1117,12 @@ void ASkyscraperCharacter::ItemInteraction()
 		if (IItemInteraction* ItemInterface = Cast<IItemInteraction>(ItemActor))
 		{
 			ItemInterface->ItemInteraction(this);
+
+			if (ItemActor->IsA(AElevatorActor::StaticClass()) && !IsValid(InteractingActor))
+			{
+				InteractingActor = ItemActor;
+				MainGameMode->SendObjectInteract(this, EObjectType::Elevator, ItemActor, true);
+			}
 		}
 	}
 
@@ -1179,6 +1203,8 @@ void ASkyscraperCharacter::ItemInteractionStart()
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
 		}
 	}
+
+	MainGameMode->SendAnimMontageStatus(this, ECharacterAnimMontage::ECAM_Interaction, 0);
 }
 
 void ASkyscraperCharacter::ItemInteractionEnd()
@@ -1188,5 +1214,12 @@ void ASkyscraperCharacter::ItemInteractionEnd()
 		UAnimMontage* Montage = GetAnimMontage(ECharacterAnimMontage::ECAM_Interaction);
 		GetAnimInstance()->Montage_Stop(0.1f,Montage);
 	}
-	
+
+	MainGameMode->SendAnimMontageStatus(this, ECharacterAnimMontage::ECAM_Interaction, 1);
+
+	if (IsValid(InteractingActor))
+	{
+		MainGameMode->SendObjectInteract(this, EObjectType::Elevator, InteractingActor, false);
+		InteractingActor = nullptr;
+	}
 }

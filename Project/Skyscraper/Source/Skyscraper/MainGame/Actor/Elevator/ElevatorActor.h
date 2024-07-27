@@ -17,6 +17,18 @@ public:
 	FORCEINLINE void InitializeElevator(const FVector& Destination) { ElevatorDestination = Destination; }
 
 	virtual void ItemInteraction(AActor* InteractionActor) override;
+
+	FTimerHandle InteractTimer;
+	FTimerDelegate InteractDelegate;
+
+	void StartInteractionByServer();
+	void StopInteractionByServer();
+
+	UFUNCTION()
+	void Interacting(float DeltaTime);
+
+	bool IsInteractByServer;
+	// ==========
 protected:
 	virtual void SetProgressBarPercent() const override;
 private:

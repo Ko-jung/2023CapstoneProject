@@ -269,6 +269,8 @@ protected:
 
 	ESwapWeapon PrevWeaponType;
 
+	AActor* InteractingActor;
+
 	UPROPERTY(BlueprintReadWrite)
 		float Speed;
 	UPROPERTY(BlueprintReadWrite)

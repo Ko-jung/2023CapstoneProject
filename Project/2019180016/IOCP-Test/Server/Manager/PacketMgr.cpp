@@ -166,6 +166,13 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ProcessingSkillInteract(c, PSI);
 		break;
 	}
+	case (int)COMP_OP::OP_OBJECTINTERACT:
+	{
+		PObjectInteract POI;
+		MEMCPYBUFTOPACKET(POI);
+		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &POI, sizeof(POI));
+		break;
+	}
 	default:
 	{
 		if (p->PacketSize == 0)

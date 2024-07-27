@@ -40,6 +40,9 @@
 #include "Skyscraper/MainGame/Item/ItemObject/ItemObject.h"
 #include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
 
+// Elevator Sync
+#include "Skyscraper/MainGame/Actor/Elevator/ElevatorActor.h"
+
 void AMainGameMode::BeginPlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
@@ -305,6 +308,13 @@ void AMainGameMode::ProcessFunc()
 			ProcessSkillInteract(PKI);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_OBJECTINTERACT:
+		{
+			PObjectInteract POI;
+			memcpy(&POI, packet, sizeof(POI));
+			ProcessObjectInteract(POI);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;
@@ -558,6 +568,15 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 
 	PlayerController->UpdateImage();
 	PlayerController->SetPlayerImage(MAXPLAYER, Characters, SerialNum);
+
+	UGameplayStatics::GetAllActorsOfClass(this, AElevatorActor::StaticClass(), Elevators);
+	Elevators.Sort([](const AActor& A, const AActor& B) {
+		return A.GetName() < B.GetName();
+		});
+	for (const auto& e : Elevators)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessBuildingInfo e: %s"), *UKismetSystemLibrary::GetDisplayName(e));
+	}
 }
 
 void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
@@ -677,6 +696,22 @@ void AMainGameMode::ProcessSkillInteract(PSkillInteract PKI)
 		break;
 	default:
 		break;
+	}
+}
+
+void AMainGameMode::ProcessObjectInteract(PObjectInteract POI)
+{
+	if (Elevators.IsValidIndex(POI.InteractedObjectSerial))
+	{
+		int32 Index = POI.InteractedObjectSerial;
+		if (POI.IsOn)
+		{
+			Cast<AElevatorActor>(Elevators[Index])->StartInteractionByServer();
+		}
+		else
+		{
+			Cast<AElevatorActor>(Elevators[Index])->StopInteractionByServer();
+		}
 	}
 }
 
@@ -968,6 +1003,23 @@ void AMainGameMode::SendSkillInteract(const AActor* Sender, const ESkillActor Sk
 	PSI.SkillActor = SkillActor;
 	PSI.InteractedPlayerSerial = SerialNum;
 	Send(&PSI, PSI.PacketSize);
+}
+
+void AMainGameMode::SendObjectInteract(const AActor* Sender, const EObjectType& ObjectType, AActor* InteractTarget, bool IsOn)
+{
+	if (!Characters.IsValidIndex(SerialNum) || Characters[SerialNum] != Sender)
+	{
+		return;
+	}
+
+	int32 TargetSerial = Elevators.Find(InteractTarget);
+	if (TargetSerial == -1) return;
+
+	PObjectInteract POI;
+	POI.InteractedObjectSerial = TargetSerial;
+	POI.SkillActor = ObjectType;
+	POI.IsOn = IsOn;
+	Send(&POI, POI.PacketSize);
 }
 
 void AMainGameMode::SendDamagedSkillActor(const AActor* Sender, const AActor* SkillActorOwner, const ESkillActor& SkillActorType, const AActor* SkillActor)

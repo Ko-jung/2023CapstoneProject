@@ -417,6 +417,18 @@ struct PSkillInteract : Packet
 	{ PacketSize = sizeof(PSkillInteract); }
 };
 
+struct PObjectInteract : Packet
+{
+	EObjectType SkillActor;
+	BYTE InteractedObjectSerial;
+	bool IsOn;
+
+	PObjectInteract() : Packet(COMP_OP::OP_OBJECTINTERACT), SkillActor(EObjectType::Elevator), InteractedObjectSerial(0), IsOn(false)
+	{
+		PacketSize = sizeof(PObjectInteract);
+	}
+};
+
 struct PTryLogin : Packet
 {
 	char ID[30];

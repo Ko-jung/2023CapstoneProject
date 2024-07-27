@@ -143,3 +143,49 @@ void AElevatorActor::ApplyElevator(ASkyscraperCharacter* InteractionCharacter)
 		
 	}
 }
+
+void AElevatorActor::StartInteractionByServer()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[%s] AElevatorActor::StartInteractionByServer"), *UKismetSystemLibrary::GetDisplayName(this));
+	//IsInteractByServer = true;
+	SetActorTickEnabled(true);
+	if (!InteractTimer.IsValid())
+	{
+		LastInteractionTime = GetWorld()->GetTimeSeconds();
+		InteractDelegate.BindUFunction(this, FName("Interacting"), 0.1f);
+		GetWorld()->GetTimerManager().SetTimer(InteractTimer, InteractDelegate, 0.1f, true);
+	}
+}
+
+void AElevatorActor::StopInteractionByServer()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[%s] AElevatorActor::StopInteractionByServer"), *UKismetSystemLibrary::GetDisplayName(this));
+	//IsInteractByServer = false;
+	//SetActorTickEnabled(false);
+	if (InteractTimer.IsValid())
+	{
+		CurrentInteractionTime = 0.f;
+		GetWorld()->GetTimerManager().ClearTimer(InteractTimer);
+	}
+}
+
+void AElevatorActor::Interacting(float DeltaTime)
+{
+	CurrentInteractionTime += DeltaTime;
+	LastInteractionTime = GetWorld()->GetTimeSeconds();
+	UE_LOG(LogTemp, Warning, TEXT("[%s] AElevatorActor::Interacting LastInteractionTime: %f"), *UKismetSystemLibrary::GetDisplayName(this), LastInteractionTime);
+	if (LeftDoor && RightDoor)
+	{
+		float Value = FMath::Lerp(DoorOffset, 0.0f, UKismetMathLibrary::SafeDivide(CurrentInteractionTime, RequiredTime));
+		Value = FMath::Clamp(0.0f, Value, DoorOffset);
+
+		LeftDoor->SetRelativeLocation(FVector{ 0.0f,Value,0.0f });
+		RightDoor->SetRelativeLocation(FVector{ 0.0f,-Value,0.0f });
+	}
+
+	//if (CurrentInteractionTime > RequiredTime - 0.3f)
+	//{
+	//	UKismetSystemLibrary::Delay(this, 2.0f, FLatentActionInfo());
+	//	CurrentInteractionTime = 0.f;
+	//}
+}

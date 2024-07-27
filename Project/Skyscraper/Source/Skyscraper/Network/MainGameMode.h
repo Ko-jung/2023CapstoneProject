@@ -45,6 +45,7 @@ public:
 	void ProcessBreakObject(PBreakObject PBO);
 	void ProcessRemoveObject(PRemoveObject PRO);
 	void ProcessSkillInteract(PSkillInteract PKI);
+	void ProcessObjectInteract(PObjectInteract POI);
 	void ProcessDetecting(const uint8 DetectedSerial);
 	void ProcessTileBreakItem(const uint8 TargetSerial);
 
@@ -69,6 +70,7 @@ public:
 	bool SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLevel);
 	bool SendTakeDamage(AActor* Sender, AActor* Target);
 	void SendSkillInteract(const AActor* Sender, const ESkillActor SkillActor);
+	void SendObjectInteract(const AActor* Sender, const EObjectType& ObjectType, AActor* InteractTarget, bool IsOn);
 	void SendDamagedSkillActor(const AActor* Sender, const AActor* SkillActorOwner, const ESkillActor& SkillActorType, const AActor* SkillActor);
 	void SendTileBreakItem(const AActor* Sender, uint8 TargetSerial);
 
@@ -136,4 +138,5 @@ protected:
 	class ASkyscraperPlayerController* PlayerController;
 
 	TArray<class UHierarchicalInstancedStaticMeshComponent*> WindowMeshComponents;
+	TArray<AActor*> Elevators;
 };

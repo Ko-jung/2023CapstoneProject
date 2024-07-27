@@ -93,7 +93,10 @@ void UHealthComponent::BeginPlay()
 				{
 					if (OwnerCharacter)
 					{
-						UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{});
+						if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+						{
+							UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+						}
 					}
 				}
 			}
@@ -325,8 +328,13 @@ void UHealthComponent::SetPlayerDie(TObjectPtr<AActor> DamageCauser)
 	{
 		if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
 		{
-			USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Death"));
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+			if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Death")))
+			{
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
+			}
 		}
 
 		// == For player (with player controller)

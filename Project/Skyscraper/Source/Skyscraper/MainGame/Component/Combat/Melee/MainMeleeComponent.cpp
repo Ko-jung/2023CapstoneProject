@@ -302,7 +302,10 @@ void UMainMeleeComponent::PlayAttackAnimMontage()
 		{
 			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(CurrentAttackSoundName))
 			{
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound,  OwnerCharacter->GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
 			}
 		}
 
@@ -632,7 +635,10 @@ void UMainMeleeComponent::PlayHitSound(bool bIsFinalAttack)
 		}
 		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(CurrentAttackName))
 		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation());
+			if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, OwnerCharacter->GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+			}
 		}
 	}
 }

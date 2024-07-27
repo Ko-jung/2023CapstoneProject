@@ -165,6 +165,10 @@ void UCombatSystemComponent::BeginPlay()
 				{
 					ChangeWeaponAudioComponent->SetSound(Sound);
 				}
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					ChangeWeaponAudioComponent->AdjustAttenuation(SoundAttenuation->Attenuation);
+				}
 			}
 		}
 	}

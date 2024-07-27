@@ -119,8 +119,17 @@ void URPGComponent::Fire(float fBaseDamage)
 
 	// Play Sound
 	{
-		USoundBase* FireSound = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>()->GetSkyscraperSound(FireSoundName);
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, SpawnLocation, FRotator::ZeroRotator);
+		if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if (USoundBase* FireSound = Subsystem->GetSkyscraperSound(FireSoundName))
+			{
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, SpawnLocation, FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
+			}
+		}
+		
 	}
 }
 

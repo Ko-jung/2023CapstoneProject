@@ -31,6 +31,11 @@ UTexture2D* USkyscraperEngineSubsystem::GetSkyscraperCharacterTexture(ECharacter
 	return ReturnTexture;
 }
 
+USoundAttenuation* USkyscraperEngineSubsystem::GetSkyscraperSoundAttenuation()
+{
+	return SkyscraperSoundAttenuation;
+}
+
 void USkyscraperEngineSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -69,6 +74,26 @@ void USkyscraperEngineSubsystem::Initialize(FSubsystemCollectionBase& Collection
 			if (TempDataTable)
 			{
 				TextureDataTable = TempDataTable;
+			}
+		}
+	}
+
+
+	// 거리 감쇠 에셋
+	{
+		USoundAttenuation* TempAsset{};
+		FSoftObjectPath AssetPath = FSoftObjectPath(TEXT("/Script/Engine.SoundAttenuation'/Game/2019180031/MainGame/Data/Sound/SA_SkyscraperAttenuation.SA_SkyscraperAttenuation'"));
+		TempAsset = Cast<USoundAttenuation>(AssetPath.ResolveObject());
+		if (TempAsset)
+		{
+			SkyscraperSoundAttenuation = TempAsset;
+		}
+		else
+		{
+			TempAsset = Cast<USoundAttenuation>(AssetPath.TryLoad());
+			if (TempAsset)
+			{
+				SkyscraperSoundAttenuation = TempAsset;
 			}
 		}
 	}

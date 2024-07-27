@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UTexture2D* GetSkyscraperCharacterTexture(ECharacterSelect CharacterType);
 
+	UFUNCTION(BlueprintCallable)
+		USoundAttenuation* GetSkyscraperSoundAttenuation();
+
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
@@ -36,6 +39,9 @@ protected:
 
 	UPROPERTY()
 		TObjectPtr<UDataTable> TextureDataTable;
+
+	UPROPERTY()
+		TObjectPtr<USoundAttenuation> SkyscraperSoundAttenuation;
 
 private:
 };

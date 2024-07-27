@@ -352,8 +352,13 @@ void ASkyscraperCharacter::Landed(const FHitResult& Hit)
 
 	if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
 	{
-		USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Landing"));
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation() - 40.0f);
+		if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Landing")))
+		{
+			if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+			}
+		}
 	}
 }
 
@@ -1157,7 +1162,11 @@ void ASkyscraperCharacter::UseItem()
 		{
 			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Item_Use_Infinity")))
 			{
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+				if(USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
+				
 			}
 		}
 	}
@@ -1198,7 +1207,10 @@ void ASkyscraperCharacter::ItemInteractionStart()
 	{
 		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("Item_Interaction")))
 		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+			if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+			}
 		}
 	}
 

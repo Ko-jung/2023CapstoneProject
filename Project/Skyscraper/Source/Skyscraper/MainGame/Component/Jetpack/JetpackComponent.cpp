@@ -85,6 +85,8 @@ UJetpackComponent::UJetpackComponent()
 	BoostMaintaingAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BoostMaintaingAudioComponent"));
 
 	BoostStartAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BoostStartAudioComponent"));
+
+	
 }
 
 
@@ -117,6 +119,12 @@ void UJetpackComponent::BeginPlay()
 			if(USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("BoostStart")))
 			{
 				BoostStartAudioComponent->SetSound(Sound);
+			}
+
+			if(USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+			{
+				BoostMaintaingAudioComponent->AdjustAttenuation(SoundAttenuation->Attenuation);
+				BoostStartAudioComponent->AdjustAttenuation(SoundAttenuation->Attenuation);
 			}
 		}
 		

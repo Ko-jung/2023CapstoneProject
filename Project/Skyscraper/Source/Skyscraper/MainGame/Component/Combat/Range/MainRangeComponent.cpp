@@ -311,8 +311,18 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 
 	// Play Sound
 	{
-		USoundBase* FireSound = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>()->GetSkyscraperSound(FireSoundName);
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, OwnerCharacter->GetActorLocation(), FRotator::ZeroRotator);
+		if(USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if (USoundBase* FireSound = Subsystem->GetSkyscraperSound(FireSoundName))
+			{
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, OwnerCharacter->GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
+			}
+		}
+		
+
 	}
 
 
@@ -536,7 +546,10 @@ void UMainRangeComponent::PlayReloadAnim()
 	{
 		// 부스트 시작 소리 실행
 		if (USoundBase* Sound = Subsystem->GetSkyscraperSound(ReloadSoundName)) {
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound,WeaponMeshComponent->GetComponentLocation());
+			if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, WeaponMeshComponent->GetComponentLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+			}
 		}
 	}
 

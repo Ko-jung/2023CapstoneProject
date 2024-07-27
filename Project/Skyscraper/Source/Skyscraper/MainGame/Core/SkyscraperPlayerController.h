@@ -69,6 +69,8 @@ public:
 	UFUNCTION()
 	void CastingSkill(bool IsSpecialSkill, float CoolTime);
 
+	void InitCoolTime(bool IsSpecial);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

@@ -40,7 +40,19 @@ void UMainCombatWidget::UpdateProgressBar()
 
 void UMainCombatWidget::InitCoolTime()
 {
-	CommonSkillCurrentTime = SpecialSkillCurrentTime = 0.f;
+	SpecialSkillCurrentTime = CommonSkillCurrentTime = 0.f;
+}
+
+void UMainCombatWidget::InitCoolTime(bool IsSpecial)
+{
+	if (IsSpecial)
+	{
+		SpecialSkillCurrentTime = 0.f;
+	}
+	else
+	{
+		CommonSkillCurrentTime = 0.f;
+	}
 }
 
 void UMainCombatWidget::NativePreConstruct()

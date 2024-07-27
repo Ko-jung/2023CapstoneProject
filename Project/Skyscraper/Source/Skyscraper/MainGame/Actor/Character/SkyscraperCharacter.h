@@ -124,12 +124,15 @@ public:
 
 
 	UFUNCTION(BlueprintCallable)
-		void DoCantEnemyLockOnMe(float Timer);
-		void DoCanEnemyLockOnMe();
-		bool CanEnemyLockOnMe;
+	void DoCantEnemyLockOnMe(float Timer);
+	void DoCanEnemyLockOnMe();
+	bool CanEnemyLockOnMe;
 
-		UFUNCTION(BlueprintCallable)
-		void SkillInteract(ESkillActor SkillActor, float Timer);
+	UFUNCTION(BlueprintCallable)
+	void SkillInteract(ESkillActor SkillActor, float Timer);
+
+	UFUNCTION(BlueprintCallable)
+	void InitCoolTime(bool IsSpecial);
 	//==============
 
 	// When Character Attack. Define each Character class. Now Use Only Assasin

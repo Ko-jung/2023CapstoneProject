@@ -27,6 +27,7 @@ public:
 	UFUNCTION()
 	void UpdateProgressBar();
 	void InitCoolTime();
+	void InitCoolTime(bool IsSpecial);
 	//=======================
 
 protected:

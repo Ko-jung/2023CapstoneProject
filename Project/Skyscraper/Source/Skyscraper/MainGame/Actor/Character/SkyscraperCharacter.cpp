@@ -510,6 +510,24 @@ void ASkyscraperCharacter::SkillInteract(ESkillActor SkillActor, float Timer)
 	}
 }
 
+void ASkyscraperCharacter::InitCoolTime(bool IsSpecial)
+{
+	if (GetPlayerController())
+	{
+		GetPlayerController()->InitCoolTime(IsSpecial);
+		if (IsSpecial)
+		{
+			if (SpecialSkillTimerHandle.IsValid())
+				GetWorld()->GetTimerManager().ClearTimer(SpecialSkillTimerHandle);
+		}
+		else
+		{
+			if (CommonSkillTimerHandle.IsValid())
+				GetWorld()->GetTimerManager().ClearTimer(CommonSkillTimerHandle);
+		}
+	}
+}
+
 void ASkyscraperCharacter::SkillActorDamaged(float AfterHp)
 {
 	UE_LOG(LogTemp, Warning, TEXT("This Character is None Shiled"));
@@ -914,7 +932,7 @@ void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 		else
 		{
 			GetPlayerController()->CastingSkill(false, CommonSkillCoolTime);
-			//GetWorld()->GetTimerManager().SetTimer(CommonSkillTimerHandle, this, &ThisClass::InValidCommonTimer, CommonSkillCoolTime, false);
+			GetWorld()->GetTimerManager().SetTimer(CommonSkillTimerHandle, this, &ThisClass::InValidCommonTimer, CommonSkillCoolTime, false);
 		}
 	}
 
@@ -923,12 +941,14 @@ void ASkyscraperCharacter::CastingSkill(bool IsSpecialSkill)
 
 void ASkyscraperCharacter::InValidCommonTimer()
 {
-	GetWorld()->GetTimerManager().ClearTimer(CommonSkillTimerHandle);
+	if (CommonSkillTimerHandle.IsValid())
+		GetWorld()->GetTimerManager().ClearTimer(CommonSkillTimerHandle);
 }
 
 void ASkyscraperCharacter::InValidSpecialTimer()
 {
-	GetWorld()->GetTimerManager().ClearTimer(SpecialSkillTimerHandle);
+	if (SpecialSkillTimerHandle.IsValid())
+		GetWorld()->GetTimerManager().ClearTimer(SpecialSkillTimerHandle);
 }
 
 bool ASkyscraperCharacter::IsTimerValid(bool IsSpecialSkill)

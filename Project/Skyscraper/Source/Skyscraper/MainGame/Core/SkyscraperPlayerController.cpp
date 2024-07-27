@@ -191,6 +191,14 @@ void ASkyscraperPlayerController::CastingSkill(bool IsSpecialSkill, float CoolTi
 	}
 }
 
+void ASkyscraperPlayerController::InitCoolTime(bool IsSpecial)
+{
+	if (MainCombatWidget)
+	{
+		MainCombatWidget->InitCoolTime(IsSpecial);
+	}
+}
+
 void ASkyscraperPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

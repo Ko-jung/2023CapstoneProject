@@ -103,10 +103,9 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	}
 	case (int)COMP_OP::OP_CHANGEANIMMONTAGE:
 	{
-		// PChangeAnimMontage PCAM;
-		// MEMCPYBUFTOPACKET(PCAM);
+		//PChangeAnimMontage PCAM;
+		//MEMCPYBUFTOPACKET(PCAM);
 
-		//TODO: 스킬 쿨타임
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), p, sizeof(PChangeAnimMontage));
 		break;
 	}

@@ -651,6 +651,8 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, FRotator 
 
 void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum)
 {
+	if (HealthComponent->GetLivingState() == EHealthState::EHS_DEAD) return;
+
 	const auto AnimMontage = CharacterAnimMontages.Find(eAnimMontage);
 	if (AnimMontage)
 	{

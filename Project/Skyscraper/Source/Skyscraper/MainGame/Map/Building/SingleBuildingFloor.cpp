@@ -24,18 +24,12 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 
 	for (int i = 0; i < 6; i++)
 	{
-
-		// FString NewGCWindowString = "GC_map_3_window_00";
-		// FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "_C'";
-		// //                  /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
-
 		FString NewGCWindowString = "BP_GC_map_3_window_00";
 		FString FilePath = "/Script/Engine.Blueprint'/Game/2019180016/FractureMesh/" + NewGCWindowString + FString::FromInt(i + 1) + "." + NewGCWindowString + FString::FromInt(i + 1) + "_C'";
 		//					/Script/Engine.Blueprint'/Game/2019180016/FractureMesh/BP_GC_map_3_window_001.BP_GC_map_3_window_001'
 		ConstructorHelpers::FClassFinder<AActor> GC_WindowRef(*FilePath);
 		GC_WindowClass.Add(GC_WindowRef.Class);
 	}
-
 }
 
 
@@ -169,7 +163,7 @@ void ASingleBuildingFloor::DoCollapseWindow(UHierarchicalInstancedStaticMeshComp
 
 	FTransform Transform{ Rotation, Translation, Scale };
 	UE_LOG(LogTemp, Warning, TEXT("Transform is %s"), *UKismetStringLibrary::Conv_TransformToString(Transform));
-	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[3], Transform);
+	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[0], Transform);
 	if (NewGCWindowMesh)
 	{
 		//NewGCWindowMesh->SetActorLocation(GetActorLocation());

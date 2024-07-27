@@ -290,6 +290,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 
 	NS_BoostEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_BoostEffect"));
+	NS_BoostEffect->SetHiddenInGame(true);
 }
 
 void ASkyscraperCharacter::BeginPlay()

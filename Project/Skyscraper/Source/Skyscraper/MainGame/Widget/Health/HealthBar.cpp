@@ -28,6 +28,7 @@ void UHealthBar::SetHealthPercent(float Percent)
 	HealthBar->SetPercent(Percent);
 
 	int MaxHealthCount = static_cast<int> (Percent * MAX_HEALTH_BAR_COUNT);
+	if (MaxHealthCount > 4) MaxHealthCount = 4;
 	UE_LOG(LogTemp, Warning, TEXT("%d"), MaxHealthCount);
 	for (int i = 0; i < MAX_HEALTH_BAR_COUNT; ++i)
 	{

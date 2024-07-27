@@ -96,6 +96,7 @@ public:
 
 	// 2019180016
 	void GetDamagedFromServer(float NewHp, TObjectPtr<AActor> DamageCauser);
+	void GetHealFromServer(float NewHp);
 
 	// 애니메이션에서 캐릭터의 체력 퍼센트 받는 함수
 	UFUNCTION(BlueprintCallable)

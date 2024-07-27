@@ -148,7 +148,15 @@ void UHealthComponent::GetDamagedFromServer(float NewHp, TObjectPtr<AActor> Dama
 	else
 	{
 		// Heal
+		GetHealFromServer(-DeltaHp);
 	}
+}
+
+void UHealthComponent::GetHealFromServer(float DeltaHp)
+{
+	CurrentHealth = FMath::Min(CurrentHealth + DeltaHp, 1000.0f);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
+	ChangeCurrentHp(CurrentHealth);
 }
 
 float UHealthComponent::GetHealthPercent() const

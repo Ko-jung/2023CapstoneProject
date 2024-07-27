@@ -483,7 +483,7 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 	//float XRotate = PlayerPosition.PlayerXDirection;
 	FRotator ControllerRotator = { PlayerPosition.ControllerRotator.X,PlayerPosition.ControllerRotator.Y ,PlayerPosition.ControllerRotator.Z};
 
-	if(Characters[Serial])
+	if(Characters[Serial] && IsValid(Characters[Serial]))
 		Characters[Serial]->SyncTransformAndAnim(transform, speed, ControllerRotator);
 }
 

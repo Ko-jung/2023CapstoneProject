@@ -409,12 +409,16 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 			{	// Post processing
 				bool IsEnemy = (SerialNum / (MAXPLAYER / 2)) != (TargetSerialNum / (MAXPLAYER / 2));
 
-				// Allience : 0, Enemy : 1
+				// CustomDepthStencilValue Allience : 0, Enemy : 1
+				// bRenderCustomDepth Allience : true, Enemy : false
+
 				character->GetMesh()->CustomDepthStencilValue = IsEnemy;
-				character->GetBoostMesh()->CustomDepthStencilValue = IsEnemy;
-				// Allience : true, Enemy : false
 				character->GetMesh()->bRenderCustomDepth = !IsEnemy;
+				character->GetMesh()->MarkRenderStateDirty();
+
+				character->GetBoostMesh()->CustomDepthStencilValue = IsEnemy;
 				character->GetBoostMesh()->bRenderCustomDepth = !IsEnemy;
+				character->GetBoostMesh()->MarkRenderStateDirty();
 			}
 			break;
 		}
@@ -868,7 +872,7 @@ TArray<ASkyscraperCharacter*> AMainGameMode::GetEnemyCharacters()
 
 void AMainGameMode::SendPlayerLocation()
 {
-	if (!Characters.IsValidIndex(SerialNum) || !Characters[SerialNum]) return;
+	if (!Characters.IsValidIndex(SerialNum) || !Characters[SerialNum] || !Characters[SerialNum]->Controller) return;
 
 	FVector location = Characters[SerialNum]->GetActorLocation();
 	FRotator rotate = Characters[SerialNum]->GetActorRotation();
@@ -890,8 +894,6 @@ void AMainGameMode::SendPlayerLocation()
 
 	// FVector Velo = Characters[SerialNum]->GetVelocity();
 	// PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
-
-	PlayerPosition.ControllerRotator = Characters[SerialNum]->Controller->GetControlRotation();
 
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
 }

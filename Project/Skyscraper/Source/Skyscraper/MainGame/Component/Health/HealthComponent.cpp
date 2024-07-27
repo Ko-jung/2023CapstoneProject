@@ -306,7 +306,7 @@ void UHealthComponent::ChangeState(EHealthState s)
 
 void UHealthComponent::AddWidget()
 {
-	{// == My Health UI 연결하기
+	if(OwnerCharacter && OwnerCharacter->GetPlayerController()){// == My Health UI 연결하기
 		if (APlayerController* PlayerController = OwnerCharacter->GetPlayerController())
 		{
 			MyHealthWidget = Cast<UMyHealthWidget>(CreateWidget(PlayerController, MyHealthWidgetClass));

@@ -304,7 +304,7 @@ public:
 		TObjectPtr<UHealthComponent> HealthComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 		TObjectPtr<UJetpackComponent> JetpackComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Component)
 		TObjectPtr<ULiquidWetComponent> LiquidWetComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FOV")

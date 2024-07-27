@@ -70,7 +70,7 @@ protected:
 	TObjectPtr<class UMaterialInstanceDynamic> MaterialDynamicInstanceObj;
 
 	// HitData를 담는 RenderTarget 캔버스
-	UPROPERTY()
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UTextureRenderTarget2D* RT_HitData;
 
 	// Skirt의 ClothingData를 담고있는 UChaosClothConfig

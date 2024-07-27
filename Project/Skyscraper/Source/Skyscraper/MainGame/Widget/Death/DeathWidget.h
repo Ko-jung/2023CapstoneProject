@@ -21,7 +21,7 @@ protected:
 	UFUNCTION()
 	void SetToWeaponSelectMode();
 	virtual void NativeConstruct() override;
-
+	virtual void NativeDestruct() override;
 private:
 
 public:

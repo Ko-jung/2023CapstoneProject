@@ -292,6 +292,7 @@ ASkyscraperCharacter::ASkyscraperCharacter()
 
 
 	NS_BoostEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_BoostEffect"));
+	NS_BoostEffect->SetHiddenInGame(true);
 }
 
 void ASkyscraperCharacter::BeginPlay()
@@ -358,9 +359,6 @@ void ASkyscraperCharacter::Landed(const FHitResult& Hit)
 
 ASkyscraperPlayerController* ASkyscraperCharacter::GetPlayerController() const
 {
-	// UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::GetPlayerController() this is %s"),
-	// 	*UKismetSystemLibrary::GetDisplayName(this));
-
 	return Cast<ASkyscraperPlayerController>(GetController()); 
 }
 

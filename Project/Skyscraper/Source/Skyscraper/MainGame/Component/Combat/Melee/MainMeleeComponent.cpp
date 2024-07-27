@@ -408,6 +408,7 @@ void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Dist
 	// 2019180031 - 근접공격이 다중으로 적용되지 않는 현상 해결을 위해 BoxTraceMulti -> BoxTraceMultiForObjects 로 변경
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	ObjectTypes.Add(UCollisionProfile::Get()->ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 	UKismetSystemLibrary::BoxTraceMultiForObjects(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, ObjectTypes, false, IgnoreActors, EDrawDebugTrace::Type::None, OutHits, true);
 	//UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Start, End, vHitSize, OwnerCharacter->GetActorRotation() + AngleToRotator, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Pawn), false, IgnoreActors, EDrawDebugTrace::ForDuration, OutHits, true);
 

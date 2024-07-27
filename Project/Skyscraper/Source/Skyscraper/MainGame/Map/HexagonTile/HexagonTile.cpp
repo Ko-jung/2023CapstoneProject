@@ -439,6 +439,8 @@ void AHexagonTile::SpawnItem(PItemInfo* Items, const uint8 SpawnCount)
 			continue;
 		}
 
+		if (!Building->Building_Floors.IsValidIndex(Items[i].Floor)) continue;
+
 		FVector BuildingLocation = (*Building->Building_Floors[Items[i].Floor]).GetActorLocation();
 		BuildingLocation.X += 100.f;
 		BuildingLocation.Y += 100.f;

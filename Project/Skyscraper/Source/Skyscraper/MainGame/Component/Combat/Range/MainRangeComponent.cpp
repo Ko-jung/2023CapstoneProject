@@ -355,9 +355,8 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		}
 		// ================================================================ 
 
-
-		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
-		while (HitResult)		// if -> while TO use break
+		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility, QueryParams);
+		while (HitResult)		// if -> while to use break
 		{
 			AActor* HitActor = OutHit.GetActor();
 

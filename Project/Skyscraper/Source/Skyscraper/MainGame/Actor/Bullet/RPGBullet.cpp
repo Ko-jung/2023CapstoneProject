@@ -113,6 +113,8 @@ void ARPGBullet::BulletExplode()
 		}
 		else if (AShield* Shield = Cast<AShield>(HitActor))
 		{
+			if (IsHitShield) continue;
+
 			GameMode->SendDamagedSkillActor(FireCharacter, Shield->SpawnCharacter, ESkillActor::BP_Shield, Shield);
 			IsHitShield = true;
 		}
@@ -123,6 +125,7 @@ void ARPGBullet::BulletExplode()
 		int i = 0;
 		for (const auto& a : UniqueActors)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("ARPGBullet::BulletExplode() a: %s"), *UKismetSystemLibrary::GetDisplayName(a));
 			if (GameMode)
 			{
 				GameMode->SendTakeDamage(FireCharacter, a);

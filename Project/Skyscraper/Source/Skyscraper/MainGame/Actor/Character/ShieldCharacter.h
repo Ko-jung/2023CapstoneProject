@@ -27,6 +27,8 @@ public:
 	void GetShieldDamage(float Damage);
 	UFUNCTION(BlueprintNativeEvent)
 	void SetShieldHealth(float Damage);
+	UFUNCTION(BlueprintNativeEvent)
+	void RemoveShield();
 
 	void SkillActorDamaged(float AfterHp) override;
 	// ==========

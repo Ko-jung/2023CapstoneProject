@@ -14,6 +14,7 @@
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
 
 #include "Skyscraper/Network/MainGameMode.h"
+#include "Skyscraper/MainGame/Actor/Character/ShieldCharacter.h"
 
 class UPlayMontageCallbackProxy;
 // Sets default values for this component's properties
@@ -289,8 +290,14 @@ void UHealthComponent::ChangeState(EHealthState s)
 	case EHealthState::EHS_DYING:
 		break;
 	case EHealthState::EHS_DEAD:
+	{
 		SetPlayerDie();
+		if (AShieldCharacter* SC = Cast<AShieldCharacter>(OwnerCharacter))
+		{
+			SC->RemoveShield();
+		}
 		break;
+	}
 	default:
 		break;
 	}

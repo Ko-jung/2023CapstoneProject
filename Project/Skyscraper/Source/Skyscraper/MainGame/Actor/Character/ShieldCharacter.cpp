@@ -133,3 +133,6 @@ void AShieldCharacter::SkillActorDamaged(float AfterHp)
 void AShieldCharacter::GetShieldDamage_Implementation(float Damage)
 {
 }
+void AShieldCharacter::RemoveShield_Implementation()
+{
+}

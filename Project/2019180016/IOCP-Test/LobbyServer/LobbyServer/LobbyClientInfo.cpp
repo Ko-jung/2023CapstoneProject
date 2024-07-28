@@ -84,6 +84,6 @@ void LobbyClientInfo::Recv()
 
 	if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		printf_s("[ERROR] WSARecv 에러, 코드 : %d", WSAGetLastError());
+		printf_s("[ERROR] WSARecv, Code: %d\n", WSAGetLastError());
 	}
 }

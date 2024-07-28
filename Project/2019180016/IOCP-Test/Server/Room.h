@@ -64,6 +64,8 @@ public:
 
 	void SpawnItem(std::vector<struct PItemInfo>& TileIndex);
 
+	bool IsTeamAWinning();
+
 private:
 	std::array<std::atomic<int>, 2> KillScore;
 	std::array<int, 9> CenterTileIndex;

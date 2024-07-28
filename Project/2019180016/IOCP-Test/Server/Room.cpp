@@ -261,6 +261,11 @@ void Room::SpawnItem(std::vector<PItemInfo>& TileIndex)
 	}
 }
 
+bool Room::IsTeamAWinning()
+{
+	return KillScore[(BYTE)ETEAM::A] >= KillScore[(BYTE)ETEAM::B];
+}
+
 double Room::Distance(float x1, float y1, float x2, float y2)
 {
 	return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);

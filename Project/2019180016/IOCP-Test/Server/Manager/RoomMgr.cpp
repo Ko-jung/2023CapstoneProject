@@ -112,6 +112,11 @@ void RoomMgr::RequestSendItemSpawn(int roomId)
 	SendItemSpawn(roomId);
 }
 
+bool RoomMgr::IsTeamAWinning(int RoomId)
+{
+	return Rooms[RoomId]->IsTeamAWinning();
+}
+
 void RoomMgr::SendItemSpawn(int roomId)
 {
 	std::vector<PItemInfo> Items;

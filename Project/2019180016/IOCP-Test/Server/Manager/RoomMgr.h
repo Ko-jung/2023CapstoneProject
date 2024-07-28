@@ -35,6 +35,8 @@ public:
 
 	void RequestSendItemSpawn(int roomId);
 
+	bool IsTeamAWinning(int roomId);
+
 private:
 	// Timer Func
 	void SendItemSpawn(int roomId);

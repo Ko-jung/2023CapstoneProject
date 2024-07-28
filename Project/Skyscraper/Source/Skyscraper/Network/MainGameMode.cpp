@@ -285,7 +285,7 @@ void AMainGameMode::ProcessFunc()
 			if (controller)
 			{
 				bool IsTeamA = SerialNum < MAXPLAYER / 2;
-				controller->AddGameResultWidget(PFG.IsTeamAWin == IsTeamA);
+				controller->AddGameResultWidget(PFG.IsTeamAWin != IsTeamA);
 			}
 			break;
 		}

@@ -244,6 +244,7 @@ void PacketMgr::ProcessRequest(PRequestPacket PRP, int id)
 	{
 		int RoomNum = id / MAXPLAYER;
 		PFinishGame PFG;
+		PFG.IsTeamAWin = RoomMgr::Instance()->IsTeamAWinning(RoomNum);
 		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(RoomNum, &PFG, sizeof(PFG));
 		break;
 	}

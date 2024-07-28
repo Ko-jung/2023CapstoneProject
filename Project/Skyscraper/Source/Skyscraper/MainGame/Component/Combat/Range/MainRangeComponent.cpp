@@ -365,79 +365,96 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 		}
 		// ================================================================ 
 
-		bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility, QueryParams);
-		while (HitResult)		// if -> while to use break
-		{
-			AActor* HitActor = OutHit.GetActor();
-
-			TargetLocation = OutHit.Location;
-
-			if (OwnerCharacter->IsAlliance(HitActor)) break;
-
-			if (HitActor->IsA(AShield::StaticClass()))
+		{	// SHield
+			bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Visibility, QueryParams);
+			if (HitResult)
 			{
-				AShield* Shield = Cast<AShield>(HitActor);
-				Shield->GetDamage(fBaseDamage);
-				if (GameMode)
+				AActor* HitActor = OutHit.GetActor();
+				TargetLocation = OutHit.Location;
+				if (!OwnerCharacter->IsAlliance(HitActor) && HitActor->IsA(AShield::StaticClass()))
 				{
-					GameMode->SendDamagedSkillActor(OwnerCharacter, Shield->SpawnCharacter, ESkillActor::BP_Shield, HitActor);
-				}
-				break;
-			}
-
-			// Execute on Sever
-			if (GameMode && GameMode->GetIsConnected())
-			{
-				GameMode->SendTakeDamage(OwnerCharacter, HitActor);
-			}
-			else
-			{
-				UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
-			}
-			
-
-
-			if (OutHit.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
-			{
-				{ // 대미지 컴퍼넌트 추가
-					FTransform SpawnTransform;
-					SpawnTransform.SetLocation(OutHit.Location);
-					
-					if (!Cast<ASkyscraperCharacter>(OutHit.GetActor())->IsCharacterGodMode())
+					AShield* Shield = Cast<AShield>(HitActor);
+					Shield->GetDamage(fBaseDamage);
+					if (GameMode)
 					{
-						UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
-						if (DamageComp)
+						GameMode->SendDamagedSkillActor(OwnerCharacter, Shield->SpawnCharacter, ESkillActor::BP_Shield, HitActor);
+					}
+
+					// Hit 이펙트 생성
+					if (NS_HitEffect)
+					{
+						UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+							GetWorld(), NS_HitEffect,
+							OutHit.Location,
+							FRotator{ 0.0f,0.0f,0.0f },
+							FVector(1));
+					}
+				}
+			}
+		}
+
+		{	// Character
+			bool HitResult = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_Pawn, QueryParams);
+			while (HitResult)		// if -> while to use break
+			{
+				AActor* HitActor = OutHit.GetActor();
+
+				TargetLocation = OutHit.Location;
+
+				// Execute on Sever
+				if (GameMode && GameMode->GetIsConnected())
+				{
+					GameMode->SendTakeDamage(OwnerCharacter, HitActor);
+				}
+				else
+				{
+					UGameplayStatics::ApplyDamage(HitActor, fBaseDamage, nullptr, nullptr, nullptr);
+				}
+
+
+				if (OutHit.GetActor()->FindComponentByClass(UHealthComponent::StaticClass()))
+				{
+					{ // 대미지 컴퍼넌트 추가
+						FTransform SpawnTransform;
+						SpawnTransform.SetLocation(OutHit.Location);
+
+						if (!Cast<ASkyscraperCharacter>(OutHit.GetActor())->IsCharacterGodMode())
 						{
-							DamageComp->InitializeDamage(fBaseDamage);
+							UDamageComponent* DamageComp = Cast<UDamageComponent>(OutHit.GetActor()->AddComponentByClass(UDamageComponent::StaticClass(), true, SpawnTransform, false));
+							if (DamageComp)
+							{
+								DamageComp->InitializeDamage(fBaseDamage);
+							}
+						}
+
+					}
+					// BloodSpawner 생성
+					{
+						FTransform Transform{ OutHit.Normal.Rotation().Quaternion(), OutHit.Location };
+						AActor* BloodSpawner = GetWorld()->SpawnActorDeferred<AActor>(BP_BloodSpawner, Transform);
+						if (BloodSpawner)
+						{
+							BloodSpawner->FinishSpawning(Transform);
 						}
 					}
-					
 				}
-				// BloodSpawner 생성
+
+
+
+				// Hit 이펙트 생성
+				if (NS_HitEffect)
 				{
-					FTransform Transform{ OutHit.Normal.Rotation().Quaternion(), OutHit.Location };
-					AActor* BloodSpawner = GetWorld()->SpawnActorDeferred<AActor>(BP_BloodSpawner, Transform);
-					if (BloodSpawner)
-					{
-						BloodSpawner->FinishSpawning(Transform);
-					}
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						GetWorld(), NS_HitEffect,
+						OutHit.Location,
+						FRotator{ 0.0f,0.0f,0.0f },
+						FVector(1));
 				}
-			}
 
-			
-
-			// Hit 이펙트 생성
-			if (NS_HitEffect)
-			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-					GetWorld(), NS_HitEffect,
-					OutHit.Location,
-					FRotator{ 0.0f,0.0f,0.0f },
-					FVector(1));
+				HitResult = false;
 			}
-			
-			HitResult = false;
 		}
+		
 
 		// Muzzle Flash Effect
 		if (NS_MuzzleFlash)

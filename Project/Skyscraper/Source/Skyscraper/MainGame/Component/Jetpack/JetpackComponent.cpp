@@ -38,9 +38,9 @@ UJetpackComponent::UJetpackComponent()
 
 	bHoverStoping = false;
 	HoveringMaxSpeed = 600.0f;
-	HoverGaugePerSec = 0.33f;
-	DashGaugePerSec = 0.1f;
-	DodgeReductionGauge = 0.3f;
+	HoverGaugePerSec = 0.165f;
+	DashGaugePerSec = 0.05f;
+	DodgeReductionGauge = 0.15f;
 
 	MaxDashSpeed = 1500.0f;
 	DodgeSpeed = 3000.0f;

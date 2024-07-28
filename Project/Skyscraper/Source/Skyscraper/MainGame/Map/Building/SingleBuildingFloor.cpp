@@ -19,9 +19,6 @@ ASingleBuildingFloor::ASingleBuildingFloor()
 	ConstructorHelpers::FClassFinder<AActor> GC_BuildingRef(TEXT("/Script/Engine.Blueprint'/Game/2019180031/MainGame/Map/Building/BP_GC_Building.BP_GC_Building_C'"));
 	GC_BuildingClass = GC_BuildingRef.Class;
 
-	ConstructorHelpers::FClassFinder<AActor> GCWindowActorRef(TEXT("/Script/Engine.Blueprint'/Game/2019180016/FractureMesh/BP_WindowGeometryCollection.BP_WindowGeometryCollection_C'"));
-	BPGCWindowActorClass = GCWindowActorRef.Class;
-
 	for (int i = 0; i < 6; i++)
 	{
 		FString NewGCWindowString = "BP_GC_map_3_window_00";

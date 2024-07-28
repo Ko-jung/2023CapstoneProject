@@ -54,8 +54,6 @@ private:
 	UPROPERTY()
 		TArray<UClass*> GC_WindowClass;
 
-	UPROPERTY()
-		UClass* BPGCWindowActorClass;
 
 	// UPROPERTY()
 	// TArray<UObject*> GC_WindowObject;

@@ -57,7 +57,8 @@ URPGComponent::URPGComponent()
 		
 	}
 	
-	pRPGBulletBPClass = &RPGBulletBPClass;
+	if(!pRPGBulletBPClass)
+		pRPGBulletBPClass = &RPGBulletBPClass;
 }
 
 void URPGComponent::Fire(float fBaseDamage)
@@ -66,38 +67,41 @@ void URPGComponent::Fire(float fBaseDamage)
 
 	// ===== 2019180016 =====
 	// Spawn Bullet On Server
-	if (GetOwnerPlayerController())
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(OwnerCharacter));
+	if (GameMode && GameMode->GetIsConnected())
 	{
-		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(OwnerCharacter));
-		if (GameMode && GameMode->GetIsConnected())
+		if (GetOwnerPlayerController())
 		{
-			UseBullet();
+			if (GameMode && GameMode->GetIsConnected())
+			{
+				UseBullet();
 
-			FVector SpawnLocation = OwnerCharacter->GetActorLocation();
+				FVector SpawnLocation = OwnerCharacter->GetActorLocation();
 
-			FVector BulletDestination = GetOwnerPlayerController()->GetControlRotation().Vector() * 8000.0f
-				+ OwnerCharacter->GetCameraBoom()->GetComponentLocation();
+				FVector BulletDestination = GetOwnerPlayerController()->GetControlRotation().Vector() * 8000.0f
+					+ OwnerCharacter->GetCameraBoom()->GetComponentLocation();
 
-			FVector LocationOffset = OwnerCharacter->GetActorForwardVector() * 225.0f + OwnerCharacter->GetActorRightVector() * 15.0f + FVector{ 0.0f, 0.0f, 50.0f };
-			FVector StartLocation = OwnerCharacter->GetActorLocation() + LocationOffset;
+				FVector LocationOffset = OwnerCharacter->GetActorForwardVector() * 225.0f + OwnerCharacter->GetActorRightVector() * 15.0f + FVector{ 0.0f, 0.0f, 50.0f };
+				FVector StartLocation = OwnerCharacter->GetActorLocation() + LocationOffset;
 
-			FVector Direction = (BulletDestination - StartLocation);
-			Direction.Normalize();
+				FVector Direction = (BulletDestination - StartLocation);
+				Direction.Normalize();
 
-			FRotator Rotation(0.0f, 0.0f, 0.0f);
+				FRotator Rotation(0.0f, 0.0f, 0.0f);
 
-			FActorSpawnParameters SpawnInfo;
-			FTransform SpawnTransform{};
-			SpawnTransform.SetLocation(StartLocation);
-			SpawnTransform.SetRotation(Rotation.Quaternion());
-			SpawnTransform.SetScale3D(FVector(1.0f, 1.0f, 1.0f));
+				FActorSpawnParameters SpawnInfo;
+				FTransform SpawnTransform{};
+				SpawnTransform.SetLocation(StartLocation);
+				SpawnTransform.SetRotation(Rotation.Quaternion());
+				SpawnTransform.SetScale3D(FVector(1.0f, 1.0f, 1.0f));
 
-			GameMode->SendSpawnBullet(OwnerCharacter, EObjectType::RPGBullet, SpawnTransform, Direction);
+				GameMode->SendSpawnBullet(OwnerCharacter, EObjectType::RPGBullet, SpawnTransform, Direction);
 
-			SpawnEffectAndSound(SpawnLocation);
-			return;
+				SpawnEffectAndSound(SpawnLocation);
+			}
 		}
-	}	
+		return;
+	}
 	// ======================
 
 	if (!GetOwnerPlayerController())
@@ -214,18 +218,17 @@ void URPGComponent::SpawnEffectAndSound(FVector SpawnLocation)
 	}
 }
 
-void URPGComponent::Fire(UWorld* World, AActor* FireCharacter, FTransform Transform, FVector Direction, float fBaseDamage)
+void URPGComponent::Fire(FTransform Transform, FVector Direction, float fBaseDamage)
 {
 	FActorSpawnParameters SpawnInfo;
 	FTransform SpawnTransform{};
-	SpawnTransform.SetLocation(Transform.GetLocation());
+	SpawnTransform.SetLocation(Transform.GetLocation() + Direction * 100 + FVector{ 0.0f,0.0f,70.0f });
 	SpawnTransform.SetRotation(Transform.GetRotation());
 	SpawnTransform.SetScale3D(Transform.GetScale3D());
-
-	ARPGBullet* BulletActor = World->SpawnActorDeferred<ARPGBullet>(*pRPGBulletBPClass, SpawnTransform);
+	ARPGBullet* BulletActor = GetWorld()->SpawnActorDeferred<ARPGBullet>(RPGBulletBPClass, SpawnTransform);
 	if (BulletActor)
 	{
-		BulletActor->Initialize(FireCharacter, Direction, 5000.0f, fBaseDamage);
+		BulletActor->Initialize(OwnerCharacter, Direction, 5000.0f, fBaseDamage);
 		BulletActor->FinishSpawning(SpawnTransform);
 	}
 }

@@ -509,6 +509,17 @@ void UCombatSystemComponent::GetWeaponEquipStateForAnimation(ESwapWeapon& Weapon
 	}
 }
 
+void UCombatSystemComponent::FireBullet(FTransform Transform, FVector Direction, float fBaseDamage)
+{
+	if (OwnerCharacter)
+	{
+		if (URPGComponent* RPG = Cast<URPGComponent>(MainRangeWeaponComponent))
+		{
+			RPG->Fire(Transform, Direction, fBaseDamage);
+		}
+	}
+}
+
 void UCombatSystemComponent::OnOutDownMontage(FName NotifyName)
 {
 	OwnerCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);

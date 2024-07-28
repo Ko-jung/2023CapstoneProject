@@ -50,6 +50,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void GetWeaponEquipStateForAnimation(ESwapWeapon& WeaponType, uint8& EquippedWeapon);
 
+	void FireBullet(FTransform Transform, FVector Direction, float fBaseDamage);
+
 	UFUNCTION()
 		void ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect);
 	UFUNCTION()

@@ -764,16 +764,22 @@ void AMainGameMode::ProcessTileBreakItem(const uint8 TargetSerial)
 
 void AMainGameMode::ProcesspawnBullet(PSpawnBullet PSB)
 {
+	if (!Characters.IsValidIndex(PSB.SpawnerSerial) || !Characters[PSB.SpawnerSerial]) return;
+
 	switch (PSB.Object)
 	{
 	case EObjectType::RPGBullet:
 	{
-		URPGComponent::Fire(GetWorld(), Characters[PSB.SpawnerSerial],
-			FTransform{ FRotator(PSB.Rotate.X,PSB.Rotate.Y,PSB.Rotate.Z),
-						FVector(PSB.Location.X,PSB.Location.Y,PSB.Location.Z),
-						FVector() },
-			FVector{ PSB.Direction.X,PSB.Direction.Y,PSB.Direction.Z },
-			Characters[PSB.SpawnerSerial]->GetPowerBuffValue());
+		Characters[PSB.SpawnerSerial]->FireBullet(	FTransform{	FRotator(PSB.Rotate.X,PSB.Rotate.Y,PSB.Rotate.Z),
+																FVector(PSB.Location.X,PSB.Location.Y,PSB.Location.Z),
+																FVector(1.0f, 1.0f, 1.0f) },
+													FVector{ PSB.Direction.X,PSB.Direction.Y,PSB.Direction.Z });
+		//URPGComponent::Fire(GetWorld(), Characters[PSB.SpawnerSerial],
+		//	FTransform{ FRotator(PSB.Rotate.X,PSB.Rotate.Y,PSB.Rotate.Z),
+		//				FVector(PSB.Location.X,PSB.Location.Y,PSB.Location.Z),
+		//				FVector() },
+		//	FVector{ PSB.Direction.X,PSB.Direction.Y,PSB.Direction.Z },
+		//	Characters[PSB.SpawnerSerial]->GetPowerBuffValue());
 		break;
 	}
 	default:

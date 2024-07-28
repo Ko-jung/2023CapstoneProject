@@ -665,7 +665,7 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, FRotator 
 	if (Controller)
 	{
 		Controller->SetControlRotation(r);
-		UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::SyncTransformAndAnim r: %s"), *GetController()->GetControlRotation().ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::SyncTransformAndAnim r: %s"), *GetController()->GetControlRotation().ToString());
 	}
 	else
 		UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::SyncTransformAndAnim r: %s"), *r.ToString());
@@ -1033,6 +1033,14 @@ void ASkyscraperCharacter::SetCombatOwner()
 	{
 		CombatSystemComponent->SetOwner();
 		JetpackComponent->SetOwner();
+	}
+}
+
+void ASkyscraperCharacter::FireBullet(FTransform Transform, FVector Direction)
+{
+	if (CombatSystemComponent)
+	{
+		CombatSystemComponent->FireBullet(Transform, Direction,	PowerBuffValue);
 	}
 }
 

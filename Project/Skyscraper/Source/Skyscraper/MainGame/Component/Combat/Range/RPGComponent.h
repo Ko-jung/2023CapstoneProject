@@ -26,7 +26,7 @@ public:
 
 	void SpawnEffectAndSound(FVector SpawnLocation);
 
-	static void Fire(UWorld* World, AActor* FireCharacter, FTransform Transform, FVector Direction, float fBaseDamage);
+	void Fire(FTransform Transform, FVector Direction, float fBaseDamage);
 protected:
 
 private:

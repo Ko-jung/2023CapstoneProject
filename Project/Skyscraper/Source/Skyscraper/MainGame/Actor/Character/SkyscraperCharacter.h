@@ -228,6 +228,8 @@ public:
 	bool IsAlliance(AActor* Target);
 
 	void SetCombatOwner();
+
+	void FireBullet(FTransform Transform, FVector Direction);
 	// ==================
 
 	UFUNCTION()

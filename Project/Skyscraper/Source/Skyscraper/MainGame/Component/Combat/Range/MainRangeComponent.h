@@ -28,10 +28,6 @@ public:
 	// 무기 웨폰 skeletal mesh의 visible을 변경해주는 함수
 	void SetWeaponHiddenInGame(bool bNewHidden) const;
 
-	// 2019180016
-	USkeletalMeshComponent* GetWeaponMeshComponent() { return WeaponMeshComponent; }
-	uint8 GetRangeWeaponType() { return (uint8)RangeWeaponType; }
-
 	// 다시 무기를 장착 하였을 때 키 인풋 추가 및 무기 추가하는 함수
 	void AddThisWeapon();
 	// 무기 컴퍼넌트 제거할 때, 키 인풋 제거 및 무기 제거하는 함수

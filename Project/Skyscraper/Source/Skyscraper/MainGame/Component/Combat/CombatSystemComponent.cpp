@@ -539,28 +539,6 @@ void UCombatSystemComponent::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
 	SwapToRangeWeapon(FInputActionValue());
 }
 
-void UCombatSystemComponent::GetCurrentWeaponMesh(USkeletalMeshComponent*& Mesh, uint8& WeaponEnum, bool& IsMelee)
-{
-	if (MainWeaponComponent == MainMeleeWeaponComponent)
-	{
-		if (UMainMeleeComponent* MeleeComp = Cast<UMainMeleeComponent>(MainWeaponComponent))
-		{
-			Mesh = MeleeComp->GetWeaponMeshComponent();
-			WeaponEnum = MeleeComp->GetMeleeSelect();
-			IsMelee = true;
-		}
-	}
-	else
-	{
-		if (UMainRangeComponent* RangeComp = Cast<UMainRangeComponent>(MainWeaponComponent))
-		{
-			Mesh = RangeComp->GetWeaponMeshComponent();
-			WeaponEnum = RangeComp->GetRangeWeaponType();
-			IsMelee = false;
-		}
-	}
-}
-
 void UCombatSystemComponent::RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem)
 {
 	Subsystem->RemoveMappingContext(IMC_CombatSystem);

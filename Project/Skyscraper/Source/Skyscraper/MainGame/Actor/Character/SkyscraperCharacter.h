@@ -145,7 +145,7 @@ public:
 	/// </returns>
 	bool CheckHoldWeapon(ESwapWeapon& weaponType, uint8& equippedWeapon);
 
-	virtual void SwapWeapon(ESwapWeapon WeaponType);
+	void SwapWeapon(ESwapWeapon WeaponType);
 	
 	UFUNCTION(BlueprintCallable)
 	void SendAnimMontageStatus(ECharacterAnimMontage eMontage, int Section);

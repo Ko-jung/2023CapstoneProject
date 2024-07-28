@@ -44,6 +44,10 @@ public:
 	// 적을 맞출 시 HitLag(역경직)을 발생시키는 함수
 	void DoHitLag();
 	void StopHitLag();
+
+	// 2019180016
+	USkeletalMeshComponent* GetWeaponMeshComponent() { return WeaponMeshComponent; }
+	uint8 GetMeleeSelect() { return (uint8)MeleeSelect; }
 	
 protected:
 	// == OwnerCharacter variable

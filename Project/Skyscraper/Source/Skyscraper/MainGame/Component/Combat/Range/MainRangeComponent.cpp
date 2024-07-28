@@ -285,6 +285,7 @@ void UMainRangeComponent::PlayFireAnim()
 		GetWorld()->GetTimerManager().SetTimer(FireCoolTimerHandle, this, &ThisClass::FireCoolDownTimerFunc, 0.1f, true);		
 	}
 	
+	OwnerCharacter->CharacterAttackEvent();
 }
 
 void UMainRangeComponent::UseBullet()

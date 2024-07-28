@@ -37,7 +37,8 @@ protected:
 	FVector ClampToMaxWalkSpeed(const FVector& NewVelocity);
 
 	// 부스터 연료 설정 함수
-	void SetFuel(double NewFuel);
+	UFUNCTION(BlueprintCallable)
+		void SetFuel(double NewFuel);
 	// 공중 모드 설정 함수
 	void SetHoveringMode(bool bHover);
 	// 부스터 속력(캐릭터 무브먼트 컴퍼넌트 속력) 변경 함수
@@ -91,6 +92,7 @@ public:
 
 	void RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayerSubsystem* Subsystem);
 
+	void Debug_RecoverFuel();
 	void BindingInputActions();
 
 	void AddInputMappingContext();
@@ -177,6 +179,12 @@ protected:
 
 	UPROPERTY()
 		FTimerHandle TurnOffSoundAndEffectTimerHandle;
+
+	UPROPERTY()
+		bool bIsLanded = true;
+	UPROPERTY()
+		float JetpackRecoverTime = 5.0f;
+
 protected:
 	UFUNCTION()
 	FORCEINLINE UCharacterMovementComponent* GetOwnerCharacterMovement() const { return OwnerCharacter->GetCharacterMovement(); }
@@ -197,4 +205,7 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		UInputAction* IA_Jetpack_Descent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		UInputAction* IA_DEBUG_JETPACK_RECOVERFUEL;
 };

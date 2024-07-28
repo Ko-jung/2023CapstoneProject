@@ -726,7 +726,6 @@ void ASkyscraperCharacter::ResetSpeedBuffValue()
 	SpeedBuffValue = 1.0f;
 	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;
 	SetItemEffectAndOverlayMaterial(EItemEffect::EIE_Team_Speed, false);
-	UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::ResetSpeedBuffValue Called. GetCharacterMovement()->MaxWalkSpeed is %f"), GetCharacterMovement()->MaxWalkSpeed);
 }
 
 void ASkyscraperCharacter::SetPowerBuffValue(float NewPowerBuffValue, float fBuffTime)
@@ -751,7 +750,6 @@ void ASkyscraperCharacter::AddItem(EItemEffect ItemEffect, EItemRareLevel RareLe
 	if(OwningItem.Key==EItemEffect::EIE_NONE)
 	{
 		OwningItem.Key = ItemEffect; OwningItem.Value = RareLevel;
-		UE_LOG(LogTemp, Warning, TEXT("character earn item"));
 	}
 
 	if(GetPlayerController())

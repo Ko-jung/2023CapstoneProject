@@ -70,6 +70,9 @@ UJetpackComponent::UJetpackComponent()
 
 		static ConstructorHelpers::FObjectFinder<UInputAction> IA_Jetpack_DescentRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/IA_Jetpack_Descent.IA_Jetpack_Descent'"));
 		IA_Jetpack_Descent = IA_Jetpack_DescentRef.Object;
+
+		static ConstructorHelpers::FObjectFinder<UInputAction> IA_DEBUG_JetpackFuelRef(TEXT("/Script/EnhancedInput.InputAction'/Game/2019180031/MainGame/Core/Input/Jetpack/DEBUG_IA_JETPACK_RECOVERJETPACKFUEL.DEBUG_IA_JETPACK_RECOVERJETPACKFUEL'"));
+		IA_DEBUG_JETPACK_RECOVERFUEL = IA_DEBUG_JetpackFuelRef.Object;
 	}
 
 	{ // 제트팩 위젯 클래스 로드
@@ -207,12 +210,21 @@ void UJetpackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			}
 		}
 	}
-	
+
+	if(bIsLanded)
+	{
+		if(JetpackFuel < 1.0f)
+		{
+			SetFuel(JetpackFuel + DeltaTime/JetpackRecoverTime);
+		}
+		
+	}
 }
 
 void UJetpackComponent::OnLandJetpack()
 {
-	SetFuel(MaxJetpackFuel);
+	//SetFuel(MaxJetpackFuel);
+	bIsLanded = true;
 	SetHoveringMode(false);
 
 	if(OwnerCharacter->GetAnimInstance())
@@ -242,7 +254,7 @@ void UJetpackComponent::SetFuel(double NewFuel)
 	{
 		return;
 	}
-	JetpackFuel = FMath::Max(0.0f, NewFuel);
+	JetpackFuel = FMath::Clamp(NewFuel, 0.0f, 1.0f);
 
 	{
 		// UI 내 제트팩 연료 설정
@@ -265,6 +277,7 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 		if (!OwnerCharacter->GetIsHover())
 		{
 			OwnerCharacter->SetIsHover(true);
+			bIsLanded = false;
 			bIsHovering = true;
 			SetCharacterMaxSpeed();
 			GetOwnerCharacterMovement()->GravityScale = 0.0f;
@@ -616,6 +629,11 @@ void UJetpackComponent::RemoveAllInputMappingTemporary(UEnhancedInputLocalPlayer
 	Subsystem->RemoveMappingContext(IMC_Jetpack);
 }
 
+void UJetpackComponent::Debug_RecoverFuel()
+{
+	SetFuel(1.0f);
+}
+
 void UJetpackComponent::BindingInputActions()
 {
 	if (!OwnerCharacter->GetPlayerController()) return;
@@ -635,6 +653,7 @@ void UJetpackComponent::BindingInputActions()
 		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_D)], ETriggerEvent::Started, this, &ThisClass::Dodge_Right);
 		EnhancedInputComponent->BindAction(IA_Jetpack_Dodge[static_cast<uint8>(EDodgeKeys::EDK_A)], ETriggerEvent::Started, this, &ThisClass::Dodge_Left);
 		EnhancedInputComponent->BindAction(IA_Jetpack_Descent, ETriggerEvent::Started, this, &ThisClass::DoDescent);
+		EnhancedInputComponent->BindAction(IA_DEBUG_JETPACK_RECOVERFUEL, ETriggerEvent::Started, this, &ThisClass::Debug_RecoverFuel);
 	}
 }
 

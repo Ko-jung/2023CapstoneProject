@@ -93,6 +93,8 @@ void URPGComponent::Fire(float fBaseDamage)
 			SpawnTransform.SetScale3D(FVector(1.0f, 1.0f, 1.0f));
 
 			GameMode->SendSpawnBullet(OwnerCharacter, EObjectType::RPGBullet, SpawnTransform, Direction);
+
+			SpawnEffectAndSound(SpawnLocation);
 			return;
 		}
 	}	
@@ -107,7 +109,6 @@ void URPGComponent::Fire(float fBaseDamage)
 		ARPGBullet* BulletActor = GetWorld()->SpawnActorDeferred<ARPGBullet>(RPGBulletBPClass, SpawnTransform);
 		if (BulletActor)
 		{
-
 			BulletActor->Initialize(OwnerCharacter, OwnerCharacter->GetActorForwardVector(), 5000.0f, fBaseDamage);
 			BulletActor->FinishSpawning(SpawnTransform);
 		}
@@ -184,6 +185,32 @@ void URPGComponent::SetInitialValue()
 	{
 		FireMaxCoolTime = CombatComponent->RPG_FireTime;
 		ReloadSpeedTime = CombatComponent->RPG_ReloadTime;
+	}
+}
+
+void URPGComponent::SpawnEffectAndSound(FVector SpawnLocation)
+{	//Backblast Effect
+	{
+		if (NS_RPGBackblast)
+		{
+			FTransform Transform = WeaponMeshComponent->GetSocketTransform(TEXT("BackblastSocket"));
+			UNiagaraComponent* FX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_RPGBackblast, Transform.GetLocation(), Transform.Rotator());
+		}
+	}
+
+	// Play Sound
+	{
+		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if (USoundBase* FireSound = Subsystem->GetSkyscraperSound(FireSoundName))
+			{
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, SpawnLocation, FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
+			}
+		}
+
 	}
 }
 

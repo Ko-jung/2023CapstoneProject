@@ -24,6 +24,8 @@ public:
 	virtual void Fire(float fBaseDamage) override;
 	virtual void SetInitialValue() override;
 
+	void SpawnEffectAndSound(FVector SpawnLocation);
+
 	static void Fire(UWorld* World, AActor* FireCharacter, FTransform Transform, FVector Direction, float fBaseDamage);
 protected:
 

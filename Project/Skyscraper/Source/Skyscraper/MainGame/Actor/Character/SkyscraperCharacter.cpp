@@ -662,9 +662,13 @@ void ASkyscraperCharacter::SyncTransformAndAnim(FTransform t, float s, FRotator 
 {
 	SetActorTransform(t);
 	SetSpeed(s);
-	if(Controller)
+	if (Controller)
+	{
 		Controller->SetControlRotation(r);
-	//UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::SyncTransformAndAnim r: %s"), *r.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::SyncTransformAndAnim r: %s"), *GetController()->GetControlRotation().ToString());
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("ASkyscraperCharacter::SyncTransformAndAnim r: %s"), *r.ToString());
 }
 
 void ASkyscraperCharacter::SetMontage(ECharacterAnimMontage eAnimMontage, int SectionNum)

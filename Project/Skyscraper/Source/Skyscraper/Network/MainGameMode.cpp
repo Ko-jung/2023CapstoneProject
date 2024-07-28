@@ -375,9 +375,14 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	ASkyscraperCharacter* character = nullptr;
 	while (true)
 	{
-		FVector SpawnLocation = FVector{ FMath::RandRange(Location.X - 300.f, Location.X + 300.f),
-										FMath::RandRange(Location.Y - 300.f, Location.Y + 300.f),
-										Location.Z };
+		// X : [300, 50] or [-50, -300]
+		float X[2] = { FMath::RandRange(300.f, 50.f),  FMath::RandRange(-50.f, -300.f) };
+		// Y : [300, 50] or [-50, -300]
+		float Y[2] = { FMath::RandRange(300.f, 50.f),  FMath::RandRange(-50.f, -300.f) };
+
+		FVector SpawnLocation = FVector{ Location.X + X[FMath::RandBool()],
+										 Location.Y + Y[FMath::RandBool()],
+										 Location.Z };
 		FTransform Transform = { FRotator{} , SpawnLocation };
 
 		character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(*Class, Transform);
@@ -938,6 +943,7 @@ void AMainGameMode::SendPlayerLocation()
 	// FVector Velo = Characters[SerialNum]->GetVelocity();
 	// PlayerPosition.PlayerXDirection = CalculateDirection({ Velo.X,Velo.Y,0.f }, Characters[SerialNum]->GetActorRotation());
 
+	PlayerPosition.ControllerRotator = Characters[SerialNum]->GetController()->GetControlRotation();
 	m_Socket->Send(&PlayerPosition, sizeof(PPlayerPosition));
 }
 

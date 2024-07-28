@@ -906,6 +906,19 @@ void ASkyscraperCharacter::CustomDepthOff()
 	SetCustomDepth(false);
 }
 
+void ASkyscraperCharacter::SetMeshCustomDepth(bool IsEnemy)
+{
+	// CustomDepthStencilValue Allience : 0, Enemy : 1
+	// bRenderCustomDepth Allience : true, Enemy : false
+	GetMesh()->CustomDepthStencilValue = IsEnemy;
+	GetMesh()->bRenderCustomDepth = !IsEnemy;
+	GetMesh()->MarkRenderStateDirty();
+
+	GetBoostMesh()->CustomDepthStencilValue = IsEnemy;
+	GetBoostMesh()->bRenderCustomDepth = !IsEnemy;
+	GetBoostMesh()->MarkRenderStateDirty();
+}
+
 void ASkyscraperCharacter::SubtractFuelHalf()
 {
 	JetpackComponent->SubtractFuelHalf();

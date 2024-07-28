@@ -187,6 +187,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void SetCustomDepth(bool On);
 
+	virtual void SetMeshCustomDepth(bool IsEnemy);
+
 	UFUNCTION(BlueprintCallable)
 	void SubtractFuelHalf();
 

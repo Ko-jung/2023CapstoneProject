@@ -18,6 +18,7 @@ protected:
 private:
 
 public:
+	virtual void SetMeshCustomDepth(bool IsEnemy) override;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boost")
 	TObjectPtr<UStaticMeshComponent> Boomerang_R;

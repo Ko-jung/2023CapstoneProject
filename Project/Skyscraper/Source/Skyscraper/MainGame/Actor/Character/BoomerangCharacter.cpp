@@ -108,3 +108,16 @@ ABoomerangCharacter::ABoomerangCharacter()
 		NS_DashEffect->SetHiddenInGame(true);
 	}
 }
+
+void ABoomerangCharacter::SetMeshCustomDepth(bool IsEnemy)
+{
+	Super::SetMeshCustomDepth(IsEnemy);
+
+	Boomerang_R->CustomDepthStencilValue = IsEnemy;
+	Boomerang_R->bRenderCustomDepth = !IsEnemy;
+	Boomerang_R->MarkRenderStateDirty();
+
+	Boomerang_L->CustomDepthStencilValue = IsEnemy;
+	Boomerang_L->bRenderCustomDepth = !IsEnemy;
+	Boomerang_L->MarkRenderStateDirty();
+}

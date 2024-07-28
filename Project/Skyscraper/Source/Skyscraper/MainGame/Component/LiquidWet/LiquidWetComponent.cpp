@@ -24,6 +24,11 @@ ULiquidWetComponent::ULiquidWetComponent()
 	// ...
 }
 
+void ULiquidWetComponent::SetHitDataWithDelay()
+{
+	CalculateAndApplySkirtGravity();
+}
+
 
 void ULiquidWetComponent::AddHitData(FVector2D HitUV, float LiquidDuration)
 {
@@ -37,9 +42,14 @@ void ULiquidWetComponent::AddHitData(FVector2D HitUV, float LiquidDuration)
 		}
 	}
 
+	if(SetSkirtGravityTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(SetSkirtGravityTimerHandle);
+	}
+	GetWorld()->GetTimerManager().SetTimer(SetSkirtGravityTimerHandle, this, &ThisClass::SetHitDataWithDelay, 0.1f, false, 0.1f);
+
 	FLiquidHitData.Add(FLiquidData{ HitUV,LiquidDuration });
 	RenderLiquidWet();
-	CalculateAndApplySkirtGravity();
 }
 
 void ULiquidWetComponent::SetSkirtGravity(float value)
@@ -150,9 +160,8 @@ void ULiquidWetComponent::SetOwnerCharacterNewMesh()
 	if (!OwnerCharacter) return;
 
 	USkeletalMesh* CurrentMeshAsset = OwnerCharacter->GetMesh()->GetSkeletalMeshAsset();
-	
-	OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(nullptr,true);
-	OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(CurrentMeshAsset,true);
+	OwnerCharacter->GetMesh()->SetSkinnedAsset(nullptr);
+	OwnerCharacter->GetMesh()->SetSkinnedAssetAndUpdate(CurrentMeshAsset);
 }
 
 void ULiquidWetComponent::RenderLiquidWet()
@@ -199,7 +208,7 @@ void ULiquidWetComponent::RenderLiquidWet()
 void ULiquidWetComponent::CalculateAndApplySkirtGravity()
 {
 	float DefaultGravity = 0.25f;
-	float AddGravity = FLiquidHitData.Num()*1;
+	float AddGravity = FLiquidHitData.Num()*2;
 
 	SetSkirtGravity(DefaultGravity+AddGravity);
 }

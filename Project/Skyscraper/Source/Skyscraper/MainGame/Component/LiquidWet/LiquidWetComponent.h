@@ -29,6 +29,7 @@ public:
 	// Sets default values for this component's properties
 	ULiquidWetComponent();
 
+	void SetHitDataWithDelay();
 	UFUNCTION(BlueprintCallable)
 		void AddHitData(FVector2D HitUV, float LiquidDuration);
 	
@@ -81,6 +82,7 @@ protected:
 	TArray<FLiquidData> FLiquidHitData;
 
 	FTimerHandle LiquidUpdateTimerHandle;
+	FTimerHandle SetSkirtGravityTimerHandle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* SkirtCollisionMesh;

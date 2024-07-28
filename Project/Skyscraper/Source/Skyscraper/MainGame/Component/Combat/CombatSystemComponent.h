@@ -55,6 +55,9 @@ public:
 	UFUNCTION()
 		void ChangeRangeWeapon(ERangeSelect NewRangeSelect);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	void GetCurrentWeaponMesh(USkeletalMeshComponent*& Mesh, uint8& WeaponEnum, bool& IsMelee);
+
 	EMeleeSelect GetCurrentMeleeSelect() const { return MeleeSelect; }
 	ERangeSelect GetCurrentRangeSelect() const { return RangeSelect; }
 

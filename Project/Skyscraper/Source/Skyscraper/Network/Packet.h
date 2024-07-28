@@ -429,6 +429,18 @@ struct PObjectInteract : Packet
 	}
 };
 
+struct PSpawnBullet : Packet, PTransform
+{
+	BYTE SpawnerSerial;
+	EObjectType Object;
+	PVector Direction;
+
+	PSpawnBullet() : Packet(COMP_OP::OP_SPAWNBULLET), PTransform(), Object(EObjectType::RPGBullet), Direction(PVector())
+	{
+		PacketSize = sizeof(PSpawnBullet);
+	}
+};
+
 struct PTryLogin : Packet
 {
 	char ID[30];

@@ -9,6 +9,9 @@
 #include "Skyscraper/MainGame/Actor/Bullet/RPGBullet.h"
 #include "Skyscraper/MainGame/Component/Combat/CombatSystemComponent.h"
 #include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
+#include "Skyscraper/Network/MainGameMode.h"
+
+TSubclassOf<ARPGBullet>* URPGComponent::pRPGBulletBPClass;
 
 URPGComponent::URPGComponent()
 {
@@ -54,11 +57,47 @@ URPGComponent::URPGComponent()
 		
 	}
 	
+	pRPGBulletBPClass = &RPGBulletBPClass;
 }
 
 void URPGComponent::Fire(float fBaseDamage)
 {
-	if (!OwnerCharacter->InputEnabled()) return;
+	if (!OwnerCharacter || !OwnerCharacter->InputEnabled()) return;
+
+	// ===== 2019180016 =====
+	// Spawn Bullet On Server
+	if (GetOwnerPlayerController())
+	{
+		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(OwnerCharacter));
+		if (GameMode && GameMode->GetIsConnected())
+		{
+			UseBullet();
+
+			FVector SpawnLocation = OwnerCharacter->GetActorLocation();
+
+			FVector BulletDestination = GetOwnerPlayerController()->GetControlRotation().Vector() * 8000.0f
+				+ OwnerCharacter->GetCameraBoom()->GetComponentLocation();
+
+			FVector LocationOffset = OwnerCharacter->GetActorForwardVector() * 225.0f + OwnerCharacter->GetActorRightVector() * 15.0f + FVector{ 0.0f, 0.0f, 50.0f };
+			FVector StartLocation = OwnerCharacter->GetActorLocation() + LocationOffset;
+
+			FVector Direction = (BulletDestination - StartLocation);
+			Direction.Normalize();
+
+			FRotator Rotation(0.0f, 0.0f, 0.0f);
+
+			FActorSpawnParameters SpawnInfo;
+			FTransform SpawnTransform{};
+			SpawnTransform.SetLocation(StartLocation);
+			SpawnTransform.SetRotation(Rotation.Quaternion());
+			SpawnTransform.SetScale3D(FVector(1.0f, 1.0f, 1.0f));
+
+			GameMode->SendSpawnBullet(OwnerCharacter, EObjectType::RPGBullet, SpawnTransform, Direction);
+			return;
+		}
+	}	
+	// ======================
+
 	if (!GetOwnerPlayerController())
 	{
 		FVector Location = OwnerCharacter->GetActorLocation() +
@@ -145,5 +184,21 @@ void URPGComponent::SetInitialValue()
 	{
 		FireMaxCoolTime = CombatComponent->RPG_FireTime;
 		ReloadSpeedTime = CombatComponent->RPG_ReloadTime;
+	}
+}
+
+void URPGComponent::Fire(UWorld* World, AActor* FireCharacter, FTransform Transform, FVector Direction, float fBaseDamage)
+{
+	FActorSpawnParameters SpawnInfo;
+	FTransform SpawnTransform{};
+	SpawnTransform.SetLocation(Transform.GetLocation());
+	SpawnTransform.SetRotation(Transform.GetRotation());
+	SpawnTransform.SetScale3D(Transform.GetScale3D());
+
+	ARPGBullet* BulletActor = World->SpawnActorDeferred<ARPGBullet>(*pRPGBulletBPClass, SpawnTransform);
+	if (BulletActor)
+	{
+		BulletActor->Initialize(FireCharacter, Direction, 5000.0f, fBaseDamage);
+		BulletActor->FinishSpawning(SpawnTransform);
 	}
 }

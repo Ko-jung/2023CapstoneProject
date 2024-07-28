@@ -43,6 +43,7 @@ enum class COMP_OP : BYTE
 	OP_REMOVEOBJECT,
 	OP_SKILLINTERACT,
 	OP_OBJECTINTERACT,
+	OP_SPAWNBULLET,
 	OP_DAMAGEDSKILLACTOR,
 	OP_CHANGEDSKILLACTORHP,
 
@@ -178,6 +179,7 @@ enum class EObjectType : BYTE
 
 	SkillActor,
 	Elevator,
+	RPGBullet,
 };
 
 enum class ELoginResult : char

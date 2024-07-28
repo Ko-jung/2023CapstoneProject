@@ -17,11 +17,14 @@ class SKYSCRAPER_API URPGComponent : public UMainRangeComponent
 	GENERATED_BODY()
 
 	TSubclassOf<ARPGBullet> RPGBulletBPClass;
+	static TSubclassOf<ARPGBullet>* pRPGBulletBPClass;
 public:
 	URPGComponent();
 
 	virtual void Fire(float fBaseDamage) override;
 	virtual void SetInitialValue() override;
+
+	static void Fire(UWorld* World, AActor* FireCharacter, FTransform Transform, FVector Direction, float fBaseDamage);
 protected:
 
 private:

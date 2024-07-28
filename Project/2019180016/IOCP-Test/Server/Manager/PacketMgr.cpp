@@ -172,6 +172,13 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 		ClientMgr::Instance()->SendPacketToAllExceptSelf(c->GetClientNum(), &POI, sizeof(POI));
 		break;
 	}
+	case (int)COMP_OP::OP_SPAWNBULLET:
+	{
+		PSpawnBullet PSB;
+		MEMCPYBUFTOPACKET(PSB);
+		ClientMgr::Instance()->SendPacketToAllSocketsInRoom(c->GetClientNum() / MAXPLAYER, &PSB, sizeof(PSB));
+		break;
+	}
 	default:
 	{
 		if (p->PacketSize == 0)

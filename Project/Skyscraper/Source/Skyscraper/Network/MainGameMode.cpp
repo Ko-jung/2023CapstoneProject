@@ -43,6 +43,9 @@
 // Elevator Sync
 #include "Skyscraper/MainGame/Actor/Elevator/ElevatorActor.h"
 
+// RPG Sync
+#include "Skyscraper/MainGame/Component/Combat/Range/RPGComponent.h"
+
 void AMainGameMode::BeginPlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called AMainGameMode::BeginPlay()"));
@@ -90,7 +93,7 @@ void AMainGameMode::BeginPlay()
 	{
 		SpawnCharacter(i);
 	}*/
-	
+
 	// For Get Building Info
 	PRequestPacket PRP(COMP_OP::OP_BUILDINGINFO);
 	m_Socket->Send(&PRP, PRP.PacketSize);
@@ -196,7 +199,7 @@ void AMainGameMode::ProcessFunc()
 		{
 			PChangeAnimMontage PCAM;
 			memcpy(&PCAM, packet, sizeof(PCAM));
-			if(Characters.IsValidIndex(PCAM.ChangedPlayerSerial) && Characters[PCAM.ChangedPlayerSerial])
+			if (Characters.IsValidIndex(PCAM.ChangedPlayerSerial) && Characters[PCAM.ChangedPlayerSerial])
 				Characters[PCAM.ChangedPlayerSerial]->SetMontage(PCAM.eAnimMontage, PCAM.SectionNum);
 			break;
 		}
@@ -228,7 +231,7 @@ void AMainGameMode::ProcessFunc()
 				}
 			}
 			break;
-		}		
+		}
 		case (BYTE)COMP_OP::OP_SETTIMER:
 		{
 			PSetTimer PST;
@@ -250,7 +253,7 @@ void AMainGameMode::ProcessFunc()
 			PTileDrop PTD;
 			memcpy(&PTD, packet, sizeof(PTD));
 			ProcessTileDrop(PTD);
-			if(++TileDropLevel >= 4) TileDropLevel = 4;
+			if (++TileDropLevel >= 4) TileDropLevel = 4;
 			break;
 		}
 		case (BYTE)COMP_OP::OP_SPAWNITEM:
@@ -315,6 +318,13 @@ void AMainGameMode::ProcessFunc()
 			ProcessObjectInteract(POI);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_SPAWNBULLET:
+		{
+			PSpawnBullet PSB;
+			memcpy(&PSB, packet, sizeof(PSB));
+			ProcesspawnBullet(PSB);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;
@@ -358,9 +368,9 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	ASkyscraperCharacter* character = nullptr;
 	while (true)
 	{
-		FVector SpawnLocation = FVector{FMath::RandRange(Location.X - 300.f, Location.X + 300.f),
+		FVector SpawnLocation = FVector{ FMath::RandRange(Location.X - 300.f, Location.X + 300.f),
 										FMath::RandRange(Location.Y - 300.f, Location.Y + 300.f),
-										Location.Z};
+										Location.Z };
 		FTransform Transform = { FRotator{} , SpawnLocation };
 
 		character = GetWorld()->SpawnActorDeferred<ASkyscraperCharacter>(*Class, Transform);
@@ -425,7 +435,7 @@ void AMainGameMode::SpawnCharacter(int TargetSerialNum)
 	}
 
 	// Set Weapon
-		
+
 	// Process Weapon Null
 	if (p->PickedMeleeWeapon == EMeleeSelect::EMS_NONE)
 	{
@@ -455,8 +465,8 @@ void AMainGameMode::UpdateUI(float Deltatime)
 		TileDropTimer -= Deltatime;
 	if (PlayerController)
 	{
-		PlayerController->GetTimeAndKillCountWidget()->SetTimeText(	((int)TileDropTimer) / 60,
-																	((int)TileDropTimer) % 60);
+		PlayerController->GetTimeAndKillCountWidget()->SetTimeText(((int)TileDropTimer) / 60,
+			((int)TileDropTimer) % 60);
 		PlayerController->GetTimeAndKillCountWidget()->SetCollapseLevelText(TileDropLevel + 1);
 		if (SerialNum < MAXPLAYER / 2)
 		{
@@ -487,9 +497,9 @@ void AMainGameMode::SetPlayerPosition(PPlayerPosition PlayerPosition)
 
 	float speed = PlayerPosition.PlayerSpeed;
 	//float XRotate = PlayerPosition.PlayerXDirection;
-	FRotator ControllerRotator = { PlayerPosition.ControllerRotator.X,PlayerPosition.ControllerRotator.Y ,PlayerPosition.ControllerRotator.Z};
+	FRotator ControllerRotator = { PlayerPosition.ControllerRotator.X,PlayerPosition.ControllerRotator.Y ,PlayerPosition.ControllerRotator.Z };
 
-	if(Characters[Serial] && Characters[Serial]->GetName().StartsWith(FString("BP_")))
+	if (Characters[Serial] && Characters[Serial]->GetName().StartsWith(FString("BP_")))
 		Characters[Serial]->SyncTransformAndAnim(transform, speed, ControllerRotator);
 }
 
@@ -502,28 +512,28 @@ void AMainGameMode::ProcessSpawnObject(PSpawnObject PSO)
 		IsSpecial = false;
 	}
 	Characters[PSO.ObjectSpawner]->SkillActorSpawnUsingPacket(IsSpecial,
-																FVector{PSO.Location.X,PSO.Location. Y,PSO.Location. Z},
-																FVector{ PSO.ForwardVec.X,PSO.ForwardVec.Y,PSO.ForwardVec.Z },
-																NewActor);
+		FVector{ PSO.Location.X,PSO.Location.Y,PSO.Location.Z },
+		FVector{ PSO.ForwardVec.X,PSO.ForwardVec.Y,PSO.ForwardVec.Z },
+		NewActor);
 
 	SkillActors.Add({ PSO.SerialNum, NewActor });
 	UE_LOG(LogTemp, Warning, TEXT("SkillActors.Add pair{%d, %s}"), PSO.SerialNum, *UKismetSystemLibrary::GetDisplayName(NewActor));
 
-	 //if (PSO.SerialNum == SerialNum)
-	 //{
-	 //	UE_LOG(LogTemp, Warning, TEXT("Skill Actor Spawner Is this!"));
-	 //	return;
-	 //}
-	 //
-	 //FName Team;
-	 //if (PSO.SerialNum < MAXPLAYER / 2)	Team = TeamName[(int)ETEAM::A];
-	 //else								Team = TeamName[(int)ETEAM::B];
-	 //
-	 //FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
-	 //FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
-	 //ESkillActor SkillActor = PSO.SpawnObject;
-	 //
-	 //SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
+	//if (PSO.SerialNum == SerialNum)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Skill Actor Spawner Is this!"));
+	//	return;
+	//}
+	//
+	//FName Team;
+	//if (PSO.SerialNum < MAXPLAYER / 2)	Team = TeamName[(int)ETEAM::A];
+	//else								Team = TeamName[(int)ETEAM::B];
+	//
+	//FVector Location{ PSO.Location.X, PSO.Location.Y, PSO.Location.Z };
+	//FVector Forward{ PSO.ForwardVec.X, PSO.ForwardVec.Y, PSO.ForwardVec.Z };
+	//ESkillActor SkillActor = PSO.SpawnObject;
+	//
+	//SpawnSkillActor(SkillActor, Location, Forward, Characters[PSO.SerialNum], Team);
 }
 
 void AMainGameMode::ProcessChangedCharacterState(PChangedPlayerState* PCPS)
@@ -570,7 +580,7 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 
 	for (int i = 0; i < PlayerSelectInfo.Num(); i++)
 	{
-		SpawnCharacter(i); 
+		SpawnCharacter(i);
 	}
 
 	PlayerController->UpdateImage();
@@ -587,7 +597,7 @@ void AMainGameMode::ProcessBuildingInfo(PBuildingInfo* PBI)
 }
 
 void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
-{ 
+{
 	if (PTD.TileDropLevel < 3)
 	{
 		HexagonTile->CollapseTilesAndActors(PTD.TileDropLevel, PTD.CenterIndex);
@@ -601,7 +611,7 @@ void AMainGameMode::ProcessTileDrop(PTileDrop PTD)
 void AMainGameMode::ProcessSpawnItem(PSpawnItem PSI)
 {
 	HexagonTile->SpawnItem(PSI.Item, PSI.SpawnCount);
-	
+
 	for (int i = 0; i < PSI.SpawnCount; i++)
 	{
 		PlayerController->GetMiniMapWidget()->SetTileImage(PSI.Item[i].TileIndex, ETileImageType::ETIT_Item);
@@ -620,7 +630,7 @@ void AMainGameMode::ProcessUseItem(PUseItem PUI)
 	ASkyscraperCharacter* TargetCharacter = Characters[PUI.UsePlayerSerial];
 
 	if (!TargetCharacter) return;
-	
+
 	if (PUI.Effect == (BYTE)EItemEffect::EIE_Tile_Break)
 	{
 		ProcessTileBreakItem(PUI.ItemLevel);
@@ -747,6 +757,25 @@ void AMainGameMode::ProcessTileBreakItem(const uint8 TargetSerial)
 				break;
 			}
 		}
+	}
+}
+
+void AMainGameMode::ProcesspawnBullet(PSpawnBullet PSB)
+{
+	switch (PSB.Object)
+	{
+	case EObjectType::RPGBullet:
+	{
+		URPGComponent::Fire(GetWorld(), Characters[PSB.SpawnerSerial], 
+							FTransform{	FRotator(PSB.Rotate.X,PSB.Rotate.Y,PSB.Rotate.Z),
+										FVector(PSB.Location.X,PSB.Location.Y,PSB.Location.Z),
+										FVector() },
+							FVector{ PSB.Direction.X,PSB.Direction.Y,PSB.Direction.Z },
+							Characters[PSB.SpawnerSerial]->GetPowerBuffValue());
+		break;
+	}
+	default:
+		break;
 	}
 }
 
@@ -920,24 +949,24 @@ void AMainGameMode::SendSkillActorSpawn(const AActor* Sender, ESkillActor SkillA
 {
 	if (Characters[SerialNum] != Sender) return;
 
-	 PSpawnObject PSO;
-	 
-	 PSO.SpawnObject = SkillActor;
-	 PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
-	 PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;	 
-	 PSO.ObjectSpawner = SerialNum;
+	PSpawnObject PSO;
+
+	PSO.SpawnObject = SkillActor;
+	PSO.Location.X = SpawnLocation.X;	PSO.Location.Y = SpawnLocation.Y;	PSO.Location.Z = SpawnLocation.Z;
+	PSO.ForwardVec.X = ForwardVec.X;	PSO.ForwardVec.Y = ForwardVec.Y;	PSO.ForwardVec.Z = ForwardVec.Z;
+	PSO.ObjectSpawner = SerialNum;
 
 
-	 if (m_Socket)
-	 {
-		 m_Socket->Send(&PSO, sizeof(PSO));
-	 }
-	 else
-	 {
-		 static uint16 Serial{0};
-		 PSO.SerialNum = Serial++;
-		 ProcessSpawnObject(PSO);
-	 }
+	if (m_Socket)
+	{
+		m_Socket->Send(&PSO, sizeof(PSO));
+	}
+	else
+	{
+		static uint16 Serial{ 0 };
+		PSO.SerialNum = Serial++;
+		ProcessSpawnObject(PSO);
+	}
 }
 
 void AMainGameMode::SendAnimMontageStatus(const AActor* Sender, ECharacterAnimMontage eAnimMontage, int Section)
@@ -1086,6 +1115,19 @@ void AMainGameMode::SendTileBreakItem(const AActor* Sender, uint8 TargetSerial)
 	Send(&PUI, PUI.PacketSize);
 }
 
+void AMainGameMode::SendSpawnBullet(const AActor* Sender, const EObjectType ObjectType, const FTransform& Transform, const FVector& Direction)
+{
+	if (!Characters.IsValidIndex(SerialNum) || !Characters[SerialNum] || Characters[SerialNum] != Sender) return;
+
+	PSpawnBullet PSB;
+	PSB.SpawnerSerial = SerialNum;
+	PSB.Object = ObjectType;
+	PSB.Location = Transform.GetLocation();
+	PSB.Rotate = Transform.GetRotation().ToRotationVector();
+	PSB.Direction = Direction;
+	Send(&PSB, PSB.PacketSize);
+}
+
 void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
 {
 	if (Sender != Characters[SerialNum])
@@ -1195,7 +1237,7 @@ void AMainGameMode::SendGetItem(const AActor* Sender, const AActor* Item)
 	PGetItem PGI(HexagonTile->FindItemSerialNum(Item));
 	m_Socket->Send(&PGI, sizeof(PGI));
 }
-   
+
 void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveComponent* BreakTarget, EObjectType BreakType)
 {
 	FVector Direction = (BreakTarget->GetComponentLocation() - Sender->GetActorLocation()).GetSafeNormal();
@@ -1233,7 +1275,7 @@ void AMainGameMode::SendBreakObject(const AActor* Sender, const UPrimitiveCompon
 		ProcessBreakObject(PBO);
 		return;
 	}
-	
+
 	if (Characters.IsEmpty() || Sender != Characters[SerialNum]) return;
 
 	int WindowIndex = GetWindowsIndex(BreakHISMTarget);

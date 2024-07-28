@@ -7,4 +7,5 @@ enum class EObjectType : uint8
 
 	SkillActor,
 	Elevator,
+	RPGBullet,
 };

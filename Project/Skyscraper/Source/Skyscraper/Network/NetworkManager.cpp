@@ -386,6 +386,11 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		COPYPACKET(PObjectInteract);
 		break;
 	}
+	case (BYTE)COMP_OP::OP_SPAWNBULLET:
+	{
+		COPYPACKET(PSpawnBullet);
+		break;
+	}
 	case (BYTE)COMP_OP::OP_CHANGEDSKILLACTORHP:
 	{
 		COPYPACKET(PChangedSkillActorHP);

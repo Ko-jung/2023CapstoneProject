@@ -213,13 +213,16 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void PlaySkillMontage(bool IsSpecialSkill, uint8 SectionNum);
 
-		// Process Mine Stun
+	UFUNCTION(BlueprintNativeEvent)
+	void SetCharacterInputState(bool Enable);
+
+	// Process Mine Stun
 		UFUNCTION(BlueprintCallable)
 		void AbleToAct();
 
 		UFUNCTION(BlueprintCallable)
 		void ApplyStun(const float StunTime);
-		// ==================
+	// ==================
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlliance(AActor* Target);

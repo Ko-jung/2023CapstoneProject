@@ -990,6 +990,7 @@ bool ASkyscraperCharacter::IsTimerValid(bool IsSpecialSkill)
 void ASkyscraperCharacter::AbleToAct()
 {
 	IsUnableAct = false;
+	SetCharacterInputState(true);
 }
 
 void ASkyscraperCharacter::ApplyStun(const float StunTime)
@@ -997,6 +998,7 @@ void ASkyscraperCharacter::ApplyStun(const float StunTime)
 	//UnableToAct(StunTime);
 	GetWorld()->GetTimerManager().SetTimer(UnableActTimerHandle, this, &ThisClass::AbleToAct, StunTime, false);
 	IsUnableAct = true;
+	SetCharacterInputState(false);
 }
 
 bool ASkyscraperCharacter::IsAlliance(AActor* Target)
@@ -1068,6 +1070,9 @@ void ASkyscraperCharacter::PlaySkillMontage_Implementation(bool IsSpecialSkill, 
 {
 }
 void ASkyscraperCharacter::SkillActorSpawnUsingPacket_Implementation(bool IsSpecialSkill, FVector SpawnLocation, FVector ForwardVector, AActor*& NewActor)
+{
+}
+void ASkyscraperCharacter::SetCharacterInputState_Implementation(bool Enable)
 {
 }
 

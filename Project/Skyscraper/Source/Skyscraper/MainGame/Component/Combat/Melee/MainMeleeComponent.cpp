@@ -388,6 +388,7 @@ void UMainMeleeComponent::Attack()
 		// 선입력에 대한 처리
 		BufferedInput = UGameplayStatics::GetTimeSeconds(GetWorld());
 	}
+	OwnerCharacter->CharacterAttackEvent();
 }
 
 void UMainMeleeComponent::CreateAttackArea(float Width, float Height, float Distance, FVector StartOffset, float Angle,

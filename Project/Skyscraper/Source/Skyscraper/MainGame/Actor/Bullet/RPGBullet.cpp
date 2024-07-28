@@ -126,13 +126,17 @@ void ARPGBullet::BulletExplode()
 		for (const auto& a : UniqueActors)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("ARPGBullet::BulletExplode() a: %s"), *UKismetSystemLibrary::GetDisplayName(a));
-			if (GameMode)
-			{
-				GameMode->SendTakeDamage(FireCharacter, a);
-			}
-
 			if (ASkyscraperCharacter* Character = Cast<ASkyscraperCharacter>(a))
 			{
+				if (GameMode && GameMode->GetIsConnected())
+				{
+					GameMode->SendTakeDamage(FireCharacter, Character);
+				}
+				else
+				{
+					UGameplayStatics::ApplyDamage(Character, Damage, nullptr, nullptr, nullptr);
+				}
+
 				FVector DownDirVector{};
 				DownDirVector = Character->GetActorLocation() - GetActorLocation();
 				//2019180031 DownDirection은 normal vector

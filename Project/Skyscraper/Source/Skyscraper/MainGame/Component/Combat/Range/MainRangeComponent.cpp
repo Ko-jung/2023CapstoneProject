@@ -386,7 +386,7 @@ void UMainRangeComponent::Fire(float fBaseDamage)
 			}
 
 			// Execute on Sever
-			if (GameMode)
+			if (GameMode && GameMode->GetIsConnected())
 			{
 				GameMode->SendTakeDamage(OwnerCharacter, HitActor);
 			}

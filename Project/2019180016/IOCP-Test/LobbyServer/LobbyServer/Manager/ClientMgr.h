@@ -1,6 +1,7 @@
 #pragma once
 #include "../../../Common/Define.h"
 #include "concurrent_priority_queue.h"
+#include <concurrent_unordered_set.h>
 
 constexpr int GAMESERVER = 9998;
 
@@ -19,7 +20,7 @@ public:
 
 	LobbyClientInfo* GetEmptyClient(int& ClientNum);
 	void CheckingMatchingQueue();
-	bool ConnectToGameServer(const HANDLE& hIocp);
+	void NewGameServerConnect(int GameServerKey);
 
 	void ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp);
 	void ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL);
@@ -30,7 +31,6 @@ public:
 
 	std::atomic<int> ClientCount;
 
-	EXP_OVER* m_GameServerOver;
-	LobbyClientInfo* m_GameServerSocket;
+	Concurrency::concurrent_unordered_set<int> GameServerKeySet;
 };
 

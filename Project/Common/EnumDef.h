@@ -51,6 +51,7 @@ enum class COMP_OP : BYTE
 
 	// Server to Server
 	OP_SS_EMPTYROOMNUM,
+	OP_SERVERINFO,
 
 	//OP_SERVERCLOSE,
 };
@@ -185,4 +186,10 @@ enum class ELoginResult : char
 	DatabaseError = -1,
 	IDError = 1,
 	PasswordError = 2,
+};
+
+enum class EServerInfo : BYTE
+{
+	GameServer,
+	LobbyServer
 };

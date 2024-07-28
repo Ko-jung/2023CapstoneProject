@@ -3,7 +3,7 @@
 #include "../Common/Define.h"
 #include <concurrent_priority_queue.h>
 
-#define LOBBYSERVER 9998
+constexpr int LOBBYSERVER = 9998;
 
 class ClientInfo;
 class RoomMgr;
@@ -25,7 +25,8 @@ public:
 
 	//const int GetEmptyRoomNum();
 	bool ReadyToNextAccept();
-	void AccpetLobbyServer();
+
+	bool ConnectToLobbyServer();
 
 	//int GetWeaponDamage(bool isMelee, int weaponEnum);
 
@@ -56,11 +57,11 @@ public:
 
 protected:
 	// IOCP�� �ڵ�
-	HANDLE m_hIocp;
+	HANDLE hIocp;
 
 	SOCKET m_ListenSocket;
 
-	ClientInfo* m_LobbyServerSocket;
+	ClientInfo* LobbyServerSocket;
 	bool IsLobbyServerConnect;
 
 	EXP_OVER m_AcceptExpOver;

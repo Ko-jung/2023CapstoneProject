@@ -95,11 +95,6 @@ void LobbyServer::error_display(int err_no)
 
 void LobbyServer::StartServer()
 {
-	if (!ClientMgr::Instance()->ConnectToGameServer(m_hIocp))
-	{
-		exit(-1);
-	}
-
 	for (int i = 0; i < m_iWorkerNum; i++)
 	{
 		m_tWorkerThreads.emplace_back([this]() { Worker(); });
@@ -174,7 +169,7 @@ void LobbyServer::Accept(int id, int bytes, EXP_OVER* exp)
 		socket->Recv();
 		//socket->Send();
 
-		cout << ClientNum << "번 Accept" << endl;
+		cout << ClientNum << " Client Accept" << endl;
 
 		ReadyToNextAccept();
 	}
@@ -191,12 +186,6 @@ void LobbyServer::Send(int id, int bytes, EXP_OVER* exp)
 
 void LobbyServer::Recv(int id, int bytes, EXP_OVER* exp)
 {
-	if (id == GAMESERVER)
-	{
-		ClientMgr::Instance()->ProcessRecvFromGame(id, bytes, exp);
-		return;
-	}
-
 	ClientMgr::Instance()->Recv(id, bytes, exp);
 }
 

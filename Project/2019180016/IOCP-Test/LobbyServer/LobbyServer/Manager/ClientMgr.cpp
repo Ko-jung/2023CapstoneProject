@@ -9,19 +9,10 @@ ClientMgr::ClientMgr()
 	{
 		Clients[i] = nullptr;
 	}
-
-	m_GameServerSocket = new LobbyClientInfo();
-	m_GameServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));
 }
 
 void ClientMgr::Disconnect(int SerialNum)
 {
-	if (SerialNum == GAMESERVER)
-	{
-		m_GameServerSocket->Init();
-		return;
-	}
-
 	PDisconnect PD;
 	Clients[SerialNum]->SendProcess(&PD);
 
@@ -36,7 +27,14 @@ void ClientMgr::Send(int id, Packet* p)
 
 void ClientMgr::Recv(int id, const DWORD& bytes, EXP_OVER* exp)
 {
-	Clients[id]->RecvPacketReassemble(bytes, exp);
+	if (GameServerKeySet.find(id) == GameServerKeySet.end())
+	{
+		Clients[id]->RecvPacketReassemble(bytes, exp);
+	}
+	else
+	{
+		ProcessRecvFromGame(id, bytes, exp);
+	}
 }
 
 LobbyClientInfo* ClientMgr::GetEmptyClient(int& ClientNum)
@@ -76,33 +74,23 @@ LobbyClientInfo* ClientMgr::GetEmptyClient(int& ClientNum)
 
 void ClientMgr::CheckingMatchingQueue()
 {
+	if (GameServerKeySet.empty())
+	{
+		cout << "GameServerKeySet is EMPTY!" << endl;
+		return;
+	}
+
 	if (m_MatchingQueue.size() >= MAXPLAYER)
 	{
 		PEmptyRoomNum PER;
-		m_GameServerSocket->SendProcess(&PER);
+		Clients[(*GameServerKeySet.begin())]->SendProcess(&PER);
 	}
 }
 
-bool ClientMgr::ConnectToGameServer(const HANDLE& hIocp)
+void ClientMgr::NewGameServerConnect(int GameServerKey)
 {
-	sockaddr_in serveraddr;
-	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	int a = inet_pton(AF_INET, GAMESERVERIP, &serveraddr.sin_addr.s_addr);
-	serveraddr.sin_port = htons(GAMESERVERPORT);
-	int retval = connect(m_GameServerSocket->GetSocket(), (sockaddr*)&serveraddr, sizeof(sockaddr));
-
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_GameServerSocket->GetSocket()), hIocp, GAMESERVER, 0);
-	m_GameServerSocket->Recv();
-
-	if (retval == SOCKET_ERROR)
-	{
-		LogUtil::error_display("LobbyServer::ConnectToGameServer() GameServer connect FAILED");
-		return false;
-	}
-
-	cout << "Connect Success to Game Server" << endl;
-	return true;
+	GameServerKeySet.insert(GameServerKey);
+	cout << "[" << GameServerKey << "] Client Is GAMESERVER" << endl;
 }
 
 void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
@@ -148,7 +136,7 @@ void ClientMgr::ProcessRecvFromGame(int id, int bytes, EXP_OVER* exp)
 		break;
 	}
 
-	m_GameServerSocket->Recv();
+	Clients[id]->Recv();
 }
 
 void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
@@ -198,6 +186,6 @@ void ClientMgr::ProcessTryLogin(LobbyClientInfo* Target, PTryLogin* PTL)
 void ClientMgr::ProcessStartMatching(LobbyClientInfo* Target)
 {
 	m_MatchingQueue.push(Target);
-	cout << Target->ClientNum << "�� Ready" << endl;
+	cout << Target->ClientNum << "Client Ready" << endl;
 	CheckingMatchingQueue();
 }

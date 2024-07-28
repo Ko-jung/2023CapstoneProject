@@ -56,7 +56,8 @@ bool IOCPServer::Init(const int WorkerNum)
 		return false;
 	}
 
-	m_LobbyServerSocket = new ClientInfo();
+	LobbyServerSocket = new ClientInfo();
+	LobbyServerSocket->SetSocket(WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED));
 
 	m_iWorkerNum = WorkerNum - 2;
 
@@ -88,9 +89,9 @@ bool IOCPServer::BindListen(const int PortNum)
 	}
 
 	// IOCP �ڵ� ����
-	m_hIocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);
+	hIocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);
 	//Listen ���� IOCP �ڵ鿡 ����
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_ListenSocket), m_hIocp, 9999, 0);
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_ListenSocket), hIocp, 9999, 0);
 
 	//=====================================================
 	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
@@ -110,6 +111,11 @@ bool IOCPServer::BindListen(const int PortNum)
 
 void IOCPServer::StartServer()
 {
+	if (!ConnectToLobbyServer())
+	{
+		exit(-1);
+	}
+
 	for (int i = 0; i < m_iWorkerNum; i++)
 	{
 		m_tWorkerThreads.emplace_back([this]() { Worker(); });
@@ -131,7 +137,7 @@ void IOCPServer::Worker()
 		// I/O �۾��� ���۵� �� ������ OVERLAAPED ����ü �ּ�
 		WSAOVERLAPPED* p_over;
 
-		BOOL ret = GetQueuedCompletionStatus(m_hIocp, &num_byte, (PULONG_PTR)&iocp_key, &p_over, INFINITE);
+		BOOL ret = GetQueuedCompletionStatus(hIocp, &num_byte, (PULONG_PTR)&iocp_key, &p_over, INFINITE);
 
 		int client_id = static_cast<int>(iocp_key);
 		EXP_OVER* exp_over = reinterpret_cast<EXP_OVER*>(p_over);
@@ -228,66 +234,77 @@ bool IOCPServer::ReadyToNextAccept()
 	return true;
 }
 
-void IOCPServer::AccpetLobbyServer()
+bool IOCPServer::ConnectToLobbyServer()
 {
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_LobbyServerSocket->GetSocket()), m_hIocp, LOBBYSERVER, 0);
-	m_LobbyServerSocket->Recv();
+	cout << "Ready to Connect Lobby Server" << endl;
+
+	sockaddr_in serveraddr;
+	memset(&serveraddr, 0, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	int a = inet_pton(AF_INET, LOBBYSERVERIP, &serveraddr.sin_addr.s_addr);
+	serveraddr.sin_port = htons(LOBBYSERVERPORT);
+	int retval = connect(LobbyServerSocket->GetSocket(), (sockaddr*)&serveraddr, sizeof(sockaddr));
+	if (retval == -1)
+	{
+		LogUtil::error_display("IOCPServer::ConnectToLobbyServer() connect Error");
+	}
+
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(LobbyServerSocket->GetSocket()), hIocp, LOBBYSERVER, 0);
+	LobbyServerSocket->Recv();
+
+	PServerInfo PSI;
+	PSI.ServerInfo = EServerInfo::GameServer;
+	LobbyServerSocket->SendProcess(PSI.PacketSize, &PSI);
+
+	if (retval == SOCKET_ERROR)
+	{
+		cout << "IOCPServer::ConnectToGameServer() GameServer connect FAILED" << endl;
+		return false;
+	}
+
+	cout << "Connect Success to Lobby Server" << endl;
+	return true;
 }
 
 void IOCPServer::Accept(int id, int bytes, EXP_OVER* exp)
 {
-	if (!IsLobbyServerConnect)
+	// id�� �������� ��ȣ 9999�� ������ ��?
+	if (ClientMgr::Instance()->GetClientCount() < MAXCLIENT)
 	{
-		m_LobbyServerSocket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
-		AccpetLobbyServer();
-		IsLobbyServerConnect = true;
+		// ��� Ŭ���� ���� ��ȣ�� ����??
+		int NowClientNum;
+		ClientInfo* socket = ClientMgr::Instance()->GetEmptyClient(NowClientNum);
 
-		cout << "Connect Success to Lobby Server" << endl;
+		socket->SetClientNum(NowClientNum);
+		socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
+		ZeroMemory(&socket->ExpOver, sizeof(socket->ExpOver));
+
+		CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), hIocp, NowClientNum, 0);
+
+		socket->Recv();
+
+		PPlayerJoin PPJ(NowClientNum % 6);
+		socket->SendProcess(sizeof(PPJ), &PPJ);
+
+		// Push Game Start Timer (Time to Select Weapon)
+		if (NowClientNum % MAXPLAYER == MAXPLAYER - 1)
+		{
+			PacketMgr::Instance()->GameBeginProcessing(NowClientNum);
+		}
+
+		// SendPlayerJoinPacket(m_iClientId);
+
+		cout << NowClientNum << "번 Accept" << endl;
 
 		if (!ReadyToNextAccept())
 		{
+			cout << "IOCPServer::Accept !ReadyToNextAccept()" << endl;
 			return;
 		}
 	}
 	else
 	{
-		// id�� �������� ��ȣ 9999�� ������ ��?
-		if (ClientMgr::Instance()->GetClientCount() < MAXCLIENT)
-		{
-			// ��� Ŭ���� ���� ��ȣ�� ����??
-			int NowClientNum;
-			ClientInfo* socket = ClientMgr::Instance()->GetEmptyClient(NowClientNum);
-
-			socket->SetClientNum(NowClientNum);
-			socket->SetSocket(*(reinterpret_cast<SOCKET*>(exp->_net_buf)));
-			ZeroMemory(&socket->ExpOver, sizeof(socket->ExpOver));
-
-			CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket->GetSocket()), m_hIocp, NowClientNum, 0);
-
-			socket->Recv();
-
-			PPlayerJoin PPJ(NowClientNum % 6);
-			socket->SendProcess(sizeof(PPJ), &PPJ);
-
-			// Push Game Start Timer (Time to Select Weapon)
-			if (NowClientNum % MAXPLAYER == MAXPLAYER - 1)
-			{
-				PacketMgr::Instance()->GameBeginProcessing(NowClientNum);
-			}
-
-			// SendPlayerJoinPacket(m_iClientId);
-
-			cout << NowClientNum << "번 Accept" << endl;
-
-			if (!ReadyToNextAccept())
-			{
-				return;
-			}
-		}
-		else
-		{
-			std::cerr << "Client MAX!" << std::endl;
-		}
+		std::cerr << "Client MAX!" << std::endl;
 	}
 }
 
@@ -301,7 +318,7 @@ void IOCPServer::Recv(int id, int bytes, EXP_OVER* exp)
 	if (id == LOBBYSERVER)
 	{
 		ProcessRecvFromLobby(id, bytes, exp);
-		m_LobbyServerSocket->Recv();
+		LobbyServerSocket->Recv();
 		return;
 	}
 
@@ -317,7 +334,7 @@ void IOCPServer::ProcessRecvFromLobby(int id, int bytes, EXP_OVER* exp)
 	{
 		PEmptyRoomNum PER;
 		PER.RoomNum = 0;// GetEmptyRoomNum();
-		m_LobbyServerSocket->SendProcess(sizeof(PEmptyRoomNum), &PER);
+		LobbyServerSocket->SendProcess(sizeof(PEmptyRoomNum), &PER);
 	}
 	break;
 	default:

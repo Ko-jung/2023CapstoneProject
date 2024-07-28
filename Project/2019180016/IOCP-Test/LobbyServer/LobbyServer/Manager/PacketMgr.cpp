@@ -24,6 +24,9 @@ void PacketMgr::ProcessPacket(Packet* p, LobbyClientInfo* c)
 	case (int)COMP_OP::OP_TRYLOGIN:
 		ClientMgr::Instance()->ProcessTryLogin(c, reinterpret_cast<PTryLogin*>(p));
 		break;
+	case (int)COMP_OP::OP_SERVERINFO:
+		ClientMgr::Instance()->NewGameServerConnect(c->ClientNum);
+		break;
 	default:
 		std::cout << "PacketMgr::ProcessPacket p->PacketType is DEFAULT" << std::endl;
 		break;

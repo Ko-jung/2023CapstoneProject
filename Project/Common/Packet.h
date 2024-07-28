@@ -419,4 +419,11 @@ struct PPlayerID : Packet
 	PPlayerID() :Packet(COMP_OP::OP_PLAYERID) { ZeroMemory(&IDs, sizeof(IDs)); PacketSize = sizeof(PPlayerID); }
 };
 
+struct PServerInfo : Packet
+{
+	EServerInfo ServerInfo;
+
+	PServerInfo() :Packet(COMP_OP::OP_SERVERINFO) { PacketSize = sizeof(PServerInfo); }
+};
+
 #pragma pack(pop)

@@ -134,7 +134,7 @@ void PacketMgr::ProcessPacket(Packet* p, ClientInfo* c)
 	{
 		PUseItem PUI;
 		MEMCPYBUFTOPACKET(PUI);
-		ClientMgr::Instance()->ProcessItem(c->GetClientNum() / MAXPLAYER, PUI);
+		ClientMgr::Instance()->ProcessItem(c->GetClientNum(), PUI);
 		break;
 	}
 	case (int)COMP_OP::OP_GETITEM:

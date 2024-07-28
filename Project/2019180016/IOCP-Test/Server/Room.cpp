@@ -244,7 +244,7 @@ void Room::SpawnItem(std::vector<PItemInfo>& TileIndex)
 		int index = RandomUtil::RandRange(0, BuildTileIndex.size() - 1);
 		int RarityRand = RandomUtil::RandRange(0, 9);
 		int Rarity;
-		int Effect = RandomUtil::RandRange(0, (BYTE)EItemEffect::COUNT - 1);
+		int Effect = RandomUtil::RandRange(1, (BYTE)EItemEffect::COUNT - 1);
 
 		if (RarityRand < 6)				Rarity = (BYTE)EItemRareLevel::Normal;
 		else if (RarityRand < 9)		Rarity = (BYTE)EItemRareLevel::Rare;

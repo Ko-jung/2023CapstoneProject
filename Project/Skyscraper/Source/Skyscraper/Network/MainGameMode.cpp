@@ -1216,6 +1216,7 @@ bool AMainGameMode::SendUseItem(const AActor* Sender, uint8 Effect, uint8 RareLe
 		return false;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::SendUseItem Serial: %d "), SerialNum);
 	m_Socket->Send(&PUI, sizeof(PUI));
 	return true;
 }

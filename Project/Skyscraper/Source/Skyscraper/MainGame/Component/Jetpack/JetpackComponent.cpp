@@ -308,6 +308,10 @@ void UJetpackComponent::SetHoveringMode(bool bHover)
 				}
 			}
 		}
+		if (OwnerCharacter->GetAnimInstance() && OwnerCharacter->GetAnimInstance())
+		{
+			OwnerCharacter->GetAnimInstance()->bIsDescent = false;
+		}
 	}
 	else   // bHover == false
 	{

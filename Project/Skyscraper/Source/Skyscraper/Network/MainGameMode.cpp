@@ -325,6 +325,13 @@ void AMainGameMode::ProcessFunc()
 			ProcesspawnBullet(PSB);
 			break;
 		}
+		case (BYTE)COMP_OP::OP_SELECTWEAPONINFO:
+		{
+			PPlayerSelectInfo PSI;
+			memcpy(&PSI, packet, sizeof(PSI));
+			ProcessSelectInfo(PSI);
+			break;
+		}
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("AMainGameMode::ProcessFunc() switch Default. Type Is %d"), packet->PacketType);
 			break;
@@ -756,17 +763,34 @@ void AMainGameMode::ProcesspawnBullet(PSpawnBullet PSB)
 	{
 	case EObjectType::RPGBullet:
 	{
-		URPGComponent::Fire(GetWorld(), Characters[PSB.SpawnerSerial], 
-							FTransform{	FRotator(PSB.Rotate.X,PSB.Rotate.Y,PSB.Rotate.Z),
-										FVector(PSB.Location.X,PSB.Location.Y,PSB.Location.Z),
-										FVector() },
-							FVector{ PSB.Direction.X,PSB.Direction.Y,PSB.Direction.Z },
-							Characters[PSB.SpawnerSerial]->GetPowerBuffValue());
+		URPGComponent::Fire(GetWorld(), Characters[PSB.SpawnerSerial],
+			FTransform{ FRotator(PSB.Rotate.X,PSB.Rotate.Y,PSB.Rotate.Z),
+						FVector(PSB.Location.X,PSB.Location.Y,PSB.Location.Z),
+						FVector() },
+			FVector{ PSB.Direction.X,PSB.Direction.Y,PSB.Direction.Z },
+			Characters[PSB.SpawnerSerial]->GetPowerBuffValue());
 		break;
 	}
 	default:
 		break;
 	}
+}
+
+void AMainGameMode::ProcessSelectInfo(PPlayerSelectInfo PPP)
+{
+	int ClientNum = PPP.ClientNum;
+	if (ClientNum == -1)
+	{
+		UE_LOG(LogClass, Warning, TEXT("PPlayerPickInfo Packet ClientNum == -1!"));
+	}
+
+	BYTE Character = PPP.PickedCharacter;
+	EMeleeSelect MeleeWeapon = PPP.PickedMeleeWeapon;
+	ERangeSelect RangeWeapon = PPP.PickedRangeWeapon;
+
+	PlayerSelectInfo[ClientNum]->PickedCharacter = Character;
+	PlayerSelectInfo[ClientNum]->PickedMeleeWeapon = MeleeWeapon;
+	PlayerSelectInfo[ClientNum]->PickedRangeWeapon = RangeWeapon;
 }
 
 //void AMainGameMode::ProcessRelocateObject(PRelocateObject PRO)
@@ -1118,6 +1142,18 @@ void AMainGameMode::SendSpawnBullet(const AActor* Sender, const EObjectType Obje
 	Send(&PSB, PSB.PacketSize);
 }
 
+void AMainGameMode::SendSelectInfo()
+{
+	PPlayerSelectInfo PPS;
+
+	PPS.ClientNum = SerialNum;
+	PPS.PickedCharacter = PlayerSelectInfo[SerialNum]->PickedCharacter;
+	PPS.PickedMeleeWeapon = PlayerSelectInfo[SerialNum]->PickedMeleeWeapon;
+	PPS.PickedRangeWeapon = PlayerSelectInfo[SerialNum]->PickedRangeWeapon;
+
+	Send(&PPS, sizeof(PPS));
+}
+
 void AMainGameMode::SendDetecting(AActor* Sender, AActor* Target)
 {
 	if (Sender != Characters[SerialNum])
@@ -1185,6 +1221,8 @@ void AMainGameMode::ChangeMeleeWeapon(EMeleeSelect NewMeleeSelect)
 	if (PlayerSelectInfo.IsValidIndex(SerialNum))
 	{
 		PlayerSelectInfo[SerialNum]->PickedMeleeWeapon = NewMeleeSelect;
+
+		SendSelectInfo();
 	}
 }
 
@@ -1193,6 +1231,8 @@ void AMainGameMode::ChangeRangeWeapon(ERangeSelect NewRangeSelect)
 	if (PlayerSelectInfo.IsValidIndex(SerialNum))
 	{
 		PlayerSelectInfo[SerialNum]->PickedRangeWeapon = NewRangeSelect;
+
+		SendSelectInfo();
 	}
 }
 

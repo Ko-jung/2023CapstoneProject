@@ -137,7 +137,6 @@ void UChangeWeaponWidget::NativeConstruct()
 	
 	ChangeMeleeWeapon(CurrentMeleeSelect);
 	ChangeRangeWeapon(CurrentRangeSelect);
-	
 }
 
 void UChangeWeaponWidget::NativeDestruct()

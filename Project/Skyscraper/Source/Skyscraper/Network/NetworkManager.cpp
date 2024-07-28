@@ -396,6 +396,11 @@ void NetworkManager::ProcessRecvFromMainGame(Packet* p)
 		COPYPACKET(PChangedSkillActorHP);
 		break;
 	}
+	case(BYTE)COMP_OP::OP_SELECTWEAPONINFO:
+	{
+		COPYPACKET(PPlayerSelectInfo);
+		break;
+	}
 	case (BYTE)COMP_OP::OP_JOINPLAYERINSKILLTEST:
 	{
 		COPYPACKET(PJoinPlayerInSkillTest);

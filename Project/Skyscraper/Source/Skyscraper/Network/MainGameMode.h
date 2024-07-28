@@ -49,6 +49,7 @@ public:
 	void ProcessDetecting(const uint8 DetectedSerial);
 	void ProcessTileBreakItem(const uint8 TargetSerial);
 	void ProcesspawnBullet(PSpawnBullet PSB);
+	void ProcessSelectInfo(PPlayerSelectInfo PSI);
 
 	void GetHexagonTileOnLevel();
 	int GetTileDropLevel() { return TileDropLevel; }
@@ -75,6 +76,7 @@ public:
 	void SendDamagedSkillActor(const AActor* Sender, const AActor* SkillActorOwner, const ESkillActor& SkillActorType, const AActor* SkillActor);
 	void SendTileBreakItem(const AActor* Sender, uint8 TargetSerial);
 	void SendSpawnBullet(const AActor* Sender, const EObjectType ObjectType, const FTransform& Transform, const FVector& Direction);
+	void SendSelectInfo();
 
 	UFUNCTION(BlueprintCallable)
 	void SendDetecting(AActor* Sender, AActor* Target);

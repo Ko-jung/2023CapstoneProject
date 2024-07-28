@@ -6,6 +6,10 @@
 #include "Skyscraper/MainGame/Map/Furniture/Furniture.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
+// Play Sound
+#include "Kismet/GameplayStatics.h"
+#include "Skyscraper/Subsystem/SkyscraperEngineSubsystem.h"
+
 // Sets default values
 ASingleBuildingFloor::ASingleBuildingFloor()
 {
@@ -90,56 +94,9 @@ void ASingleBuildingFloor::DoCollapseWindow(UStaticMeshComponent* Target, FVecto
 	{
 		UE_LOG(LogClass, Warning, TEXT("NewGCWindowMesh is nullptr!"));
 	}
-
-	// AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[Index], Transform);
-	// if (NewGCWindowMesh)
-	// {
-	// 	NewGCWindowMesh->SetActorLocation(GetActorLocation());
-	// 	NewGCWindowMesh->SetActorRotation(GetActorRotation());
-	// 	NewGCWindowMesh->FinishSpawning(Transform);
-	// 
-	// 	NewGCWindowMesh->SetLifeSpan(5.0f);
-	// }
 	Target->DestroyComponent();
-
-
-
-	//for (const auto& pWindow : WindowStaticMeshes)
-	//{
-	//	if (pWindow == Target)
-	//	{
-	//		// /Script/GeometryCollectionEngine.GeometryCollection'/Game/2019180016/FractureMesh/GC_map_3_window_001.GC_map_3_window_001'
-
-	//		FString WindowString = pWindow->GetName();
-	//		int Index = (*WindowString.rbegin());
-
-	//		FTransform Transform{ pWindow->GetComponentRotation(), pWindow->GetComponentLocation() };
-	//		auto NewGCWindowMesh = GetWorld()->SpawnActorDeferred<UGeometryCollection>(GC_WindowClass[Index], Transform);
-	//		if (NewGCWindowMesh)
-	//		{
-	//			NewGCWindowMesh->Location(GetActorLocation());
-	//			NewGCWindowMesh->SetActorRotation(GetActorRotation());
-	//			NewGCWindowMesh->FinishSpawning(Transform);
-	//		}
-	//		pWindow->DestroyComponent();
-	//		
-
-	//		//FString NewGCWindowString = FString("GC_") + WindowString;
-	//		//FString FilePath = "/Script/GeometryCollectionEngine.GeometryCollection'/Game/2016180016/FractureMesh/" + NewGCWindowString + "." + NewGCWindowString + "'";
-	//		//
-	//		//ConstructorHelpers::FObjectFinder<AGeometryCollectionActor>WindowMeshRef(*FilePath);
-	//		//if (WindowMeshRef.Succeeded())
-	//		//{
-	//		//}
-	//		//else
-	//		//{
-	//		//	UE_LOG(LogClass, Warning, TEXT("WindowMeshRef Cant find"));
-	//		//}
-
-	//		break;
-	//	}
-	//}
 }
+
 #include "Kismet/KismetStringLibrary.h"
 void ASingleBuildingFloor::DoCollapseWindow(UHierarchicalInstancedStaticMeshComponent* Target, int32 TargetIndex, FVector ForceDirection)
 {
@@ -148,7 +105,6 @@ void ASingleBuildingFloor::DoCollapseWindow(UHierarchicalInstancedStaticMeshComp
 	FVector Translation = Target->PerInstanceSMData[TargetIndex].Transform.GetOrigin();
 	FVector Scale = Target->PerInstanceSMData[TargetIndex].Transform.GetScaleVector();
 	FQuat Rotation = FQuat(Target->PerInstanceSMData[TargetIndex].Transform);
-	//FRotator Rotation = Target->PerInstanceSMData[TargetIndex].Transform.Rotator();
 	
 	//auto M = Target->PerInstanceSMData[TargetIndex].Transform.M;
 	//UE_LOG(LogTemp, Warning, TEXT("===== Break Window Matrix ====="));
@@ -163,14 +119,24 @@ void ASingleBuildingFloor::DoCollapseWindow(UHierarchicalInstancedStaticMeshComp
 	AActor* NewGCWindowMesh = GetWorld()->SpawnActorDeferred<AActor>(GC_WindowClass[0], Transform);
 	if (NewGCWindowMesh)
 	{
-		//NewGCWindowMesh->SetActorLocation(GetActorLocation());
-		//NewGCWindowMesh->SetActorRotation(GetActorRotation());
 		NewGCWindowMesh->SetActorTransform(Transform);
 		NewGCWindowMesh->FinishSpawning(Transform);
 	
 		NewGCWindowMesh->SetLifeSpan(5.0f);
 
 		NewGCWindowMesh->AttachToComponent(Target, FAttachmentTransformRules::KeepRelativeTransform);
+
+		//2019180031
+		if (USkyscraperEngineSubsystem* Subsystem = GEngine->GetEngineSubsystem<USkyscraperEngineSubsystem>())
+		{
+			if (USoundBase* Sound = Subsystem->GetSkyscraperSound(TEXT("WindowBreak")))
+			{
+				if (USoundAttenuation* SoundAttenuation = Subsystem->GetSkyscraperSoundAttenuation())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator{}, 1, 1, 0, SoundAttenuation);
+				}
+			}
+		}
 	}
 	else
 	{

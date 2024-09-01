@@ -13,6 +13,11 @@ ClientMgr::ClientMgr()
 
 void ClientMgr::Disconnect(int SerialNum)
 {
+	if (GameServerKeySet.find(SerialNum) == GameServerKeySet.end())
+	{
+		GameServerKeySet.unsafe_erase(SerialNum);
+	}
+
 	PDisconnect PD;
 	Clients[SerialNum]->SendProcess(&PD);
 

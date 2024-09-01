@@ -314,7 +314,7 @@ void ASkyscraperPlayerController::SetPlayerImage(int MaxPlayer, TArray<ASkyscrap
 {
 	MiniMapWidget->AddPlayerToImage(PlayerCharacter[SerialNum]);
 
-	if (SerialNum < MaxPlayer)
+	if (SerialNum < MaxPlayer / 2)
 	{
 		for (int i = 0; i < MaxPlayer / 2; i++)
 		{

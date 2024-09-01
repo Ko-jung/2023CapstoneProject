@@ -113,13 +113,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	FVector TempSpawnLocation[5];
 
-	UFUNCTION(Exec)
+	UFUNCTION(Exec, BlueprintCallable)
 	void RequestTileDrop();
-	UFUNCTION(Exec)
+	UFUNCTION(Exec, BlueprintCallable)
 	void RequestSpawnItem();
-	UFUNCTION(Exec)
+	UFUNCTION(Exec, BlueprintCallable)
 	void RequestFinishGame();
-	UFUNCTION(Exec)
+	UFUNCTION(Exec, BlueprintCallable)
 	void PrintWidgets();
 
 protected:
